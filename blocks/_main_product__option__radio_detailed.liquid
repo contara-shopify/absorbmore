@@ -1,0 +1,706 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__option__radio_detailed"
+  assign section_type = "main_product"
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign content_flow = block.settings.content_flow
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign label_class = block.settings.label_class
+  assign label_metafield = block.settings.label_metafield
+  assign image_metafield = block.settings.image_metafield
+  assign dynamic_content = block.settings.dynamic_content
+  assign dynamic_content_class = block.settings.dynamic_content_class
+  assign footnote_caption = block.settings.footnote_caption
+  assign footnote_caption_class = block.settings.footnote_caption_class
+  assign background_color = block.settings.background_color
+  assign background_gradient = block.settings.background_gradient
+  assign text_color = block.settings.text_color
+  assign border_color = block.settings.border_color
+  assign hover_background_color = block.settings.hover_background_color
+  assign hover_text_color = block.settings.hover_text_color
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign sort_options_by = block.settings.sort_options_by
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign option_type = block.settings.option_type
+  assign match_option_titles = block.settings.match_option_titles
+  assign match_option_index = block.settings.match_option_index
+  assign match_exact_word = block.settings.match_exact_word
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: '.' | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: '.' | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  if image_metafield
+    assign image_namespace = image_metafield | split: '.' | first
+    assign image_key = image_metafield | split: '.' | last
+  endif
+
+  if label_metafield
+    assign label_namespace = label_metafield | split: '.' | first
+    assign label_key = label_metafield | split: '.' | last
+  endif
+
+  if product.variants.first.title == 'Default Title' and product.variants.size == 1
+    break
+  endif
+
+  assign match_options = match_option_titles | split: ','
+
+  if option_type == 'by_name'
+    for option in product.options
+      assign optionIndex = forloop.index0
+      for match_option in match_options
+        if match_exact_word
+          assign _match_option = match_option | strip
+          assign _option = option
+        else
+          assign _match_option = match_option | strip | downcase
+          assign _option = option | downcase
+        endif
+
+        if _option == _match_option
+          assign _optionIndex = optionIndex
+          break
+        endif
+      endfor
+      if _optionIndex != blank
+        break
+      endif
+    endfor
+
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  if option_type == 'by_index'
+    assign _optionIndex = match_option_index | minus: 1
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  case content_flow
+    when 'show_all'
+      assign container_classes = 'flex-wrap'
+    when 'truncate'
+      assign container_classes = 'overflow-hidden'
+    when 'overflow'
+      assign container_classes = 'overflow-x-auto'
+  endcase
+
+  if sort_options_by != 'off'
+    assign sorted_option_values = ''
+    assign sorted_numbers = ''
+    assign number_values = ''
+    assign no_number_values = ''
+    assign zero_fill = '00000000'
+
+    for value in option.values
+      if value contains '0' or value contains '1' or value contains '2' or value contains '3' or value contains '4' or value contains '5' or value contains '6' or value contains '7' or value contains '8' or value contains '9'
+        assign number_values = number_values | append: value | append: ','
+      else
+        assign no_number_values = no_number_values | append: value | append: ','
+      endif
+    endfor
+
+    assign number_values = number_values | split: ','
+    assign no_number_values = no_number_values | split: ',' | sort_natural
+
+    for value in number_values
+      assign number = value | plus: 0
+      assign number_as_str = number | append: ''
+      assign this_fill = zero_fill | slice: number_as_str.size, zero_fill.size
+      assign new_value = this_fill | append: number | append: ','
+      assign sorted_numbers = sorted_numbers | append: new_value
+    endfor
+    assign sorted_numbers = sorted_numbers | split: ',' | sort
+
+    for n in sorted_numbers
+      assign number = n | abs
+      for value in number_values
+        assign value_number = value | plus: 0
+        if number == value_number
+          assign sorted_option_values = sorted_option_values | append: value | append: ','
+        endif
+      endfor
+    endfor
+
+    assign sorted_option_values = sorted_option_values | split: ',' | concat: no_number_values
+
+    if sort_options_by == 'title-descending'
+      assign sorted_option_values = sorted_option_values | reverse
+    endif
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% capture css %}
+  & label {
+  color: {{ text_color }};
+  background-color: {{ background_color }};
+  background: {{ background_gradient }};
+  border-color: {{ border_color }};
+  }
+  & label:where(:hover,:focus) {
+  background-color: {{ hover_background_color }};
+  color: {{ hover_text_color }};
+  }
+{% endcapture %}
+
+{% for i in (0..2) %}
+  {% liquid
+    if option_type == 'fallback_options'
+      assign _optionIndex = i
+      assign option = product.options_with_values[_optionIndex]
+    endif
+
+    if option == blank
+      break
+    endif
+
+    assign current_value = variant.options[_optionIndex]
+    assign content_legend = legend | replace: '[heading]', option.name
+    assign current_legend = content_legend | replace: '[value]', current_value | default: option.name
+
+    assign optionIndex1 = _optionIndex | plus: 1
+    assign optionName = 'option' | append: optionIndex1
+  %}
+
+  {% if forloop.first %}
+    <style>
+      {{- css | append: custom_css | replace: '&', selector | strip_newlines -}}
+    </style>
+  {% endif %}
+
+  <product-option {{ _optionIndex }} {{ option_type }}>
+    <div
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {{ block.shopify_attributes }}
+      data-quick-view-visibility="{{ quick_view_visibility }}"
+      {% if content_flow == 'overflow' %}
+        x-data="{ index: +`{{ _optionIndex }}`, hoverValue: '', offset: +`{{ option.values.size }}`, ...utils.initContentSlider($el, $refs.scrollContainer, undefined,false, undefined), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+        x-init="$refs.scrollContainer.scrollLeft = ([...$refs.scrollContainer.children]?.find(child=> child?.classList?.contains('active'))?.offsetLeft ?? 0) - 5;"
+      {% else %}
+        x-data="{ index: +`{{ _optionIndex }}`, hoverValue: '', offset: +`{{ option.values.size }}` }"
+      {% endif %}
+      x-defer="intersect"
+    >
+      <legend
+        id="legend-{{ block.id }}--{{ forloop.index0 }}"
+        x-ignore
+        class="flex w-full max-w-full truncate {{ legend_class }}"
+        data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+        x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', hoverValue || pdp?.selected_options?.[index])"
+      >
+        {% render '_input.inline_richtext', content: current_legend %}
+      </legend>
+      <fieldset
+        aria-labelledby="legend-{{ block.id }}--{{ forloop.index0 }}"
+        x-ignore
+        class="relative w-full flex scrollbar-none {{ container_classes }}"
+        {% if content_flow == 'overflow' %}
+          x-ref="scrollContainer"
+          @resize.window="content_slider.handleResize"
+          x-init="$nextTick(() => content_slider.handleResize())"
+          @scroll="content_slider.handleScroll"
+          @scrollend="content_slider.handleInfiniteScroll"
+        {% endif %}
+      >
+        {% for value in option.values %}
+          {% liquid
+            if sold_out_variants == 'hide' and value.available != true
+              continue
+            endif
+
+            assign continue = true
+
+            for v in product.variants
+              if v.options[_optionIndex] == value
+                unless  v.metafields.custom.hide_on_frontend.value
+                  assign continue = false
+                  break
+                endunless
+              endif
+            endfor
+
+            if continue
+              continue
+            endif
+
+            assign option_variant = product.variants | where: optionName, value | first
+            assign price = option_variant.price
+            assign compare_at_price = option_variant.compare_at_price | at_least: option_variant.price
+
+            if settings.data__product__enable_price_overrides
+              assign discount_percentage = option_variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+              assign discount_value = option_variant.price | times: discount_percentage
+              assign variant_price = option_variant.price | minus: discount_value
+
+              assign price = option_variant.metafields.smart.price_override.value | default: option_variant.price | at_most: variant_price
+              assign compare_at_price = option_variant.compare_at_price | at_least: option_variant.price
+            endif
+
+            assign discount = 0
+            if compare_at_price > price
+              assign discount = compare_at_price | divided_by: price | minus: 1 | times: 100 | round
+            endif
+
+            assign option_order = 0
+            if sort_options_by != 'off'
+              for sorted_option_value in sorted_option_values
+                if sorted_option_value == value
+                  assign option_order = forloop.index0
+                endif
+              endfor
+            endif
+          %}
+
+          <label
+            x-effect="$el.classList.toggle('active', pdp.selected_options[index] === $el.getAttribute('aria-label'))"
+            x-show="offset >= +`{{ forloop.index0 }}` && !(pdp.selected_options?.[0] === 'Bag' && `{{ value | default: '' }}` === '14 Servings')"
+            @pointerenter="hoverValue = $el.getAttribute('aria-label')"
+            @pointerleave="hoverValue = ''"
+            aria-label="{{ value }}"
+            class="shrink-0 flex flex-col gap-2 relative cursor-pointer {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+            style="{% if sort_options_by != 'off' %}order: {{ option_order }};{% endif %}"
+          >
+            {% if option_variant.metafields[label_namespace][label_key].value != blank %}
+              <div class="{{ label_class }}">
+                {% render '_input.inline_richtext', content: option_variant.metafields[label_namespace][label_key].value %}
+              </div>
+            {% elsif discount > 0 %}
+              <div class="{{ label_class }}">Save {{ discount }}%</div>
+            {% endif %}
+
+            <section class="!outline-none relative flex flex-col items-center justify-center text-center">
+              <input
+                type="radio"
+                class="sr-only"
+                {% if sold_out_variants == 'disable' and value.available != true %}
+                  disabled="disabled"
+                {% endif %}
+                name="{{ block.id }}"
+                @change="$data.setProductOption({ index, value: $el.value })"
+                :checked="pdp.selected_options[index] === $el.value"
+                value="{{ value }}"
+              >
+              {% if option_variant.metafields[image_namespace][image_key].value != blank %}
+                <div class="image-wrapper relative">
+                  {% render '_object.image',
+                    image: option_variant.metafields[image_namespace][image_key].value,
+                    class: 'relative w-full h-full object-[inherit]'
+                  %}
+                </div>
+              {% endif %}
+              {% if dynamic_content != blank %}
+                {% capture dynamic_parsed_content %}{% render '_input.dynamic_content', content: dynamic_content, keys: 'option, value, option_variant', option: option, value: value, option_variant: option_variant %}{% endcapture %}
+                {% render '_input.richtext', content: dynamic_parsed_content, class: dynamic_content_class %}
+              {% endif %}
+              {% if footnote_caption != blank %}
+                <div class="{{ footnote_caption_class }}">
+                  {% capture dynamic_parsed_content %}{% render '_input.dynamic_content', content: footnote_caption, keys: 'option, value, option_variant', option: option, value: value, option_variant: option_variant %}{% endcapture %}
+                  {% render '_input.inline_richtext', content: dynamic_parsed_content %}
+                </div>
+              {% endif %}
+            </section>
+          </label>
+        {% endfor %}
+        {% if content_flow == 'truncate' %}
+          <div
+            class="flex shrink-0 items-center text-sm font-medium"
+            x-cloak
+            x-show="true"
+            :class="(offset + 1) < +`{{ option.values.size }}` ? '':'opacity-0 pointer-events-none'"
+            x-init="$nextTick(async ()=> { if (window.design_mode) { await utils.delay(20) } offset = utils.truncateChildren($el, $el.parentElement)})"
+            @resize.window.debounce.200ms="offset = +`{{ option.values.size }}`; await utils.delay(20); offset = utils.truncateChildren($el, $el.parentElement)"
+            x-html="`+ ${+`{{ option.values.size }}` - (offset + 1)} {{ option.name }}`"
+          >
+            +10 {{ option.name }}
+          </div>
+        {% endif %}
+      </fieldset>
+      {% if content_flow == 'overflow' %}
+        {% if scrollbar_class != blank %}
+          {% render '_components.scrollbar', class: scrollbar_class %}
+        {% endif %}
+        {% if scroll_pagination_class != blank %}
+          {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+        {% endif %}
+      {% endif %}
+    </div>
+  </product-option>
+
+  {% if option_type != 'fallback_options' %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "t:blocks.option_detailed_radio_buttons.name",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the option title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Inline Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_flow",
+      "label": "Content flow",
+      "default": "show_all",
+      "options": [
+        {
+          "value": "show_all",
+          "label": "Show all"
+        },
+        {
+          "value": "truncate",
+          "label": "Truncate"
+        },
+        {
+          "value": "overflow",
+          "label": "Slider"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.content_flow == 'overflow' }}"
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.content_flow == 'overflow' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Radio Card"
+    },
+    {
+      "type": "text",
+      "id": "label_class",
+      "label": "Label class",
+      "default": "label-primary"
+    },
+    {
+      "type": "text",
+      "id": "label_metafield",
+      "label": "Label metafield",
+      "default": "smart.quantity_label",
+      "info": "Metafield 'namespace.key'. The metafield needs to be of type 'single_line_text' on the Variant object"
+    },
+    {
+      "type": "text",
+      "id": "image_metafield",
+      "label": "Image metafield",
+      "default": "smart.quantity_image",
+      "info": "Metafield 'namespace.key'. The metafield needs to be of type 'file' and set to 'image' on the Variant object"
+    },
+    {
+      "type": "richtext",
+      "id": "dynamic_content",
+      "label": "Dynamic Content",
+      "default": "<p><strong>[option.name]</strong></p><p>[option_variant.metafield.smart.serving_size]</p>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_content_class",
+      "label": "Dynamic content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "footnote_caption",
+      "label": "Footnote caption",
+      "default": "[option_variant.price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "footnote_caption_class",
+      "label": "Footnote caption class",
+      "default": "richtext-md p"
+    },
+    {
+      "type": "paragraph",
+      "content": "For dynamic content you can use the bracket syntax to access properties of the [option], [value], and [option_variant]. I.e. [option.name], [value] or [option_variant.price]"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Card Block Styling"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Card Colors"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "background color",
+      "default": "#FAF9F5"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "background gradient"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "border_color",
+      "label": "border color",
+      "default": "#FAF9F5"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Hover Colors"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "hover_background_color",
+      "label": "background color",
+      "default": "#FAF9F5"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "hover_text_color",
+      "label": "text color",
+      "default": "#333333"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "sold_out_variants",
+      "label": "Sold Out Variants",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "disable",
+          "label": "Disable"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "sort_options_by",
+      "label": "Sort options by",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "title-ascending",
+          "label": "Title ascending A-Z"
+        },
+        {
+          "value": "title-descending",
+          "label": "Title descending Z-A"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Match Option"
+    },
+    {
+      "type": "select",
+      "id": "option_type",
+      "label": "Match Option type",
+      "default": "by_name",
+      "options": [
+        {
+          "value": "by_name",
+          "label": "By Name"
+        },
+        {
+          "value": "by_index",
+          "label": "By Index"
+        },
+        {
+          "value": "fallback_options",
+          "label": "Fallback Options"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Priority By name, By Index, then Fallback Options."
+    },
+    {
+      "type": "text",
+      "id": "match_option_titles",
+      "label": "Match option titles",
+      "info": "Comma separated list of possible option titles.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "range",
+      "id": "match_option_index",
+      "label": "Match option index",
+      "default": 1,
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "visible_if": "{{ block.settings.option_type == 'by_index' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "match_exact_word",
+      "label": "Match exact word",
+      "default": false,
+      "info": "Enable this if you want to match the exact titles and make the 'Match option titles' case sensitive.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Option: Detailed Radio Buttons",
+      "category": "** Product Option Select **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__option__radio_detailed"
+}
+{% endschema %}

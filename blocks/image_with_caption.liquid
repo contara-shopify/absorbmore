@@ -1,0 +1,422 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "image_with_caption"
+  assign image = block.settings.image
+  assign caption = block.settings.caption
+  assign description = block.settings.description
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign metafield_image_key = block.settings.metafield_image_key
+  assign metafield_caption_key = block.settings.metafield_caption_key
+  assign text_alignment = block.settings.text_alignment
+  assign caption_class = block.settings.caption_class
+  assign metafield_description_key = block.settings.metafield_description_key
+  assign description_class = block.settings.description_class
+  assign metafield_url_key = block.settings.metafield_url_key
+  assign url = block.settings.url
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign element_id = block.settings.element_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | remove: " " | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type != 'metafield'
+    if image == blank
+      assign is_empty = true
+    endif
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% if show_overlay %}
+  {% capture overlay_css %}
+    & > .image-wrapper:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: {{ overlay_color }};
+    pointer-events: none;
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>{{ css | append: overlay_css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if dynamic_content_type == 'metafield' %}
+  {% for item in metafield %}
+    {% assign item_url = item[metafield_url_key].value.url | default: item[metafield_url_key].value %}
+    {% assign item_content = item[metafield_caption_key].value %}
+    {%- if item[metafield_caption_key].type == "rich_text_field" -%}
+      {% assign richtextStr = "" %}
+      {% assign richtext = item[metafield_caption_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>" %}
+      {% for htmlBlock in richtext %}
+        {% if forloop.last %}
+          {% assign richtextStr = richtextStr | append: htmlBlock %}
+          {% break %}
+        {% endif %}
+        {% assign richtextStr = richtextStr | append: htmlBlock | append: "</div>" %}
+      {% endfor %}
+      {% assign item_content = richtextStr %}
+    {% endif %}
+    {% assign item_description = item[metafield_description_key].value %}
+    {%- if item[metafield_description_key].type == "rich_text_field" -%}
+      {% assign richtextStr = "" %}
+      {% assign richtext = item[metafield_description_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>" %}
+      {% for htmlBlock in richtext %}
+        {% if forloop.last %}
+          {% assign richtextStr = richtextStr | append: htmlBlock %}
+          {% break %}
+        {% endif %}
+        {% assign richtextStr = richtextStr | append: htmlBlock | append: "</div>" %}
+      {% endfor %}
+      {% assign item_description = richtextStr %}
+    {% endif %}
+    <figure
+        data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+        {% if item_url != blank %}
+          role="link"
+          tabindex="0"
+          x-init="utils.simulateAnchorTag($el)"
+          data-href="{{ item_url }}"
+        {% endif %}
+        class="{{ text_alignment | prepend: 'text-' }}">
+      <div class="image-wrapper relative {% if item[metafield_image_key].value == blank %}h-0{% endif %}">
+        {% render '_object.image', image: item[metafield_image_key].value, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+      </div>
+      <figcaption>
+        {% render '_input.richtext', content: item_content, class: caption_class %}
+        {% if item_description != blank %}
+          {% render '_input.richtext', content: item_description, class: description_class %}
+        {% endif %}
+      </figcaption>
+    </figure>
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+<figure
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if element_id != blank %}id="{{ element_id }}"{% endif %}
+    {% if url != blank %}
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el)"
+      data-href="{{ url }}"
+    {% endif %}
+    class="{{ text_alignment | prepend: 'text-' }}">
+  <div class="image-wrapper relative">
+    {% render '_object.image', image: image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+  </div>
+  <figcaption>
+    {% render '_input.richtext', content: caption, class: caption_class %}
+    {% if description != blank %}
+      {% render '_input.richtext', content: description, class: description_class, html_attributes: "data-description" %}
+    {% endif %}
+  </figcaption>
+</figure>
+
+{% schema %}
+{
+  "name": "Image with Caption",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "caption",
+      "label": "Caption",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Repeater",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "List of Metaobjects with the subfields of: 'image' (type: file_reference), 'caption' (type: text, richtext), and 'url' (type: url). Accessing list of Objects i.e. `list.product_reference`, or `list.collection_reference` is also possible.",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace_key",
+      "label": "Metaobject",
+      "placeholder": "product.smart.features",
+      "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `collection.smart.features` or `metaobjects.features`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_image_key",
+      "label": "Image Key",
+      "default": "image",
+      "info": "Metaobject key for the image value. I.e. `image`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_caption_key",
+      "label": "Caption Key",
+      "default": "caption",
+      "info": "Metaobject key for the caption value. I.e. `content`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "caption_class",
+      "label": "Caption class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "text",
+      "id": "metafield_description_key",
+      "label": "Description Key",
+      "default": "description",
+      "info": "Metaobject key for the description value. I.e. `content`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "description_class",
+      "label": "Description class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "text",
+      "id": "metafield_url_key",
+      "label": "Url Key",
+      "default": "url",
+      "info": "Metaobject key for the url value. I.e. `url`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+      "visible_if": "{{ block.settings.show_overlay == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 256
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes)."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {}\n& .image-wrapper {\n  max-width: 128px;\n  display: block;\n  margin: 0 auto 20px;\n}\n         \n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "text",
+      "id": "element_id",
+      "label": "Element ID"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with Caption",
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__image_with_caption"
+}
+{% endschema %}

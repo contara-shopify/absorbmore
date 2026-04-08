@@ -1,0 +1,91 @@
+{% liquid
+  assign product = section.settings.product | default: product
+  assign waterdrop_items = product.metafields.custom.smart_bullet_points.value
+  assign waterdrop_color = product.metafields.custom.smart_bullet_point_color.value
+  assign custom_section_id = block.settings.custom_section_id | strip
+%}
+
+{% if waterdrop_items != blank %}
+  {% style %}
+    /* Blue waterdrops */
+    .tac-magnesium-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0 4px 0;
+      padding: 0;
+    }
+
+    .tac-magnesium-bullet {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tac-magnesium-bullet svg {
+      flex-shrink: 0;
+    }
+
+    {% if waterdrop_color != blank %}
+      .tac-magnesium-bullet svg path {
+        fill: {{ waterdrop_color }};
+        stroke: {{ waterdrop_color }};
+      }
+    {% endif %}
+
+    .tac-magnesium-bullet span {
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #6a6a6a;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    @media (max-width: 768px) {
+      #desktop-waterdrop-list {
+        display: none;
+      }
+    }
+  {% endstyle %}
+  <div
+    class="tac-magnesium-bullets"
+    {% if custom_section_id != blank %}
+      id="{{ custom_section_id | handleize }}"
+    {% endif %}
+    {{ block.shopify_attributes }}
+  >
+    {% for line in waterdrop_items %}
+      {% if line == blank %}
+        {% continue %}
+      {% endif %}
+      <div class="tac-magnesium-bullet">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path
+            d="M13.3327 9.33301C13.3327 12.2785 10.9449 14.6663 7.99935 14.6663C5.05383 14.6663 2.66602 12.2785 2.66602 9.33301C2.66602 8.62574 2.80369 7.95063 3.05369 7.33301C3.84488 5.37845 7.99935 1.33301 7.99935 1.33301C7.99935 1.33301 12.1538 5.37845 12.945 7.33301C13.195 7.95063 13.3327 8.62574 13.3327 9.33301Z"
+            fill="#5B6BF5"
+            stroke="#5B6BF5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span>{{ line | escape }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Waterdrop list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "custom_section_id",
+      "label": "Custom section ID",
+      "info": "Optional. Used for anchor links. Spaces and special characters are converted automatically."
+    }
+  ],
+  "presets": [{ "name": "Waterdrop list", "category": "** Product **" }]
+}
+{% endschema %}

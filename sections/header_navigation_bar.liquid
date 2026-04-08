@@ -1,0 +1,810 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "header_navigation_bar"
+  assign transparent_templates = section.settings.transparent_templates
+  assign transparent_custom_css = section.settings.transparent_custom_css
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  assign transparent_templates_array = transparent_templates | strip | remove: " " | split: ","
+
+  assign transparent = ""
+  for transparent_template in transparent_templates_array
+    assign transparent_template_prefix = transparent_template | split: "." | first
+    assign template_prefix = template | split: "." | first
+    assign transparent_template_suffix = transparent_template | split: "." | last
+    assign template_suffix = template | split: "." | last
+
+    if transparent_template_prefix != template_prefix
+      continue
+    endif
+    if transparent_template.size == 1 or transparent_template_suffix == template_suffix
+      assign transparent = "navigation-bar--transparent"
+      break
+    endif
+  endfor
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  {{ transparent_custom_css | replace: '&', '.navigation-bar--transparent' | strip_newlines }}
+</style>
+
+<style>
+  {% if transparent != blank %}
+  :root {
+    --navigation-bar-transparent-height: calc(-1 * var(--navigation-bar-height))
+  }
+
+  {% endif %}
+</style>
+
+<header data-style-id="{{ section.id }}--{{ block.id }}"
+        x-data="{ ..._sections.initNavigationBar($el, $refs) }"
+        data-navigation-bar
+        @scroll.window.passive="$data.toggleTransparent($event, true)"
+        @pointerover="$data.toggleTransparent"
+        @pointerleave="$data.toggleTransparent"
+        data-transparent-templates="{{ transparent_templates }}"
+        x-init="$watch('$router.template', value => { $data.toggleTransparent() })"
+        class="h-[--navigation-bar-height] @container transition-colors duration-200 {{ transparent }} {{ container_spacing }}">
+  <script>
+    (() => {
+      const scrollPosition = +sessionStorage.getItem('_p_scrollpos') || window.history.state?.states?.[0]?.scroll?.y || window.scrollY || 0;
+      if (window.history.scrollRestoration === 'auto' && scrollPosition > 300) {
+        const navBar = document.querySelector('[data-style-id="{{ section.id }}--{{ block.id }}"]') ?? document.currentScript.parentElement;
+        navBar?.style?.setProperty('transition', 'none', 'important');
+        navBar?.classList.remove('navigation-bar--transparent');
+        navBar?.style?.removeProperty('transition');
+      }
+      window.addEventListener("beforeunload", function (e) {
+        sessionStorage.setItem('_p_scrollpos', window.scrollY);
+      });
+      document.currentScript.remove();
+    })();
+  </script>
+  {% content_for 'blocks' %}
+</header>
+
+
+{% schema %}
+{
+  "name": "Navigation Bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Transparent Header"
+    },
+    {
+      "type": "textarea",
+      "id": "transparent_templates",
+      "label": "Templates",
+      "info": "List of templates that should trigger the transparent header. Comma separated list of templates. I.e. `product.custom-template, index, page, collection.all`"
+    },
+    {
+      "type": "textarea",
+      "id": "transparent_custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_header_navigation_bar__menu"
+    },
+    {
+      "type": "_main_cart__progress_bar"
+    },
+    {
+      "type": "_header_navigation_bar__container"
+    },
+    {
+      "type": "_header_navigation_bar__burger_menu_button"
+    },
+    {
+      "type": "_header_navigation_bar__megamenu_button"
+    },
+    {
+      "type": "_header_navigation_bar__search_button"
+    },
+    {
+      "type": "_header_navigation_bar__search_button_with_bar"
+    },
+    {
+      "type": "_header_navigation_bar__cart_button"
+    },
+    {
+      "type": "_header_navigation_bar__account_button"
+    },
+    {
+      "type": "_header_navigation_bar__dynamic_display_container"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Navigation Bar: Multi Level",
+      "settings": {
+        "transparent_templates": "",
+        "transparent_custom_css": "& {\n background: transparent;\n border: none;\n position: relative;\n}\n\n@media (max-width: 768px) {\n & {\n }\n}",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": ":root {\n  --navigation-bar-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    --navigation-bar-height: unset;\n  }\n}\n\n\n& {\n  border-bottom: 1px solid #e5e5e5;\n  background: #ffffff;\n  position: relative;\n}",
+        "section_id": "Navigation Bar: Multi Level"
+      },
+      "blocks": [
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  padding: 24px var(--container-md);\n  transition: 0.2s all ease-in-out;\n}\n.scrolled-down & {\n  padding: 12px var(--container-md);\n}"
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__burger_menu_button",
+              "settings": {
+                "url": "#megamenu--primary-menu",
+                "submenu_handle": "shop",
+                "custom_css": "& {\n  margin-right: 16px;\n}\n@media (min-width: 1024px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "settings": {
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: end;\n  gap: 8px;\n  height: 100%;\n    \n  \n}\n@media (max-width: 768px) {\n  & {\n    gap: 16px;\n  }\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_header_navigation_bar__search_button_with_bar",
+                  "settings": {
+                    "label": "Search",
+                    "placeholder": "Search",
+                    "input_class": "input-navbar-search",
+                    "icon": "search",
+                    "custom_css": "& {\n  padding: 2px 0px;\n  margin: 0 7px;\n}\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n  }\n}\n\n&:where(:hover,:focus-visible) {\n  \n}\n&.inactive {\n  padding: 0;\n  margin: 0;\n}\n\n&.inactive button[type=\"button\"] {\n  padding: 14px 7px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__account_button",
+                  "settings": {
+                    "icon": "user",
+                    "custom_css": "& {\n  padding: 14px 7px;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  \n}\n&.active {\n  \n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__cart_button",
+                  "settings": {
+                    "icon": "cart",
+                    "show_cart_quantity": true,
+                    "custom_css": "& {\n  padding: 14px 7px;\n  position: relative;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n  }\n}\n\n&:where(:hover,:focus-visible) {\n\n}\n\n.cart-icon-count {\n  position: absolute;\n  top: -4px;\n  right: -6px;\n  height: 16px;\n  aspect-ratio: 1;\n  background: #000000;\n  color: #ffffff;\n  border-radius: 100px;\n  font-size: 11px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "text_color": "",
+            "background_color": "#f3f3f3",
+            "custom_css": "& {\n  padding: 0 var(--container-md);\n  border-top: 1px solid #e5e5e5;\n}\n@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__menu",
+              "settings": {
+                "menu": "main-menu",
+                "link_class": "richtext-md p link-effect",
+                "megamenu_handle": "main-menu",
+                "use_link_handle": true,
+                "open_on_hover": true,
+                "text_color": "#585858",
+                "custom_css": "& {\n  display: flex;\n  justify-content: space-between;\n}\n\n& a {\n  padding: 12px 8px;\n  font-size: 14px;\n}\n& a:where(:hover,.active) {\n  color: #020202;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    },
+    {
+      "name": "Navigation Bar",
+      "settings": {
+        "transparent_templates": "",
+        "transparent_custom_css": "& {\n background: transparent;\n border: none;\n position: relative;\n}\n\n@media (max-width: 768px) {\n & {\n }\n}",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": ":root {\n  --navigation-bar-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    --navigation-bar-height: unset;\n  }\n}\n\n\n& {\n  border-bottom: 1px solid #e5e5e5;\n  background: #ffffff;\n  position: relative;\n}",
+        "section_id": "",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  padding: 2px var(--container-md);\n  transition: 0.2s all ease-in-out;\n}\n.scrolled-down & {\n  padding: 2px var(--container-md);\n}",
+            "generate_block_presets": "never",
+            "category_name": ""
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__burger_menu_button",
+              "settings": {
+                "url": "#megamenu--sidebar",
+                "submenu_handle": "",
+                "custom_css": "& {\n  margin-right: 10px;\n}\n@media (min-width: 1200px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Section Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  display: flex;\n  justify-content: flex-start;\n}\n\n@media (max-width: 1200px) {\n  & {\n    flex: unset;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Section Container"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image": "shopify://shop_images/logo-dark.png",
+                    "url": "/",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": true,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "custom_css": "& {\n  width: 170px;\n  height: auto;\n  flex-shrink: 0;\n  align-self: center;\n}\n@media (max-width: 768px) {\n  & {\n    width: 130px;\n    margin: auto;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Section Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  overflow: hidden;\n}\n&:where(:hover,.active) a {\n  color: #7d7d7d;\n}\n& a:where(:hover) {\n  color: #020202;\n}\n[data-active-modal=\"search\"] & {\n  max-width: 0 !important;\n  transition-delay: 0s;\n  transition-duration: 0.02s;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Section Container"
+              },
+              "blocks": [
+                {
+                  "type": "_header_navigation_bar__megamenu_button",
+                  "name": "Megamenu Button",
+                  "settings": {
+                    "url": "#megamenu--kids",
+                    "submenu_handle": "",
+                    "title": "Shop",
+                    "title_class": "",
+                    "icon": "chevron-down",
+                    "open_on_hover": true,
+                    "custom_css": "& {\n  height: 100%;\n  padding: 12px 8px;\n  font-size: 13px;\n  font-weight: 400;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  min-height: 56px;\n  display: flex;\n  align-items: center;\n  margin-bottom: -2px;\n  color: #242424;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__menu",
+                  "settings": {
+                    "menu": "mega-bed-kids-nursery-bath-new-sale",
+                    "link_class": "richtext-md p link-effect",
+                    "megamenu_handle": "main-menu",
+                    "use_link_handle": true,
+                    "open_on_hover": true,
+                    "text_color": "#242424",
+                    "custom_css": "& {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  transition: max-width 0.3s;\n  transform-origin: left;\n  transition-delay: 0.1s;\n  overflow: clip;\n  max-width: 1200px;\n}\n\n\n\n& a {\n  height: 100%;\n  padding: 12px 8px;\n  font-size: 13px;\n  font-weight: 400;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  min-height: 56px;\n  display: flex;\n  align-items: center;\n  margin-bottom: -2px;\n}\n\n\n@media (min-width: 1440px) {\n  & {\n    justify-content: space-evenly;\n  }\n}\n\n@media (max-width: 1200px) {\n  & {\n    display: none;\n  }\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Icons",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: end;\n  gap: 8px;\n  height: 100%;\n    \n  \n}\n@media (max-width: 768px) {\n  & {\n    gap: 6px;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Icons"
+              },
+              "blocks": [
+                {
+                  "type": "button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Specials",
+                    "url": "shopify://collections/specials",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "button-primary-sm",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__search_button_with_bar",
+                  "settings": {
+                    "label": "Search",
+                    "placeholder": "Search",
+                    "input_class": "input-navbar-search",
+                    "icon": "search",
+                    "custom_css": "& {\n  padding: 2px 0px;\n  margin: 0 7px;\n}\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & div {\n    display: none;\n  }\n  &:before {\n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n&.inactive {\n  padding: 0;\n  margin: 0;\n}\n\n&.inactive button[type=\"button\"] {\n  padding: 14px 7px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__account_button",
+                  "settings": {
+                    "icon": "user",
+                    "custom_css": "& {\n  padding: 14px 7px;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n&.active {\n  \n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__cart_button",
+                  "settings": {
+                    "icon": "cart",
+                    "show_cart_quantity": true,
+                    "custom_css": "& {\n  padding: 14px 7px;\n  position: relative;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n\n.cart-icon-count {\n  position: absolute;\n  top: -4px;\n  right: -6px;\n  height: 16px;\n  aspect-ratio: 1;\n  background: #272824;\n  color: #ffffff;\n  border-radius: 100px;\n  font-size: 11px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#f3f3f3",
+            "custom_css": "& {\n  padding: 0 var(--container-md);\n  border-top: 1px solid #e5e5e5;\n}\n@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": ""
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__menu",
+              "settings": {
+                "menu": "mega-bed-kids-nursery-bath-new-sale",
+                "link_class": "richtext-md p link-effect",
+                "megamenu_handle": "main-menu",
+                "use_link_handle": true,
+                "open_on_hover": true,
+                "text_color": "#585858",
+                "custom_css": "& {\n  display: flex;\n  justify-content: flex-start;\n}\n\n& a {\n  padding: 12px 8px;\n  font-size: 14px;\n  font-weight: 500;\n}\n& a:where(:hover,.active) {\n  color: #020202;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    },
+    {
+      "name": "undefined",
+      "settings": {
+        "transparent_templates": "",
+        "transparent_custom_css": "& {\n background: transparent;\n border: none;\n position: relative;\n}\n\n@media (max-width: 768px) {\n & {\n }\n}",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": ":root {\n  --navigation-bar-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    --navigation-bar-height: unset;\n  }\n}\n\n\n& {\n  border-bottom: 1px solid #e5e5e5;\n  background: #ffffff;\n  position: relative;\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  padding: 2px var(--container-md);\n  transition: 0.2s all ease-in-out;\n}\n.scrolled-down & {\n  padding: 2px var(--container-md);\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__burger_menu_button",
+              "settings": {
+                "url": "#megamenu--sidebar",
+                "submenu_handle": "",
+                "custom_css": "& {\n  margin-right: 10px;\n}\n@media (min-width: 1200px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Section Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  display: flex;\n  justify-content: flex-start;\n}\n\n@media (max-width: 1200px) {\n  & {\n    flex: unset;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Section Container"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image": "shopify://shop_images/logo-dark.png",
+                    "url": "/",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": true,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n  width: 170px;\n  height: auto;\n  flex-shrink: 0;\n  align-self: center;\n}\n@media (max-width: 768px) {\n  & {\n    width: 130px;\n    margin: auto;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Section Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  overflow: hidden;\n}\n&:where(:hover,.active) a {\n  color: #7d7d7d;\n}\n& a:where(:hover) {\n  color: #020202;\n}\n[data-active-modal=\"search\"] & {\n  max-width: 0 !important;\n  transition-delay: 0s;\n  transition-duration: 0.02s;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Section Container"
+              },
+              "blocks": [
+                {
+                  "type": "_header_navigation_bar__megamenu_button",
+                  "name": "Megamenu Button",
+                  "settings": {
+                    "url": "#megamenu--kids",
+                    "submenu_handle": "",
+                    "title": "Shop",
+                    "title_class": "",
+                    "icon": "chevron-down",
+                    "open_on_hover": true,
+                    "custom_css": "& {\n  height: 100%;\n  padding: 12px 8px;\n  font-size: 13px;\n  font-weight: 400;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  min-height: 56px;\n  display: flex;\n  align-items: center;\n  margin-bottom: -2px;\n  color: #242424;\n}\n@media (max-width: 1200px) {\n  & {\n    display: none;\n  }\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__menu",
+                  "settings": {
+                    "menu": "mega-bed-kids-nursery-bath-new-sale",
+                    "link_class": "richtext-md p link-effect",
+                    "megamenu_handle": "main-menu",
+                    "use_link_handle": true,
+                    "open_on_hover": true,
+                    "text_color": "#242424",
+                    "custom_css": "& {\n  display: flex;\n  justify-content: center;\n  flex: 3;\n  transition: max-width 0.3s;\n  transform-origin: left;\n  transition-delay: 0.1s;\n  overflow: clip;\n  max-width: 1200px;\n}\n\n\n\n& a {\n  height: 100%;\n  padding: 12px 8px;\n  font-size: 13px;\n  font-weight: 400;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  min-height: 56px;\n  display: flex;\n  align-items: center;\n  margin-bottom: -2px;\n}\n\n\n@media (min-width: 1440px) {\n  & {\n    justify-content: space-evenly;\n  }\n}\n\n@media (max-width: 1200px) {\n  & {\n    display: none;\n  }\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_header_navigation_bar__container",
+              "name": "Icons",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: end;\n  gap: 8px;\n  height: 100%;\n    \n  \n}\n@media (max-width: 768px) {\n  & {\n    gap: 6px;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Icons"
+              },
+              "blocks": [
+                {
+                  "type": "button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Specials",
+                    "url": "shopify://collections/specials",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "button-primary-sm",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__search_button_with_bar",
+                  "settings": {
+                    "label": "Search",
+                    "placeholder": "Search",
+                    "input_class": "input-navbar-search",
+                    "icon": "search",
+                    "custom_css": "& {\n  padding: 2px 0px;\n  margin: 0 7px;\n}\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & div {\n    display: none;\n  }\n  &:before {\n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n&.inactive {\n  padding: 0;\n  margin: 0;\n}\n\n&.inactive button[type=\"button\"] {\n  padding: 14px 7px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__account_button",
+                  "settings": {
+                    "icon": "user",
+                    "custom_css": "& {\n  padding: 14px 7px;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n&.active {\n  \n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_header_navigation_bar__cart_button",
+                  "settings": {
+                    "icon": "cart",
+                    "show_cart_quantity": true,
+                    "custom_css": "& {\n  padding: 14px 7px;\n  position: relative;\n}\n\n& svg {\n  width: 24px;\n  height: 24px;\n}\n\n@media (max-width: 768px) {\n  & { \n  }\n}\n\n&:where(:hover,:focus-visible) {\n  color: #272824;\n}\n\n.cart-icon-count {\n  position: absolute;\n  top: -4px;\n  right: -6px;\n  height: 16px;\n  aspect-ratio: 1;\n  background: #272824;\n  color: #ffffff;\n  border-radius: 100px;\n  font-size: 11px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_header_navigation_bar__container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#f3f3f3",
+            "custom_css": "& {\n  padding: 0 var(--container-md);\n  border-top: 1px solid #e5e5e5;\n}\n@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "_header_navigation_bar__menu",
+              "settings": {
+                "menu": "mega-bed-kids-nursery-bath-new-sale",
+                "link_class": "richtext-md p link-effect",
+                "megamenu_handle": "main-menu",
+                "use_link_handle": true,
+                "open_on_hover": true,
+                "text_color": "#585858",
+                "custom_css": "& {\n  display: flex;\n  justify-content: flex-start;\n}\n\n& a {\n  padding: 12px 8px;\n  font-size: 14px;\n  font-weight: 500;\n}\n& a:where(:hover,.active) {\n  color: #020202;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.header"
+    ]
+  },
+  "class": "shopify_section__header_navigation_bar"
+}
+{% endschema %}

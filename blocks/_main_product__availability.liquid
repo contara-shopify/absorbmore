@@ -1,0 +1,161 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__availability"
+  assign section_type = "main_product"
+  assign content_available = block.settings.content_available
+  assign content_sold_out = block.settings.content_sold_out
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     data-quick-view-visibility="{{ quick_view_visibility }}"
+     x-ignore
+     class="relative {{ content_class }} {{ text_alignment | prepend: 'text-' }}"
+     data-content-available="{% render '_input.inline_richtext', content: content_available, escape: true %}"
+     data-content-sold-out="{% render '_input.inline_richtext', content: content_sold_out, escape: true %}"
+     x-html="pdp.selected_variant?.available ? $el.getAttribute('data-content-available') :  $el.getAttribute('data-content-sold-out')">
+  {% if variant.available %}
+    {% render '_input.inline_richtext', content: content_available %}
+  {% else %}
+    {% render '_input.inline_richtext', content: content_sold_out %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Availability",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "content_available",
+      "label": "Content: Available",
+      "default": "In Stock",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content_sold_out",
+      "label": "Content: Sold Out",
+      "default": "Sold Out",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Availability",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__availability"
+}
+{% endschema %}

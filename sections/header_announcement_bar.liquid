@@ -1,0 +1,280 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "header_announcement_bar"
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<section data-style-id="{{ section.id }}--{{ block.id }}"
+         data-announcement-bar
+         data-settings="{{ section.settings | json | escape }}"
+         class="relative overflow-clip"
+         x-init="() => {
+           if (!utils.getCookie(`${Shopify.theme.id}--hide-announcement`)) {
+             $el.classList.add('h-[--announcement-bar-height]');
+             $el.classList.remove('!h-0');
+             $nextTick(() => {
+               $el.classList.add('transition-all','duration-300');
+             });
+           } else {
+             document.body.style.setProperty('--announcement-bar-height', `0px`, 'important');
+             $el.remove();
+           }
+         }">
+  {% content_for "blocks" %}
+</section>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "marquee"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_header_announcement_bar__close_button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "settings": {
+        "text_color": "#ffffff",
+        "background_color": "#272824",
+        "custom_css": ":root {\n  --announcement-bar-height: 33px;\n}\n\n@media (max-width: 768px) {\n  :root {\n    --announcement-bar-height: 33px;\n  }\n}",
+        "section_id": "",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "marquee",
+          "settings": {
+            "auto_rotate": true,
+            "duration": 40,
+            "auto_pause": false,
+            "animation_direction": "",
+            "text_color": "",
+            "background_color": "#272824",
+            "custom_css": "& {\n  --gap: 160px;\n  height: 100%;\n  align-items: center;\n}",
+            "generate_block_presets": "never",
+            "category_name": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h6><strong>Welcome!</strong></h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Banner"
+    },
+    {
+      "name": "Announcement Bar Marquee",
+      "settings": {
+        "text_color": "#ffffff",
+        "background_color": "#e91589",
+        "custom_css": ":root {\n  --announcement-bar-height: 33px;\n}\n\n@media (max-width: 768px) {\n  :root {\n    --announcement-bar-height: 33px;\n  }\n}",
+        "section_id": "Announcement Bar Marquee",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "marquee",
+          "settings": {
+            "auto_rotate": true,
+            "duration": 60,
+            "auto_pause": false,
+            "animation_direction": "",
+            "text_color": "",
+            "background_color": "#e91589",
+            "custom_css": "& {\n  --gap: 100px;\n  height: 100%;\n  align-items: center;\n}",
+            "generate_block_presets": "never",
+            "category_name": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h6><strong>Welcome to our new website website!</strong></h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Banner"
+    },
+    {
+      "name": "undefined",
+      "settings": {
+        "text_color": "#ffffff",
+        "background_color": "#272824",
+        "custom_css": ":root {\n  --announcement-bar-height: 33px;\n}\n\n@media (max-width: 768px) {\n  :root {\n    --announcement-bar-height: 33px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "marquee",
+          "settings": {
+            "auto_rotate": true,
+            "duration": 40,
+            "auto_pause": false,
+            "animation_direction": "",
+            "text_color": "",
+            "background_color": "#272824",
+            "custom_css": "& {\n  --gap: 160px;\n  height: 100%;\n  align-items: center;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h6><strong>Welcome!</strong></h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Banner"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.header"
+    ]
+  },
+  "class": "shopify_section__header_announcement_bar"
+}
+{% endschema %}

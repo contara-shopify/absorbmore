@@ -1,0 +1,413 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__option__select"
+  assign section_type = "main_product"
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign primary_source = block.settings.primary_source
+  assign fallback_source = block.settings.fallback_source
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign option_type = block.settings.option_type
+  assign match_option_titles = block.settings.match_option_titles
+  assign match_option_index = block.settings.match_option_index
+  assign match_exact_word = block.settings.match_exact_word
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  if product.variants.first.title == "Default Title" and product.variants.size == 1
+    break
+  endif
+
+  assign match_options = match_option_titles | split: ","
+
+  if option_type == 'by_name'
+    for option in product.options
+      assign optionIndex = forloop.index0
+      for match_option in match_options
+        if match_exact_word
+          assign _match_option = match_option | strip
+          assign _option = option
+        else
+          assign _match_option = match_option | strip | downcase
+          assign _option = option | downcase
+        endif
+
+        if _option == _match_option
+          assign _optionIndex = optionIndex
+          break
+        endif
+      endfor
+      if _optionIndex != blank
+        break
+      endif
+    endfor
+
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  if option_type == 'by_index'
+    assign _optionIndex = match_option_index | minus: 1
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% for i in (0..2) %}
+  {% liquid
+    assign swatches = ''
+    assign values = ''
+    assign disabled_values = ''
+    assign option_labels = ''
+    if option_type == 'fallback_options'
+      assign _optionIndex = i
+      assign option = product.options_with_values[_optionIndex]
+    endif
+
+    if option == blank
+      break
+    endif
+
+    assign current_value = variant.options[_optionIndex]
+    assign content_legend = legend | replace: "[heading]", option.name
+    assign content_legend = content_legend | replace: "[count]", option.values.size
+    assign current_legend = content_legend | replace: "[value]", current_value | default: option.name
+
+    assign optionIndex1 = _optionIndex | plus: 1
+    assign option_num = 'option' | append: optionIndex1
+
+    for value in option.values
+      if sold_out_variants == 'hide' and value.available != true
+        continue
+      endif
+
+      assign continue = true
+
+      for v in product.variants
+        if v.options[_optionIndex] == value
+          unless  v.metafields.custom.hide_on_frontend.value
+            assign continue = false
+            break
+          endunless
+        endif
+      endfor
+
+      if continue
+        continue
+      endif
+
+
+
+      assign first_option_variant = product.variants | where: option_num, value | first
+      assign _value = value | handleize
+      assign image = ''
+      case primary_source
+        when "title"
+          assign primary_swatch = "--primary-swatch: var(--swatch-" | append: _value | append: ")"
+        when "image"
+          assign image = first_option_variant.image | image_url: width: 180, height: 180, crop: 'center' | escape
+          assign primary_swatch = "--primary-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+        when "metafield"
+          if first_option_variant.metafields.smart.color_swatch.type == 'color'
+            assign primary_swatch = "--primary-swatch: " | append: first_option_variant.metafields.smart.color_swatch.value
+          endif
+          if first_option_variant.metafields.smart.color_swatch.type == 'file_reference'
+            assign image = first_option_variant.metafields.smart.color_swatch.value | image_url: width: 180, height: 180, crop: 'center' | escape
+            assign primary_swatch = "--primary-swatch: url(" | append: image | append: ") center center/cover no-repeat" | escape
+          endif
+      endcase
+      case fallback_source
+        when "title"
+          assign fallback_swatch = "--fallback-swatch: var(--swatch-" | append: _value | append: ")"
+        when "image"
+          assign image = first_option_variant.image | image_url: width: 180, height: 180, crop: 'center' | escape
+          assign fallback_swatch = "--fallback-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+        when "metafield"
+          if first_option_variant.metafields.smart.color_swatch.type == 'color'
+            assign fallback_swatch = "--fallback-swatch: " | append: first_option_variant.metafields.smart.color_swatch.value
+          endif
+          if first_option_variant.metafields.smart.color_swatch.type == 'file_reference'
+            assign image = first_option_variant.metafields.smart.color_swatch.value | image_url: width: 180, height: 180, crop: 'center' | escape
+            assign fallback_swatch = "--fallback-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+          endif
+      endcase
+      assign swatch = primary_swatch | default: fallback_swatch
+      assign swatches = swatches | append: swatch | append: "|%|SPLIT|%|"
+      assign values = values | append: value | append: "|%|SPLIT|%|"
+      assign option_label = first_option_variant.metafields.smart.label | default: ""
+      assign option_labels = option_labels | append: option_label | append: "|%|SPLIT|%|"
+
+      if value.available != true and sold_out_variants == 'disable'
+        assign disabled_values = disabled_values | append: 'true' | append: "|%|SPLIT|%|"
+      else
+        assign disabled_values = disabled_values | append: 'false' | append: "|%|SPLIT|%|"
+      endif
+
+    endfor
+
+    assign disabled_values = disabled_values | split: "|%|SPLIT|%|" | json | replace: '"false"', 'false'| replace: '"true"', 'true'
+    assign swatches = swatches | split: "|%|SPLIT|%|" | json
+    assign values = values | split: "|%|SPLIT|%|" | json
+    assign option_labels = option_labels | split: "|%|SPLIT|%|" | json
+  %}
+
+  {% if forloop.first %}
+    <style>
+      {{ custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  {% endif %}
+
+  <product-option {{ _optionIndex }} {{ option_type }}>
+    <fieldset data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+              data-quick-view-visibility="{{ quick_view_visibility }}"
+              x-data="{ index: +`{{ _optionIndex }}` }"
+              x-defer="intersect">
+      <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+              x-ignore
+              data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+              x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', pdp.selected_options?.[index])">
+        {% render '_input.inline_richtext', content: current_legend %}
+      </legend>
+      {% render '_components.select',
+          values: values,
+          swatches: swatches,
+          select_class: select_class,
+          label: option.name,
+          option_labels: option_labels,
+          label_class: label_class,
+          setState: "$data.setProductOption({ index, value: value })",
+          state: "pdp.selected_options[index]",
+          disabled_items: disabled_values,
+          current_value: current_value,
+          html_attributes: "x-ignore",
+          disabled_clickable: true
+      %}
+    </fieldset>
+  </product-option>
+
+  {% if option_type != 'fallback_options' %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Option: Select",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the option title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Swatches"
+    },
+    {
+      "type": "select",
+      "id": "primary_source",
+      "label": "Primary source:",
+      "default": "title",
+      "options": [
+        {
+          "value": "title",
+          "label": "Title"
+        },
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        },
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "fallback_source",
+      "label": "Fallback source:",
+      "default": "image",
+      "options": [
+        {
+          "value": "title",
+          "label": "Title"
+        },
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        },
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Match Option"
+    },
+    {
+      "type": "select",
+      "id": "option_type",
+      "label": "Match Option type",
+      "default": "by_name",
+      "options": [
+        {
+          "value": "by_name",
+          "label": "By Name"
+        },
+        {
+          "value": "by_index",
+          "label": "By Index"
+        },
+        {
+          "value": "fallback_options",
+          "label": "Fallback Options"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Priority By name, By Index, then Fallback Options."
+    },
+    {
+      "type": "text",
+      "id": "match_option_titles",
+      "label": "Match option titles",
+      "info": "Comma separated list of possible option titles.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "range",
+      "id": "match_option_index",
+      "label": "Match option index",
+      "default": 1,
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "visible_if": "{{ block.settings.option_type == 'by_index' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "match_exact_word",
+      "label": "Match exact word",
+      "default": false,
+      "info": "Enable this if you want to match the exact titles and make the 'Match option titles' case sensitive.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n@media (max-width: 1024px) {\n  & {\n    \n  }\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Option: Select",
+      "category": "** Product Option Select **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__option__select"
+}
+{% endschema %}

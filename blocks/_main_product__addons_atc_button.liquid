@@ -1,0 +1,130 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__addons_atc_button"
+  assign section_type = "main_product"
+  assign content = block.settings.content
+  assign button_class = block.settings.button_class
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  assign variant = product.selected_or_first_available_variant | default: product.variants.first
+  assign available_classes = '!hidden'
+
+  if variant.available
+    assign available_classes = ''
+  endif
+
+  assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+  assign discount_value = variant.price | times: discount_percentage
+  assign variant_price = variant.price | minus: discount_value
+
+  assign formatted_price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price | money
+  assign formatted_compare_at_price = ''
+  assign compare_at_raw = variant.compare_at_price | at_least: variant.price
+  if compare_at_raw > variant.price
+    assign formatted_compare_at_price = compare_at_raw | money | prepend: '<span style="text-decoration: line-through; opacity: 0.5;">' | append: '</span>'
+  endif
+  assign _content = content | replace: '[price]', formatted_price | replace: '[compare_at_price]', formatted_compare_at_price | replace: '[total]', formatted_price | replace: '[compare_at_total]', formatted_compare_at_price
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+<button
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {{ block.shopify_attributes }}
+  data-quick-view-visibility="{{ quick_view_visibility }}"
+  type="submit"
+  class="w-full disabled:opacity-70 disabled:pointer-events-none {{ button_class }} {{ available_classes }}"
+  :class="pdp.isAdding ? 'button-loading':''"
+  :disabled="pdp.isAdding || pdp.disable_add_to_cart?.size > 0 || !pdp.addons?.size"
+  x-html="(function(){ const useSub = $el.closest('form')?.querySelector?.('[data-addon-product-target]')?.closest?.('[data-addons-default-subscription]')?.getAttribute?.('data-addons-default-subscription') === 'true'; const plan = useSub ? (pdp?.selected_selling_plan ?? null) : null; const addons = Array.from(pdp?.addons?.values() || []); const firstAlloc = (v, hasPlan) => !hasPlan || !v?.selling_plan_allocations?.length ? null : v.selling_plan_allocations[0]; const total = addons.reduce((sum, i) => { const alloc = firstAlloc(i.variant, !!plan); return sum + (alloc ? alloc.price : (i.variant?.price ?? 0)); }, 0); const compareTotal = addons.reduce((sum, i) => { const alloc = firstAlloc(i.variant, !!plan); return sum + (alloc ? (alloc.compare_at_price ?? i.variant?.compare_at_price ?? 0) : (i.variant?.compare_at_price ?? 0)); }, 0); const compareHtml = compareTotal > total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(compareTotal)}</span>` : ''; return ($el.getAttribute('data-content') || '').replace('[price]', utils.formatMoney(total)).replace('[compare_at_price]', compareHtml); })()"
+  @click.prevent="$event.stopPropagation(); handleAddAddonsToCart($event);"
+  data-content="{% render '_input.inline_richtext', content: content, escape: true %}"
+>
+  {% render '_input.inline_richtext', content: _content %}
+</button>
+{% schema %}
+{
+  "name": "Addons Add to Cart Button",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "content",
+      "label": "Button content",
+      "default": "[icon.lock] Add To Cart • [price]",
+      "info": "Use the placeholder [price] & [compare_at_price] to display the price of the selected variant or [total] and [compare_at_total] to display the total price. [Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Addons Add to Cart Button",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__addons_atc_button"
+}
+{% endschema %}

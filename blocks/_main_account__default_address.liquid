@@ -1,0 +1,65 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_account__default_address"
+  assign section_type = "main_account"
+  assign content_class = block.settings.content_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% assign address = customer.default_address %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="{{ content_class }}">
+    {{ address | format_address }}
+  </div>
+  <button class="mt-2 text-13 font-semibold uppercase hf:opacity-60"
+          type="button"
+          @click="$modal.setId('address--{{ address.id }}')">Edit
+  </button>
+</div>
+{% render 'main_account.address_modal', address: address %}
+
+{% schema %}
+{
+  "name": "Default Address",
+  "settings": [
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default Address",
+      "category": "** Account **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_account__default_address"
+}
+{% endschema %}

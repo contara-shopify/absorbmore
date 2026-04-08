@@ -1,0 +1,305 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__variant_selector__radio"
+  assign section_type = "card_product_card"
+  assign legend_label = block.settings.legend_label
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign radio_button_class = block.settings.radio_button_class
+  assign select_on_hover = block.settings.select_on_hover
+  assign label_metafield = block.settings.label_metafield
+  assign label_class = block.settings.label_class
+  assign content_flow = block.settings.content_flow
+  assign truncate_text = block.settings.truncate_text
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign content_legend = legend | replace: "[heading]", legend_label
+  case content_flow
+    when "show_all"
+      assign container_classes = 'flex-wrap'
+    when "truncate"
+      assign container_classes = 'overflow-hidden'
+    when "overflow"
+      assign container_classes = 'overflow-x-auto'
+  endcase
+%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<div
+    data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+    x-data="{ offset: p_card?.product?.variants?.length }"
+    {% if sold_out_variants == 'hide' %}
+      x-show="p_card?.product?.variants?.filter(v => v.available)?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+    {% else %}
+      x-show="p_card?.product?.variants?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+    {% endif %}
+    x-ignore>
+  <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', p_card?.selected_variant?.title)">
+  </legend>
+  <fieldset class="relative w-full flex scrollbar-none {{ container_classes }}">
+    <template
+        {% if sold_out_variants == 'hide' %}
+          x-for="variant in p_card?.product?.variants?.filter(v => v.available).slice(0, offset)"
+        {% else %}
+          x-for="variant in p_card?.product?.variants.slice(0, offset)"
+        {% endif %}
+    >
+      <label
+          class="shrink-0 !outline-none {{ radio_button_class }}"
+          x-effect="$el.classList.toggle('active', p_card?.selected_variant?.id === variant?.id)"
+          {% if sold_out_variants == 'hide' %}
+            x-show="variant?.available"
+          {% endif %}
+          {% if select_on_hover %}
+            @mouseenter="setSelectedVariant(variant?.id)"
+          {% endif %}
+          :aria-label="variant?.title">
+        <input
+            type="radio"
+            class="sr-only"
+            {% if sold_out_variants == 'disable' %}
+              :disabled="!variant?.available"
+            {% endif %}
+            :name="`${p_card?.random_id}-${p_card?.product?.id}-variant_selector__radio`"
+            @change="setSelectedVariant(variant?.id)"
+            :checked="p_card?.selected_variant?.id === variant?.id"
+            :value="variant?.id">
+        <span x-text="variant?.title"></span>
+      </label>
+    </template>
+    {% if content_flow == 'truncate' %}
+      <div class="flex shrink-0 items-center text-sm font-medium"
+           x-cloak
+           x-show="true"
+           :class="(offset + 1) < p_card?.product?.variants?.length ? '':'opacity-0 pointer-events-none'"
+           x-init="$nextTick(async ()=> { if (window.design_mode) { await utils.delay(20) } offset = utils.truncateChildren($el, $el.parentElement)})"
+           @resize.window.debounce.200ms="offset = p_card?.product?.variants?.length; await utils.delay(1); offset = utils.truncateChildren($el, $el.parentElement)"
+           x-html="utils.applyInlinePluralization(`{{ truncate_text }}`.replace('[count]', `${p_card?.product?.variants?.length - offset}`).replace('[option]', `{{ legend_label }}`))">
+        {{ truncate_text | replace: '[count]', '1' | repalce: '[option]', legend_label }}
+      </div>
+    {% endif %}
+  </fieldset>
+  {% if content_flow == 'overflow' %}
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  {% endif %}
+</div>
+
+
+
+
+
+{% schema %}
+{
+  "name": "Variant: Radio Buttons",
+  "settings": [
+    {
+      "type": "text",
+      "id": "legend_label",
+      "label": "Heading",
+      "default": "Variants"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]: [value]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "radio_button_class",
+      "label": "Radio button class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "checkbox",
+      "id": "select_on_hover",
+      "label": "Select on hover"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Variant Highlight"
+    },
+    {
+      "type": "text",
+      "id": "label_metafield",
+      "label": "Label metafield",
+      "default": "smart.highlight",
+      "info": "Metafield 'namespace.key'. The metafield needs to be of type 'text' and added to the Variant."
+    },
+    {
+      "type": "text",
+      "id": "label_class",
+      "label": "Custom label class",
+      "default": "label-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Inline Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_flow",
+      "label": "Content flow",
+      "default": "show_all",
+      "options": [
+        {
+          "value": "show_all",
+          "label": "Show all"
+        },
+        {
+          "value": "truncate",
+          "label": "Truncate"
+        },
+        {
+          "value": "overflow",
+          "label": "Slider"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "truncate_text",
+      "label": "Truncate text",
+      "default": "+[count] [option]",
+      "info": "Use [count] and [option] as placeholders for values.",
+      "visible_if": "{{ block.settings.content_flow == 'truncate' }}"
+    },
+    {
+      "type": "select",
+      "id": "sold_out_variants",
+      "label": "Sold Out Variants",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "disable",
+          "label": "Disable"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n& fieldset {\n  gap: 6px;\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variant: Radio Buttons",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__variant_selector__radio"
+}
+{% endschema %}

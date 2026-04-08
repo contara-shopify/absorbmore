@@ -1,0 +1,63 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__properties"
+  assign section_type = "card_line_item_card"
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign filter_keys = block.settings.filter_keys
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% if line_item.properties.size <= 0 %}
+  {% break %}
+{% endif %}
+
+{% capture properties_content %}
+  {% if filter_keys != blank %}
+    {% assign keys = filter_keys | split: ',' %}
+    {% for key in keys %}
+      {% if line_item.properties[key] != blank %}
+        {% assign property_content = content | replace: '[key]', key | replace: '[value]', line_item.properties[key] %}
+        <li>{% render '_input.inline_richtext', content: property_content %}</li>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% for property in line_item.properties %}
+    {% assign property_test = property.first | slice: 0 %}
+    {% if property_test == '_' %}{% continue %}{% endif %}
+    {% assign property_content = content | replace: '[key]', property.first | replace: '[value]', property.last %}
+    <li>{% render '_input.inline_richtext', content: property_content %}</li>
+  {% endfor %}
+{% endcapture %}
+
+{% unless properties_content contains '<li>' %}
+  {% break %}
+{% endunless %}
+
+<ul data-style-id="{{ style_id }}" class="{{ content_class }}">
+  {{ properties_content }}
+</ul>

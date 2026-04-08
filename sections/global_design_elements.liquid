@@ -1,0 +1,729 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "global_design_elements"
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% for block in section.blocks %}
+  {% if block.type == "header" %}
+    {% render 'global_design_elements.header', block: block %}
+  {% endif %}
+  {% if block.type == "text" %}
+    {% render 'global_design_elements.text', block: block %}
+  {% endif %}
+  {% if block.type == "select" %}
+    {% render 'global_design_elements.select', block: block %}
+  {% endif %}
+  {% if block.type == "paragraph" %}
+    {% render 'global_design_elements.paragraph', block: block %}
+  {% endif %}
+  {% if block.type == "select" %}
+    {% render 'global_design_elements.select', block: block %}
+  {% endif %}
+  {% if block.type == "quantity" %}
+    {% render 'global_design_elements.quantity', block: block %}
+  {% endif %}
+  {% if block.type == "checkbox" %}
+    {% render 'global_design_elements.checkbox', block: block %}
+  {% endif %}
+  {% if block.type == "input" %}
+    {% render 'global_design_elements.input', block: block %}
+  {% endif %}
+  {% if block.type == "textarea" %}
+    {% render 'global_design_elements.textarea', block: block %}
+  {% endif %}
+  {% if block.type == "accordion" %}
+    {% render 'global_design_elements.accordion', block: block %}
+  {% endif %}
+  {% if block.type == "scrollbar" %}
+    {% render 'global_design_elements.scrollbar', block: block %}
+  {% endif %}
+  {% if block.type == "scroll_pagination" %}
+    {% render 'global_design_elements.scroll_pagination', block: block %}
+  {% endif %}
+  {% if block.type == "pagination" %}
+    {% render 'global_design_elements.pagination', block: block %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Design Elements",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Select Dropdown",
+      "type": "select",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "input-select",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 0;\n  \n    font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  \n    padding: 12px 16px 12px 20px;\n  gap: 6px;\n}\n\n\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {\n  background: #e5e5e5;\n}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "default": "chevron-up-down"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Quantity",
+      "type": "quantity",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "quantity-stepper",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 0;\n  \n    font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  \n    padding: 12px 20px;\n  gap: 6px;\n}\n\n\n\n& input {\nfont-weight: 700;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Quantity"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Checkbox",
+      "type": "checkbox",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "input-checkbox",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  color: #000000;\n  \n    font-family: inherit;\n  font-size: 16px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  \n    gap: 6px;\n}\n\n\n\n& input {\n  width: 20px;\n  height: 20px;\n  border: 1px solid #000000;\n  border-radius: 4px;\n  background: transparent;\n}\n& input ~ span svg {\n  background: #ffffff;\n}\n& input:checked {\n  background: #000000;\n}\n"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "icon",
+          "default": "check-mark"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Text Input",
+      "type": "input",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "input-text",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 0;\n  \n    font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n  \n    padding: 8px 16px;\n  min-height: 48px;\n  gap: 6px;\n}\n\n\n\n& input::placeholder {\n  color: #cccccc;\n}\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Textarea",
+      "type": "textarea",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "input-textarea",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 0;\n  \n    font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n}\n\n\n\n& textarea::placeholder {\n  color: #cccccc;\n}\n& textarea {\n  resize: vertical;\n  padding: 8px 12px;\n  min-height: 48px;\n  gap: 6px;\n}\n&.active textarea {\n  padding: 20px 12px 8px;\n}\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Collapsible",
+      "type": "accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "accordion",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  color: #000000;\n  border-bottom: 1px solid #cccccc;\n  border-radius: 0;\n  \n    font-family: inherit;\n  font-size: 16px; \n  font-weight: 700;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n}\n\n\n\n& summary {\n  padding: 8px 0;\n}\n& summary i {\n  width: 20px;\n  height: 20px;\n}\n& > div {\n  padding: 0 0 12px;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "select",
+          "id": "icon_style",
+          "label": "Icon style",
+          "default": "plus",
+          "options": [
+            {
+              "value": "plus",
+              "label": "plus/minus"
+            },
+            {
+              "value": "icon_plain",
+              "label": "icon"
+            },
+            {
+              "value": "icon_rotating",
+              "label": "rotating"
+            },
+            {
+              "value": "none",
+              "label": "none"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "default": "chevron-down"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Dropdown Content Settings"
+        },
+        {
+          "type": "text",
+          "id": "richtext_class",
+          "label": "Richtext set class",
+          "default": "richtext-md"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Scroll Controls",
+      "type": "scrollbar",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "scrollbar",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  display: flex;\n  gap: 6px;\n}\n\n& [data-scrollbar-track] {\n  height: 6px;\n  background: #c0c0c0;\n  border-radius: 999px;\n}\n& [data-scrollbar-thumb] {\n  height: 6px;\n  background: #000000;\n  border-radius: 999px;\n}\n\n@media (max-width: 768px) {\n  & [data-scrollbar-container] {\n    /* display: none */;\n  }\n  & [data-scrollbar-track] {\n    height: 3px;\n  }\n  & [data-scrollbar-thumb] {\n    height: 3px;\n  }\n}\n\n/* Scrollbar Buttons */\n& [data-scrollbar-buttons] {\n  display: flex;\n  gap: 6px;\n}\n& [data-scrollbar-button] {\n  display: flex;\n  border: 1px solid #000000;\n  background: transparent;\n  width: 28px;\n  height: 28px;\n  border-radius: 999px;\n}\n\n/* Scrollbar Counter */\n& [data-scrollbar-counter] {\n  display: none;\n  \n  color: #000000;\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  line-height: 1.3;\n  letter-spacing: normal;\n  text-transform: unset;\n  font-style: normal;\n}\n\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Previous / Next buttons"
+        },
+        {
+          "type": "select",
+          "id": "icon_style",
+          "label": "Icon style",
+          "default": "animated",
+          "options": [
+            {
+              "value": "animated",
+              "label": "Animated Arrow"
+            },
+            {
+              "value": "icon",
+              "label": "Icon Selector"
+            },
+            {
+              "value": "image_icon",
+              "label": "Image Icon Selector"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "icon_previous",
+          "label": "Icon previous button",
+          "default": "chevron-left"
+        },
+        {
+          "type": "text",
+          "id": "icon_next",
+          "label": "Icon next button",
+          "default": "chevron-right"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Scroll Pagination",
+      "type": "scroll_pagination",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "scroll-pagination",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  display: flex;\n  gap: 6px;\n}\n\n\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Pagination",
+      "type": "pagination",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "pagination",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n}\n& button {\n  font-size: 13px;\n  font-weight: 400;\n  min-width: 24px;\n  height: 24px;\n  border: 1px solid black;\n  border-radius: 2px;\n  transition: all 75ms;\n}\n\n& button.active {\n  background: #000000;\n  color: #ffffff;\n}\n\n& button:where(:hover,:focus-within) {\n  background: #e3e3e3;\n}\n\n& button svg {\n  width: 12px;\n  height: 12px;\n}\n\n& button:disabled {\n  opacity: 0.5;\n}\n\n\n"
+        },
+        {
+          "type": "text",
+          "id": "icon_previous",
+          "label": "Icon previous button",
+          "default": "chevron-left"
+        },
+        {
+          "type": "text",
+          "id": "icon_next",
+          "label": "Icon next button",
+          "default": "chevron-right"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Design Elements",
+      "settings": {
+        "category_name": "",
+        "hidden_name_backup": "Design Elements"
+      },
+      "blocks": [
+        {
+          "type": "accordion",
+          "name": "accordion",
+          "settings": {
+            "class": "accordion",
+            "custom_css": "& {\n  color: #000000;\n  border-bottom: 1px solid #cccccc;\n  border-radius: 0;\n  font-family: inherit;\n  font-size: 16px; \n  font-weight: 500;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n}\n\n& summary {\n  padding: 8px 0;\n  font-weight: 700;\n}\n& summary i {\n  width: 20px;\n  height: 20px;\n}\n& > div {\n  padding: 20px 0 12px;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "icon_style": "plus",
+            "icon": "chevron-down",
+            "richtext_class": "richtext-md",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "accordion",
+          "name": "accordion-no-border",
+          "settings": {
+            "class": "accordion-no-border",
+            "custom_css": "& {\n  color: #000000;\n  font-family: inherit;\n  font-size: 16px; \n  font-weight: 500;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n}\n\n\n\n& summary {\n  padding: 8px 0;\n  font-weight: 700;\n}\n& summary i {\n  width: 20px;\n  height: 20px;\n}\n& > div {\n  padding: 0 0 12px;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "icon_style": "icon_rotating",
+            "icon": "chevron-down",
+            "richtext_class": "richtext-md",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "accordion",
+          "name": "accordion-sidebar",
+          "settings": {
+            "class": "accordion-sidebar",
+            "custom_css": "& {\n  border-top: 1px solid #d3d3d3;\n  color: #000000;\n  font-family: inherit;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n}\n\n\n& summary {\n  color: #242424;\n  padding: 20px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  line-height: 1.2;\n}\n& summary i {\n  width: 20px;\n  height: 20px;\n}\n& > div {\n  padding: 0 20px 20px;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "icon_style": "plus",
+            "icon": "chevron-down",
+            "richtext_class": "richtext-md",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "quantity",
+          "name": "quantity-stepper",
+          "settings": {
+            "class": "quantity-stepper",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 6px;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  width: 100%;\n  padding: 12px 20px;\n  gap: 6px;\n}\n\n\n\n& input {\nfont-weight: 700;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "label": "Quantity",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "quantity",
+          "name": "quantity-stepper-sm",
+          "settings": {
+            "class": "quantity-stepper-sm",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 6px;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  width: max-content;\n  padding: 10px 16px;\n  gap: 0px;\n}\n\n\n\n& input {\nfont-weight: 700;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "label": "",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "checkbox",
+          "name": "input-checkbox",
+          "settings": {
+            "class": "input-checkbox",
+            "custom_css": "& {\n  color: #000000;\n  font-family: inherit;\n  font-size: 16px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  gap: 6px;\n}\n\n\n\n& input {\n  width: 20px;\n  height: 20px;\n  border: 1px solid #000000;\n  border-radius: 4px;\n  background: transparent;\n}\n& input ~ span svg {\n  background: #ffffff;\n}\n& input:checked {\n  background: #000000;\n}",
+            "icon": "check-mark",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "input",
+          "name": "input-navbar-search",
+          "settings": {
+            "class": "input-navbar-search",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n  min-height: 36px;\n  display: flex;\n}\n\n& > div > span {\n  display: none;\n}\n& button {\n  padding: 0;\n}\n\n\n\n& input::placeholder {\n  color: #cccccc;\n}\n&:where(:hover,:focus-visible) {\n  background: #ffffff;\n}\n&.active {}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 16px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "input",
+          "name": "input-text",
+          "settings": {
+            "class": "input-text",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 6px;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n  padding: 8px 16px;\n  min-height: 48px;\n  gap: 6px;\n}\n\n\n\n& input::placeholder {\n  color: #cccccc;\n}\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 16px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "textarea",
+          "name": "input-textarea",
+          "settings": {
+            "class": "input-textarea",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 6px;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n}\n\n\n\n& textarea::placeholder {\n  color: #cccccc;\n}\n& textarea {\n  resize: vertical;\n  padding: 8px 12px;\n  min-height: 48px;\n  gap: 6px;\n}\n&.active textarea {\n  padding: 20px 12px 8px;\n}\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 16px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "select",
+          "name": "input-select",
+          "settings": {
+            "class": "input-select",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  border: 1px solid #cccccc;\n  border-radius: 6px;\n  font-family: inherit;\n  font-size: 14px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  padding: 12px 16px 12px 20px;\n  gap: 6px;\n  min-height: 48px;\n}\n\n\n&:where(:hover,:focus-visible) {\n  background: #f7f7f7;\n}\n&.active {\n  background: #e5e5e5;\n}",
+            "icon": "chevron-up-down",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "select",
+          "name": "input-select-plain",
+          "settings": {
+            "class": "input-select-plain",
+            "custom_css": "& {\n  background: #ffffff;\n  color: #000000;\n  line-height: 1.5;\n  letter-spacing: normal;\n  padding-right: 28px;\n}\n&:after {\n  right: 0;\n  height: 20px;\n}\n\n\n&:where(:hover,:focus-visible) {\n  text-decoration: underline;\n}",
+            "icon": "chevron-down",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "scroll_pagination",
+          "name": "scroll-pagination",
+          "settings": {
+            "class": "scroll-pagination",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 20px;\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n\n& span {\n  width: 12px;\n  height: 12px;\n  background: #D3D3D3;\n  border-radius: 999px;\n}\n& span.active {\n  background: currentColor;\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "checkbox",
+          "name": "input-checkbox",
+          "settings": {
+            "class": "input-checkbox",
+            "custom_css": "& {\n  color: #000000;\n  font-family: inherit;\n  font-size: 16px; \n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.35;\n  letter-spacing: normal;\n  gap: 6px;\n}\n\n& input {\n  width: 20px;\n  height: 20px;\n  border: 1px solid #000000;\n  border-radius: 4px;\n  background: transparent;\n}\n& input ~ span svg {\n  background: #ffffff;\n}\n& input:checked {\n  background: #000000;\n}",
+            "icon": "check-mark",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "scrollbar",
+          "name": "scrollbar",
+          "settings": {
+            "class": "scrollbar",
+            "custom_css": "& {\n  display: flex;\n  gap: 6px;\n}\n\n& [data-scrollbar-track] {\n  height: 6px;\n  background: #c0c0c0;\n  border-radius: 999px;\n}\n& [data-scrollbar-thumb] {\n  height: 6px;\n  background: #000000;\n  border-radius: 999px;\n}\n\n@media (max-width: 768px) {\n  & [data-scrollbar-container] {\n    /* display: none */;\n  }\n  & [data-scrollbar-track] {\n    height: 3px;\n  }\n  & [data-scrollbar-thumb] {\n    height: 3px;\n  }\n}\n\n/* Scrollbar Buttons */\n& [data-scrollbar-buttons] {\n  display: flex;\n  gap: 6px;\n}\n& [data-scrollbar-button] {\n  display: flex;\n  border: 1px solid #000000;\n  background: transparent;\n  width: 28px;\n  height: 28px;\n  border-radius: 999px;\n}\n\n/* Scrollbar Counter */\n& [data-scrollbar-counter] {\n  display: none;\n  \n  color: #000000;\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  line-height: 1.3;\n  letter-spacing: normal;\n  text-transform: unset;\n  font-style: normal;\n}",
+            "icon_style": "animated",
+            "icon_previous": "chevron-left",
+            "icon_next": "chevron-right",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "scrollbar",
+          "name": "scrollbar-no-buttons",
+          "settings": {
+            "class": "scrollbar-no-buttons",
+            "custom_css": "& {\n  margin-top: 16px;\n  display: flex;\n  gap: 6px;\n}\n\n& [data-scrollbar-track] {\n  height: 3px;\n  background: #dfdfdf;\n  border-radius: 999px;\n}\n& [data-scrollbar-thumb] {\n  height: 3px;\n  background: #272824;\n  border-radius: 999px;\n  opacity: 0.5;\n}\n&:where(:hover,:focus,:active) [data-scrollbar-thumb] {\n  opacity: 1;\n  height: 3px;\n}\n\n@media (max-width: 768px) {\n  & [data-scrollbar-container] {\n    /* display: none */;\n  }\n}\n\n/* Scrollbar Buttons */\n& [data-scrollbar-buttons] {\n  display: none;\n  gap: 6px;\n}\n& [data-scrollbar-button] {\n  display: flex;\n  border: 1px solid #000000;\n  background: transparent;\n  width: 28px;\n  height: 28px;\n  border-radius: 999px;\n}\n\n/* Scrollbar Counter */\n& [data-scrollbar-counter] {\n  display: none;\n  \n  color: #000000;\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  line-height: 1.3;\n  letter-spacing: normal;\n  text-transform: unset;\n  font-style: normal;\n}",
+            "icon_style": "animated",
+            "icon_previous": "chevron-left",
+            "icon_next": "chevron-right",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "scrollbar",
+          "name": "scroll-buttons",
+          "settings": {
+            "class": "scroll-buttons",
+            "custom_css": "& {\n  display: block;\n  gap: 6px;\n}\n\n& [data-scrollbar-container] {\n    display: none;\n  }\n\n& [data-scrollbar-track] {\n  height: 6px;\n  background: #c0c0c0;\n  border-radius: 999px;\n}\n& [data-scrollbar-thumb] {\n  height: 6px;\n  background: #000000;\n  border-radius: 999px;\n}\n\n@media (max-width: 768px) {\n  & [data-scrollbar-container] {\n    /* display: none */;\n  }\n  & [data-scrollbar-track] {\n    height: 3px;\n  }\n  & [data-scrollbar-thumb] {\n    height: 3px;\n  }\n}\n\n/* Scrollbar Buttons */\n& [data-scrollbar-buttons] {\n  gap: 6px;\n  width: 100%;\n}\n\n& [data-scrollbar-button] {\n  display: flex;\n  padding: 4px;\n}\n\n& [data-scrollbar-button] svg {\n  width: 18px;\n  height: 18px;\n}\n\n\n/* Scrollbar Counter */\n& [data-scrollbar-counter] {\n  display: none;\n  \n  color: #000000;\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  line-height: 1.3;\n  letter-spacing: normal;\n  text-transform: unset;\n  font-style: normal;\n}",
+            "icon_style": "icon",
+            "icon_previous": "chevron-left",
+            "icon_next": "chevron-right",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "pagination",
+          "name": "pagination",
+          "settings": {
+            "class": "pagination",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n}\n& button {\n  font-size: 13px;\n  font-weight: 400;\n  min-width: 28px;\n  height: 28px;\n  border: 1px solid black;\n  border-radius: 6px;\n  transition: all 75ms;\n}\n\n& button.active {\n  background: #000000;\n  color: #ffffff;\n}\n\n& button:where(:hover,:focus-within) {\n  background: #e3e3e3;\n}\n\n& button svg {\n  width: 12px;\n  height: 12px;\n}\n\n& button:disabled {\n  opacity: 0.5;\n}",
+            "icon_previous": "chevron-left",
+            "icon_next": "chevron-right",
+            "override_preview_background": ""
+          }
+        }
+      ],
+      "category": "Design System"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.global"
+    ]
+  },
+  "limit": 2,
+  "class": "shopify_section__global_design_elements"
+}
+{% endschema %}

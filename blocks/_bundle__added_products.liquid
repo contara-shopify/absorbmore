@@ -1,0 +1,292 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_bundle__added_products"
+  assign section_type = "bundle"
+  assign heading = block.settings.heading
+  assign heading_class = block.settings.heading_class
+  assign add_icon = block.settings.add_icon
+  assign autofill = block.settings.autofill
+  assign minimum_items = block.settings.minimum_items
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: ' scroll-' | append: container_spacing | append: ' ' | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: ' max-md:scroll-' | append: container_spacing | append: ' max-md:' | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: ' md:scroll-' | append: container_spacing | append: ' md:' | append: container_spacing
+  endcase
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% capture css %}
+  & {
+  color: {{ text_color }};
+  background-color: {{ background_color }};
+  }
+{% endcapture %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="flex flex-col"
+     data-grid-slider
+     x-data="{
+       ...utils.initContentSlider($el, $refs.scrollContainer, undefined, false, undefined, `{{ enable_mouse_dragging }}` === 'true'),
+       grid_columns: Math.ceil(+getComputedStyle($refs.scrollContainer).getPropertyValue('--grid-cols')),
+       max_length: Math.ceil(+getComputedStyle($refs.scrollContainer).getPropertyValue('--grid-cols')),
+       overflow_length: Math.ceil(+getComputedStyle($refs.scrollContainer).getPropertyValue('--grid-cols')),
+     }"
+     x-defer="intersect"
+>
+  {% if heading != blank %}
+    <div
+        class="{{ heading_class }}"
+        x-html="$el.getAttribute('data-content').replace('[target]', bundle.bundle_target.target)"
+        data-content="{% render '_input.inline_richtext', content: heading, escape: true, skip_pluralization: true %}"
+    >
+      {% render '_input.inline_richtext', content: heading, escape: true, block: block, forloop: forloop %}
+    </div>
+  {% endif %}
+  <div
+      class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+      x-ref="scrollContainer"
+      x-effect="
+      () => {
+         if (bundle_type === 'item_count' && bundle.item_count >= bundle.bundle_target?.target && `{{ autofill }}` === 'true') {
+           max_length = Math.max(+`{{ minimum_items | minus: 1 }}`, bundle.item_count, bundle_type === 'item_count' ? (bundle.bundle_target?.target ?? grid_columns) : grid_columns) + 1;
+         } else {
+           max_length = Math.max(+`{{ minimum_items }}`, bundle.item_count, bundle_type === 'item_count' ? (bundle.bundle_target?.target ?? grid_columns) : grid_columns);
+         }
+         overflow_length = Math.max(max_length, grid_columns);
+      }
+    "
+      @resize.window="() => { content_slider.handleResize(); grid_columns = Math.ceil(+getComputedStyle($el).getPropertyValue('--grid-cols')) }"
+      @scroll="content_slider.handleScroll"
+  >
+    <template x-for="index in [...new Array(Math.max(20, overflow_length))].map((_,i) => i)">
+      <div
+          x-data="{ added_product: bundle.items_added[index]?.product, added_variant: bundle.items_added[index]?.variant }"
+          x-show="added_product || index < max_length || index < overflow_length"
+          x-effect="() => { added_product = bundle.items_added[index]?.product; added_variant = bundle.items_added[index]?.variant }"
+          class="relative flex w-full items-center justify-center"
+      >
+        <figure
+            x-show="!added_product && index < max_length"
+            class="relative flex items-center justify-center w-full h-full">
+          {% render '_components.icon', icon: add_icon, class: 'w-6 h-6' %}
+        </figure>
+        <figure x-show="!!added_product" class="relative flex items-center justify-center overflow-hidden w-full h-full">
+          <img
+              src=""
+              alt=""
+              srcset=""
+              :src="added_variant?.metafields?.smart?.images?.[1]?.src || added_variant?.featured_media?.src || added_product?.featured_media?.src"
+              :alt="added_variant?.featured_media?.alt ?? added_product?.featured_media?.alt ?? added_product?.title"
+              :srcset="utils.getImageSrcSet(added_variant?.metafields?.smart?.images?.[1]?.src || added_variant?.featured_media?.src || added_product?.featured_media?.src || '', 160)"
+              width="160"
+              height="160"
+              loading="lazy"
+              onload="this.classList.remove('!opacity-0')"
+              class="relative h-[50px] w-[50px] object-cover !opacity-0 transition-opacity duration-300 ease-in"
+              sizes="(max-width: 768px) 33vw, (max-width: 1024px) 20vw, 16vw"
+          >
+          <button
+              type="button"
+              @click="bundle.items_added.splice(index, 1)"
+              class="absolute top-1 right-1 flex items-center justify-center p-1 rounded-full"
+              aria-label="Remove item from bundle"
+          >
+            {% render '_components.icon', icon: 'x-mark', class: 'w-3 h-3' %}
+          </button>
+        </figure>
+      </div>
+    </template>
+  </div>
+  {% if scrollbar_class != blank %}
+    {% render '_components.scrollbar',
+        class: scrollbar_class,
+        scroll_container_ref: '$refs.scrollContainer',
+        html_attributes: 'data-style-scrollbar'
+    %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Bundle added products",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "heading_class",
+      "label": "Heading class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Item Settings"
+    },
+    {
+      "type": "text",
+      "id": "add_icon",
+      "label": "Add icon",
+      "default": "plus"
+    },
+    {
+      "type": "checkbox",
+      "id": "autofill",
+      "label": "Add + when target is reached",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "range",
+      "id": "minimum_items",
+      "label": "Minimum items",
+      "default": 0,
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Horizontal Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n        }"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle added products",
+      "category": "** Bundle **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___bundle__added_products"
+}
+{% endschema %}

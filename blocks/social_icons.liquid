@@ -1,0 +1,165 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "social_icons"
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+{% capture container_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <nav data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       aria-label="Social Media Links">
+    {% content_for "blocks" %}
+  </nav>
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ container_content }}
+
+{% schema %}
+{
+  "name": "Social Icons",
+  "blocks": [
+    {
+      "type": "_social_icons__icon_button"
+    }
+  ],
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social Icons",
+      "settings": {
+        "text_color": "#ffffff",
+        "custom_css": "& {\n  margin-top: 20px;\n  display: flex;\n  align-items: center;\n  justify-content: space-evenly;\n  gap: 4px;\n  \n}"
+      },
+      "blocks": [
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "facebook",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "instagram",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "youtube",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "twitter",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "tiktok",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "snapchat",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "discord",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "_social_icons__icon_button",
+          "name": "Icon Button",
+          "settings": {
+            "title": "twitch",
+            "url": "",
+            "size": 16,
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          }
+        }
+      ],
+      "category": "Social"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__social_icons"
+}
+{% endschema %}

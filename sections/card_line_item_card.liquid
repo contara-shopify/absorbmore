@@ -1,0 +1,1056 @@
+{%- if current_page != 420420 and current_page != 133737 and request.design_mode != true or settings.development__block_card_sections -%}
+  {%- if section.settings.line_item_card != blank -%}
+    {%- render 'card_line_item_card._styles', section: metaobjects.line_item_cards[section.settings.line_item_card].schema.value -%}
+  {%- endif -%}
+  {%- break -%}
+{%- endif -%}
+
+{%- if settings.development__block_card_sections != true and request.design_mode == true or current_page != 420420 or current_page != 133737 -%}
+  {%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "card_line_item_card"
+  assign _handle = section.settings.handle
+  assign line_item_card = section.settings.line_item_card
+  assign dynamic_text_color = section.settings.dynamic_text_color
+  assign dynamic_background_color = section.settings.dynamic_background_color
+  assign dynamic_border_color = section.settings.dynamic_border_color
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+  assign override_preview_background = section.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+    if request.design_mode or request.visual_preview_mode
+      assign _line_item = cart.items | first
+    endif
+
+    if line_item_card != blank
+      assign _handle = line_item_card | json | handleize
+    endif
+
+    assign card_class = _handle | handleize | prepend: "line-item-card--"
+  %}
+
+  {% if request.design_mode or metaobjects.line_item_cards[line_item_card] == blank %}
+    {% capture selector %}.line-item-card--{{ _handle | handleize }}{% endcapture %}
+
+    {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+      {% capture css %}
+        & {
+        {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+        {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+        }
+      {% endcapture %}
+    {% endif %}
+
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+      {% if request.design_mode %}
+      {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+      {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+      {% endif %}
+    </style>
+  {% endif %}
+
+  {% capture render_card %}
+    <article
+        data-line-item-card="{{ _handle }}"
+        data-line-item-id="{{ _line_item.key }}"
+        x-data="{ ...(!!$el.getAttribute('data-line-item-id') ? _sections.initLineItemCard($el, $el.getAttribute('data-line-item-id')) : {}) }"
+        x-defer="intersect"
+        x-ignore
+        {% if link_to_object %}
+          :href="line_card?.line_item?.url"
+          href="{{ _line_item.url }}"
+          {% if open_in_new_tab %}
+            target="_blank"
+          {% endif %}
+        {% endif %}
+        {% if request.design_mode and request.visual_preview_mode != true %}
+          x-effect="() => {
+          $el.parentElement.classList.toggle('!hidden', !$data?.line_card?.line_item?.quantity);
+          if ($data?.line_card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading');
+          if ($cart.state.item_count <= 0 && $editor.select_section_id === `{{ section.id }}` && !$cart.theme_editor_adding) {
+            $cart.theme_editor_adding = true;
+            _cart.add({ items: [{ id: Object.values(_products)?.find(p => p.available)?.variants?.find(v => v?.available)?.id, quantity: 1, properties: { test: 'Some random property' } }] })
+            setTimeout(() => { $cart.theme_editor_adding = false }, 5000)
+          }
+        }"
+        {% else %}
+          x-effect="() => { $el.parentElement.classList.toggle('!hidden', !$data?.line_card?.line_item?.quantity);  if ($data?.line_card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading') }"
+        {% endif %}
+        x-init="utils.barbaPrefetchTargetPage($el, line_card?.line_item?.url)"
+        class="block {{ card_class }} card-loading {{ container_spacing }}"
+        :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`">
+      {% content_for "blocks" %}
+    </article>
+  {% endcapture %}
+
+  {% if link_to_object %}
+    {% assign render_card = render_card | replace: '<article', '<a' | replace: '</article', '</a' %}
+  {% else %}
+    {% assign render_card = render_card | replace: '<article', '<div' | replace: '</article', '</div' %}
+  {% endif %}
+
+  {% render '_components.card_preview', render_card: render_card %}
+
+  {% if request.design_mode or metaobjects.line_item_cards[line_item_card] == blank %}
+    <script>
+      document.querySelectorAll(`[data-line-item-card="{{ _handle }}"] style`).forEach(styleEl => document.querySelector('[data-cards-styles-section]')?.appendChild(styleEl));
+      document.currentScript?.remove();
+    </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Line Item Card",
+  "settings": [
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "line-item-card",
+      "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+    },
+    {
+      "type": "metaobject",
+      "id": "line_item_card",
+      "label": "Line Item card",
+      "metaobject_type": "line_item_cards"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Colors"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use bracket notation for data access: i.e. [variant.metafields.smart.color] or [product.metafields.smart.color]"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_text_color",
+      "label": "Dynamic text color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_background_color",
+      "label": "Dynamic background color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_border_color",
+      "label": "Dynamic border color"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "override_preview_background",
+      "label": "Override preview background"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_card_line_item_card__container"
+    },
+    {
+      "type": "_card_line_item_card__image"
+    },
+    {
+      "type": "_card_line_item_card__richtext"
+    },
+    {
+      "type": "_card_line_item_card__button"
+    },
+    {
+      "type": "_card_line_item_card__price"
+    },
+    {
+      "type": "_card_line_item_card__quantity_selector"
+    },
+    {
+      "type": "_card_line_item_card__quantity_picker"
+    },
+    {
+      "type": "_card_line_item_card__remove_button"
+    },
+    {
+      "type": "_card_line_item_card__subscription_selector"
+    },
+    {
+      "type": "_card_line_item_card__subscription_button"
+    },
+    {
+      "type": "_card_line_item_card__properties"
+    },
+    {
+      "type": "_card_line_item_card__discounts"
+    },
+    {
+      "type": "_card_line_item_card__addon_items"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Line Item Card",
+      "settings": {
+        "handle": "line-item-card",
+        "dynamic_text_color": "",
+        "dynamic_background_color": "",
+        "dynamic_border_color": "",
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "#f2f2f2",
+        "custom_css": "& {\n  padding: 15px;\n  border-radius: 30px;\n  \n}",
+        "section_id": "",
+        "override_preview_background": "#ffffff"
+      },
+      "blocks": [
+        {
+          "type": "_card_line_item_card__container",
+          "name": "Top Content",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: max-content 1fr max-content;\n}",
+            "generate_block_presets": "never",
+            "custom_liquid": ""
+          },
+          "blocks": [
+            {
+              "type": "_card_line_item_card__image",
+              "name": "Image",
+              "settings": {
+                "primary_image": "[line_item.image]",
+                "show_secondary_image": false,
+                "secondary_image": "[product.metafields.smart.secondary_image]",
+                "link_to_object": true,
+                "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 15vw",
+                "max_width": 100,
+                "custom_css": "& {\n  width: 80px;\n  height: 80px;\n  place-self: center;\n}\n@media (max-width: 768px) {\n  & {\n    width: 60px;\n    height: 60px;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Content",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-left: 20px;\n}",
+                "generate_block_presets": "never",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3><strong>[line_item.title]</strong></h3>",
+                    "text_alignment": "inherit",
+                    "css_class": "text-16/12",
+                    "link_to_product": true,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<p>[product.metafields.my_fields.product_subtitle]</p>",
+                    "text_alignment": "inherit",
+                    "css_class": "text-14/12",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-top: 5px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__properties",
+                  "name": "Properties",
+                  "settings": {
+                    "content": "[key]: [value]",
+                    "content_class": "text-14/12",
+                    "text_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__discounts",
+                  "name": "Line Discounts",
+                  "settings": {
+                    "content": "[title]: [amount]",
+                    "content_class": "text-14/12",
+                    "text_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__container",
+                  "name": "Container",
+                  "settings": {
+                    "dynamic_text_color": "",
+                    "dynamic_background_color": "",
+                    "dynamic_border_color": "",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n}",
+                    "generate_block_presets": "never",
+                    "custom_liquid": "x-show=\"!card?.line_item?.properties?._gift_with_purchase\""
+                  },
+                  "blocks": [
+                    {
+                      "type": "_card_line_item_card__quantity_selector",
+                      "name": "Quantity selector",
+                      "settings": {
+                        "quantity_class": "quantity-stepper-sm",
+                        "custom_css": "& {\n  margin-top: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Price",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin-left: 16px;\n}",
+                "generate_block_presets": "never",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__price",
+                  "name": "Price",
+                  "settings": {
+                    "css_class": "text-16/12 font-bold",
+                    "show_compare_as_price": true,
+                    "discount_css_class": "text-14/12",
+                    "price_calculation": "normal",
+                    "currency_display": "amount",
+                    "text_alignment": "inherit",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n  gap: 0;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__container",
+                  "name": "Container",
+                  "settings": {
+                    "dynamic_text_color": "",
+                    "dynamic_background_color": "",
+                    "dynamic_border_color": "",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n}",
+                    "generate_block_presets": "never",
+                    "custom_liquid": ""
+                  },
+                  "blocks": [
+                    {
+                      "type": "_card_line_item_card__remove_button",
+                      "name": "Remove button",
+                      "settings": {
+                        "label": "[icon.trash.20]",
+                        "button_class": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  \n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_card_line_item_card__container",
+          "name": "Container",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "custom_liquid": "x-show=\"!card?.variant?.selling_plan_allocations?.some(({ selling_plan })=> selling_plan?.name === 'Pre-order item')\""
+          },
+          "blocks": [
+            {
+              "type": "_card_line_item_card__subscription_selector",
+              "name": "Subscription Selector",
+              "settings": {
+                "label": "Subscription Selector",
+                "select_class": "input-select-line-item",
+                "custom_css": "& {\n  margin-top: 10px;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Cards"
+    },
+    {
+      "name": "line-item-card",
+      "settings": {
+        "handle": "line-item-card",
+        "dynamic_text_color": "",
+        "dynamic_background_color": "",
+        "dynamic_border_color": "",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: max-content 1fr;\n  gap: 16px;\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "line-item-card",
+        "override_preview_background": "#ffffff"
+      },
+      "blocks": [
+        {
+          "type": "_card_line_item_card__image",
+          "name": "Image",
+          "settings": {
+            "primary_image": "[line_item.image]",
+            "show_secondary_image": false,
+            "secondary_image": "[product.metafields.smart.secondary_image]",
+            "link_to_object": true,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 15vw",
+            "max_width": 100,
+            "custom_css": "& {\n  width: 100px;\n  height: 100px;\n  flex-shrink: 0;\n  border-radius: 6px;\n}",
+            "show_conditionally": "always"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_card_line_item_card__container",
+          "name": "Container",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr max-content;\n  gap: 0px 16px;\n  align-items: center;\n}",
+            "show_conditionally": "always",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "",
+            "custom_liquid": ""
+          },
+          "blocks": [
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Content",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  min-height: 100%;\n  display: flex;\n  flex-direction: column;\n}",
+                "show_conditionally": "always",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Content",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<p><strong>[product.title]</strong></p>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-md",
+                    "link_to_product": true,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h6>[variant.title]</h6>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-md",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "#818181",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__properties",
+                  "name": "Line Properties",
+                  "settings": {
+                    "content": "[key]: [value]",
+                    "content_class": "richtext-md h6",
+                    "filter_keys": "",
+                    "text_color": "#818181",
+                    "custom_css": "& {\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__discounts",
+                  "name": "Line Discounts",
+                  "settings": {
+                    "content": "[title]: [amount]",
+                    "content_class": "richtext-md h6",
+                    "text_color": "#818181",
+                    "custom_css": "& {\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Price",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-items: flex-end;\n  height: 100%;\n}",
+                "show_conditionally": "always",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Price",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__price",
+                  "name": "Price",
+                  "settings": {
+                    "css_class": "richtext-md p !font-semibold",
+                    "show_compare_as_price": true,
+                    "discount_css_class": "richtext-md h6",
+                    "price_calculation": "normal",
+                    "price_display": "",
+                    "currency_display": "store_default",
+                    "text_alignment": "inherit",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Addon Items",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  grid-column: span 2;\n  padding: 14px 0px;\n  display: grid;\n  gap: 18px;\n}\n\n& > div {\n  padding-bottom: 12px;\n  border-bottom: 1px solid #e3e3e3;\n}",
+                "show_conditionally": "addon_products",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h6><strong>Addon items:</strong></h6>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-md",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__addon_items",
+                  "name": "Addon items",
+                  "settings": {
+                    "order_offset": 1,
+                    "line_item_card_class": "line-item-addon-card",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Total Price",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  grid-column: span 2;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}",
+                "show_conditionally": "addon_products",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<p><strong>Total:</strong></p>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-md",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__price",
+                  "name": "Price",
+                  "settings": {
+                    "css_class": "richtext-md p !font-semibold",
+                    "show_compare_as_price": true,
+                    "discount_css_class": "richtext-md h6",
+                    "price_calculation": "quantity_multiplied",
+                    "price_display": "bundle_",
+                    "currency_display": "store_default",
+                    "text_alignment": "inherit",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Content",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  min-height: 100%;\n  display: flex;\n  flex-direction: column;\n}",
+                "show_conditionally": "always",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Content",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__quantity_selector",
+                  "name": "Quantity selector",
+                  "settings": {
+                    "quantity_class": "quantity-stepper-sm",
+                    "custom_css": "& {\n  justify-self: flex-end;\n  margin-top: 10px;\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Remove Button",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  align-items: flex-end;\n  height: 100%;\n}",
+                "show_conditionally": "always",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Price",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__remove_button",
+                  "name": "Remove button",
+                  "settings": {
+                    "label": "[icon.trash.20]",
+                    "button_class": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  \n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_card_line_item_card__subscription_selector",
+              "name": "Subscription Selector",
+              "settings": {
+                "label": "Subscription Selector",
+                "select_class": "input-select",
+                "custom_css": "& {\n  margin-top: 12px;\n  grid-column: span 2;\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_line_item_card__subscription_button",
+              "name": "Subscription button",
+              "settings": {
+                "label": "Subscribe & Save [value]",
+                "select_class": "input-select",
+                "custom_css": "button& {\n  text-align: center;\n  display: flex;\n  justify-content: center;\n}\n& {\n  margin-top: 12px;\n  grid-column: span 2;\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Cards"
+    },
+    {
+      "name": "line-item-addon-card",
+      "settings": {
+        "handle": "line-item-addon-card",
+        "dynamic_text_color": "",
+        "dynamic_background_color": "",
+        "dynamic_border_color": "",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: max-content 1fr max-content;\n  gap: 10px;\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "line-item-card",
+        "override_preview_background": "#ffffff"
+      },
+      "blocks": [
+        {
+          "type": "_card_line_item_card__image",
+          "name": "Image",
+          "settings": {
+            "primary_image": "[line_item.image]",
+            "show_secondary_image": false,
+            "secondary_image": "[product.metafields.smart.secondary_image]",
+            "link_to_object": true,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 15vw",
+            "max_width": 100,
+            "custom_css": "& {\n  width: 48px;\n  height: 48px;\n  flex-shrink: 0;\n  border-radius: 2px;\n}",
+            "show_conditionally": "always"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_card_line_item_card__container",
+          "name": "Content",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  min-height: 100%;\n  display: flex;\n  flex-direction: column;\n}",
+            "show_conditionally": "always",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Content",
+            "custom_liquid": ""
+          },
+          "blocks": [
+            {
+              "type": "_card_line_item_card__richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>[line_item.title]</h6>",
+                "text_alignment": "inherit",
+                "css_class": "richtext-md",
+                "link_to_product": true,
+                "open_in_new_tab": false,
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_line_item_card__container",
+              "name": "Container",
+              "settings": {
+                "dynamic_text_color": "",
+                "dynamic_background_color": "",
+                "dynamic_border_color": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  gap: 4px;\n}",
+                "show_conditionally": "always",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "",
+                "custom_liquid": ""
+              },
+              "blocks": [
+                {
+                  "type": "_card_line_item_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h6><strong>[line_item.quantity]x</strong></h6>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-md",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_card_line_item_card__price",
+                  "name": "Price",
+                  "settings": {
+                    "css_class": "richtext-md h6 !font-semibold",
+                    "show_compare_as_price": true,
+                    "discount_css_class": "richtext-md h6",
+                    "price_calculation": "normal",
+                    "price_display": "",
+                    "currency_display": "store_default",
+                    "text_alignment": "inherit",
+                    "text_color": "",
+                    "custom_css": "& {\n  flex-direction: row;\n}",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_card_line_item_card__container",
+          "name": "Price",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-items: flex-end;\n  height: 100%;\n}",
+            "show_conditionally": "always",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Price",
+            "custom_liquid": ""
+          },
+          "blocks": [
+            {
+              "type": "_card_line_item_card__remove_button",
+              "name": "Remove button",
+              "settings": {
+                "label": "[icon.trash.20]",
+                "button_class": "",
+                "text_color": "",
+                "custom_css": "& {\n  padding: 4px;\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Cards"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.card"
+    ]
+  },
+  "class": "shopify_section__card_line_item_card"
+}
+{% endschema %}

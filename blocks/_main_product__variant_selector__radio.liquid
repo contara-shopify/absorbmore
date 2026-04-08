@@ -1,0 +1,332 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__variant_selector__radio"
+  assign section_type = "main_product"
+  assign legend_label = block.settings.legend_label
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign radio_button_class = block.settings.radio_button_class
+  assign select_on_hover = block.settings.select_on_hover
+  assign label_metafield = block.settings.label_metafield
+  assign label_class = block.settings.label_class
+  assign content_flow = block.settings.content_flow
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+
+  assign filtered_variants = product.variants
+  if sold_out_variants == 'hide'
+    assign filtered_variants = product.variants | where: 'available'
+  endif
+
+  if product.variants.first.title == "Default Title" and product.variants.size == 1 or filtered_variants.size <= 0
+    break
+  endif
+
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+
+
+  assign current_value = variant.id
+  assign current_title = variant.title
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign current_legend = content_legend | replace: "[value]", current_title | default: legend_label
+
+  assign variant_ids = product.variants | map: "id"
+  assign variant_titles = product.variants | map: "title"
+
+  case content_flow
+    when "show_all"
+      assign container_classes = 'flex-wrap'
+    when "truncate"
+      assign container_classes = 'overflow-hidden'
+    when "overflow"
+      assign container_classes = 'overflow-x-auto'
+  endcase
+
+  if label_metafield != blank
+    assign label_namespace = label_metafield | strip | split: "." | first
+    assign label_key = label_metafield | strip | split: "." | last
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    x-ignore
+    {% if content_flow == 'overflow' %}
+      x-data="{ hoverValue: '', offset: pdp.product?.variants?.length, ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+      x-init="$refs.scrollContainer.scrollLeft = ([...$refs.scrollContainer.children]?.find(child=> child?.classList?.contains('active'))?.offsetLeft ?? 0) - 5;"
+    {% else %}
+      x-data="{ hoverValue: '', offset: pdp.product?.variants?.length }"
+    {% endif %}
+    x-defer="intersect">
+  <legend id="legend-{{ block.id }}"
+          x-ignore
+          class="flex w-full max-w-full truncate {{ legend_class }}"
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', hoverValue || pdp.selected_variant?.title)">
+    {% render '_input.inline_richtext', content: current_legend %}
+  </legend>
+  <fieldset
+      aria-labelledby="legend-{{ block.id }}"
+      x-ignore
+      {% if content_flow == 'overflow' %}
+        x-ref="scrollContainer"
+        @resize.window="content_slider.handleResize"
+        x-init="$nextTick(() => content_slider.handleResize())"
+        @scroll="content_slider.handleScroll"
+        @scrollend="content_slider.handleInfiniteScroll"
+      {% endif %}
+      class="relative w-full flex scrollbar-none items-end {{ container_classes }}">
+    {% for variant in filtered_variants %}
+      <label class="{{ radio_button_class }} {% if variant.id == current_value %}active{% endif %}"
+             x-effect="$el.classList.toggle('active', pdp.selected_variant.id === +`{{ variant.id }}`)"
+             x-show="offset >= +`{{ forloop.index0 }}`"
+          {% if select_on_hover %}
+            @mouseenter="$data.setSelectedVariant(+`{{ variant.id }}`)"
+          {% endif %}
+             @pointerenter="hoverValue = $el.getAttribute('aria-label')"
+             @pointerleave="hoverValue = ''"
+             aria-label="{{ variant.title }}">
+        <input type="radio"
+               class="sr-only"
+            {% if sold_out_variants == 'disable' and variant.available != true %}
+              disabled="disabled"
+            {% endif %}
+               name="{{ block.id }}"
+               @change="$data.setSelectedVariant(+$el.value)"
+               :checked="pdp.selected_variant.id === +$el.value"
+               value="{{ variant.id }}">
+        {% if variant.metafields[label_namespace][label_key].value %}
+          <span class="{{ label_class }}">{{ variant.metafields[label_namespace][label_key].value }}</span>
+        {% endif %}
+        {{ variant.title }}
+      </label>
+    {% endfor %}
+    {% if content_flow == 'truncate' %}
+      <div class="flex shrink-0 items-center text-sm font-medium"
+           :class="offset < pdp.product?.variants?.length ? '':'opacity-0 pointer-events-none'"
+           x-init="$nextTick(async ()=> { if (window.design_mode) { await utils.delay(20) } offset = utils.truncateChildren($el, $el.parentElement)})"
+           @resize.window.debounce.200ms="offset = pdp.product?.variants?.length; await utils.delay(20); offset = utils.truncateChildren($el, $el.parentElement)"
+           x-html="`+ ${pdp.product.variants?.length - (offset + 1)} {{ legend_label }}`">
+        +10 {{ legend_label }}
+      </div>
+    {% endif %}
+  </fieldset>
+  {% if content_flow == 'overflow' %}
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Variant: Radio Buttons",
+  "settings": [
+    {
+      "type": "text",
+      "id": "legend_label",
+      "label": "Heading",
+      "default": "Variants"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]: [value]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "radio_button_class",
+      "label": "Radio button class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "checkbox",
+      "id": "select_on_hover",
+      "label": "Select on hover"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Variant Highlight"
+    },
+    {
+      "type": "text",
+      "id": "label_metafield",
+      "label": "Label metafield",
+      "default": "smart.highlight",
+      "info": "Metafield 'namespace.key'. The metafield needs to be of type 'text' and added to the Variant."
+    },
+    {
+      "type": "text",
+      "id": "label_class",
+      "label": "Custom label class",
+      "default": "label-primary"
+    },
+    {
+      "type": "header",
+      "content": "Inline Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_flow",
+      "label": "Content flow",
+      "default": "show_all",
+      "options": [
+        {
+          "value": "show_all",
+          "label": "Show all"
+        },
+        {
+          "value": "truncate",
+          "label": "Truncate"
+        },
+        {
+          "value": "overflow",
+          "label": "Slider"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.content_flow == 'overflow' }}"
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.content_flow == 'overflow' }}"
+    },
+    {
+      "type": "select",
+      "id": "sold_out_variants",
+      "label": "Sold Out Variants",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "disable",
+          "label": "Disable"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n& fieldset {\n  gap: 6px;\n}\n@media (max-width: 1024px) {\n  & {\n    \n  }\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variant: Radio Buttons",
+      "category": "** Product Variant Select **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__variant_selector__radio"
+}
+{% endschema %}

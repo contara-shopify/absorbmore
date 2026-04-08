@@ -1,0 +1,173 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "richtext"
+  assign section_type = "global_typography"
+  assign class = block.settings.class
+  assign custom_css = block.settings.custom_css
+  assign p_custom_css = block.settings.p_custom_css
+  assign h1_custom_css = block.settings.h1_custom_css
+  assign h2_custom_css = block.settings.h2_custom_css
+  assign h3_custom_css = block.settings.h3_custom_css
+  assign h4_custom_css = block.settings.h4_custom_css
+  assign h5_custom_css = block.settings.h5_custom_css
+  assign h6_custom_css = block.settings.h6_custom_css
+  assign ol_custom_css = block.settings.ol_custom_css
+  assign ul_custom_css = block.settings.ul_custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign setting_keys = "p,ul,ol,h1,h2,h3,h4,h5,h6" | split: ','
+  assign css_content = ''
+%}
+
+{% capture selector %}.{{ class }}{% endcapture %}
+
+{% for key in setting_keys %}
+  {% liquid
+    assign where_target = ":where(" | append: key | append: ", ." | append: key | append: ')'
+    assign where_class_target = ":where(." | append: key | append: ')'
+    assign _selector = "." | append: class
+    assign selector_a = _selector | append: ":not(.p,.ul,.ol,.h1,.h2,.h3,.h4,.h5,.h6)" | append: " " | append: where_target
+    assign selector_b = _selector | append: where_class_target
+    assign _custom_css = key | append: '_custom_css'
+  %}
+  {%- capture css -%}
+    {{ block.settings[_custom_css] | replace: '&', selector_a }}
+    {{ block.settings[_custom_css] | replace: '&', selector_b }}
+    {% if request.design_mode %}
+
+    {% endif %}
+    {% if request.design_mode %}
+      {% assign query_selector_a = '[data-preview-container] ' | append: selector_a %}
+      {% assign query_selector_b = '[data-preview-container] ' | append: selector_b %}
+      {{- block.settings[_custom_css] | replace: '&', query_selector_a | replace: '@media screen and', '@container' | replace: '@media', '@container' -}}
+      {{- block.settings[_custom_css] | replace: '&', query_selector_b | replace: '@media screen and', '@container' | replace: '@media', '@container' -}}
+    {% endif %}
+  {%- endcapture -%}
+  {% assign css_content = css_content | append: css %}
+{% endfor %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+  {{ css_content | strip_newlines }}
+</style>
+
+{% if request.design_mode %}
+  <section class="fixed inset-0 z-50 flex flex-col gap-16 overflow-y-auto bg-white py-16 text-black px-container-sm @container"
+           data-section-id="{{ section.id }}"
+           data-preview-container
+           x-data="{tab: 'p'}"
+           x-show="$editor?.select_block_id === '{{ block.id }}'"
+           x-cloak {{ block.shopify_attributes }}>
+
+    <div class="mt-12 grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+      <div class="text-lg font-bold text-gray-600">Desktop</div>
+      <div class="text-lg font-bold text-gray-600">mobile</div>
+    </div>
+    <main class="mt-8 space-y-3">
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">p</div>
+        <div class="{{ class }}">
+          <p contenteditable="true">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab animi atque consectetur
+            <strong>dolor earum eius fuga harum</strong>, itaque odio porro praesentium quasi
+            <em>quibusdam ratione repellat tempore,</em> temporibus ullam, vel voluptatem. Architecto cum delectus dolores ea expedita obcaecati praesentium quia quod? Blanditiis commodi delectus deserunt eligendi facilis illum, inventore iusto libero, mollitia nobis perspiciatis quia quisquam reprehenderit tempora temporibus unde voluptatum. A accusantium ad doloremque eos et illum labore perspiciatis possimus?
+          </p>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <p contenteditable="true">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab animi atque consectetur
+            <strong>dolor earum eius fuga harum</strong>, itaque odio porro praesentium quasi
+            <em>quibusdam ratione repellat tempore,</em> temporibus ullam, vel voluptatem. Mollitia nobis perspiciatis quia quisquam reprehenderit tempora temporibus unde voluptatum. A accusantium ad doloremque eos et illum labore perspiciatis possimus?
+          </p>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h1</div>
+        <div class="{{ class }}">
+          <h1 contenteditable="true">
+            Lorem ipsum dolor <strong>sit amet</strong>, <em>consectetur</em>.
+          </h1>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h1 contenteditable="true">
+            Lorem ipsum dolor <strong>sit amet</strong>, <em>consectetur</em>.
+          </h1>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h2</div>
+        <div class="{{ class }}">
+          <h2 contenteditable="true">
+            Lorem ipsum dolor <strong>sit amet</strong>, <em>consectetur</em>.
+          </h2>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h2 contenteditable="true">
+            Lorem ipsum dolor <strong>sit amet</strong>, <em>consectetur</em>.
+          </h2>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h3</div>
+        <div class="{{ class }}">
+          <h3 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. <em>Deleniti, dicta</em>!
+          </h3>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h3 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. <em>Deleniti, dicta</em>!
+          </h3>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h4</div>
+        <div class="{{ class }}">
+          <h4 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. Dicta illo
+            <em>laborum maxime saepe</em> voluptates!
+          </h4>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h4 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. Dicta illo
+            <em>laborum maxime saepe</em> voluptates!
+          </h4>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h5</div>
+        <div class="{{ class }}">
+          <h5 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. Aspernatur cum
+            <em>delectus dolor fuga</em> laudantium officiis recusandae ut. Minima.
+          </h5>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h5 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing</strong> elit. Aspernatur cum
+            <em>delectus dolor fuga</em> laudantium officiis recusandae ut. Minima.
+          </h5>
+        </div>
+      </section>
+      <section class="grid gap-x-8 gap-y-1.5 lg:grid-cols-[1fr_320px]">
+        <div class="col-span-2 text-2xl font-bold">h6</div>
+        <div class="{{ class }}">
+          <h6 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing elit.</strong> Amet aperiam commodi
+            <em>dolor earum, excepturi explicabo</em> impedit inventore ipsum itaque magni odio optio reprehenderit! Aperiam dignissimos molestias nemo nobis non praesentium. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur earum id numquam voluptate?
+          </h6>
+        </div>
+        <div class="{{ class }} @container max-w-lg">
+          <h6 contenteditable="true">
+            Lorem ipsum dolor sit amet, <strong>consectetur adipisicing elit.</strong> Amet aperiam commodi
+            <em>dolor earum, excepturi explicabo</em> impedit inventore ipsum itaque magni odio optio reprehenderit! Aperiam dignissimos molestias nemo nobis non praesentium.
+          </h6>
+        </div>
+      </section>
+    </main>
+  </section>
+{% endif %}
+

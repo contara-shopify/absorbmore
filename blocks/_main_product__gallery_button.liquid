@@ -1,0 +1,184 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__gallery_button"
+  assign section_type = "main_product"
+  assign slide = block.settings.slide
+  assign slide_dynamic = block.settings.slide_dynamic
+  assign title = block.settings.title
+  assign button_class = block.settings.button_class
+  assign accessibility_label = block.settings.accessibility_label
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{%  liquid  
+if dynamic_content_type == 'metafield'
+  assign slide_index = slide_dynamic
+else
+  assign slide_index = slide
+endif
+%}
+
+<button
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  data-quick-view-visibility="{{ quick_view_visibility }}"
+  data-gallery-slide="{{ slide_index | default: 1 | at_least: 1 | minus: 1 }}"
+  x-data="{ index: $el.getAttribute('data-gallery-slide')}"
+  @click="() => {
+    const media = Array.from($el.closest('form').querySelectorAll(`[data-main-product-images] [data-media-id]:not(.hidden)`))
+    if(media?.length > 0 && index >= 0){
+      const selectedMediaId = media[index]?.getAttribute('data-media-id')
+      if(selectedMediaId){
+        $data.scrollToMediaById(selectedMediaId)
+      }
+    }
+  }"
+  {{ block.shopify_attributes }}
+  {% if accessibility_label != blank %}
+    aria-label="{{ accessibility_label }}"
+  {% endif %}
+  type="button"
+  class="w-fit {{ button_class }}"
+>
+  {% render '_input.inline_richtext', content: title %}
+</button>
+{% schema %}
+{
+  "name": "Gallery Button",
+  "settings": [
+    {
+      "type": "number",
+      "id": "slide",
+      "label": "Slide",
+      "info": "Clicking on the button will scroll the media gallery to the selected slide.",
+      "default": 1,
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "slide_dynamic",
+      "label": "Slide",
+      "info": "Clicking on the button will scroll the media gallery to the selected slide.",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Label",
+      "default": "Ingredients",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "info": "Please provide an accessibility label if the button has generic content. I.e. 'Read More' or only uses an icon.",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery Button",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__gallery_button"
+}
+{% endschema %}

@@ -1,0 +1,348 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_article"
+  assign _blog = block.settings.blog
+  assign article_1 = block.settings.article_1
+  assign article_2 = block.settings.article_2
+  assign article_3 = block.settings.article_3
+  assign article_4 = block.settings.article_4
+  assign article_5 = block.settings.article_5
+  assign article_6 = block.settings.article_6
+  assign article_7 = block.settings.article_7
+  assign article_8 = block.settings.article_8
+  assign article_9 = block.settings.article_9
+  assign article_10 = block.settings.article_10
+  assign article_11 = block.settings.article_11
+  assign article_12 = block.settings.article_12
+  assign order_offset = block.settings.order_offset
+  assign filter_by_tag = block.settings.filter_by_tag
+  assign display_limit = block.settings.display_limit
+  assign article_card_class = block.settings.article_card_class
+  assign hydrate_immediately = block.settings.hydrate_immediately
+  assign preload_images = block.settings.preload_images
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign _articles = _blog.articles | uniq
+  assign order_offset = order_offset | default: 1
+
+  for index in (1..12)
+    assign key = 'article_' | append: index
+    if block.settings[key] != blank
+      assign _article_arr = block.settings[key] | uniq
+      assign _articles = _articles | concat: _article_arr | uniq
+    endif
+  endfor
+
+  if request.visual_preview_mode and _articles == blank or _articles.size <= 0
+    assign article = linklists | map: 'links' | map: "object" | map: "articles" | sort_natural | first
+    assign blog_handle = article.handle | split: "/" | first
+    assign blog = blogs[blog_handle]
+    assign _articles = blog.articles
+  endif
+
+  assign display_limit = display_limit | strip_newlines | replace: ' ', "" | split: '|'
+  assign display_limit = display_limit[0] | split: '/'
+
+  assign desktop_display_limit = display_limit.first | abs
+  assign mobile_display_limit = display_limit.last | abs
+
+  assign max_display_limit = desktop_display_limit | at_least: mobile_display_limit | default: 12
+
+  if filter_by_tag != blank
+    assign _articles = null | uniq
+    assign tags = filter_by_tag | split: ','
+    for tag in tags
+      assign _tag = tag | downcase | strip
+      if _articles.size >= max_display_limit or break
+        assign break = true
+        break
+      endif
+      for _article in _blog.articles
+        if _articles.size >= max_display_limit or break
+          assign break = true
+          break
+        endif
+        assign article_tags = _article.tags | join: ',' | downcase | split: ','
+        if article_tags contains _tag
+          assign _article_array = _article | uniq
+          assign _articles = _articles | concat: _article_array | uniq
+        endif
+      endfor
+    endfor
+  endif
+%}
+
+{% liquid
+  if _articles.size <= 0
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% assign article_section = article_card_class.schema.value %}
+
+{% for article in _articles limit: max_display_limit %}
+  {% assign order_index = forloop.index0 | plus: order_offset %}
+  {% assign article_visibility = "" %}
+  {% if forloop.index > desktop_display_limit %}
+    {% assign article_visibility = "mobile-only" %}
+  {% endif %}
+  {% if forloop.index > mobile_display_limit %}
+    {% assign article_visibility = "desktop-tablet-only" %}
+  {% endif %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="shrink-0 max-w-full w-full h-full order-[--order] {{ article_visibility }}"
+       data-article-handle="{{ article.handle }}"
+       style="--order: {{ order_index | times: 10 }}">
+    {% if article_section != blank %}
+      {% assign preload_images_boolean = true %}
+      {% if forloop.index0 >= preload_images %}
+        {% assign preload_images_boolean = false %}
+      {% endif %}
+      {% render "card_article_card._static", article: article, section: article_section, preload_images: preload_images_boolean %}
+    {% else %}
+      <section class="card-loading article-card--{{ article_card_class }}"
+               data-article-handle="{{ article.handle }}"
+               data-article-id="{{ article.id }}"
+               {% if request.visual_preview_mode or hydrate_immediately %}data-intersected{% endif %}
+               data-card-handle="{{ article_card_class }}"
+               x-init="$nextTick(() => _sections.hydrateArticleCard($el))"></section>
+    {% if load_async != true %}
+      <script type="application/json"
+              data-article-data="{{ article.handle }}">{%- render '_json.article', article: article, meta_article: true -%}</script>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Article Cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog Articles"
+    },
+    {
+      "type": "article",
+      "id": "article_1",
+      "label": "Article 1"
+    },
+    {
+      "type": "article",
+      "id": "article_2",
+      "label": "Article 2"
+    },
+    {
+      "type": "article",
+      "id": "article_3",
+      "label": "Article 3"
+    },
+    {
+      "type": "article",
+      "id": "article_4",
+      "label": "Article 4"
+    },
+    {
+      "type": "article",
+      "id": "article_5",
+      "label": "Article 5"
+    },
+    {
+      "type": "article",
+      "id": "article_6",
+      "label": "Article 6"
+    },
+    {
+      "type": "article",
+      "id": "article_7",
+      "label": "Article 7"
+    },
+    {
+      "type": "article",
+      "id": "article_8",
+      "label": "Article 8"
+    },
+    {
+      "type": "article",
+      "id": "article_9",
+      "label": "Article 9"
+    },
+    {
+      "type": "article",
+      "id": "article_10",
+      "label": "Article 10"
+    },
+    {
+      "type": "article",
+      "id": "article_11",
+      "label": "Article 11"
+    },
+    {
+      "type": "article",
+      "id": "article_12",
+      "label": "Article 12"
+    },
+    {
+      "type": "number",
+      "id": "order_offset",
+      "label": "Order index offset",
+      "default": 1,
+      "info": "Use this when mixing multiple sources and order items. Defaults to 1."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "text",
+      "id": "filter_by_tag",
+      "label": "Filter by tag",
+      "info": "Comma separated list."
+    },
+    {
+      "type": "text",
+      "id": "display_limit",
+      "label": "Display limit",
+      "default": "12 / 4"
+    },
+    {
+      "type": "metaobject",
+      "id": "article_card_class",
+      "label": "Article card",
+      "metaobject_type": "article_cards"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "hydrate_immediately",
+      "label": "Hydrate immediately"
+    },
+    {
+      "type": "range",
+      "id": "preload_images",
+      "label": "Preload first images",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article Cards",
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_article"
+}
+{% endschema %}

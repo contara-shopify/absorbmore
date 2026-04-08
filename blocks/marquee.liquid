@@ -1,0 +1,220 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "marquee"
+  assign auto_rotate = block.settings.auto_rotate
+  assign duration = block.settings.duration
+  assign auto_pause = block.settings.auto_pause
+  assign animation_direction = block.settings.animation_direction
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if auto_pause
+    assign pause_class = "group-hfw:animation-pause"
+  endif
+
+  assign scrollable_class = "overflow-hidden"
+  if auto_rotate == false
+    assign scrollable_class = "overflow-x-auto"
+  endif
+%}
+
+{% capture blocks_content %}{% content_for 'blocks' %}{% endcapture %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<section
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    class="group relative grid auto-cols-max grid-flow-col-dense scrollbar-none {{ scrollable_class }}"
+    {% if auto_rotate %}
+      style="--animate-duration: {{ duration }}"
+      x-data="{ ..._sections.initMarqueeBar($el, +`{{ duration }}`) }"
+      x-defer="intersect"
+      @resize.window="handleMarqueeResize"
+      x-init="$nextTick(()=> { handleMarqueeResize(); setTimeout(()=> { handleMarqueeResize() }, 350)})"
+    {% endif %}
+>
+  <div class="relative overflow-hidden w-max grid auto-cols-max grid-flow-col-dense scrollbar-none animate-marquee1 {{ pause_class }} gap-[--gap] pl-[--gap]"
+       style="animation-duration: calc(var(--animate-duration, 0) * 1s); animation-direction: {{ animation_direction }}">
+    {{ blocks_content }}
+  </div>
+  {% if auto_rotate %}
+    <div class="relative overflow-hidden w-max grid auto-cols-max grid-flow-col-dense scrollbar-none animate-marquee1 {{ pause_class }} gap-[--gap] pl-[--gap]"
+         aria-hidden="true"
+         style="animation-duration: calc(var(--animate-duration) * 1s); animation-direction: {{ animation_direction }}">
+      {{ blocks_content }}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Animate",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Rotation Duration",
+      "default": 30,
+      "min": 6,
+      "max": 120,
+      "step": 2,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_pause",
+      "label": "Pause on Hover"
+    },
+    {
+      "type": "select",
+      "id": "animation_direction",
+      "label": "Animation direction",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Forward"
+        },
+        {
+          "value": "reverse",
+          "label": "Reverse"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "image_with_caption"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__marquee"
+}
+{% endschema %}

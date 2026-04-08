@@ -1,0 +1,186 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "menu"
+  assign menu = block.settings.menu
+  assign link_class = block.settings.link_class
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign content_url = block.settings.content_url
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if menu == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<nav data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}>
+  {% if content != blank %}
+    {% if content_url != blank %}
+      {% assign active_class = '' %}
+      {% assign hashTarget = content_url | split: "#" | last %}
+      {% if link.active %}{% assign active_class = 'active' %}{% endif %}
+      {% assign is_local_url = false %}
+      {% assign downcase_link_url = content_url.url | downcase %}
+      {% if downcase_link_url contains request.origin or downcase_link_url contains shop.url or downcase_link_url contains shop.permanent_domain or downcase_link_url contains shop.domain %}
+        {% assign is_local_url = true %}
+      {% endif %}
+      <a href="{{ content_url }}"
+          {% if content_url.type == 'http_link' and content_url.url contains '//' and content_url.active != true %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+          {% if hashTarget != blank and content_url != '#' %}
+            x-effect="$el.classList.toggle('active', $router.pathname === $el.href.replace(window.origin, '')?.split(/(\#|\?)/gi)?.[0] && $router.hash === '#{{ hashTarget }}')"
+          {% elsif content_url != '#' %}
+            x-effect="$el.classList.toggle('active', $router.pathname === $el.href.replace(window.origin, '')?.split(/(\#|\?)/gi)?.[0]) "
+          {% endif %}
+         class="shrink-0 w-max {{ content_class }} {{ active_class }}">
+        {% render '_input.inline_richtext', content: content %}
+      </a>
+    {% else %}
+      <div class="shrink-0 {{ content_class }}">
+        {% render '_input.inline_richtext', content: content %}
+      </div>
+    {% endif %}
+  {% endif %}
+  {% for link in menu.links %}
+    {% assign active_class = '' %}
+    {% assign hashTarget = link.url | split: "#" | last %}
+    {% if link.active %}{% assign active_class = 'active' %}{% endif %}
+    {% assign is_local_url = false %}
+    {% assign downcase_link_url = link.url | downcase %}
+    {% if downcase_link_url contains request.origin or downcase_link_url contains shop.url or downcase_link_url contains shop.permanent_domain or downcase_link_url contains shop.domain %}
+      {% assign is_local_url = true %}
+    {% endif %}
+    <a href="{{ link.url }}"
+        {% if link.type == 'http_link' and is_local_url != true and link.url contains '//' and link.active != true and link.child_active != true and link.child_current != true %}
+          target="_blank"
+          rel="noopener noreferrer"
+        {% endif %}
+        {% if hashTarget != blank and link.url != '#' %}
+          x-effect="$el.classList.toggle('active', $router.pathname === $el.href.replace(window.origin, '')?.split(/(\#|\?)/gi)?.[0] && $router.hash === '#{{ hashTarget }}')"
+        {% elsif link.url != '#' %}
+          x-effect="$el.classList.toggle('active', $router.pathname === $el.href.replace(window.origin, '')?.split(/(\#|\?)/gi)?.[0]) "
+        {% endif %}
+       class="shrink-0 w-max {{ link_class }} {{ active_class }}">
+      {% render '_input.inline_richtext', content: link.title %}
+    </a>
+  {% endfor %}
+</nav>
+
+{% schema %}
+{
+  "name": "Menu",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "link_class",
+      "label": "Link class",
+      "default": "richtext-md p link-effect"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Optional Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class"
+    },
+    {
+      "type": "url",
+      "id": "content_url",
+      "label": "Content url"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu",
+      "category": "Links"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__menu"
+}
+{% endschema %}

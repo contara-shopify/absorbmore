@@ -1,0 +1,214 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_video_product"
+  assign _product = block.settings.product
+  assign video = block.settings.video
+  assign video_url = block.settings.video_url
+  assign autoplay = block.settings.autoplay
+  assign muted = block.settings.muted
+  assign loop = block.settings.loop
+  assign preview_image = block.settings.preview_image
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign video = video | default: video_url
+
+  if video == blank
+    assign is_empty = true
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+
+  if autoplay
+    assign muted = true
+  endif
+
+%}
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}{% endcapture %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<section data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}>
+  <button
+      type="button"
+      x-data="{ modal_opened: false, video_playing: false, video_player:  { playVideo: async () => await $el.querySelector('video')?.play(), pauseVideo: async () => { await $el.querySelector('video')?.pause(); $el.querySelector('video') ? $el.querySelector('video').currentTime = 0 : null; } } }"
+      {% if autoplay %}
+        x-init="
+          if ($el.querySelector('video')?.readyState >= 3) {
+                $el.parentElement.classList.contains('centered') && !$modal.id ? video_player?.playVideo() : video_player?.pauseVideo();
+          } else {
+            $el.querySelector('video')?.addEventListener('canplaythrough', () => {
+              $el.parentElement.classList.contains('centered') && !$modal.id ? video_player?.playVideo() : video_player?.pauseVideo();
+            }, { once: true });
+          }
+          observer = new MutationObserver(() => {
+            $el.parentElement.classList.contains('centered') && !$modal.id ? video_player?.playVideo() : video_player?.pauseVideo();
+          });
+          observer.observe($el.parentElement, { attributes: true, attributeFilter: ['class'] });
+        "
+        x-on:destroy="observer.disconnect()"
+      {% endif %}
+      @click.capture.stop="$mediaGallery.showVideoGallery($el, [...$el.parentElement.parentElement.querySelectorAll(`:scope > section > [data-video-product-card]`)]); modal_opened = !!video_playing"
+      x-effect="if (modal_opened && !$modal.id) { modal_opened = false; video_player?.playVideo?.() }; if ($modal.id) { video_player?.pauseVideo?.() }"
+      data-video-product-card="{{ video | json | escape }}"
+      data-ugc-products='[["{{ _product.handle }}", {{ _product.id }}]]'
+      data-autoplay="true"
+      data-loop="true"
+      data-muted="true"
+      class="relative overflow-hidden shrink-0 object-contain w-full">
+    {% render '_object.media',
+        media: video,
+        class: "w-full h-full transition-all object-[inherit]",
+        autoplay: false,
+        loop: loop,
+        muted: muted,
+        controls: false,
+        preview_image: preview_image,
+        html_attributes: 'x-effect="video_playing = playing; video_player = player || video_player;"' %}
+  </button>
+  {% if _product != blank %}
+    <footer class="flex gap-4 items-center">
+      <a href="{{ _product.url }}">
+        {% render '_object.image', image: _product.featured_image, width: 100, height: 100, class: "aspect-1 object-cover" %}
+      </a>
+      <a href="{{ _product.url }}">
+        <div><strong>{{ _product.title }}</strong></div>
+      </a>
+    </footer>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Video with Product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video",
+      "accept": [
+        "youtube"
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Video settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Automatically mutes the video."
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop"
+    },
+    {
+      "type": "image_picker",
+      "id": "preview_image",
+      "label": "Preview Image"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cards video product",
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_video_product"
+}
+{% endschema %}

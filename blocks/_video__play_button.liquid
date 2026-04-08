@@ -1,0 +1,69 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_video__play_button"
+  assign section_type = "video"
+  assign label = block.settings.label
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+        type="button"
+        @click="!video_playing ? video_player?.playVideo() : video_player?.pauseVideo()"
+        aria-label="Play Video"
+        x-show="!video_playing"
+        data-media="{{ media_object | escape }}"
+        class="w-full absolute inset-0 z-10 flex items-center justify-center {{ button_class }}">
+  {% render '_input.inline_richtext', content: label %}
+</button>
+
+{% schema %}
+{
+  "name": "Play Button",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "[icon.play]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Play Button",
+      "category": "Utilities"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___video__play_button"
+}
+{% endschema %}

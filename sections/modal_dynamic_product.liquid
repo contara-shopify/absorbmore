@@ -1,0 +1,505 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_dynamic_product"
+  assign modal_handle = section.settings.modal_handle
+  assign preview_product = section.settings.preview_product
+  assign default_select_selling_plan = section.settings.default_select_selling_plan
+  assign default_variant_metafield = section.settings.default_variant_metafield
+  assign backwards_sync_state = section.settings.backwards_sync_state
+  assign dynamic_text_color = section.settings.dynamic_text_color
+  assign dynamic_background_color = section.settings.dynamic_background_color
+  assign dynamic_border_color = section.settings.dynamic_border_color
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if request.design_mode or request.visual_preview_mode
+    assign product = preview_product | default: product
+
+    if product == blank
+      assign product = collections.all.products[0]
+    endif
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="modal--product-{{ modal_handle }}"
+     data-product-handle="{{ product.handle }}"
+     data-product-id="{{ product.id }}"
+     x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')), show: $modal.id === 'modal--product-{{ modal_handle }}' && $modal.product }"
+     x-effect="show = $editor?.select_section_id === '{{ section.id }}' || ($modal.id === 'modal--product-{{ modal_handle }}' && $modal.product)"
+    {% if default_select_selling_plan %}
+      data-default-subscription="true"
+    {% endif %}
+     data-option-blocks="{{ option_block_settings | strip_newlines | escape }}"
+     data-settings="{{ section.settings | json | escape }}"
+     x-cloak>
+  <div class="fixed pointer-events-auto inset-0 transition duration-150 ease-in-out bg-modal-backdrop z-40"
+      {% if backwards_sync_state %}
+        x-init="$watch('p_card.selected_variant', () => { if (p_card?.product) { $modal.updateOriginalCard?.(p_card.product, p_card.selected_variant?.id, p_card?.selected_selling_plan?.id) }}); $watch('p_card.selected_selling_plan', () => { if (p_card?.product) { $modal.updateOriginalCard?.(p_card.product, p_card.selected_variant?.id, p_card?.selected_selling_plan?.id) }})"
+        x-effect="if (!show && $modal.product && $modal.updateOriginalCard) { if (p_card?.product) { $modal.updateOriginalCard(p_card.product, p_card.selected_variant?.id, p_card?.selected_selling_plan?.id); $modal.updateOriginalCard = null }}"
+      {% endif %}
+       x-show="show"
+       x-cloak
+       @click="$modal.setId('')"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"></div>
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if request.design_mode %}
+        x-effect="()=> {
+          if ($editor?.select_section_id === '{{ section.id }}') {
+            updateProductState(_products[`{{ product.handle }}`])
+            return;
+          }
+          if ($modal.product && show) { updateProductState($modal.product, $modal.variant_id) }
+        }"
+      {% else %}
+        x-effect="if ($modal.product && show) { updateProductState($modal.product, $modal.variant_id) }"
+      {% endif %}
+      :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`"
+      method="post"
+      action="/cart/add"
+      @submit.prevent.stop="() => {}"
+      class="fixed pointer-events-auto transition-all duration-150 ease-in-out isolate scrollbar-none {{ container_spacing }}"
+      :class="clsx(show ? 'z-max' : 'z-50')"
+      x-show="show"
+      x-cloak
+      x-trap.noautofocus="show"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0">
+    {% content_for "blocks" %}
+    <input type="hidden" name="id" :value="p_card?.selected_variant?.id" />
+    <input type="hidden" name="quantity" value="1" />
+  </form>
+</div>
+
+{% schema %}
+{
+  "name": "Dynamic Product",
+  "settings": [
+    {
+      "type": "text",
+      "id": "modal_handle",
+      "label": "Modal Handle",
+      "default": "product",
+      "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+    },
+    {
+      "type": "product",
+      "id": "preview_product",
+      "label": "Preview Product",
+      "info": "Fallbacks to the first available product"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_select_selling_plan",
+      "label": "Set Subscription as default",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "default_variant_metafield",
+      "label": "Default variant metafield",
+      "default": "smart.default_variant",
+      "info": "Metafield 'namespace.key'. The metafield needs to be of type 'variant_reference' and added to the Product."
+    },
+    {
+      "type": "checkbox",
+      "id": "backwards_sync_state",
+      "label": "Backwards sync state",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Colors"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use bracket notation for data access: i.e.[selected_variant.metafields.smart.color] or [product.metafields.smart.color]"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_text_color",
+      "label": "Dynamic text color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_background_color",
+      "label": "Dynamic background color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_border_color",
+      "label": "Dynamic border color"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "custom_liquid"
+    },
+    {
+      "type": "_card_product_card__container"
+    },
+    {
+      "type": "_card_product_card__collapsible"
+    },
+    {
+      "type": "_card_product_card__image"
+    },
+    {
+      "type": "_card_product_card__gallery"
+    },
+    {
+      "type": "_card_product_card__richtext"
+    },
+    {
+      "type": "_card_product_card__button"
+    },
+    {
+      "type": "_card_product_card__price"
+    },
+    {
+      "type": "_card_product_card__labels"
+    },
+    {
+      "type": "_card_product_card__rating"
+    },
+    {
+      "type": "_card_product_card__accent_line"
+    },
+    {
+      "type": "_card_product_card__cta_button"
+    },
+    {
+      "type": "_card_product_card__add_to_cart_toggle"
+    },
+    {
+      "type": "_card_product_card__variant_selector__select"
+    },
+    {
+      "type": "_card_product_card__variant_selector__radio"
+    },
+    {
+      "type": "_card_product_card__variant_selector__color"
+    },
+    {
+      "type": "_card_product_card__option__color"
+    },
+    {
+      "type": "_card_product_card__option__radio"
+    },
+    {
+      "type": "_card_product_card__option__select"
+    },
+    {
+      "type": "_card_product_card__addon_checkbox"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Product",
+      "settings": {
+        "modal_handle": "product-addons",
+        "preview_product": "bibs-pacifiers-size-1",
+        "default_select_selling_plan": false,
+        "default_variant_metafield": "smart.default_variant",
+        "backwards_sync_state": true,
+        "dynamic_text_color": "",
+        "dynamic_background_color": "",
+        "dynamic_border_color": "",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  border-radius: 8px;\n  border: 1px solid #e3e3e3;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  overflow: hidden;\n  width: 100%;\n  max-width: 480px;\n}\n@media (max-width: 560px) {\n  & {\n    top: unset;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    transform: none;\n    max-height: 75dvh;\n    overflow-y: auto;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "_card_product_card__gallery",
+          "name": "Gallery",
+          "settings": {
+            "filter_images": "variant_images_and_unassigned",
+            "hide_image_alt": "hide-image",
+            "scroll_to_selected_variant_image": true,
+            "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+            "slider_overflow_container": "",
+            "scrollbar_class": "scroll-buttons",
+            "scroll_pagination_class": "",
+            "custom_css": "& {\n  overflow: clip;\n  --grid-cols: 1;\n  --grid-gap: 0px;\n  border-bottom: 1px solid #e3e3e3;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n& [data-media-id] {\n  aspect-ratio: 1.5;\n  object-fit: contain;\n}\n\n& [data-scrollbar] {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  left: 20px;\n  right: 20px;\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_card_product_card__button",
+          "name": "Button",
+          "settings": {
+            "type": "modal_close",
+            "label": "[icon.x-mark.24]",
+            "button_class": "",
+            "url": "[product.url]",
+            "collapsible_handle": "",
+            "product_modal_handle": "product",
+            "accessibility_label": "",
+            "custom_css": "& {\n  position: absolute;\n  top: 12px;\n  right: 12px;\n  border-radius: 999px;\n  padding: 6px;\n}\n\n&:where(:hover,:focus) {\n  background: #f1f1f1;\n}",
+            "hide_if_empty": "none",
+            "show_conditionally": "always"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_card_product_card__container",
+          "name": "Container",
+          "settings": {
+            "dynamic_text_color": "",
+            "dynamic_background_color": "",
+            "dynamic_border_color": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  padding: 24px 16px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "",
+            "show_conditionally": "always"
+          },
+          "blocks": [
+            {
+              "type": "_card_product_card__richtext",
+              "name": "Richtext",
+              "settings": {
+                "content": "<h5><strong>[product.title]</strong></h5>",
+                "text_alignment": "inherit",
+                "css_class": "richtext-md",
+                "link_to_product": false,
+                "open_in_new_tab": false,
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_product_card__richtext",
+              "name": "Richtext",
+              "settings": {
+                "content": "<h6>[selected_variant.title]</h6>",
+                "text_alignment": "inherit",
+                "css_class": "richtext-md",
+                "link_to_product": false,
+                "open_in_new_tab": false,
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_product_card__variant_selector__color",
+              "name": "Variant: Color / Image Swatch",
+              "settings": {
+                "legend_label": "Variants",
+                "legend": "<strong>[heading]: [value]</strong>",
+                "legend_class": "richtext-md h6",
+                "primary_source": "image",
+                "fallback_source": "metafield",
+                "show_tooltip": true,
+                "select_on_hover": false,
+                "content_flow": "show_all",
+                "truncate_text": "+[count] [option]",
+                "sold_out_variants": "hide",
+                "custom_css": "& {\n  margin-top: 8px;\n}\n& legend {\n  margin-bottom: 6px;\n}\n& fieldset {\n  gap: 6px;\n}\n& label {\n  width: 36px;\n  height: 36px;\n  border-width: 1px;\n  border-style: solid;\n  border-radius: 9999px;\n  outline-width: 2px;\n  outline-offset: 2px;\n}\n& label.active {\n  border: 1px solid black;\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_card_product_card__collapsible",
+              "name": "Collapsible",
+              "settings": {
+                "label": "Description",
+                "accordion_class": "accordion-no-border",
+                "content": "",
+                "show": false,
+                "auto_close_siblings": false,
+                "custom_css": "& {\n  margin-top: 12px;\n}",
+                "hide_if_empty": "none",
+                "show_conditionally": "always"
+              },
+              "blocks": [
+                {
+                  "type": "_card_product_card__richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "content": "<p>[product.description]</p>",
+                    "text_alignment": "inherit",
+                    "css_class": "richtext-sm",
+                    "link_to_product": false,
+                    "open_in_new_tab": false,
+                    "text_color": "",
+                    "custom_css": "& {\n  max-height: 360px;\n  overflow-y: auto;\n}\n@media (max-width: 560px) {\n  & {\n   max-height: unset;\n   overflow: auto;\n  }\n}",
+                    "hide_if_empty": "container",
+                    "show_conditionally": "always"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "category": "Product"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_dynamic_product"
+}
+{% endschema %}

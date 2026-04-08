@@ -1,0 +1,426 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "color_wheel"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="relative {{ container_spacing }}"
+      x-data="{ ..._sections.initColorWheel($el, $refs) }">
+    {% content_for "blocks" %}
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Color product slider",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_color_wheel__dynamic_richtext"
+    },
+    {
+      "type": "scrollbar"
+    },
+    {
+      "type": "_color_wheel__color_picker"
+    },
+    {
+      "type": "_color_wheel__container"
+    },
+    {
+      "type": "_color_wheel__product_cards"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color product slider",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 64px;\n  padding-bottom: 64px;\n  display: grid;\n  grid-template-columns: 2fr 3fr;\n  gap: 24px;\n}\n@media (max-width: 768px) {\n  & {\n    display: flex;\n    flex-direction: column;\n  }\n}",
+        "section_id": ""
+      },
+      "blocks": [
+        {
+          "type": "_color_wheel__container",
+          "settings": {
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}"
+          },
+          "blocks": [
+            {
+              "type": "_color_wheel__dynamic_richtext",
+              "settings": {
+                "content": "<h3>what color is yourhappy place?</h3>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_color_wheel__dynamic_richtext",
+              "settings": {
+                "content": "<h5>find suds + sprays that match your style</h5>",
+                "text_alignment": "center",
+                "content_class": "",
+                "custom_css": "& {\n  margin-top: 10px;\n  display: block;\n  font-size: 24px;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 16px;\n    font-weight: 500;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_color_wheel__color_picker",
+              "settings": {
+                "image": "shopify://shop_images/color-picker.webp",
+                "custom_css": "& {\n  margin-top: 24px;\n  margin-left: 24px;\n  margin-right: 24px;\n}\n@media (max-width: 768px) {\n  & {\n    margin-left: 0;\n    margin-right: 0;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_color_wheel__dynamic_richtext",
+              "settings": {
+                "content": "<p>Your happy place is: [collection.title]</p>",
+                "text_alignment": "center",
+                "content_class": "text-22/20",
+                "custom_css": "& {\n  margin-top: 24px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_color_wheel__dynamic_richtext",
+              "settings": {
+                "content": "<p>tap the color wheel to change colors</p>",
+                "text_alignment": "center",
+                "content_class": "text-22/20",
+                "custom_css": "& {\n  margin-top: 6px;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_color_wheel__container",
+          "settings": {
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}"
+          },
+          "blocks": [
+            {
+              "type": "scrollbar",
+              "settings": {
+                "scrollbar_class": "scrollbar",
+                "scroll_pagination_class": "",
+                "custom_css": "& {\n  margin-left: auto;\n  width: max-content;\n}\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_color_wheel__product_cards",
+              "settings": {
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "all",
+                "infinite_scroll": "off",
+                "scrollbar_class": "",
+                "scroll_pagination_class": "",
+                "custom_css": "& {\n  margin-top: 16px;\n  --grid-cols: 2.2;\n  --grid-gap: 16px;\n\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (min-width: 768px) {\n & .grid-container {\n    margin-left: 0 !important;\n    padding-left: 0 !important;\n  }\n}\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1.6;\n  }\n}\n\n& [data-scrollbar] {\n\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "light-green",
+                    "limit": 10,
+                    "start_angle": 20,
+                    "end_angle": 50,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "yellow",
+                    "limit": 10,
+                    "start_angle": 50,
+                    "end_angle": 90,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "orange",
+                    "limit": 10,
+                    "start_angle": 90,
+                    "end_angle": 130,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "pink",
+                    "limit": 10,
+                    "start_angle": 130,
+                    "end_angle": 170,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "lavender",
+                    "limit": 10,
+                    "start_angle": 170,
+                    "end_angle": 210,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "purple",
+                    "limit": 10,
+                    "start_angle": 210,
+                    "end_angle": 250,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "blue",
+                    "limit": 10,
+                    "start_angle": 250,
+                    "end_angle": 290,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "light-blue",
+                    "limit": 10,
+                    "start_angle": 290,
+                    "end_angle": 330,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "teal",
+                    "limit": 10,
+                    "start_angle": 330,
+                    "end_angle": 355,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_color_wheel__color_collection",
+                  "settings": {
+                    "collection": "green-1",
+                    "limit": 10,
+                    "start_angle": 355,
+                    "end_angle": 20,
+                    "preload": false,
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "category": "Interactive"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card",
+      "custom.head",
+      "custom.megamenu"
+    ]
+  },
+  "class": "shopify_section__color_wheel"
+}
+{% endschema %}

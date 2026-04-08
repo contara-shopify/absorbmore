@@ -1,0 +1,218 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_blog__filters"
+  assign section_type = "main_blog"
+  assign accordion_class = block.settings.accordion_class
+  assign submit_button_class = block.settings.submit_button_class
+  assign style = block.settings.style
+  assign checkbox_class = block.settings.checkbox_class
+  assign button_class = block.settings.button_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="drawer--filters-{{ section.id }}"
+     x-data="{ show: $modal.id === 'drawer--filters-{{ section.id }}' }"
+     x-effect="show = $editor?.select_block_id === '{{ block.id }}' || $modal.id === 'drawer--filters-{{ section.id }}'"
+     x-cloak>
+  <div class="fixed pointer-events-auto inset-0 z-50 transition duration-75 ease-in-out bg-modal-backdrop md:hidden"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       x-show="show"
+       @click="$modal.setId('')"></div>
+  <section class="pointer-events-none transition-all duration-200 ease-in-out scrollbar-none max-md:fixed max-md:left-0 max-md:inset-y-0 max-md:h-full max-md:w-full max-md:max-w-sm max-md:z-[100] max-md:overflow-y-auto"
+           x-transition:enter-start="max-md:-translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="max-md:-translate-x-full"
+           style="color: {{ text_color }}; background: {{ background_color }};"
+           x-show="show || $data.windowWidth >= 768"
+           data-filters
+           x-trap.noautofocus="show">
+    <header class="md:hidden flex justify-center relative pt-5 pb-2 pointer-events-auto">
+      <h5 class="richtext-md h4">Filter By</h5>
+      <button type="button" @click="$modal.setId('')" class="absolute right-4 hf:opacity-70 p-1">
+        <span class="sr-only">Close Mobile Filter Drawer</span>
+        {% render '_components.icon', icon: 'x-mark', class: "h-5 shrink-0" %}
+      </button>
+    </header>
+    <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+         data-filters
+         class="pointer-events-auto">
+      {% content_for "blocks" %}
+      {% capture filter_content %}
+        {% if style == 'checkbox' %}
+          <fieldset class="filter-checkboxes flex flex-col gap-3">
+            {% for tag in blog.all_tags %}
+              {% assign _tag = tag | handleize %}
+              {% assign active = false %}
+              {% if current_tags contains tag %}
+                {% assign active = true %}
+              {% endif %}
+              {% render '_components.checkbox',
+                  class: checkbox_class,
+                  label: tag,
+                  value: _tag,
+                  name: 'Tags',
+                  default_checked: active
+              %}
+            {%- endfor -%}
+          </fieldset>
+        {% endif %}
+
+        {% if style == 'radio_button' %}
+          <fieldset class="filter-radio-buttons flex gap-1.5 flex-wrap">
+            {% for tag in blog.all_tags %}
+              {% assign _tag = tag | handleize %}
+              {% assign active = false %}
+              {% if current_tags contains tag %}
+                {% assign active = true %}
+              {% endif %}
+              <label x-data="{ checked: $el.firstElementChild.checked }"
+                     class="shrink-0 !outline-none cursor-pointer {{ button_class }}"
+                     :class="checked ? 'active' : ''"
+                     aria-label="{{ tag }}">
+                <input type="checkbox"
+                       class="sr-only"
+                       @change="checked = $el.checked"
+                       name="Tags"
+                    {% if active %}
+                      checked="checked"
+                    {% endif %}
+                       value="{{ _tag }}">
+                <span>{{ tag }}</span>
+              </label>
+            {%- endfor -%}
+          </fieldset>
+        {% endif %}
+      {% endcapture %}
+      {% render '_components.collapsible', label: "Tags", content: filter_content, default_open: true, class: accordion_class %}
+
+      {% if submit_button_class != blank %}
+        <div class="">
+          <button type="submit"
+                  class="w-full {{ submit_button_class }}"
+                  :class="main_blog.state.loading ? 'button-loading': ''">
+            Apply Filters
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Tag Filters",
+  "settings": [
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_class",
+      "label": "Submit Button Class"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "default": "checkbox",
+      "options": [
+        {
+          "value": "checkbox",
+          "label": "Checkbox"
+        },
+        {
+          "value": "radio_button",
+          "label": "Radio Button"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Checkbox Style"
+    },
+    {
+      "type": "text",
+      "id": "checkbox_class",
+      "label": "Checkbox class",
+      "default": "input-checkbox"
+    },
+    {
+      "type": "header",
+      "content": "Radio Button Style"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button Class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_main_blog__applied_filters"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tag Filters",
+      "category": "** Blog **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_blog__filters"
+}
+{% endschema %}

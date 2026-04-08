@@ -1,0 +1,408 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "slideshow"
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign auto_rotate = block.settings.auto_rotate
+  assign pause_on_hover = block.settings.pause_on_hover
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign container_spacing = block.settings.container_spacing
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+%}
+
+{% capture container_content %}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+       data-hide-if-empty="{{ hide_if_empty }}"
+       class="relative flex flex-col"
+      {% if pause_on_hover %}
+        @pointerover="content_slider.state.rotatePause = true"
+        @pointerout="content_slider.state.rotatePause = false"
+      {% endif %}
+       x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`, `{{ enable_mouse_dragging }}` === 'true') }"
+       x-defer="intersect"
+      {% if request.design_mode %}
+        x-effect="() => {
+          content_slider.state.rotatePause = $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)
+        }"
+      {% endif %}
+  >
+    <div class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+         x-ref="scrollContainer"
+         @resize.window="content_slider.handleResize"
+         x-init="$nextTick(() => content_slider.handleResize())"
+         @scroll="content_slider.handleScroll"
+         @scrollend="content_slider.handleInfiniteScroll"
+    >
+      {% content_for 'blocks' %}
+    </div>
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  </div>
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ container_content }}
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate",
+      "label": "Auto rotate",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "s",
+      "info": "Set to 0 to disable auto rotate."
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on Hover",
+      "visible_if": "{{ section.settings.auto_rotate != 0 }}"
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow",
+      "category": "Slideshow"
+    },
+    {
+      "name": "Announcement",
+      "settings": {
+        "enable_mouse_dragging": false,
+        "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+        "slider_overflow_container": "",
+        "auto_rotate": 10,
+        "pause_on_hover": true,
+        "infinite_scroll": "all",
+        "scrollbar_class": "scroll-buttons",
+        "scroll_pagination_class": "",
+        "container_spacing": "px-container-md",
+        "custom_css": "& {\n  margin-top: 0;\n  --grid-cols: 1;\n  --grid-gap: 0px;\n  position: relative;\n  color: white;\n}\n& .grid-container {\n   height: 100%;\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n& [data-scrollbar] {\n  position: absolute;\n  left: 20px;\n  right: 20px;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": "Announcement"
+      },
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "url": "",
+            "container_spacing": "px-container-fullwidth",
+            "text_color": "#ffffff",
+            "background_color": "#000000",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 6px 40px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h6>Up to 30% Off First Subscription + Free Shipping on $50+</h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "url": "",
+            "container_spacing": "px-container-fullwidth",
+            "text_color": "#ffffff",
+            "background_color": "#000000",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 6px 24px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h6><strong>Free Shipping on Orders $50+</strong></h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Slideshow"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__slideshow"
+}
+{% endschema %}

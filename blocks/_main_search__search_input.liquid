@@ -1,0 +1,147 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_search__search_input"
+  assign section_type = "main_search"
+  assign label = block.settings.label
+  assign prefix = block.settings.prefix
+  assign suffix = block.settings.suffix
+  assign placeholder = block.settings.placeholder
+  assign input_class = block.settings.input_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}{% endcapture %}
+
+{% assign default_value = search.terms | escape %}
+
+<label
+  class="relative flex w-full {{ input_class }}"
+  {{ html_attributes }}
+  x-data="
+    {
+      active: !!$refs.input.value && !!$refs.label?.textContent.trim(),
+      label: $el,
+      type: `text`,
+      value: $refs.input.value
+    }
+  "
+  x-effect="active = !!$refs.label?.textContent.trim() && !!value"
+  :class="utils.clsx(active && 'active')"
+>
+  <div class="relative flex flex-col w-full flex-1">
+    <span x-ref="label">{{- label -}}</span>
+    <input
+      x-ref="input"
+      type="text"
+      placeholder="{{ placeholder }}"
+      data-placeholder="{{ placeholder }}"
+      :placeholder="active ? '': $el.getAttribute('data-placeholder')"
+      autocorrect="off"
+      aria-label="{{ label | default: placeholder }}"
+      :type="type"
+      autocomplete="off"
+      :disabled="main_search?.state?.loading"
+      value="{{ default_value }}"
+      :value="$search.query"
+      @input.prevent="value = $el.value; $el.setCustomValidity(''); $search.query = value"
+      class="appearance-none flex-1 bg-transparent !outline-none"
+    >
+  </div>
+
+  {% if prefix != blank %}
+    <button
+      type="submit"
+      aria-label="Submit form"
+      class="px-2 -order-1 !outline-none hf:opacity-70 rounded-sm hf:bg-inherit hf:bg-opacity-10 flex items-center"
+    >
+      {% render '_input.inline_richtext', content: prefix %}
+    </button>
+  {% endif %}
+  {% if suffix != blank %}
+    <button
+      type="button"
+      @click="() => {
+        $search.query = '';
+        setTimeout(() => {
+          $el.closest('form')?.submit();
+        },100)
+      }"
+      aria-label="Submit form"
+      class="px-2 order-last !outline-none hf:opacity-70 rounded-sm hf:bg-inherit hf:bg-opacity-10 flex items-center"
+    >
+      {% render '_input.inline_richtext', content: suffix %}
+    </button>
+  {% endif %}
+</label>
+
+{% schema %}
+{
+  "name": "Search Input",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Search"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "prefix",
+      "label": "prefix",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "suffix",
+      "label": "suffix",
+      "default": "[icon.search.28]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "input_class",
+      "label": "Input class",
+      "default": "input-text"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Input",
+      "category": "** Search **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_search__search_input"
+}
+{% endschema %}

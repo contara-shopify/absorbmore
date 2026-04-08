@@ -1,0 +1,215 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "star_rating"
+  assign _product = block.settings.product
+  assign rating = block.settings.rating
+  assign count = block.settings.count
+  assign reviews_heading = block.settings.reviews_heading
+  assign css_class = block.settings.css_class
+  assign icon = block.settings.icon
+  assign icon_active_color = block.settings.icon_active_color
+  assign icon_base_color = block.settings.icon_base_color
+  assign hide_zero_reviews = block.settings.hide_zero_reviews
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if icon_active_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars--hex:" | append: icon_active_color | append: ";"
+  endif
+
+  if icon_base_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars-base--hex:" | append: icon_base_color | append: ";"
+  endif
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% capture meterStyling %}
+  & {
+  --star-size: 20px;
+  --star-gap: 3px;
+  }
+  & meter {
+  --star-size-with-gap: calc(var(--star-size) + var(--star-gap));
+
+  position: relative;
+  width: calc(var(--star-size-with-gap) * 5 - var(--star-gap));
+  height: var(--star-size);
+  background: var(--color-review-stars-base--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  & meter:-moz-meter-optimum::-moz-meter-bar {
+  height: var(--star-size);
+  background: var(--color-review-stars--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  /* The gray background in Webkit browsers */
+
+  & meter::-webkit-meter-bar {
+  background: transparent;
+  border-radius: 0;
+  border: 0;
+  height: var(--star-size);
+  }
+
+  /* The bar in Webkit browsers */
+
+  & meter::-webkit-meter-optimum-value {
+  height: var(--star-size);
+  background: var(--color-review-stars--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+{% endcapture %}
+
+<style>
+  {{- meterStyling | replace: '&', selector  | strip_newlines  -}}
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% liquid
+
+  assign reviews_rating = settings.data__product__reviews_rating | replace: " ", '' | split: "."
+  assign reviews_rating = _product.metafields[reviews_rating.first][reviews_rating.last].value | default: rating
+  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 0 | times: 1.0
+
+  assign reviews_count = settings.data__product__reviews_count | replace: " ", '' | split: "."
+  assign reviews_count = _product.metafields[reviews_count.first][reviews_count.last].value | default: count | default: 1 | times: 1
+
+  assign reviews_content = reviews_heading | replace: "[count]", reviews_count | replace: "[rating]", reviews_rating
+  assign _reviews_content = reviews_content | strip_html | strip_html
+%}
+
+{% if hide_zero_reviews == blank or reviews_count > hide_zero_reviews %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="w-full"
+       style="{{ styles }}">
+    <meter class="relative inline-block appearance-none shrink-0"
+           value="{{ reviews_rating }}"
+           min="0"
+           max="5">
+      <span>
+        <span>{{ reviews_rating }}</span>/
+        <span>5</span>
+      </span>
+    </meter>
+    {% if _reviews_content != blank %}
+      <label class="inline {{ css_class }}">
+        {% render '_input.inline_richtext', content: reviews_content %}
+      </label>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Star Rating",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Leave empty to use manual ratings."
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Rating",
+      "default": 5,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "type": "number",
+      "id": "count",
+      "label": "Count",
+      "default": 1
+    },
+    {
+      "type": "inline_richtext",
+      "id": "reviews_heading",
+      "label": "Reviews heading",
+      "default": "[rating] - based on [count] reviews",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [count] as a placeholder for the number of reviews, and [rating] for the product rating."
+    },
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "CSS Class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "header",
+      "content": "Rating Icons"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon",
+      "default": "star"
+    },
+    {
+      "type": "header",
+      "content": "Fallback Colors"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "icon_active_color",
+      "label": "Icon active color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "icon_base_color",
+      "label": "Icon base color"
+    },
+    {
+      "type": "paragraph",
+      "content": "Leave the colors empty to use the Global Theme Setting colors."
+    },
+    {
+      "type": "header",
+      "content": "Hide Reviews"
+    },
+    {
+      "type": "number",
+      "id": "hide_zero_reviews",
+      "label": "Hide reviews if less than:"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  --star-size: 20px;\n  --star-gap: 0px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: 100%;\n  height: auto;\n  aspect-ratio: unset;\n  border: unset;\n  background: unset;\n  padding: 0;\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Star Rating",
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__star_rating"
+}
+{% endschema %}

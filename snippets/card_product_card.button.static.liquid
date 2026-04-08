@@ -1,0 +1,165 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__button"
+  assign section_type = "card_product_card"
+  assign type = block.settings.type
+  assign label = block.settings.label
+  assign button_class = block.settings.button_class
+  assign url = block.settings.url
+  assign collapsible_handle = block.settings.collapsible_handle
+  assign product_modal_handle = block.settings.product_modal_handle
+  assign accessibility_label = block.settings.accessibility_label
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+
+{% capture dynamic_parsed_label %}{% render '_input.dynamic_content', content: label, keys: 'product, selected_variant', product: product, selected_variant: variant %}{% endcapture %}
+
+{% if type == 'modal_close' %}
+  <button
+      data-style-id="{{ style_id }}"
+      x-ignore
+      type="button"
+      {% if label contains '[selected_' or accessibility_label contains '[selected_' %}
+        data-content="{% render '_input.inline_richtext', content: label, escape: true, skip_pluralization: true %}"
+        x-data="{ content: getDynamicText($el.getAttribute('data-content')), accessibility_label: getDynamicText(`{{ accessibility_label }}`) }"
+        x-init="$watch('p_card?.selected_variant', () => {
+            content = getDynamicText($el.getAttribute('data-content'));
+            utils.hideIfEmpty($el, `{{ hide_if_empty }}`, !content.trim())
+
+              $el.innerHTML = content;
+              if (accessibility_label.trim()) {                 $el.ariaLabel = accessibility_label;              }
+          })"
+      {% endif %}
+      {% if dynamic_parsed_label == blank or show_conditionally != 'always' %}
+        x-cloak
+        x-show="!!content && ($editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% endif %}
+      class="{{ button_class }}"
+      {% if accessibility_label != blank %}
+        aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, selected_variant', product: product, selected_variant: variant %}"
+      {% endif %}
+      @click.prevent.stop="$modal.setId(''); $data.submenu = '';">
+    {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+  </button>
+{% elsif type == 'product_modal' %}
+  <button
+      data-style-id="{{ style_id }}"
+      x-ignore
+      type="button"
+      {% if label contains '[selected_' or accessibility_label contains '[selected_' %}
+        data-content="{% render '_input.inline_richtext', content: label, escape: true, skip_pluralization: true %}"
+        x-data="{ content: getDynamicText($el.getAttribute('data-content')), accessibility_label: getDynamicText(`{{ accessibility_label }}`) }"
+        x-init="$watch('p_card?.selected_variant', () => {
+            content = getDynamicText($el.getAttribute('data-content'));
+            utils.hideIfEmpty($el, `{{ hide_if_empty }}`, !content.trim())
+            $el.innerHTML = content;
+            if (accessibility_label.trim()) {
+               $el.ariaLabel = accessibility_label;
+            }
+          })"
+      {% endif %}
+      {% if dynamic_parsed_label == blank or show_conditionally != 'always' %}
+        x-cloak
+        x-show="!!content && ($editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% endif %}
+      class="{{ button_class }}"
+      {% if accessibility_label != blank %}
+        aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, selected_variant', product: product, selected_variant: variant %}"
+      {% endif %}
+      @click.prevent.stop="$modal.setId(`modal--product-{{ product_modal_handle }}`, false, p_card?.product_handle, p_card?.product?.id, p_card?.selected_variant?.id, updateProductState)">
+    {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+  </button>
+{% elsif type == 'toggle_collapsible' %}
+  <button
+      data-style-id="{{ style_id }}"
+      x-ignore
+      type="button"
+      {% if label contains '[selected_' or accessibility_label contains '[selected_' %}
+        data-content="{% render '_input.inline_richtext', content: label, escape: true, skip_pluralization: true %}"
+        x-data="{ ...utils.initCollapsible($el, document.querySelector(`[data-collapsible-handle='{{ collapsible_handle }}']`), document.querySelector(`[data-collapsible-handle='{{ collapsible_handle }}']`)?.hasAttribute('data-default-open')), content: getDynamicText($el.getAttribute('data-content')), accessibility_label: getDynamicText(`{{ accessibility_label }}`) }"
+        x-init="$watch('p_card?.selected_variant', () => {
+            content = getDynamicText($el.getAttribute('data-content'));
+            utils.hideIfEmpty($el, `{{ hide_if_empty }}`, !content.trim())
+            $el.innerHTML = content;
+            if (accessibility_label.trim()) {
+               $el.ariaLabel = accessibility_label;
+            }
+          })"
+        {% if accessibility_label != blank %}
+          aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, selected_variant', product: product, selected_variant: variant %}"
+        {% endif %}
+      {% endif %}
+      {% if dynamic_parsed_label == blank or show_conditionally != 'always' %}
+        x-cloak
+        x-show="!!content && ($editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% endif %}
+      class="{{ button_class }}"
+      {% if accessibility_label != blank %}
+        aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, selected_variant', product: product, selected_variant: variant %}"
+      {% endif %}
+      @click.prevent.stop="toggleOpen()"
+      :class="collapsible?.open_accordion ? 'active' : ''"
+      id="{{ block_id }}">
+    {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+  </button>
+{% elsif type == 'button' %}
+  {% capture parsed_url %}{% render '_input.dynamic_content', content: url, keys: 'product, selected_variant', product: product, selected_variant: variant %}{% endcapture %}
+  <button
+      data-style-id="{{ style_id }}"
+      x-ignore
+      type="submit"
+      formaction="{{ parsed_url }}"
+      formmethod="get"
+      form="global_link_form"
+      {% if label contains '[selected_' or accessibility_label contains '[selected_' or url contains '[selected_' %}
+        data-content="{% render '_input.inline_richtext', content: label, escape: true, skip_pluralization: true %}"
+        x-data="{ content: getDynamicText($el.getAttribute('data-content')), url: getDynamicText(`{{ url }}`), accessibility_label: getDynamicText(`{{ accessibility_label }}`) }"
+        x-init="$watch('p_card?.selected_variant', () => {
+            url = getDynamicText(`{{ url }}`);
+            content = getDynamicText($el.getAttribute('data-content'));
+            utils.hideIfEmpty($el, `{{ hide_if_empty }}`, !content.trim())
+            $el.innerHTML = content;
+            $el.setAttribute('data-href', url);
+            if (accessibility_label.trim()) { $el.ariaLabel = accessibility_label; }
+          })"
+      {% endif %}
+      {% if dynamic_parsed_label == blank or show_conditionally != 'always' %}
+        x-cloak
+        x-show="!!content && ($editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% endif %}
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el);"
+      data-href="{{ parsed_url }}"
+      class="{{ button_class }}"
+      {% if accessibility_label != blank %}
+        aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, selected_variant', product: product, selected_variant: variant %}"
+      {% endif %} >
+    {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+  </button>
+{% endif %}

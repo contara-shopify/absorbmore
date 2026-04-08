@@ -1,0 +1,87 @@
+<style>
+  :root {
+    --header-height: calc((var(--navigation-bar-height, 0px) + var(--progress-bar-height, 0px)) + var(--announcement-bar-height, 0px));
+    --header-height-offset: calc((var(--navigation-bar-height, 0px) + var(--progress-bar-height, 0px)) + var(--announcement-bar-height, 0px));
+  }
+
+  .header-sections-container [data-announcement-bar] {
+    height: var(--announcement-bar-height, 0px);
+  }
+
+  .header-sections-container [data-progress-bar] {
+    height: var(--progress-bar-height, 0px);
+  }
+
+  [data-header-section] {
+    transform: translate3d(0, 0, 0);
+    transition: transform 200ms ease-in-out;
+    will-change: transform;
+  }
+
+  html.header-hidden [data-header-section] {
+    transform: translate3d(0, calc(-1 * var(--header-height)), 0);
+  }
+
+  html.no-anim [data-header-section],
+  html.no-anim .sticky-under-header {
+    transition: none !important;
+  }
+
+  .header-sections-container {
+    position: sticky;
+    left: 0;
+    right: 0;
+    /*bottom: 0;*/
+    top: calc(-1 * (var(--progress-bar-height, 0px) + var(--announcement-bar-height, 0px)));
+    z-index: 35;
+    /*pointer-events: none;
+    --header-full-height: calc(var(--progress-bar-height, 0px) + var(--announcement-bar-height, 0px) + var(--navigation-bar-height, 0px));
+    --header-dynamic-height: calc(100vh + (var(--header-full-height) - var(--header-height-offset)));
+    height: var(--header-dynamic-height);
+    margin-bottom: calc(-1 * (var(--header-dynamic-height) - (var(--progress-bar-height, 0px) + var(--announcement-bar-height, 0px) + var(--navigation-bar-height, 0px))));*/
+  }
+
+  .header-sections-container > * {
+    pointer-events: auto;
+  }
+
+  {% comment %}{% endif %}{% endcomment %}
+  :root {
+
+    --container-width-fullwidth: 0px;
+    --container-width-xs: {{ settings.layout__page_width_xs }}px;
+    --container-width-sm: {{ settings.layout__page_width_sm }}px;
+    --container-width-md: {{ settings.layout__page_width_md }}px;
+    --container-width-lg: {{ settings.layout__page_width_lg }}px;
+
+  }
+
+  :root {
+    --gutter: {{ settings.layout__page_gutter_mobile }}px;
+    --100vw-no-scrollbar: calc(100vw - var(--scrollbar-width, 19px));
+
+    @media screen and (min-width: 768px) {
+      --gutter: {{ settings.layout__page_gutter_desktop }}px;
+    }
+  }
+
+  *, :before, :after {
+    --container-fullwidth: max(calc((var(--100vw-no-scrollbar) - var(--container-width-fullwidth)) / 2), var(--gutter));
+    --container-xs: max(calc((var(--100vw-no-scrollbar) - var(--container-width-xs)) / 2), var(--gutter));
+    --container-sm: max(calc((var(--100vw-no-scrollbar) - var(--container-width-sm)) / 2), var(--gutter));
+    --container-md: max(calc((var(--100vw-no-scrollbar) - var(--container-width-md)) / 2), var(--gutter));
+    --container-lg: max(calc((var(--100vw-no-scrollbar) - var(--container-width-lg)) / 2), var(--gutter));
+    --layout-y-container: max(calc((100vh - 910px) / 2), var(--gutter));
+  }
+
+  @media screen and (min-width: 768px) {
+    :root {
+      --layout-padding-sm: {{ settings.layout__padding_sm }}px;
+      --layout-padding-md: {{ settings.layout__padding_md }}px;
+      --layout-padding-lg: {{ settings.layout__padding_lg }}px;
+      --layout-padding-xl: {{ settings.layout__padding_xl }}px;
+    }
+  }
+
+
+</style>

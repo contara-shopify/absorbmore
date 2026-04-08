@@ -1,0 +1,87 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_blog__sort"
+  assign section_type = "main_blog"
+  assign select_class = block.settings.select_class
+  assign button_class = block.settings.button_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign title = block.settings.title
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign current_sort = blog.sort_by | default: blog.default_sort_by
+  assign titles = blog.sort_options | map: 'name'
+  assign values = blog.sort_options | map: 'value'
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}{% endcapture %}
+
+<div data-modal-id="drawer--sort-{{ section.id }}"
+     x-data="{ show: $modal.id === 'drawer--sort-{{ section.id }}' }"
+     x-effect="show = $editor?.select_block_id === '{{ block.id }}' || $modal.id === 'drawer--sort-{{ section.id }}'"
+     x-cloak>
+  <div class="fixed pointer-events-auto inset-0 z-50 transition duration-75 ease-in-out bg-modal-backdrop md:hidden"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       x-show="show"
+       @click="$modal.setId('')"></div>
+  <section class="pointer-events-none transition-all duration-200 ease-in-out scrollbar-none max-md:fixed max-md:left-0 max-md:inset-y-0 max-md:h-full max-md:w-full max-md:max-w-sm max-md:z-[100] max-md:overflow-y-auto"
+           x-transition:enter-start="max-md:-translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="max-md:-translate-x-full"
+           style="color: {{ text_color }}; background: {{ background_color }};"
+           x-show="show || $data.windowWidth >= 768"
+           data-sort
+           x-trap.noautofocus="show">
+    <header class="md:hidden flex justify-center relative pt-5 pb-2 pointer-events-auto">
+      <h5 class="richtext-md h4">Sort By</h5>
+      <button type="button" @click="$modal.setId('')" class="absolute right-4 hf:opacity-70 p-1">
+        <span class="sr-only">Close Mobile Filter Drawer</span>
+        {% render '_components.icon', icon: 'x-mark', class: "h-5 shrink-0" %}
+      </button>
+    </header>
+    {% render '_components.select',
+        values: values,
+        titles: titles,
+        select_class: select_class,
+        button_prefix: "SORT BY: ",
+        label: 'SORT BY',
+        name: "sort_by",
+        setState: "main_blog.state.sort_by = value",
+        state: "main_blog.state.sort_by",
+        html_attributes: html_attributes
+    %}
+    <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+         data-sort
+         class="pointer-events-auto md:!hidden">
+      {% for sort_option in blog.sort_options %}
+        <button type="button"
+                value="{{ sort_option.value }}"
+                class="{{ button_class }}"
+                :class="main_blog.state.sort_by === $el.value ? 'active' : ''"
+                @click.stop.prevent="main_blog.state.sort_by = $el.value">{{ sort_option.name }}</button>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+

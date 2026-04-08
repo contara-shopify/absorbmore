@@ -1,0 +1,194 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__image"
+  assign section_type = "card"
+  assign primary_image = block.settings.primary_image
+  assign show_secondary_image = block.settings.show_secondary_image
+  assign secondary_image = block.settings.secondary_image
+  assign link_to_object = block.settings.link_to_object
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  {% if show_overlay %}
+    {% capture css %}
+      &:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: {{ overlay_color }};
+      pointer-events: none;
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- css | append: custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<div
+    data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+    x-ignore
+    x-data="{ primary_image: getDynamicValueWithFallbacks(`{{ primary_image }}`), secondary_image: getDynamicValueWithFallbacks(`{{ secondary_image }}`) }"
+    {% if link_to_object %}
+      :aria-label="card?.title"
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el)"
+      :data-href="card?.url"
+    {% endif %}
+    class="relative block shrink-0 overflow-hidden group">
+  <div class="relative" x-show="!card?.hydrated || (!primary_image && !secondary_image)">
+    <div class="h-full w-full animate-pulse rounded-md bg-gray-200/70">
+    </div>
+  </div>
+  <img src=""
+       x-show="card?.hydrated && (!!primary_image?.src || primary_image)"
+       alt=""
+       srcset=""
+       :src="primary_image?.src ? primary_image?.src : primary_image"
+       :alt="primary_image?.alt ?? card?.title"
+       :srcset="primary_image?.src || primary_image ? utils.getImageSrcSet(primary_image?.src ?? primary_image ?? '', +`{{ max_width }}`) : primary_image"
+       width="732"
+       height="732"
+       :loading="utils.isInViewport($el) ? 'eager' : 'lazy'"
+       onload="this.classList.remove('!opacity-0')"
+       class="pointer-events-none relative h-full w-full select-none overflow-hidden object-[inherit] !opacity-0 transition-opacity duration-300 ease-in"
+      {% if show_secondary_image %}
+        :class="card?.hydrated && (!!secondary_image?.src || secondary_image) ? 'group-hf:opacity-0' : ''"
+      {% endif %}
+       sizes="{{ sizes }}">
+  {% if show_secondary_image %}
+    <img x-show="card?.hydrated && (!!secondary_image?.src || secondary_image)"
+         src=""
+         alt=""
+         srcset=""
+         :src="secondary_image?.src || secondary_image"
+         :alt="secondary_image?.alt ?? card?.title"
+         :srcset="utils.getImageSrcSet(secondary_image?.src ?? secondary_image ?? '', +`{{ max_width }}`)"
+         width="732"
+         height="732"
+         :loading="utils.isInViewport($el) ? 'eager' : 'lazy'"
+         onload="this.classList.remove('!opacity-0')"
+         class="absolute inset-0 h-full w-full select-none overflow-hidden object-[inherit] group-hf:opacity-100 bg-inherit !opacity-0 transition-opacity duration-300 ease-in"
+         :class="primary_image?.src || secondary_image ? `opacity-0` : ``"
+         sizes="{{ sizes }}">
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Image",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image selection"
+    },
+    {
+      "type": "text",
+      "id": "primary_image",
+      "label": "Primary image",
+      "default": "[image]",
+      "info": "Use bracket notation for data access: i.e.[image] or [metafields.smart.image]. Comma separated list for fallback options."
+    },
+    {
+      "type": "header",
+      "content": "Hover Effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show secondary image",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "secondary_image",
+      "label": "Secondary image",
+      "default": "[metafields.smart.secondary_image]",
+      "info": "Use bracket notation for data access: i.e.[image] or [metafields.smart.image]. Comma separated list for fallback options.",
+      "visible_if": "{{ block.settings.show_secondary_image }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "[Available keys](https://shopify.dev/docs/api/liquid/objects/product)"
+    },
+    {
+      "type": "checkbox",
+      "id": "link_to_object",
+      "label": "Link to object",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+      "visible_if": "{{ block.settings.show_overlay == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 540
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\ndisplay: block;\nwidth: 100%;\nheight: auto;\naspect-ratio: unset;\nborder: unset;\nbackground: unset;\npadding: 0;\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card__image"
+}
+{% endschema %}

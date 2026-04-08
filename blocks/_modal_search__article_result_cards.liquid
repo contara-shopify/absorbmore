@@ -1,0 +1,233 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_modal_search__article_result_cards"
+  assign section_type = "modal_search"
+  assign show_search_conditionally = block.settings.show_search_conditionally
+  assign article_card_class = block.settings.article_card_class
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     data-predictive-search-type="article"
+     class="relative flex flex-col"
+     x-show="search_modal.showConditionally(`{{ show_search_conditionally }}`) || $editor.select_block_id === `{{ block.id }}`"
+     x-cloak
+     x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, undefined, `{{ enable_mouse_dragging }}` === 'true') }">
+  <div class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+       x-ref="scrollContainer"
+       x-defer="intersect"
+       data-search-cards-container
+       @resize.window="content_slider.handleResize"
+       x-init="$nextTick(() => content_slider.handleResize())"
+       @scroll="content_slider.handleScroll"
+       @scrollend="content_slider.handleInfiniteScroll">
+    <template x-for="(article, index) in search_modal.state.articles" :key="article.handle">
+      <div data-loop-item class="shrink-0 max-w-full w-full h-full" :data-article-handle="article.handle">
+        <section class="card-loading article-card--{{ article_card_class }}"
+                 :data-article-handle="article.handle"
+                 :data-article-id="article.id"
+                 data-card-handle="{{ article_card_class }}"
+                 x-init="$nextTick(() => _sections.hydrateArticleCard($el))"></section>
+      </div>
+    </template>
+  </div>
+  {% if scrollbar_class != blank %}
+    {% render '_components.scrollbar', class: scrollbar_class %}
+  {% endif %}
+
+  {% if scroll_pagination_class != blank %}
+    {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Article Result Cards",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_search_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "no_search_query",
+          "label": "No Search Query"
+        },
+        {
+          "value": "with_search_query",
+          "label": "With Search Query"
+        },
+        {
+          "value": "search_empty",
+          "label": "Empty"
+        },
+        {
+          "value": "items_found",
+          "label": "With Items"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Article Cards"
+    },
+    {
+      "type": "metaobject",
+      "id": "article_card_class",
+      "label": "Article Card class",
+      "metaobject_type": "article_cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Horizontal Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article Result Cards",
+      "category": "** Search Modal **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___modal_search__article_result_cards"
+}
+{% endschema %}

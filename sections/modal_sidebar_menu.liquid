@@ -1,0 +1,1567 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_sidebar_menu"
+  assign _handle = section.settings.handle
+  assign limit = section.settings.limit
+  assign limit_type = section.settings.limit_type
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% capture section_content %}
+  <div data-megamenu="megamenu--{{ _handle }}"
+       data-modal-id="megamenu--{{ _handle | handleize }}"
+       x-data="{ show: $modal.id === 'megamenu--{{ _handle | handleize }}', lastSearchQuery: '' }"
+       x-effect="show = $editor?.select_section_id === '{{ section.id }}' || $modal.id === 'megamenu--{{ _handle | handleize }}'"
+       x-cloak>
+    <div class="fixed pointer-events-auto inset-x-0 bottom-0 inset-0 top-[--header-height-offset] transition duration-75 ease-in-out bg-modal-backdrop"
+         x-effect="
+         if (show) {
+            if ($search.query && !lastSearchQuery) {
+              lastSearchQuery = $search.query;
+              $search.query = '';
+            }
+         } else {
+           if (!$search.query && lastSearchQuery) {
+                $search.query = lastSearchQuery;
+            }
+            lastSearchQuery = ''
+         }"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         :class="clsx(show ? 'z-[2147483645]' : 'z-10')"
+         x-show="show"
+         x-cloak
+         @click="$modal.setId(''); $modal.setSubId('')"></div>
+    {% capture core_content %}
+      <section data-style-id="{{ section.id }}--{{ block.id }}"
+               {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+               :class="clsx(show ? 'z-[2147483646]' : 'z-50')"
+               x-data="{ ..._sections.initSearchModal($el, 'megamenu--{{ _handle | handleize }}') }"
+               x-defer="idle"
+               class="fixed pointer-events-auto left-0 min-h-[calc(100%-var(--header-height-offset))] w-max h-[calc(100%-var(--header-height-offset))] top-[--header-height-offset] bottom-0 z-[100] isolate transition-all duration-500 ease-in-out {{ container_spacing }}"
+               x-transition:enter-start="-translate-x-full"
+               x-transition:enter-end="translate-x-0"
+               x-transition:leave-start="translate-x-0"
+               x-transition:leave-end="-translate-x-full"
+               x-show="show"
+               x-cloak
+               x-trap.noautofocus="show">
+        {% content_for 'blocks' %}
+      </section>
+    {% endcapture %}
+    {{ core_content }}
+  </div>
+{% endcapture %}
+
+{% if request.visual_preview_mode %}
+  <div x-data="{ show: true }">
+    {{ core_content }}
+  </div>
+{% else %}
+  {% if section_content contains '/break"></script>' %}
+    {% break %}
+  {% endif %}
+  {{ section_content }}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Sidebar Menu",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Megamenu Settings"
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Trigger handle",
+      "info": "Triggered by any link to `href=\"#megamenu--{handle}\""
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Predictive Search Settings"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Search Limit",
+      "default": 10,
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "limit_type",
+      "label": "Limit type",
+      "default": "each",
+      "options": [
+        {
+          "value": "each",
+          "label": "Each"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ],
+      "info": "Read More about search types [here](https://shopify.dev/docs/api/ajax/reference/predictive-search#query-parameters)"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "menu"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "tab_navigation"
+    },
+    {
+      "type": "_modal_search__container"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sidebar Menu: Full",
+      "settings": {
+        "handle": "sidebar",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "rgba(0,0,0,0)",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n}\n@media (max-width: 768px) {\n  & {\n    width: 100%;\n    max-width: 560px;\n  }\n}",
+        "section_id": "Sidebar Menu: Full"
+      },
+      "blocks": [],
+      "category": "Navigation"
+    },
+    {
+      "name": "Sidebar Menu",
+      "settings": {
+        "handle": "sidebar",
+        "limit": 10,
+        "limit_type": "each",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "rgba(0,0,0,0)",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 430px;\n  border-right: 1px solid #d3d3d3;\n}\n@media (max-width: 460px) {\n  & {\n  \n    max-width: calc(100% - 20px);\n  }\n}",
+        "section_id": "",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "_modal_search__container",
+          "name": "Search",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search"
+          },
+          "blocks": [
+            {
+              "type": "_modal_search__search_input",
+              "name": "Search Input",
+              "settings": {
+                "label": "Search",
+                "placeholder": "Search",
+                "input_class": "input-text",
+                "custom_css": "& {\n  margin: 20px;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Search Results",
+          "settings": {
+            "show_search_conditionally": "with_search_query",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n  border-top: 1px solid #d3d3d3;\n  display: flex;\n  flex-direction: column;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Results"
+          },
+          "blocks": [
+            {
+              "type": "_modal_search__dynamic_search_suggestions",
+              "name": "t:blocks.dynamic_search_suggestions.presets.dynamic_search_suggestions.name",
+              "settings": {
+                "show_search_conditionally": "always",
+                "button_class": "",
+                "content": "Search Suggestions:",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "background_color": "#f9f9f9",
+                "custom_css": "& {\n  padding: 20px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  border-bottom: 1px solid #d3d3d3;\n}\n& div {\n  grid-column: span 2;\n  font-weight: 500;\n  margin-bottom: 6px;\n}\n& a {\n  padding: 8px;\n}\n\n& a:where(:hover,:focus) {\n  background: #ffffff;\n} \n\n& a:nth-of-type(n+7) {\n  display: none;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_modal_search__container",
+              "name": "Search Container",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  position: relative;\n  flex: 1;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Search Container"
+              },
+              "blocks": [
+                {
+                  "type": "_modal_search__dynamic_text",
+                  "name": "Dynamic Text",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "content": "<p><strong>Search results for \"[search.terms]\"</strong></p>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  padding: 20px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_modal_search__product_result_cards",
+                  "name": "Product Result Cards",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "product_card_class": "product-card-flat",
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "infinite_scroll": "off",
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "custom_css": "& {\n  --grid-cols: 4;\n  --grid-gap: 24px;\n  padding: 0 20px 20px;\n}\n& .grid-container {\n  display: grid;\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_modal_search__loading_overlay",
+                  "name": "Loading Overlay",
+                  "settings": {
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Menus",
+          "settings": {
+            "show_search_conditionally": "no_search_query",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Menus"
+          },
+          "blocks": [
+            {
+              "type": "collapsible",
+              "name": "Bed",
+              "settings": {
+                "label": "Bed",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Baby Rooms",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Children Rooms",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Linen",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Kids",
+              "settings": {
+                "label": "Kids",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Car Seats",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Prams & Strollers",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Nursery",
+              "settings": {
+                "label": "Nursery",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Storage",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Chairs & Desks",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Decor",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Bath",
+              "settings": {
+                "label": "Bath",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Bath Essentials",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Textiles & Accessories",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "New",
+              "settings": {
+                "label": "New",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Toys",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "More Toys",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Play Corner",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Sale",
+              "settings": {
+                "label": "Sale",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Feeding",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Essentials",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Brands",
+              "settings": {
+                "label": "Brands",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Clothing",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "More Clothing",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Footer",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#f9f9f9",
+            "custom_css": "& {\n  position: sticky;\n  bottom: 0;\n  left: 0;;\n  right: 0;\n  padding: 10px 0 12px;\n  border-top: 1px solid #d3d3d3;\n  display: flex;\n  flex-direction: column;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footer"
+          },
+          "blocks": [
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.heart.20][gap.20]Wishlist",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.gift-registry.20][gap.20]Gift Registry",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.user.20][gap.20]Account",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    },
+    {
+      "name": "undefined",
+      "settings": {
+        "handle": "sidebar",
+        "limit": 10,
+        "limit_type": "each",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "rgba(0,0,0,0)",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 430px;\n  border-right: 1px solid #d3d3d3;\n}\n@media (max-width: 460px) {\n  & {\n  \n    max-width: calc(100% - 20px);\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "_modal_search__container",
+          "name": "Search",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search"
+          },
+          "blocks": [
+            {
+              "type": "_modal_search__search_input",
+              "name": "Search Input",
+              "settings": {
+                "label": "Search",
+                "placeholder": "Search",
+                "input_class": "input-text",
+                "custom_css": "& {\n  margin: 20px;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Search Results",
+          "settings": {
+            "show_search_conditionally": "with_search_query",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n  border-top: 1px solid #d3d3d3;\n  display: flex;\n  flex-direction: column;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Results"
+          },
+          "blocks": [
+            {
+              "type": "_modal_search__dynamic_search_suggestions",
+              "name": "t:blocks.dynamic_search_suggestions.presets.dynamic_search_suggestions.name",
+              "settings": {
+                "show_search_conditionally": "always",
+                "button_class": "",
+                "content": "Search Suggestions:",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "background_color": "#f9f9f9",
+                "custom_css": "& {\n  padding: 20px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  border-bottom: 1px solid #d3d3d3;\n}\n& div {\n  grid-column: span 2;\n  font-weight: 500;\n  margin-bottom: 6px;\n}\n& a {\n  padding: 8px;\n}\n\n& a:where(:hover,:focus) {\n  background: #ffffff;\n} \n\n& a:nth-of-type(n+7) {\n  display: none;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_modal_search__container",
+              "name": "Search Container",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  position: relative;\n  flex: 1;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Search Container"
+              },
+              "blocks": [
+                {
+                  "type": "_modal_search__dynamic_text",
+                  "name": "Dynamic Text",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "content": "<p><strong>Search results for \"[search.terms]\"</strong></p>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  padding: 20px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_modal_search__product_result_cards",
+                  "name": "Product Result Cards",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "product_card_class": "product-card-flat",
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "infinite_scroll": "off",
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "custom_css": "& {\n  --grid-cols: 4;\n  --grid-gap: 24px;\n  padding: 0 20px 20px;\n}\n& .grid-container {\n  display: grid;\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_modal_search__loading_overlay",
+                  "name": "Loading Overlay",
+                  "settings": {
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "sub_modal",
+            "title": "Open Submenu [icon.arrow-right]",
+            "url": "",
+            "collapsible_handle": "",
+            "target_handle": "submenu",
+            "trigger_on_hover": false,
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "plain-link uppercase",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  justify-content: space-between;\n  padding: 20px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Menus",
+          "settings": {
+            "show_search_conditionally": "no_search_query",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Menus"
+          },
+          "blocks": [
+            {
+              "type": "collapsible",
+              "name": "Bed",
+              "settings": {
+                "label": "Bed",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Baby Rooms",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Children Rooms",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Linen",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Kids",
+              "settings": {
+                "label": "Kids",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Car Seats",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Prams & Strollers",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Nursery",
+              "settings": {
+                "label": "Nursery",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Storage",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Chairs & Desks",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Decor",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Bath",
+              "settings": {
+                "label": "Bath",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Bath Essentials",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Textiles & Accessories",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "New",
+              "settings": {
+                "label": "New",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Toys",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "More Toys",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Play Corner",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Sale",
+              "settings": {
+                "label": "Sale",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Feeding",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Essentials",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "collapsible",
+              "name": "Brands",
+              "settings": {
+                "label": "Brands",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "title",
+                "accordion_class": "accordion-sidebar",
+                "content": "",
+                "show": false,
+                "metafield_content_key": "content",
+                "metafield_default_state": "closed",
+                "auto_close_siblings": false,
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "Clothing",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "More Clothing",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "#565656",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 18px;\n}\n& > div {\n  color: #272824;\n  font-weight: 600;\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_modal_search__container",
+          "name": "Footer",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#f9f9f9",
+            "custom_css": "& {\n  position: sticky;\n  bottom: 0;\n  left: 0;;\n  right: 0;\n  padding: 10px 0 12px;\n  border-top: 1px solid #d3d3d3;\n  display: flex;\n  flex-direction: column;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footer"
+          },
+          "blocks": [
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.heart.20][gap.20]Wishlist",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.gift-registry.20][gap.20]Gift Registry",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "[icon.user.20][gap.20]Account",
+                "url": "/account",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  text-align: left;\n  padding: 12px 20px;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n&:where(:hover,:focus) {\n  background: white;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_sidebar_menu"
+}
+{% endschema %}

@@ -1,0 +1,222 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "image"
+  assign image = block.settings.image
+  assign mobile_image = block.settings.mobile_image
+  assign url = block.settings.url
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign mobile_max_width = block.settings.mobile_max_width
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if image == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if show_overlay %}
+  {% capture css %}
+    &:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: {{ overlay_color }};
+    pointer-events: none;
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if url != blank %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     href="{{ url }}"
+      {% if url.type == 'home_link' %}
+        aria-label="{{ page_title }}"
+      {% elsif url.object.title != blank %}
+        aria-label="{{ url.object.title }}"
+      {% elsif url.title != blank %}
+        aria-label="{{ url.title }}"
+      {% elsif title != blank %}
+        aria-label="{{ title }}"
+      {% endif %}
+     class="block relative shrink-0">
+    {% render '_object.image', image: image, mobile_image: mobile_image, class: "w-full h-full transition-all object-[inherit] rounded-[inherit]", preload: preload, sizes: sizes, max_width: max_width, mobile_max_width: mobile_max_width %}
+  </a>
+{% else %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="image-wrapper block relative shrink-0">
+    {% render '_object.image', image: image, mobile_image: mobile_image, class: "w-full h-full transition-all object-[inherit] rounded-[inherit]", preload: preload, sizes: sizes, max_width: max_width, mobile_max_width: mobile_max_width %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image (optional)"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+      "visible_if": "{{ block.settings.show_overlay == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 1200
+    },
+    {
+      "type": "number",
+      "id": "mobile_max_width",
+      "label": "Mobile Max Width",
+      "default": 1200,
+      "visible_if": "{{ block.settings.mobile_image != blank }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes)."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image",
+      "category": "Basic"
+    },
+    {
+      "name": "Background Image",
+      "settings": {
+        "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+        "max_width": 1920,
+        "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}"
+      },
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__image"
+}
+{% endschema %}

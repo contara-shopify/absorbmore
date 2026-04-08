@@ -1,0 +1,31 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__button"
+  assign section_type = "card"
+  assign label = block.settings.label
+  assign url = block.settings.url
+  assign button_class = block.settings.button_class
+  assign accessibility_label = block.settings.accessibility_label
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture dynamic_parsed_label %}{% render '_input.dynamic_object_content', content: label, card_object: card_object %}{% endcapture %}
+{% capture parsed_url %}{% render '_input.dynamic_object_content', content: url, card_object: card_object %}{% endcapture %}
+
+<button
+    data-style-id="{{ style_id }}"
+    type="submit"
+    formaction="{{ parsed_url }}"
+    formmethod="get"
+    form="global_link_form"
+    role="link"
+    tabindex="0"
+    x-init="utils.simulateAnchorTag($el)"
+    data-href="{{ parsed_url }}"
+    {% if accessibility_label != blank %}
+      aria-label="{% render '_input.dynamic_object_content', content: accessibility_label, card_object: card_object %}"
+    {% endif %}
+    class="{{ button_class }}">
+  {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+</button>

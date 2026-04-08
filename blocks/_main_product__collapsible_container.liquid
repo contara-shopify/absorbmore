@@ -1,0 +1,338 @@
+
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__collapsible_container"
+  assign section_type = "main_product"
+  assign image = block.settings.image
+  assign label = block.settings.label
+  assign accordion_class = block.settings.accordion_class
+  assign show = block.settings.show
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if label == blank
+    assign is_empty = true
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture container_content %}
+  {% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }} data-quick-view-visibility="{{ quick_view_visibility }}" {% endcapture %}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  {% capture accordion_content %}
+    {% content_for 'blocks' %}
+  {% endcapture %}
+  {% render '_components.collapsible', image: image, label: label, content: accordion_content, default_open: show, class: accordion_class, html_attributes: html_attributes, auto_close_siblings: true %}
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ container_content }}
+
+{% schema %}
+{
+  "name": "Collapsible",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Accordion Title",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Open"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slider"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "_main_product__container"
+    },
+    {
+      "type": "_main_product__collapsible_container"
+    },
+    {
+      "type": "_main_product__availability"
+    },
+    {
+      "type": "_main_product__selected_plan_duration"
+    },
+    {
+      "type": "_main_product__gallery"
+    },
+    {
+      "type": "_main_product__thumbnails"
+    },
+    {
+      "type": "_main_product__price"
+    },
+    {
+      "type": "_main_product__rating"
+    },
+    {
+      "type": "_main_product__quantity_selector"
+    },
+    {
+      "type": "_main_product__custom_quantity_selector"
+    },
+    {
+      "type": "_main_product__add_to_cart_button"
+    },
+    {
+      "type": "_main_product__cta_button"
+    },
+    {
+      "type": "_main_product__description"
+    },
+    {
+      "type": "_main_product__option__color"
+    },
+    {
+      "type": "_main_product__option__color_w_caption"
+    },
+    {
+      "type": "_main_product__option__radio"
+    },
+    {
+      "type": "_main_product__option__radio_detailed"
+    },
+    {
+      "type": "_main_product__option__select"
+    },
+    {
+      "type": "_main_product__variant_selector__color"
+    },
+    {
+      "type": "_main_product__variant_selector__radio"
+    },
+    {
+      "type": "_main_product__variant_selector__select"
+    },
+    {
+      "type": "_main_product__sibling__color"
+    },
+    {
+      "type": "_main_product__sibling__radio"
+    },
+    {
+      "type": "_main_product__sibling__select"
+    },
+    {
+      "type": "_main_product__sibling__color_select"
+    },
+    {
+      "type": "_main_product__sibling__scent_sidebar"
+    },
+    {
+      "type": "_main_product__subscribe__button_select"
+    },
+    {
+      "type": "_main_product__subscribe__button_card"
+    },
+    {
+      "type": "_main_product__subscribe__button_switch"
+    },
+    {
+      "type": "_main_product__subscribe__toggle_card"
+    },
+    {
+      "type": "_main_product__payment_terms"
+    },
+    {
+      "type": "_main_product__dynamic_buy_button"
+    },
+    {
+      "type": "_main_product__dynamic_text"
+    },
+    {
+      "type": "_main_product__image"
+    },
+    {
+      "type": "_main_product__labels"
+    },
+    {
+      "type": "_main_product__waterdrop_list"
+    },
+    {
+      "type": "_main_product__gift_card_recipient"
+    },
+    {
+      "type": "_main_product__bundle_variants"
+    },
+    {
+      "type": "_main_product__choose_supply"
+    },
+    {
+      "type": "_main_product__free_from"
+    },
+    {
+      "type": "_main_product__also_reported"
+    },
+    {
+      "type": "_main_product__faq"
+    },
+    {
+      "type": "_main_product__stat_strip"
+    },
+    {
+      "type": "_main_product__choose_plan"
+    },
+    {
+      "type": "_main_product__buy_once"
+    },
+    {
+      "type": "_main_product__benefits"
+    },
+    {
+      "type": "_main_product__clinical_results"
+    },
+    {
+      "type": "_main_product__gallery_button"
+    },
+    {
+      "type": "_main_product__rebuy_popup"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_main_product__addons_atc_button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collapsible",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__collapsible_container"
+}
+{% endschema %}

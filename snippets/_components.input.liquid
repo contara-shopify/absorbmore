@@ -1,0 +1,125 @@
+
+{% comment %}
+    Input Element
+
+    Accepts:
+    - name {string}
+    - type {string}
+    - prefix {string}
+    - label {string}
+    - placeholder {string}
+    - autocomplete {string}
+    - required {boolean}
+    - form {liquid_form_object}
+    - inline_button {boolean}
+    - button_content {string}
+    - class: {string}
+    - default_value: {string} default_state
+    - value: {string} state
+    - html_attributes: {string} use this to set autocomplete / autocapitalize attributes.
+    - setState: {function} i.e. `$data.quantity(value)`
+
+    Usage:
+    {% render '_components.input',
+       name: 'contact[email]',
+       type: 'email',
+       label: 'Email',
+       prefix: '[icon.search]',
+       suffix: '[icon.search]',
+       placeholder: 'Enter your email',
+       autocomplete: 'email',
+       required: true,
+       form: form,
+       inline_button: true,
+       button_content: button_content,
+       class: '',
+       default_value: form.email,
+       html_attributes: '',
+       setState: '',
+    %}
+{% endcomment %}
+
+<label class="relative flex w-full {{ class }}"
+    {{ html_attributes }}
+       x-data="{
+         active: !!$refs.input.value && !!$refs.label?.textContent.trim(),
+         label: $el,
+         type: `{{ type }}`,
+         value: $refs.input.value
+       }"
+       x-effect="active = !!$refs.label?.textContent.trim() && !!value"
+       :class="utils.clsx(active && 'active', {{ loading | default: false }} && 'button-loading')">
+  <div class="relative flex flex-col w-full flex-1">
+    <span x-ref="label">{{- label -}}</span>
+    <input x-ref="input"
+        {% if name != blank %}
+          name="{{ name }}"
+        {% endif %}
+           type="{{ type | default: "text" }}"
+           placeholder="{{ placeholder }}"
+           data-placeholder="{{ placeholder }}"
+           :placeholder="active ? '': $el.getAttribute('data-placeholder')"
+           autocorrect="off"
+           aria-label="{{ label | default: placeholder }}"
+           :type="type"
+        {% if autocomplete %}
+          autocomplete="{{ autocomplete }}"
+        {% endif %}
+        {% if required %}
+          required="required"
+        {% endif %}
+        {% if pattern %}
+          pattern="{{ pattern }}"
+        {% endif %}
+        {% if form_block %}
+          form="{{ form_block.id }}"
+        {% endif %}
+        {% if form.errors %}
+          autofocus
+          aria-invalid="true"
+        {% endif %}
+           :disabled="{{ disabled | default: false }}"
+           value="{{ default_value }}"
+        {% if value %}
+          :value="{{ value }}"
+          @input.prevent="value = $el.value; $el.setCustomValidity(''); {{ setState }}"
+        {% else %}
+          @input="value = $el.value; $el.setCustomValidity(''); {{ setState }}"
+        {% endif %}
+           @focus="{{ onFocus | default: '' }}"
+           @blur="{{ onBlur | default: '' }}"
+           class="appearance-none flex-1 bg-transparent !outline-none">
+  </div>
+  {% if inline_button %}
+    <button type="submit"
+            aria-label="Submit form"
+            {% if button_content == blank %}tabindex="-1"{% endif %}
+            class="{% if button_content != blank %}px-2{% endif %} !outline-none hf:opacity-70 rounded-sm hf:bg-inherit hf:bg-opacity-10 flex items-center">
+      {% render '_input.inline_richtext', content: button_content %}
+    </button>
+  {% endif %}
+  {% if type == 'password' %}
+    <button type="button"
+            aria-label="Toggle Password"
+            @click.prevent.stop="type = type === 'password' ? 'text' : 'password'"
+            class="flex items-center rounded-sm px-3 opacity-50 hf:opacity-90 hf:bg-inherit hf:bg-opacity-10">
+      <span x-show="type === 'password'">{% render '_input.inline_richtext', content: '[icon.password-eye]' %}</span>
+      <span x-show="type !== 'password'">{% render '_input.inline_richtext', content: '[icon.password-eye-slash]' %}</span>
+    </button>
+  {% endif %}
+  {% if prefix != blank %}
+    <button type="submit"
+            disabled="disabled"
+            aria-label="Submit form"
+            class="px-2 -order-1 !outline-none hf:opacity-70 rounded-sm hf:bg-inherit hf:bg-opacity-10 flex items-center">
+      {% render '_input.inline_richtext', content: prefix %}
+    </button>
+  {% endif %}
+  {% if suffix != blank %}
+    <button type="submit"
+            aria-label="Submit form"
+            class="px-2 order-last !outline-none hf:opacity-70 rounded-sm hf:bg-inherit hf:bg-opacity-10 flex items-center">
+      {% render '_input.inline_richtext', content: suffix %}
+    </button>
+  {% endif %}
+</label>

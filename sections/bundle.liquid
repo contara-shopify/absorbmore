@@ -1,0 +1,760 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "bundle"
+  assign restrict_bundle_quantity = section.settings.restrict_bundle_quantity
+  assign bundle_target_type = section.settings.bundle_target_type
+  assign incentive_target_type = section.settings.incentive_target_type
+  assign disable_product_links = section.settings.disable_product_links
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture tab_navigation_content %}
+  <button type="button"
+          @click="current_tab = `|%|TAB_LABEL|%|`"
+          class="shrink-0 |%|BUTTON_CLASS|%|"
+          x-show="$el.closest('.shopify-section')?.querySelector(`[data-tab-id='|%|TAB_LABEL|%|']`)"
+          x-init="if (!$el.closest('.shopify-section')?.querySelector(`[data-tab-id='|%|TAB_LABEL|%|']`)) { $el.remove(); }"
+          :class="current_tab === '|%|TAB_LABEL|%|' ? 'active' : ''">|%|LABEL_CONTENT|%|
+  </button>
+{% endcapture %}
+
+{% liquid
+  assign splitter = '|~|SPLIT|~|'
+  assign tab_blocks = ''
+
+  capture blocks_content
+    content_for "blocks"
+  endcapture
+
+  assign blocks_content_array = blocks_content | split: '<tab-content-label>'
+
+  assign blocks_content = blocks_content_array | first
+
+  for tab_item in blocks_content_array
+    if forloop.first
+      continue
+    endif
+    assign tab_label = tab_item | split: '</tab-content-label>' | first
+    assign tab_content_end = tab_item | split: '</tab-content-label>' | last
+
+    if forloop.index0 > 1
+      assign tab_content_end = tab_content_end | replace: 'data-tab-content-x-cloak-placeholder', 'x-cloak'
+    endif
+
+    assign blocks_content = blocks_content | append: tab_content_end
+    assign tab_blocks = tab_blocks | append: ',' | append: tab_label
+  endfor
+
+  assign tab_blocks = tab_blocks | replace_first: ',' | split: ','
+
+
+  for i in (1..100)
+    if blocks_content contains '<tab-navigation>'
+      assign blocks_array = blocks_content | replace_first: "<tab-navigation>", splitter | split: splitter
+      assign start = blocks_array | first
+      assign end = blocks_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | last
+
+      if tab_blocks.size < 1
+        assign blocks_content = start | append: end
+        continue
+      endif
+
+      assign tab_navigation = blocks_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | first
+
+      assign tab_label = tab_navigation | split: '</tab-label>' | first | replace: '<tab-label>'
+      assign tab_navigation = tab_navigation | split: '</tab-label>' | last
+
+      assign tab_button_class = tab_navigation | split: '</tab-button-class>' | first | replace: '<tab-button-class>'
+      assign tab_navigation = tab_navigation | split: '</tab-button-class>' | last
+
+      assign tab_navigation_buttons_markup = ''
+
+      for tab in tab_blocks
+        assign tab_handle = tab | strip_html | handleize
+        assign tab_label_content = tab_label | replace: '[label]', tab
+
+        capture tab_label_richtext_content
+          render '_input.inline_richtext', content: tab_label_content
+        endcapture
+        assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab_handle
+        assign tab_navigation_buttons_markup = tab_navigation_buttons_markup | append: tab_button_markup
+      endfor
+
+      assign tab_navigation = tab_navigation | replace: '<tab-navigation-buttons-placeholder />', tab_navigation_buttons_markup
+
+      assign blocks_content = start | append: tab_navigation | append: end
+      continue
+    endif
+    break
+  endfor
+%}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      data-bundle-section
+      data-tabs="{{ tab_blocks | json | escape }}"
+      x-data="{ ..._sections.initBundle($el), ..._sections.initTabs($el) }"
+      {% if disable_product_links %}
+        @click.capture="(e) => {
+          if (!e.target.closest(`[x-ref='bundle_button']`) && !e.target.closest(`button`) && e.target.closest('[data-product-id][data-href], [data-product-id] [data-href]')) {
+            e.stopPropagation();
+          }
+        }"
+      {% endif %}
+      data-section-settings="{{ section.settings | json | escape }}"
+      class="relative {{ container_spacing }}">
+    {{ blocks_content }}
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Bundle",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bundle Limits"
+    },
+    {
+      "type": "select",
+      "id": "restrict_bundle_quantity",
+      "label": "Restrict bundle quantity",
+      "default": "no_limit",
+      "options": [
+        {
+          "value": "hard_limit",
+          "label": "Hard limit"
+        },
+        {
+          "value": "upgrade_limit",
+          "label": "Upgrade limit"
+        },
+        {
+          "value": "no_limit",
+          "label": "No limit"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Bundle Targets"
+    },
+    {
+      "type": "paragraph",
+      "content": "Important. This section does not create actual discounts. All discounts need to be created in the Shopify Admin Dashboard to match the settings here."
+    },
+    {
+      "type": "select",
+      "id": "bundle_target_type",
+      "label": "Bundle Targets",
+      "info": "Bundle Targets are displayed via the Select dropdown",
+      "default": "item_count",
+      "options": [
+        {
+          "value": "total_price",
+          "label": "Amount based"
+        },
+        {
+          "value": "item_count",
+          "label": "Quantity based"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "incentive_target_type",
+      "label": "Incentive Targets",
+      "info": "Incentive Targets are displayed via the Progress bar Block.",
+      "default": "total_price",
+      "options": [
+        {
+          "value": "total_price",
+          "label": "Subtotal"
+        },
+        {
+          "value": "final_price",
+          "label": "Final price"
+        },
+        {
+          "value": "item_count",
+          "label": "Quantity"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Interactions"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_product_links",
+      "label": "Disable product links",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "slider"
+    },
+    {
+      "type": "_main_cart__progress_bar"
+    },
+    {
+      "type": "tab_navigation"
+    },
+    {
+      "type": "tab_content"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_bundle__dynamic_richtext"
+    },
+    {
+      "type": "_bundle__container"
+    },
+    {
+      "type": "_bundle__added_products"
+    },
+    {
+      "type": "_bundle__add_button"
+    },
+    {
+      "type": "_bundle__bundle_selector"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle",
+      "settings": {
+        "restrict_bundle_quantity": "no_limit",
+        "bundle_target_type": "item_count",
+        "incentive_target_type": "total_price",
+        "disable_product_links": true,
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 40px;\n  padding-bottom: 60px;\n  min-height: 100vh;\n}",
+        "section_id": "",
+        "hidden_name_backup": "Bundle"
+      },
+      "blocks": [
+        {
+          "type": "_bundle__bundle_selector",
+          "settings": {
+            "type": "auto",
+            "select_class": "!hidden",
+            "discount_label": "",
+            "price_content": "",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  margin-top: 5px;\n  color: white;\n}\n\n\n@media (max-width: 767px) {\n  & {\n    margin-bottom: 0;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_bundle__bundle_target",
+              "name": "2 Items for 5%",
+              "settings": {
+                "label": "Bundle Special",
+                "target": 2,
+                "discount_percentage": 5,
+                "discount_amount": 0,
+                "select_label": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "_bundle__bundle_target",
+              "name": "3 Items for 10%",
+              "settings": {
+                "label": "Bundle Special",
+                "target": 3,
+                "discount_percentage": 10,
+                "discount_amount": 0,
+                "select_label": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "_bundle__bundle_target",
+              "name": "4 Items for 15%",
+              "settings": {
+                "label": "Bundle Special",
+                "target": 4,
+                "discount_percentage": 15,
+                "discount_amount": 0,
+                "select_label": ""
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_bundle__container",
+          "name": "energy-tubs",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  padding-top: 40px;\n  padding-bottom: 60px;\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "energy-tubs"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h2>energy tubs</h2><p></p><p>Just fill out the form, then we’ll review it and send you your automatically generated Ambassador Codeif you’re accepted. So, what are you waiting for?! </p>",
+                "text_alignment": "inherit",
+                "content_class": "richtetx-md",
+                "text_color": "",
+                "custom_css": "& {\n  max-width: 720px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "slider",
+              "name": "Product Grid",
+              "settings": {
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "auto_rotate": 0,
+                "pause_on_hover": false,
+                "scrollbar_class": "scrollbar",
+                "scroll_pagination_class": "",
+                "enable_show_more_button": true,
+                "show_more_button_content": "See more",
+                "show_less_button_content": "See less",
+                "button_class": "button-primary",
+                "display_limit": "10 / 8",
+                "infinite_scroll": "off",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 30px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n grid-template-columns: repeat(4, 1fr);\n  gap: var(--grid-gap);\n}\n\n& [data-show-more-button] {\n  margin-top: 30px;\n  width: 100%;\n}\n\n@media (max-width: 1024px) {\n  & .grid-container {\n    grid-template-columns: repeat(3, 1fr);\n  }\n}\n\n\n@media (max-width: 768px) {\n  & .grid-container {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}",
+                "hide_if_empty": "none",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Product Grid"
+              },
+              "blocks": [
+                {
+                  "type": "cards_product",
+                  "name": "Product Cards",
+                  "settings": {
+                    "primary_source": "manual",
+                    "fallback_source": "manual",
+                    "fallback_products": [],
+                    "fallback_collection": "collection1",
+                    "order_offset": 1,
+                    "targeting_type": "product",
+                    "target_product": "",
+                    "display_limit": "14",
+                    "hide_out_of_stock": false,
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& [data-product-id] {\n  background: #f2f2f2;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_bundle__container",
+          "name": "Bundle Bar",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#22c55e",
+            "custom_css": "& {\n  position: sticky;\n  margin: 0 calc(-1 * var(--container-md)); \n  padding: 15px var(--container-md);\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 77px;\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  margin-top: 120px;\n}\n\n@media (max-width: 768px) {\n  & {\n    flex-direction: column;\n    height: unset;\n    align-items: stretch;\n  }\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Bundle Bar"
+          },
+          "blocks": [
+            {
+              "type": "_bundle__container",
+              "name": "Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "#ffffff",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n}\n\n@media (max-width: 768px) {\n  & {\n    justify-content: space-between;\n    gap: 12px;\n    align-items: flex-start;\n  }\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "_bundle__container",
+                  "name": "Container",
+                  "settings": {
+                    "element_id": "",
+                    "custom_effect": "off",
+                    "scroll_reveal": "children",
+                    "collapsible_handle": "",
+                    "show": false,
+                    "text_color": "rgba(0,0,0,0)",
+                    "background_color": "",
+                    "custom_css": "& {\n  padding-right: 36px;\n}",
+                    "generate_block_presets": "never",
+                    "hidden_name_backup": "Container"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_bundle__container",
+                      "name": "Container",
+                      "settings": {
+                        "element_id": "",
+                        "custom_effect": "off",
+                        "scroll_reveal": "children",
+                        "collapsible_handle": "",
+                        "show": false,
+                        "text_color": "",
+                        "background_color": "",
+                        "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}",
+                        "generate_block_presets": "never",
+                        "hidden_name_backup": "Container"
+                      },
+                      "blocks": [
+                        {
+                          "type": "_bundle__dynamic_richtext",
+                          "name": "Dynamic Richtext",
+                          "settings": {
+                            "content": "<h4>Your Bundle ([item_count])</h4>",
+                            "text_alignment": "inherit",
+                            "css_class": "richtetx-md",
+                            "show_conditionally": "always",
+                            "text_color": "#ffffff",
+                            "custom_css": "& {\n}"
+                          },
+                          "blocks": []
+                        },
+                        {
+                          "type": "_bundle__dynamic_richtext",
+                          "name": "Dynamic Richtext",
+                          "settings": {
+                            "content": "<p>[active_discount_wording]</p>",
+                            "text_alignment": "inherit",
+                            "css_class": "label-variant-quantity",
+                            "show_conditionally": "active_discount",
+                            "text_color": "#424242",
+                            "custom_css": "& {\n}"
+                          },
+                          "blocks": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "_bundle__dynamic_richtext",
+                      "name": "Dynamic Richtext",
+                      "settings": {
+                        "content": "<p>Add [target_difference] more for [target_discount_wording]</p>",
+                        "text_alignment": "inherit",
+                        "css_class": "richtext-md",
+                        "show_conditionally": "target_not_reached",
+                        "text_color": "",
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "toggle_collapsible",
+                    "title": "[icon.chevron-down]",
+                    "url": "",
+                    "collapsible_handle": "added_products",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "",
+                    "show_active_state": false,
+                    "accessibility_label": "Open Dropdown",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  transition: all 0.2s linear;\n}\n&.active {\n  transform: rotate(-180deg);\n}\n\n@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_bundle__container",
+              "name": "Desktop Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  position: relative;\n  height: 100%;\n  min-width: calc(85px * 4);\n  max-width: 100%;\n  flex: 1;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Desktop Container"
+              },
+              "blocks": [
+                {
+                  "type": "_bundle__added_products",
+                  "name": "Bundle added products",
+                  "settings": {
+                    "heading": "",
+                    "heading_class": "richtext-md",
+                    "add_icon": "plus",
+                    "autofill": true,
+                    "minimum_items": 4,
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "scrollbar_class": "scrollbar-no-buttons",
+                    "scroll_pagination_class": "",
+                    "text_color": "rgba(0,0,0,0)",
+                    "background_color": "",
+                    "custom_css": "& {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right; 0;\n  --grid-cols: 4;\n  --grid-gap: 5px;\n  max-width: 100%;\n}\n\n& .heading{\n \n}\n\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: 80px;\n  gap: var(--grid-gap);\n}\n& .grid-container > div{\n    width: 100%;\n    height: auto;\n    aspect-ratio: 1;\n    border-radius: 12px;\n  \n}\n& .grid-container > div figure:nth-child(2){\n  background-color: #FFF;\n  \n  color: #424242;\n}\n\n& .grid-container > div figure:nth-child(2) button {\n  background: #22c55e;\n}\n\n& [data-scrollbar] {\n  margin-top: 12px;\n}\n\n& .grid-container > div figure:nth-child(1){\n  color: #22c55e;\n  background-color: #FFF;\n  background-image: url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%233BBFEF' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\");\n}\n& .grid-container > div figure,& .grid-container > div figure div, & .grid-container > div figure img {\n   border-radius: 16px;\n}\n\n@media (max-width: 767px){\n&{\n  --grid-cols: 4;\n}\n  & .heading{\n    display: none;\n  }\n  & .grid-container{\n    gap: 16px;\n    grid-template-columns: unset;\n    grid-auto-flow: column;\n    grid-auto-columns: 64px;\n  }\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_bundle__container",
+              "name": "Mobile Collapsible Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "collapsible",
+                "scroll_reveal": "children",
+                "collapsible_handle": "added_products",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n}\n\n@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Mobile Collapsible Container"
+              },
+              "blocks": [
+                {
+                  "type": "_bundle__added_products",
+                  "name": "Bundle added products",
+                  "settings": {
+                    "heading": "",
+                    "heading_class": "richtext-md",
+                    "add_icon": "plus",
+                    "autofill": true,
+                    "minimum_items": 4,
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "scrollbar_class": "scrollbar-no-buttons",
+                    "scroll_pagination_class": "",
+                    "text_color": "rgba(0,0,0,0)",
+                    "background_color": "",
+                    "custom_css": "& {\n  padding-top: 15px;\n  padding-bottom: 15px;\n  border-top: 2px solid #424242;\n border-bottom: 2px solid #424242;\n  --grid-cols: 4;\n  --grid-gap: 5px;\n}\n\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n& .grid-container > div {\n    width: 100%;\n    height: auto;\n    aspect-ratio: 1;\n    border-radius: 12px;\n  \n}\n& .grid-container > div figure:nth-child(2){\n  background-color: #FFF;\n  color: #424242;\n}\n\n& .grid-container > div figure:nth-child(2) button {\n  background: #22c55e;\n}\n\n& [data-scrollbar] {\n  margin-top: 12px;\n}\n\n& .grid-container > div figure:nth-child(1){\n  color: #22c55e;\n  background-color: #FFF;\n  background-image: url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%233BBFEF' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\");\n}\n& .grid-container > div figure,& .grid-container > div figure div, & .grid-container > div figure img {\n   border-radius: 16px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_bundle__add_button",
+              "name": "Add button",
+              "settings": {
+                "action": "add_to_cart",
+                "allow_incomplete_bundles": true,
+                "label": "Add · [price] [compare_at_price]",
+                "button_class": "button-primary",
+                "some_complete_label": "Add [difference] more items",
+                "some_complete_button_class": "button-primary",
+                "incomplete_label": "Add [difference] more items",
+                "incomplete_button_class": "button-primary",
+                "custom_css": "& {\n  \n}\n@media (max-width: 768px) {\n  &, & > * {\n    width: 100%;\n  }\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Bundle"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card"
+    ]
+  },
+  "class": "shopify_section__bundle"
+}
+{% endschema %}

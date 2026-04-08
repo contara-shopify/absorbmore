@@ -1,0 +1,135 @@
+{% comment %}{% if theme.role != 'main' or shop.id == 58914308233 or shop.id == 64079593559 %}
+  <script type="application/javascript">
+    (async () => {
+      const dbKey = `_platter---cached-sections`;
+      localStorage.removeItem(dbKey);
+
+      if (!("caches" in window)) return null;
+      const cache = await caches.delete(`platter-modals--{{ settings.development__cache_version }}`);
+
+    })();
+  </script>
+{% endif %}{% endcomment %}
+
+{% comment %}<link rel="preload" href="/collections?page=420420" as="fetch" crossorigin="anonymous">{% endcomment %}
+
+<script>
+  (() => {
+    const onReady = (fn) => {
+      const start = () => requestAnimationFrame(fn); // run next paint after DOM constructed
+      if (document.readyState === "complete" || document.readyState === "interactive") {
+        queueMicrotask(start);
+      } else {
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      }
+    };
+
+    const inThemeEditor = !!window?.Shopify?.designMode;
+    const inVisualPreview = window.location.search.includes("source=visualPreview");
+    const modalsContainer = inVisualPreview
+      ? document.querySelector("[data-dynamic-modals]")
+      : document.querySelector("[data-dynamic-modals]:not([data-remove-parent-dynamically])");
+    if (!modalsContainer) return;
+
+    const MODALS_TTL_MS = 15 * 60 * 1000;
+    const MODALS_CACHE = "platter-modals--{{ settings.development__cache_version }}";
+    const MODALS_URL = !inThemeEditor ? `/collections?page=420420` : `/collections?page=133737`;
+    const MODALS_META_URL = `${MODALS_URL}&meta=1`;
+    const runWhenIdle = (fn, timeout = 1500) => window.requestIdleCallback?.(fn, { timeout }) || setTimeout(fn, timeout);
+
+    const initializeModalStores = () => {
+      if (window._stores?.quickView) {
+        const q = window._stores.quickView;
+        q.container = document.querySelector("[data-quick-view-container]");
+        q.show_all_container = document.querySelector("[data-quick-view-show-more]");
+        q.loading_container = document.querySelector("[data-quick-view-loading]");
+      }
+      if (window._stores?.modal && window._stores.modal.loaded !== true) window._stores.modal.loaded = true;
+    };
+
+    const injectModals = (html) => {
+      if (!html) return;
+      if (!modalsContainer.children.length || inThemeEditor) {
+        document.dispatchEvent(new CustomEvent("modalsLoading"));
+        modalsContainer.innerHTML = html;
+        modalsContainer.setAttribute('data-initialized', 'true');
+        window.modalsLoaded = true;
+        document.dispatchEvent(new CustomEvent("modalsLoaded"));
+      }
+      initializeModalStores();
+
+    };
+
+    const readFromCacheStorage = async () => {
+      if (!("caches" in window)) return { html: null, stale: false };
+      const cache = await caches.open(MODALS_CACHE);
+      const [metaRes, res] = await Promise.all([cache.match(MODALS_META_URL), cache.match(MODALS_URL)]);
+      if (!res) return { html: null, stale: false };
+      let stale = true;
+      try {
+        const meta = metaRes ? await metaRes.json() : null;
+        stale = !meta || Date.now() - meta.ts > (meta.ttl ?? MODALS_TTL_MS);
+      } catch {
+        stale = true;
+      }
+      return { html: await res.text(), stale };
+    };
+
+    const writeToCacheStorage = async (html) => {
+      if (!("caches" in window) || !html) return;
+      const cache = await caches.open(MODALS_CACHE);
+      await cache.put(MODALS_URL, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+      await cache.put(
+        MODALS_META_URL,
+        new Response(JSON.stringify({ ts: Date.now(), ttl: MODALS_TTL_MS }), {
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    };
+
+    const fetchFreshModals = async () => {
+      const res = await fetch(MODALS_URL, { credentials: "same-origin" });
+      const text = await res.text();
+      const wrap = document.createElement("div");
+      wrap.innerHTML = text;
+      return wrap.querySelector("[data-modals-section]")?.innerHTML || "";
+    };
+
+    const revalidateInBackground = async (prev) => {
+      try {
+        const fresh = await fetchFreshModals();
+        if (!fresh) return;
+        await writeToCacheStorage(fresh);
+        if (fresh !== prev) injectModals(fresh);
+      } catch {}
+    };
+
+    const loadModalsNow = async () => {
+      if (window.modalsLoaded) return;
+      const { html: cached, stale } = await readFromCacheStorage();
+      if (cached) {
+        injectModals(cached);
+        if (stale) revalidateInBackground(cached);
+        return;
+      }
+      const fresh = await fetchFreshModals();
+      injectModals(fresh);
+      writeToCacheStorage(fresh);
+    };
+
+    const preloadOnIntent = () => {
+      const handler = () => {
+        if (!window.modalsLoaded) runWhenIdle(loadModalsNow, 500);
+      };
+      document.addEventListener("pointerover", handler, { passive: true, capture: true });
+      document.addEventListener("touchstart", handler, { passive: true, capture: true });
+      document.addEventListener("focusin", handler, { passive: true, capture: true });
+    };
+
+    onReady(() => {
+      window.modalsLoaded = false;
+      preloadOnIntent();
+      runWhenIdle(loadModalsNow, 1500);
+    });
+  })();
+</script>

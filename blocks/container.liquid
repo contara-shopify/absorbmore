@@ -1,0 +1,1097 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "container"
+  assign element_id = block.settings.element_id
+  assign custom_effect = block.settings.custom_effect
+  assign url = block.settings.url
+  assign accessibility_label = block.settings.accessibility_label
+  assign open_in_new_tab = block.settings.open_in_new_tab
+  assign scroll_reveal = block.settings.scroll_reveal
+  assign collapsible_handle = block.settings.collapsible_handle
+  assign show = block.settings.show
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  capture blocks_content
+    content_for 'blocks'
+  endcapture
+
+  capture container_content
+    render '_block.container', block: block, blocks_content: blocks_content
+  endcapture
+
+  if container_content contains '<script type="container/break"></script>'
+    break
+  endif
+  echo container_content
+%}
+
+{% schema %}
+{
+  "name": "Container",
+  "settings": [
+    {
+      "type": "text",
+      "id": "element_id",
+      "label": "Element ID"
+    },
+    {
+      "type": "select",
+      "id": "custom_effect",
+      "label": "Custom effect",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "scroll_reveal",
+          "label": "Scroll Reveal"
+        },
+        {
+          "value": "collapsible",
+          "label": "Collapsible"
+        },
+        {
+          "value": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Link Settings",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "info": "Please provide an accessibility label if the link has generic content. I.e. 'Read More' or only uses an image or icon.",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false,
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Reveal Settings",
+      "visible_if": "{{ block.settings.custom_effect == 'scroll_reveal' }}"
+    },
+    {
+      "type": "select",
+      "id": "scroll_reveal",
+      "label": "Scroll Reveal",
+      "default": "children",
+      "options": [
+        {
+          "value": "container",
+          "label": "Box"
+        },
+        {
+          "value": "children",
+          "label": "Spread"
+        }
+      ],
+      "visible_if": "{{ block.settings.custom_effect == 'scroll_reveal' }}"
+    },
+    {
+      "type": "header",
+      "content": "Collapsible Content",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "In order for collapsible containers to operate, you will need to add a button targeting the trigger handle. Trigger handles have to be unique per page.",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "text",
+      "id": "collapsible_handle",
+      "label": "Collapsible Trigger Handle",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Default Open",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Container",
+      "category": "Layout"
+    },
+    {
+      "name": "Sidebar",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "&{\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "#f0ede7",
+            "custom_css": "& {\n  border-radius: 8px;\n  padding: 4px 12px 16px;\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n\n& .nav-link-lg{\n  width: 100%;\n  border-radius: 8px;\n  text-align: left;\n  padding: 6px 16px;\n  margin-top: 12px;\n  transition: all .3s ease-in-out;\n  border: 1px solid transparent;\n}\n\n& .nav-link-lg.active, & .nav-link-lg:hover{\n  background: #F7F5F1;\n  border: 1px solid #fff;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "Powders",
+                "url": "shopify://products/advanced-sleep-recovery-set",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "side_effect": "",
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "nav-link-lg",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "Magnesium",
+                "url": "shopify://collections/all",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "side_effect": "",
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "nav-link-lg",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "tab_navigation",
+              "name": "Tab navigation",
+              "settings": {
+                "label": "[label]",
+                "button_class": "nav-link-lg",
+                "trigger_on_hover": true,
+                "tab_group": "0",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "enable_mouse_dragging": false,
+                "scrollbar_class": "scrollbar",
+                "scroll_pagination_class": "",
+                "infinite_scroll": "off",
+                "custom_css": "& .grid-container{\n  display: flex;\n  flex-direction: column;\n  justify-content: start;\n  align-items: start;\n}\n& .nav-link-lg{\n  position: relative;\n}\n& .nav-link-lg::after{\n   content: '';\n  background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewbox=\"0 0 16 16\" fill=\"none\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M5.52925 3.52827C5.7896 3.26792 6.21171 3.26792 6.47206 3.52827L10.4721 7.52827C10.7324 7.78862 10.7324 8.21073 10.4721 8.47108L6.47206 12.4711C6.21171 12.7314 5.7896 12.7314 5.52925 12.4711C5.2689 12.2107 5.2689 11.7886 5.52925 11.5283L9.05784 7.99967L5.52925 4.47108C5.2689 4.21073 5.2689 3.78862 5.52925 3.52827Z\" fill=\"black\"></path></svg>');\n  width: 16px;\n  height: 16px;\n  display: block;\n  position: absolute;\n  right: 16px;\n  top: 50%;\n  opacity: 0;\n  transform: translate(-50%, -50%);\n  transition: all .3s ease-in-out;\n}\n& .nav-link-lg.active::after{\n  opacity: 1;\n  transform: translate(0%,-50%);\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "Stacks",
+                "url": "shopify://collections/bundles-and-save",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "side_effect": "",
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "nav-link-lg",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "button",
+            "title": "Shop all",
+            "url": "shopify://collections/all",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "side_effect": "",
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "button-primary",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  height: 47px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Clinitian's Choice",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "#f0ede7",
+        "custom_css": "& {\n  padding: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n  \n  display: flex;\n  align-items: center;\n justify-content: space-between;\n gap: 64px;\n}\n\n@media (max-width: 1199px) {\n  & {\n    padding: 16px;\n    gap: 8px;\n    flex-direction: column;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n gap: 16px;\n  align-items: center;\n  width: fit-content;\n  justify-content: space-between;\n flex: 1 0 auto;\n}\n\n@media (max-width: 1199px) {\n  & {\n    flex: unset;\n    flex-wrap: wrap;\n    gap: 8px 0;\n    justify-content: space-between;\n    width: 100%;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "image": "shopify://shop_images/Group_1.svg",
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "400",
+                "max_width": 400,
+                "mobile_max_width": 1200,
+                "custom_css": "& {\n  width: 248px;\n}\n\n\n@media (max-width: 1199px) {\n  & {\n    width: 194px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "container",
+              "name": "Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  width: fit-content;\n}\n\n& .image-wrapper:not(:first-of-type){\n  margin-left: -8px;\n}\n\n\n@media (max-width: 1199px) {\n  & .image-wrapper:not(:first-of-type){\n  margin-left: -5px;\n}\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": ""
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "name": "Image",
+                  "settings": {
+                    "image": "shopify://shop_images/image_ratios-3_4afa699d-4d2c-4fa1-9a9a-ce3450435f59.jpg",
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "80px",
+                    "max_width": 80,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n  width: 40px;\n  aspect-ratio: 1;\n  border: 1px solid #fff;\n  border-radius: 100%;\n}\n\n@media (max-width: 1023px) {\n  & {\n    width: 24px;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "image",
+                  "name": "Image",
+                  "settings": {
+                    "image": "shopify://shop_images/image_ratios-2_080c7443-a110-4746-91f9-7f66f9264d32.jpg",
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "80px",
+                    "max_width": 80,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n  width: 40px;\n  aspect-ratio: 1;\n  border: 1px solid #fff;\n  border-radius: 100%;\n}\n\n@media (max-width: 1023px) {\n  & {\n    width: 24px;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "image",
+                  "name": "Image",
+                  "settings": {
+                    "image": "shopify://shop_images/image_ratios-1_e5179cd8-3793-45a4-a574-209024c4d931.jpg",
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "80px",
+                    "max_width": 80,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n  width: 40px;\n  aspect-ratio: 1;\n  border: 1px solid #fff;\n  border-radius: 100%;\n}\n\n@media (max-width: 1023px) {\n  & {\n    width: 24px;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "image",
+                  "name": "Image",
+                  "settings": {
+                    "image": "shopify://shop_images/image_ratios_323cc7ad-8e95-4ee4-995b-7e21f3eccd0e.jpg",
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "80px",
+                    "max_width": 80,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n  width: 40px;\n  aspect-ratio: 1;\n  border: 1px solid #fff;\n  border-radius: 100%;\n}\n\n@media (max-width: 1023px) {\n  & {\n    width: 24px;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h5><em>900+ clinicians shared our products on FrontrowMD, with no compensation.</em></h5>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#000000",
+            "custom_css": "&{\n  max-width: 324px;\n}\n@media (max-width: 1199px) {\n  & {\n    color: #6a6a6a;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "New Comment",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "",
+        "category_name": "",
+        "hidden_name_backup": "New Comment"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h3><strong>Leave a comment</strong></h3>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "form",
+          "name": "New Comment Form",
+          "settings": {
+            "type": "new_comment",
+            "target_id": "",
+            "target_visibility": "",
+            "text_color": "",
+            "background_color": "rgba(0,0,0,0)",
+            "custom_css": "& {\n  margin-top: 24px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n  height: max-content;\n}\n@media (max-width: 1023px) {\n  & {\n    grid-template-columns: 1fr;\n  }\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "New Comment Form"
+          },
+          "blocks": [
+            {
+              "type": "_form__input_text",
+              "settings": {
+                "title": "Name",
+                "placeholder": "Name",
+                "input_class": "input-text",
+                "name": "comment[author]",
+                "type": "text",
+                "autocomplete": "name",
+                "default_value": "",
+                "required": true,
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_email",
+              "settings": {
+                "title": "Email",
+                "placeholder": "Email",
+                "input_class": "input-text",
+                "name": "comment[email]",
+                "type": "email",
+                "autocomplete": "email",
+                "default_value": "",
+                "required": true,
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_textarea",
+              "settings": {
+                "title": "Message",
+                "placeholder": "Message",
+                "textarea_class": "input-textarea",
+                "name": "comment[body]",
+                "default_value": "",
+                "required": true,
+                "custom_css": "& {\n  grid-column: span 2;\n  min-height: 100px;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<p>Please note, comments must be approved before they are published.</p><p>This site is protected by hCaptcha and the hCaptcha <a href=\"/policies/privacy-policy\" title=\"Privacy Policy\">Privacy Policy</a> and <a href=\"/policies/terms-of-service\" title=\"Terms of Service\">Terms of Service</a> apply.</p>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  grid-column: span 2;\n  margin: 10px 0;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n    margin: 0;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_button",
+              "settings": {
+                "title": "Submit",
+                "button_type": "submit",
+                "name": "",
+                "default_value": "",
+                "button_class": "button-primary",
+                "custom_css": "& {\n  width: 100%;\n  grid-column: span 2;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Featured Articles",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  margin-top: 40px;\n  display: grid;\n  gap: 24px;\n  grid-template-columns: 7fr 6fr;\n  justify-content: stretch;\n  max-height: 590px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 24px;\n    grid-template-columns: 1fr\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_article",
+          "name": "Article Cards",
+          "settings": {
+            "blog": "",
+            "order_offset": 0,
+            "filter_by_tag": "",
+            "display_limit": "12 / 4",
+            "article_card_class": "article-card-featured",
+            "hydrate_immediately": false,
+            "preload_images": 0,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 24px;\n  height: 100%;\n  justify-content: space-between;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "cards_article",
+              "name": "Article Cards",
+              "settings": {
+                "blog": "",
+                "order_offset": 1,
+                "filter_by_tag": "",
+                "display_limit": "12 / 4",
+                "article_card_class": "article-card-flat",
+                "hydrate_immediately": false,
+                "preload_images": 0,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "&{\n  height: fit-content;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "divider",
+              "name": "Divider",
+              "settings": {
+                "background_color": "#b4b4b4",
+                "custom_css": "& {\n  order: 15;\n  height: 1px;\n  width: 100%;\n  margin: 0;\n  display: block;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Promo Card",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  position: relative;\n  order: 110;\n  grid-column: span 2 / span 2;\n  padding: 40px 64px;\n  border-radius: 8px;\n  display: flex;\n  flex-direction: column;\n  align-items: end;\n  overflow: hidden;\n  gap: 40px;\n  border: 1px solid #fff;\n}\n\n@media (max-width: 768px) {\n  & {\n    min-height: calc((100vw - 2 * var(--gutter)) * 219/327);\n    padding: 24px;\n    justify-content: space-between;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "name": "Background Image",
+          "settings": {
+            "image": "{{ closest.collection.metafields.smart.promo_card_image.value }}",
+            "mobile_image": "{{ closest.collection.metafields.smart.promo_card_image_mobile.value }}",
+            "url": "{{ closest.collection.metafields.smart.promo_card_button_url.value }}",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "mobile_max_width": 1200,
+            "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "{{ closest.collection.metafields.smart.promo_card_content | metafield_tag }}",
+            "text_alignment": "right",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& h5{\n  margin-top: 8px;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "button",
+            "title": "{{ closest.collection.metafields.smart.promo_card_button_text.value }}",
+            "url": "{{ closest.collection.metafields.smart.promo_card_button_url.value }}",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "side_effect": "",
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "button-primary",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  width: fit-content;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Content",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "#f0ede7",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  flex-shrink: 1;\n  padding: 40px 64px;\n  border-radius: 0 8px 8px 0;\n}\n@media (max-width: 768px) {\n  & {\n    width: unset;\n    border-radius: 0 0 8px 8px;\n    padding: 24px 16px;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": "Content"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h5><strong>The Problem</strong></h5><h3><strong>80% of your supplements</strong></h3><h3><strong>aren’t being absorbed.</strong></h3><p>Most supplements pass through your system with little effect, leaving your body without the nutrients it needs.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#000000",
+            "custom_css": "& h5 {\n  margin-bottom: 16px;\n}\n\n& p {\n  color: #6a6a6a;\n  margin-top: 12px;\n}\n\n@media (max-width: 768px) {\n  & h5 {\n    margin-bottom: 12px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h5><strong>The Solution</strong></h5><h3><strong>We’re redefining supplements with absorption at the core.</strong></h3><p>We create comprehensive supplements with up to 500% more absorption—providing solutions you can actually feel.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "rgba(0,0,0,0)",
+            "custom_css": "& {\n  margin-top: 40px;\n  padding-top: 40px;\n  border-top: 1px solid #fff;\n}\n& h5 {\n  margin-bottom: 16px;\n}\n\n& p {\n  color: #6a6a6a;\n  margin-top: 12px;\n}\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 24px;\n    padding-top: 24px;\n  }\n  & h5 {\n    margin-bottom: 12px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "button",
+            "title": "Shop now",
+            "url": "shopify://collections/all",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "side_effect": "",
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "button-primary",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  margin-top: 40px;\n  width: max-content;\n}\n\n@media (max-width: 768px) {\n  & {\n    width: 100%;\n    margin-top: 24px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Header",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  gap: 96px;\n  justify-content: space-between;\n}\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n    flex-direction: column;\n    align-items: start;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h2><strong>Why Our Supplements</strong></h2><h2><strong>Work Better.</strong></h2>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  flex-shrink: 0;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  width: 100%;\n  max-width: 744px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<p>We don’t just use the right ingredients, we make sure your body can actually absorb them.</p><p>We rigorously test ingredients to ensure you get the highest quality, most effective nutrients.</p>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "@media (max-width: 768px) {\n  & {\n   display: none; \n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<p>We don’t just use the right ingredients, we make sure your body can actually absorb them.</p>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "@media (min-width: 769px) {\n  & {\n   display: none; \n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "Learn More",
+                "url": "/pages/science/#ingredients",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "side_effect": "",
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "plain-link",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  margin-top: 10px;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Ingredients",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  margin-top: 56px;\n}\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 24px;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_ingredient",
+          "name": "Cards ingredient",
+          "settings": {
+            "metaobjects": [
+              "magnesium-glycinate-3",
+              "capsoil-liposomal-glutathione",
+              "capsoil-liposomal-vitamin-c"
+            ],
+            "metafield_image_key": "image",
+            "metafield_title_key": "name",
+            "metafield_short_description_key": "short_description",
+            "percentages_label": "Absorption Percentage",
+            "percentage_1_label": "Industry Standard",
+            "metafield_percentage_1_key": "absorption_percentage_industry_standard",
+            "percentage_2_label": "Our Products",
+            "metafield_percentage_2_key": "absorption_percentage_our_products",
+            "show_popup": false,
+            "popup_button_label": "[icon.plus]",
+            "popup_button_class": "richtext-md",
+            "metafield_description_key": "description",
+            "content_1_label": "<strong>What it does:</strong>",
+            "metafield_content_1_key": "what_it_does",
+            "content_2_label": "<strong>Why it Matters:</strong>",
+            "metafield_content_2_key": "why_it_matters",
+            "product_button_label": "Shop Now",
+            "product_button_class": "button-primary",
+            "metafield_product_handle_key": "product_handle",
+            "slider_scroll_snap": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+            "slider_overflow_container": "all",
+            "auto_rotate": 0,
+            "pause_on_hover": false,
+            "enable_mouse_dragging": false,
+            "scrollbar_class": "scrollbar-buttons-square",
+            "scroll_pagination_class": "",
+            "infinite_scroll": "all",
+            "enable_show_more_button": false,
+            "show_more_button_content": "See more",
+            "show_less_button_content": "See less",
+            "button_class": "button-primary",
+            "display_limit": "12 / 4",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+            "max_width": 256,
+            "custom_css": "& .grid-container{\n  --grid-cols: 3;\n\n  display: grid;\n  grid-template-columns: repeat(var(--grid-cols), 1fr);\n  gap: 32px;\n}\n\n& [data-ingredients-card] {\n  background: #f7f5f1;\n  height: fit-content;\n}\n& [data-ingredients-card] > div:last-child {\n  padding-top: 16px;\n  border-top: 1px solid #fff;\n}\n\n@media (min-width: 769px) {\n  & [data-ingredients-card] {\n    padding: 24px 32px;\n  }\n}\n\n@media (max-width: 989px) {\n  & .grid-container{\n    --grid-cols: 2;\n  }\n}\n\n@media (max-width: 768px) {\n  & .grid-container{\n    --grid-cols: 1;\n    gap: 8px;\n  }\n  & [data-ingredients-card] > div:first-of-type {\n    grid-template-columns: 75px 1fr;\n    column-gap: 24px;\n  }\n  & img{\n    height: 57px;\n    grid-row: span 2 / span 2;\n  }\n  \n  & .max-md:col-span-2{\n    grid-column: unset;\n  }\n}"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__container"
+}
+{% endschema %}

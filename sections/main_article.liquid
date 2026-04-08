@@ -1,0 +1,906 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "main_article"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      x-data="{ ..._sections.initMainArticle($el) }"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="relative {{ container_spacing }}">
+    {% content_for "blocks" %}
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Main Article",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "tab_navigation"
+    },
+    {
+      "type": "slider"
+    },
+    {
+      "type": "_main_article__container"
+    },
+    {
+      "type": "_main_article__pagination"
+    },
+    {
+      "type": "_main_article__comment_cards"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main article",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 40px;\n  padding-bottom: 60px;\n  display: flex;\n  gap: 36px;\n  justify-content: space-between;\n  align-items: flex-start;\n}\n@media (max-width: 768px) {\n  & {\n    flex-direction: column;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Main article"
+      },
+      "blocks": [
+        {
+          "type": "_main_article__container",
+          "name": "Article Content",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  max-width: 698px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Article Content"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Article Content",
+              "settings": {
+                "title": "{{ closest.article.content }}",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md richtext-margins",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_article__container",
+              "name": "Related Products",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: none;\n}\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 40px;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Related Products"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>shop related products</h3>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "slider",
+                  "name": "Product Cards: Flat",
+                  "settings": {
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "mobile",
+                    "auto_rotate": 0,
+                    "pause_on_hover": false,
+                    "scrollbar_class": "scrollbar-no-buttons-dark",
+                    "scroll_pagination_class": "",
+                    "enable_show_more_button": false,
+                    "show_more_button_content": "See more",
+                    "show_less_button_content": "See less",
+                    "button_class": "button-primary",
+                    "display_limit": "12 / 4",
+                    "infinite_scroll": "off",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 30px;\n  --grid-cols: 3;\n  --grid-gap: 5px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n& [data-scrollbar] {\n  margin-top: 16px;\n}\n\n@media (max-width: 1200px) {\n  & {\n    --grid-cols: 2;\n  }\n}\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1.4;\n  }\n}",
+                    "hide_if_empty": "none",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "Product Cards: Flat"
+                  },
+                  "blocks": [
+                    {
+                      "type": "cards_product",
+                      "name": "Product Cards",
+                      "settings": {
+                        "primary_source": "manual",
+                        "fallback_source": "manual",
+                        "fallback_products": [],
+                        "fallback_collection": "all",
+                        "order_offset": 1,
+                        "targeting_type": "product",
+                        "target_product": "",
+                        "display_limit": "3",
+                        "hide_out_of_stock": false,
+                        "text_color": "",
+                        "background_color": "rgba(0,0,0,0)",
+                        "custom_css": "& [data-product-id] {\n  background: #F2F2F2;\n}",
+                        "hide_if_empty": "container"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_main_article__pagination",
+              "name": "Article Pagination",
+              "settings": {
+                "previous_button_content": "[icon.arrow-left] Previous",
+                "next_button_content": "Next [icon.arrow-right]",
+                "button_class": "button-secondary",
+                "custom_css": "& {\n  margin-top: 60px;\n}\n@media (max-width: 768px) {\n  & {\n   margin-top: 40px; \n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_article__container",
+              "name": "Comments",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 60px;\n}\n@media (max-width: 768px) {\n  & {\n   margin-top: 40px; \n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Comments"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>{{ closest.article.comments_count }} comments</h3>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_article__comment_cards",
+                  "name": "Comments",
+                  "settings": {
+                    "pagination_size": 10,
+                    "comment_card_class": "comment-card",
+                    "pagination_style": "classic",
+                    "pagination_class": "pagination",
+                    "results_count": "showing [count] of [total] results",
+                    "results_count_class": "richtext-md p",
+                    "load_more_button_text": "load more products",
+                    "load_more_button_class": "button-primary",
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "infinite_scroll": "off",
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "custom_css": "& {\n  margin-top: 16px;\n  --grid-cols: 1;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: var(--grid-gap);\n}\n& [data-pagination] {\n  margin-top: 15px;\n}\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+                    "hide_if_empty": "container"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "container",
+              "name": "New Comment",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 60px;\n}\n\n@media (max-width: 768px) {\n  & {\n     margin-top: 40px;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "New Comment"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>Leave a comment</h3>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "form",
+                  "name": "New Comment Form",
+                  "settings": {
+                    "type": "new_comment",
+                    "target_id": "",
+                    "target_visibility": "",
+                    "text_color": "",
+                    "background_color": "#f2f2f2",
+                    "custom_css": "& {\n  margin-top: 30px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n  height: max-content;\n  padding: 20px;\n  border-radius: 12px;\n}\n@media (max-width: 768px) {\n  & {\n    grid-template-columns: 1fr;\n    padding: 10px;\n  }\n}",
+                    "hide_if_empty": "container",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "New Comment Form"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_form__input_text",
+                      "settings": {
+                        "title": "Name",
+                        "placeholder": "Name",
+                        "input_class": "input-text",
+                        "name": "comment[author]",
+                        "type": "text",
+                        "autocomplete": "name",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_email",
+                      "settings": {
+                        "title": "Email",
+                        "placeholder": "Email",
+                        "input_class": "input-text",
+                        "name": "comment[email]",
+                        "type": "email",
+                        "autocomplete": "email",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_textarea",
+                      "settings": {
+                        "title": "Message",
+                        "placeholder": "Message",
+                        "textarea_class": "input-textarea",
+                        "name": "comment[body]",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n  grid-column: span 2;\n  min-height: 100px;\n}\n\n@media (max-width: 768px) {\n  & {\n    grid-column: unset;\n  }\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Richtext",
+                      "settings": {
+                        "title": "<p>Please note, comments must be approved before they are published.</p><p>This site is protected by hCaptcha and the hCaptcha <a href=\"/policies/privacy-policy\" title=\"Privacy Policy\">Privacy Policy</a> and <a href=\"/policies/terms-of-service\" title=\"Terms of Service\">Terms of Service</a> apply.</p>",
+                        "text_alignment": "inherit",
+                        "content_class": "richtext-md",
+                        "text_color": "",
+                        "custom_css": "& {\n  grid-column: span 2;\n  margin: 10px 0;\n}\n\n@media (max-width: 768px) {\n  & {\n    grid-column: unset;\n    margin: 0;\n  }\n}",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_button",
+                      "settings": {
+                        "title": "Post Comment",
+                        "button_type": "submit",
+                        "name": "",
+                        "default_value": "",
+                        "button_class": "button-primary",
+                        "custom_css": "& {\n  width: 100%;\n  grid-column: span 2;\n}\n\n@media (max-width: 768px) {\n  & {\n    grid-column: unset;\n  }\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_article__container",
+          "name": "Related Items",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  max-width: 464px;\n}\n@media (min-width: 768px) {\n  & {\n    height: max-content;\n    position: sticky;\n    top: var(--header-height-offset);\n    \n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Related Items"
+          },
+          "blocks": [
+            {
+              "type": "_main_article__container",
+              "name": "Related Products",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-bottom: 40px;\n}\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Related Products"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h5>RELATED PRODUCTS</h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "slider",
+                  "name": "Product Cards: Flat",
+                  "settings": {
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "auto_rotate": 0,
+                    "pause_on_hover": false,
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "enable_show_more_button": false,
+                    "show_more_button_content": "See more",
+                    "show_less_button_content": "See less",
+                    "button_class": "button-primary",
+                    "display_limit": "12 / 4",
+                    "infinite_scroll": "off",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 10px;\n  --grid-cols: 1;\n  --grid-gap: 5px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: var(--grid-gap);\n}\n\n& [data-scrollbar] {\n  margin-top: 16px;\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+                    "hide_if_empty": "none",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "Product Cards: Flat"
+                  },
+                  "blocks": [
+                    {
+                      "type": "cards_product",
+                      "name": "Product Cards",
+                      "settings": {
+                        "primary_source": "manual",
+                        "fallback_source": "manual",
+                        "fallback_products": [],
+                        "fallback_collection": "all",
+                        "order_offset": 1,
+                        "targeting_type": "product",
+                        "target_product": "",
+                        "display_limit": "3",
+                        "hide_out_of_stock": false,
+                        "text_color": "",
+                        "background_color": "",
+                        "custom_css": "& {\n}",
+                        "hide_if_empty": "container"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_main_article__container",
+              "name": "Featured Articles",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Featured Articles"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h5>Featured Posts</h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "slider",
+                  "name": "Article Cards: Flat",
+                  "settings": {
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "auto_rotate": 0,
+                    "pause_on_hover": false,
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "enable_show_more_button": false,
+                    "show_more_button_content": "See more",
+                    "show_less_button_content": "See less",
+                    "button_class": "button-primary",
+                    "display_limit": "12 / 4",
+                    "infinite_scroll": "off",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 10px;\n  --grid-cols: 1;\n  --grid-gap: 5px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: var(--grid-gap);\n}\n\n& [data-scrollbar] {\n  margin-top: 16px;\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+                    "hide_if_empty": "none",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "Article Cards: Flat"
+                  },
+                  "blocks": [
+                    {
+                      "type": "cards_article",
+                      "name": "Article Cards",
+                      "settings": {
+                        "blog": "news",
+                        "order_offset": 1,
+                        "filter_by_tag": "",
+                        "display_limit": "2",
+                        "article_card_class": "article-card-flat",
+                        "text_color": "",
+                        "background_color": "",
+                        "custom_css": "& {\n}",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "category": "Blog"
+    },
+    {
+      "name": "Article Comments",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-bottom: 64px;\n  display: grid;\n  grid-template-columns: 1fr 340px;\n  gap: 24px;\n}\n@media (max-width: 1023px) {\n  & {\n    grid-template-columns: 1fr;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Main article"
+      },
+      "blocks": [
+        {
+          "type": "_main_article__container",
+          "name": "Content",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  --spacing: 32px;\n  flex: 1;\n  display: grid;\n  gap: var(--spacing);\n  max-width: 884px;\n}\n\n@media (max-width: 1023px) {\n  & {\n     --spacing: 24px;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Article Content"
+          },
+          "blocks": [
+            {
+              "type": "container",
+              "name": "New Comment",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "New Comment"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3><strong>Leave a comment</strong></h3>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "form",
+                  "name": "New Comment Form",
+                  "settings": {
+                    "type": "new_comment",
+                    "target_id": "",
+                    "target_visibility": "",
+                    "text_color": "",
+                    "background_color": "rgba(0,0,0,0)",
+                    "custom_css": "& {\n  margin-top: 24px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n  height: max-content;\n}\n@media (max-width: 1023px) {\n  & {\n    grid-template-columns: 1fr;\n  }\n}",
+                    "hide_if_empty": "none",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "New Comment Form"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_form__input_text",
+                      "settings": {
+                        "title": "Name",
+                        "placeholder": "Name",
+                        "input_class": "input-text",
+                        "name": "comment[author]",
+                        "type": "text",
+                        "autocomplete": "name",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_email",
+                      "settings": {
+                        "title": "Email",
+                        "placeholder": "Email",
+                        "input_class": "input-text",
+                        "name": "comment[email]",
+                        "type": "email",
+                        "autocomplete": "email",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_textarea",
+                      "settings": {
+                        "title": "Message",
+                        "placeholder": "Message",
+                        "textarea_class": "input-textarea",
+                        "name": "comment[body]",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n  grid-column: span 2;\n  min-height: 100px;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Richtext",
+                      "settings": {
+                        "title": "<p>Please note, comments must be approved before they are published.</p><p>This site is protected by hCaptcha and the hCaptcha <a href=\"/policies/privacy-policy\" title=\"Privacy Policy\">Privacy Policy</a> and <a href=\"/policies/terms-of-service\" title=\"Terms of Service\">Terms of Service</a> apply.</p>",
+                        "text_alignment": "inherit",
+                        "content_class": "richtext-md",
+                        "text_color": "",
+                        "custom_css": "& {\n  grid-column: span 2;\n  margin: 10px 0;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n    margin: 0;\n  }\n}",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_button",
+                      "settings": {
+                        "title": "Submit",
+                        "button_type": "submit",
+                        "name": "",
+                        "default_value": "",
+                        "button_class": "button-primary",
+                        "custom_css": "& {\n  width: 100%;\n  grid-column: span 2;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_main_article__container",
+              "name": "Comments",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 64px;\n}\n@media (max-width: 1023px) {\n  & {\n   margin-top: 56px; \n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Comments"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3><strong>{{ closest.article.comments_count }}</strong><strong> comments</strong></h3>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_article__comment_cards",
+                  "name": "Comments",
+                  "settings": {
+                    "pagination_size": 2,
+                    "comment_card_class": "comment-card",
+                    "hydrate_immediately": false,
+                    "pagination_style": "manual",
+                    "pagination_class": "pagination",
+                    "results_count": "",
+                    "results_count_class": "hidden",
+                    "load_more_button_text": "Show more",
+                    "load_more_button_class": "button-secondary",
+                    "enable_mouse_dragging": false,
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "infinite_scroll": "off",
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "custom_css": "&{\nmargin-top: 24px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 24px;\n}\n\n& [data-comment-handle]:not(:last-of-type){\n  padding-bottom: 24px;\n  border-bottom: 1px solid #6A6A6A;\n}",
+                    "hide_if_empty": "container"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_article__pagination",
+              "name": "Article Pagination",
+              "settings": {
+                "previous_button_content": "[icon.arrow-left] Previous",
+                "next_button_content": "Next [icon.arrow-right]",
+                "button_class": "button-primary",
+                "custom_css": "& {\n   margin-top: 32px; \n  }"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Blog"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card",
+      "custom.head",
+      "custom.megamenu"
+    ]
+  },
+  "class": "shopify_section__main_article"
+}
+{% endschema %}

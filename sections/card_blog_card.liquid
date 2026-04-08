@@ -1,0 +1,328 @@
+{%- if current_page != 420420 and current_page != 133737 and request.design_mode != true or settings.development__block_card_sections -%}
+  {%- if section.settings.blog_card != blank -%}
+    {%- render 'card_blog_card._styles', section: metaobjects.blog_cards[section.settings.blog_card].schema.value -%}
+  {%- endif -%}
+  {%- break -%}
+{%- endif -%}
+
+{%- if settings.development__block_card_sections != true and request.design_mode == true or current_page != 420420 or current_page != 133737 -%}
+  {%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "card_blog_card"
+  assign _handle = section.settings.handle
+  assign blog_card = section.settings.blog_card
+  assign preview_blog = section.settings.preview_blog
+  assign link_to_object = section.settings.link_to_object
+  assign dynamic_text_color = section.settings.dynamic_text_color
+  assign dynamic_background_color = section.settings.dynamic_background_color
+  assign dynamic_border_color = section.settings.dynamic_border_color
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+  assign override_preview_background = section.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+    if request.design_mode or request.visual_preview_mode
+      assign _blog = preview_blog | default: blog
+
+      if _blog == blank and request.design_mode
+        assign _article = linklists | map: 'links' | map: "object" | map: "articles" | sort_natural | first
+        assign blog_handle = _blog.handle | split: "/" | first
+        assign _blog = blogs[blog_handle]
+      endif
+    endif
+
+    if blog_card != blank
+      assign _handle = blog_card | json | handleize
+    endif
+
+    assign card_class = _handle | handleize | prepend: "blog-card--"
+  %}
+
+  {% if request.design_mode or metaobjects.blog_cards[blog_card] == blank %}
+    {% capture selector %}.blog-card--{{ _handle | handleize }}{% endcapture %}
+
+    {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+      {% capture css %}
+        & {
+        {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+        {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+        }
+      {% endcapture %}
+    {% endif %}
+
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+      {% if request.design_mode %}
+      {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+      {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+      {% endif %}
+    </style>
+  {% endif %}
+
+  {% capture render_card %}
+    <article
+        data-blog-card="{{ _handle }}"
+        data-blog-handle="{{ _blog.handle }}"
+        x-data="{ ...(!!$el.getAttribute('data-blog-handle') ? _sections.initBlogCard($el, $refs, $el.getAttribute('data-blog-handle')) : {}) }"
+        x-defer="intersect"
+        {% if request.design_mode != true or _blog.handle == blank %}
+          x-ignore
+        {% endif %}
+        {% if link_to_object %}
+          :href="card?.url"
+          href="{{ _blog.url }}"
+          {% if open_in_new_tab %}
+            target="_blank"
+          {% endif %}
+        {% endif %}
+        class="block {{ card_class }} card-loading {{ container_spacing }}"
+        x-effect="() => { if (card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading') }"
+        x-init="utils.barbaPrefetchTargetPage($el, card?.url)"
+        :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`">
+      {% content_for "blocks" %}
+    </article>
+  {% endcapture %}
+
+  {% if link_to_object %}
+    {% assign render_card = render_card | replace: '<article', '<a' | replace: '</article', '</a' %}
+  {% else %}
+    {% assign render_card = render_card | replace: '<article', '<div' | replace: '</article', '</div' %}
+  {% endif %}
+
+  {% if request.design_mode or request.visual_preview_mode %}
+    <script type="application/json"
+            data-blog-data="{{ _blog.handle }}">{%- render '_json.blog', blog: _blog -%}</script>
+  {% endif %}
+
+  {% render '_components.card_preview', render_card: render_card %}
+
+  {% if request.design_mode or metaobjects.product_cards[product_card] == blank %}
+    <script>
+      document.querySelectorAll(`[data-blog-card="{{ _handle }}"] style`).forEach(styleEl => document.querySelector('[data-cards-styles-section]')?.appendChild(styleEl));
+      document.currentScript?.remove();
+    </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Blog Card",
+  "blocks": [
+    {
+      "type": "_card__container"
+    },
+    {
+      "type": "_card__image"
+    },
+    {
+      "type": "_card__button"
+    },
+    {
+      "type": "_card__text"
+    },
+    {
+      "type": "_card__labels"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "blog-card",
+      "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+    },
+    {
+      "type": "metaobject",
+      "id": "blog_card",
+      "label": "Blog card",
+      "metaobject_type": "blog_cards"
+    },
+    {
+      "type": "blog",
+      "id": "preview_blog",
+      "label": "Preview Blog",
+      "info": "Fallbacks to the first available blog"
+    },
+    {
+      "type": "checkbox",
+      "id": "link_to_object",
+      "label": "Link to article",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Colors"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use bracket notation for data access: i.e.[selected_variant.metafields.smart.color] or [product.metafields.smart.color]"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_text_color",
+      "label": "Dynamic text color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_background_color",
+      "label": "Dynamic background color"
+    },
+    {
+      "type": "text",
+      "id": "dynamic_border_color",
+      "label": "Dynamic border color"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "override_preview_background",
+      "label": "Override preview background"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Card",
+      "category": "Cards"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.card"
+    ]
+  },
+  "class": "shopify_section__card_blog_card"
+}
+{% endschema %}

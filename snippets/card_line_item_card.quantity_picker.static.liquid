@@ -1,0 +1,61 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__quantity_picker"
+  assign section_type = "card_line_item_card"
+  assign min = block.settings.min
+  assign max = block.settings.max
+  assign input_class = block.settings.input_class
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+  if line_item.properties._Gifted
+    break
+  endif
+%}
+
+<div
+    data-style-id="{{ style_id }}"
+    x-show="$data.showConditionally('{{ show_conditionally }}')"
+    x-data="{
+      min: Math.max(line_card?.line_item?.properties?._p_required ? 1 : +'{{ min }}'),
+      max: Math.min(+'{{ max }}', line_card?.quantity_limit),
+      values: []
+    }"
+    x-effect="
+    min = Math.max(line_card?.line_item?.properties?._p_required ? 1 : +'{{ min }}');
+    max = Math.min(+'{{ max }}', line_card?.quantity_limit);
+    values = Array.from({ length: max + 1 }, (_, index) => min + index);
+  ">
+  {% render '_components.select',
+      dynamic: true,
+      values: 'values',
+      titles: 'values',
+      current_value: 'line_card?.line_item?.quantity',
+      current_title: 'line_card?.line_item?.quantity',
+      select_class: input_class,
+      label: 'Quantity',
+      setState: '_cart.updateLineItemQuantity(value, line_card?.line_item?.index)',
+      state: 'line_card?.line_item?.quantity'
+  %}
+</div>

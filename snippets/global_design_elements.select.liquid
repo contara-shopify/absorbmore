@@ -1,0 +1,142 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "select"
+  assign section_type = "global_design_elements"
+  assign class = block.settings.class
+  assign custom_css = block.settings.custom_css
+  assign icon = block.settings.icon
+  assign override_preview_background = block.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- liquid
+  assign selector = '.' | append: class | replace: '\/', '/' | replace: '/', '\/'
+%}
+
+{%- capture css -%}
+
+  & {
+  position: relative;
+  transition: all 150ms;
+  display: inline-flex;
+  height: max-content;
+  width: 100%;
+  align-items: center;
+  user-select: none;
+  }
+
+  {% if icon != blank %}
+    &:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    background: currentColor;
+    mask: var(--icon-{{ icon | handleize }});
+    -webkit-mask: var(--icon-{{ icon | handleize }});
+    aspect-ratio: var(--icon-{{ icon | handleize }}-aspect-ratio);
+    height: calc(1em * 1.1);
+    opacity: 0.7;
+    }
+  {% endif %}
+
+{%- endcapture -%}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  {% if request.design_mode %}
+  {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+  {{- css| append: custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+  {% endif %}
+</style>
+
+{% if request.design_mode %}
+  {% if override_preview_background == blank or override_preview_background.alpha == 0 %}
+    {% assign override_preview_background = '#ffffff' %}
+  {% endif %}
+  <section class="fixed inset-0 z-50 flex flex-col gap-16 overflow-y-auto bg-white py-16 text-black px-container-sm @container"
+           data-section-id="{{ section.id }}"
+           data-preview-container
+           x-data="{tab: 'single-type'}"
+           style="background: {{ override_preview_background }};"
+           x-show="$editor?.select_block_id === '{{ block.id }}'"
+           x-cloak {{ block.shopify_attributes }}>
+
+    <header class="flex gap-3 font-mono">
+      <button @click="tab='single-type'"
+              type="button"
+              :class="tab === 'single-type' ? 'bg-gray-600 text-gray-50 border-gray-900 hf:bg-gray-700':'border-gray-200/70 bg-gray-100 text-gray-700 hf:text-gray-900 hf:border-gray-300/80 hf:bg-gray-200/90'"
+              class="rounded-sm border px-3 text-sm font-medium py-1.5">{{ selector }}
+      </button>
+    </header>
+
+    <main class="mt-8">
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div class="text-lg font-bold text-gray-600">Desktop</div>
+        <div class="text-lg font-bold text-gray-600">Mobile</div>
+      </header>
+      <section x-show="tab === 'single-type'" class="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+          {% render '_components.select',
+              values: '["Select Dropdown",2,3,4,5]',
+              select_class: class,
+              label: "Select Dropdown",
+              setState: "selectValue = value",
+              state: "selectValue",
+              current_value: 'Select Dropdown'
+          %}
+        </div>
+        <div class=" @container max-w-lg">
+          <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+            {% render '_components.select',
+                values: '["Select Dropdown",2,3,4,5]',
+                select_class: class,
+                label: "Select Dropdown",
+                setState: "selectValue = value",
+                state: "selectValue",
+                current_value: 'Select Dropdown'
+            %}
+          </div>
+        </div>
+      </section>
+    </main>
+    <main class="mt-4">
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div class="text-lg font-bold text-gray-600">Desktop Active</div>
+        <div class="text-lg font-bold text-gray-600">Mobile Active</div>
+      </header>
+      <section x-show="tab === 'single-type'" class="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
+        {% assign _class = class | prepend: "active " %}
+        <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+          {% render '_components.select',
+              values: '["Select Dropdown",2,3,4,5]',
+              select_class: _class,
+              label: "Select Dropdown",
+              setState: "selectValue = value",
+              state: "selectValue",
+              current_value: 'Select Dropdown'
+          %}
+        </div>
+        <div class=" @container max-w-lg">
+          <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+            {% render '_components.select',
+                values: '["Select Dropdown",2,3,4,5]',
+                select_class: _class,
+                label: "Select Dropdown",
+                setState: "selectValue = value",
+                state: "selectValue",
+                current_value: 'Select Dropdown'
+            %}
+          </div>
+        </div>
+      </section>
+    </main>
+    {% capture css_content %}
+      {{ css | replace: '&', selector }}
+    {% endcapture %}
+    {% render '_components.editor_preview_base_css', block: block, class: class, selector: selector, css: css_content, filename: 'snippets/_components.select' %}
+    {% render '_components.editor_preview', block: block, css: css_content, class: class, selector: selector, filename: 'snippets/_components.select' %}
+
+  </section>
+{% endif %}

@@ -1,0 +1,225 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_cart__discount_details"
+  assign section_type = "main_cart"
+  assign show_conditionally = block.settings.show_conditionally
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign text_class = block.settings.text_class
+  assign price_class = block.settings.price_class
+  assign show_cart_discounts = block.settings.show_cart_discounts
+  assign show_line_item_discounts = block.settings.show_line_item_discounts
+  assign show_discount_code_discounts = block.settings.show_discount_code_discounts
+  assign show_selling_plan_discounts = block.settings.show_selling_plan_discounts
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<section
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    x-data="{ cartDiscounts: $el.hasAttribute('data-show-cart-discounts'), sellingPlanDiscounts: $el.hasAttribute('data-show-selling-plan-discounts'), discountCodeDiscounts: $el.hasAttribute('data-show-discount-code-discounts'), lineItemDiscounts: $el.hasAttribute('data-show-line-item-discounts') }"
+    x-show="((
+      (cartDiscounts && $cart.state?.cart_level_discount_applications?.length) ||
+      (sellingPlanDiscounts && $cart.state?.selling_plan_discount_applications?.some(d => d.value > 0)) ||
+      (discountCodeDiscounts && $cart.state?.discount_codes?.length) ||
+      (lineItemDiscounts && $cart.state?.items?.some((item) => item.line_level_discount_allocations?.length))
+    ) && _cart.showConditionally(`{{ show_conditionally }}`)) || $editor?.select_block_id === `{{ block.id }}`"
+  {% if show_cart_discounts %}data-show-cart-discounts{% endif %}
+  {% if show_line_item_discounts %}data-show-line-item-discounts{% endif %}
+  {% if show_discount_code_discounts %}data-show-discount-code-discounts{% endif %}
+  {% if show_selling_plan_discounts %}data-show-selling-plan-discounts{% endif %}
+    x-cloak
+    class="flex flex-col gap-2">
+  {% if content != blank %}
+    {% render '_input.richtext', content: content, class: content_class, html_element: 'header' %}
+  {% endif %}
+  {% if show_cart_discounts %}
+    <template x-for="discount in ($cart.state?.cart_level_discount_applications ?? [])">
+      <div class="flex items-center w-full justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <div class="{{ text_class }}" x-html="discount?.title ?? discount?.discount_application?.title"></div>
+          <button type="button"
+                  x-data="{ removing: false }"
+                  :class="removing ? 'button-loading bg-gray-100' : '' "
+                  x-show="(discount?.type ?? discount?.discount_application?.type) === 'discount_code'"
+                  class="size-5 rounded-sm hf:bg-gray-100 shrink-0 flex items-center justify-center"
+                  @click.prevent.stop="removing = true; _cart.update( { discount: [...($cart.state?.discount_codes?.filter(d => d.code !== discount?.discount_application?.title)?.map(d=>d.code))].join(',') ?? [] }).finally(()=> { removing = false})"
+                  aria-label="Remove discount code">
+            {% render '_components.icon', icon: 'x-mark', class: "size-4" %}
+          </button>
+        </div>
+        <div class="{{ price_class }}"
+             x-html="utils.formatMoney(-(discount?.total_allocated_amount ?? discount?.discount_application?.total_allocated_amount))"></div>
+      </div>
+    </template>
+  {% endif %}
+  {% if show_line_item_discounts %}
+    <template x-for="discount in (Object.entries($cart.state?.items?.reduce((acc, item) => { item.line_level_discount_allocations.forEach(({ amount, discount_application }) =>{ acc[discount_application?.title] ??= { amount: 0, type: discount_application.type }; acc[discount_application?.title].amount += amount }) ;return acc;}, {})))">
+      <div class="flex items-center w-full justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <div class="{{ text_class }}" x-html="discount?.[0]"></div>
+          <button type="button"
+                  x-data="{ removing: false }"
+                  :class="removing ? 'button-loading bg-gray-100' : '' "
+                  x-show="discount?.[1]?.type === 'discount_code'"
+                  class="size-5 rounded-sm hf:bg-gray-100 shrink-0 flex items-center justify-center"
+                  @click.prevent.stop="removing = true; _cart.update( { discount: [...($cart.state?.discount_codes?.filter(d => d.code !== discount?.[0])?.map(d=>d.code))].join(',') ?? [] }).finally(()=> { removing = false})"
+                  aria-label="Remove discount code">
+            {% render '_components.icon', icon: 'x-mark', class: "size-4" %}
+          </button>
+        </div>
+        <div class="{{ price_class }}" x-html="utils.formatMoney(-(discount?.[1]?.amount))"></div>
+      </div>
+    </template>
+  {% endif %}
+  {% if show_discount_code_discounts %}
+    <template x-for="code in $cart.state?.discount_codes?.filter(d => !(lineItemDiscounts && $cart.state?.items?.some((item) => item.line_level_discount_allocations?.some(a => a.discount_application?.title === d.code))) && !(cartDiscounts && $cart.state?.cart_level_discount_applications.some(discount => discount?.discount_application?.title === d.code)))">
+      <div class="flex items-center w-full justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <div class="{{ text_class }}" x-html="code.code"></div>
+          <button type="button"
+                  x-data="{ removing: false }"
+                  :class="removing ? 'button-loading bg-gray-100' : '' "
+                  class="size-5 rounded-sm hf:bg-gray-100 shrink-0 flex items-center justify-center"
+                  @click.prevent.stop="removing = true; _cart.update({ discount: [...($cart.state?.discount_codes?.filter(d => d.code !== code.code)?.map(d=>d.code))].join(',') ?? [] }).finally(()=> { removing = false})"
+                  aria-label="Remove discount code">
+            {% render '_components.icon', icon: 'x-mark', class: "size-4" %}
+          </button>
+        </div>
+      </div>
+    </template>
+  {% endif %}
+  {% if show_selling_plan_discounts %}
+    <template x-for="discount in ($cart.state?.selling_plan_discount_applications ?? [])">
+      <div class="flex items-center w-full justify-between gap-2" x-show="discount?.value > 0">
+        <div class="{{ text_class }}" x-html="discount?.name"></div>
+        <div class="{{ price_class }}" x-html="`-${utils.formatMoney(discount?.value)}`"></div>
+      </div>
+    </template>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Discount Details",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "cart_empty",
+          "label": "Cart Empty"
+        },
+        {
+          "value": "items_added",
+          "label": "Items Added"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Label"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p><strong>Discounts:</strong></p>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Discount / Subscription Saving Lines"
+    },
+    {
+      "type": "text",
+      "id": "text_class",
+      "label": "Text class",
+      "default": "richtext-md h5 !opacity-50"
+    },
+    {
+      "type": "text",
+      "id": "price_class",
+      "label": "Price class",
+      "default": "richtext-md p font-bold"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_discounts",
+      "label": "Show Cart Discounts",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line_item_discounts",
+      "label": "Show Line Item Discounts",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_code_discounts",
+      "label": "Show Discount Code Lines",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_selling_plan_discounts",
+      "label": "Show Subscription Discounts",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Discount Details",
+      "category": "** Cart **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_cart__discount_details"
+}
+{% endschema %}

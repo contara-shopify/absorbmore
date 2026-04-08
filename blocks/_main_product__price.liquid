@@ -1,0 +1,272 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__price"
+  assign section_type = "main_product"
+  assign css_class = block.settings.css_class
+  assign show_compare_as_price = block.settings.show_compare_as_price
+  assign discount_css_class = block.settings.discount_css_class
+  assign price_calculation = block.settings.price_calculation
+  assign currency_display = block.settings.currency_display
+  assign show_total_price = block.settings.show_total_price
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% if show_total_price %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       data-quick-view-visibility="{{ quick_view_visibility }}"
+       x-ignore
+       class="inline-flex gap-2">
+    <span class="{{ css_class }}"
+          :class="(pdp.selected_compare_at_price || 0) + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total ? 'discounted-price' : ''"
+        {% if price_calculation == 'normal' %}
+          x-html="utils.formatMoney(pdp.selected_price + pdp.upsell_total, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+        {% endif %}
+        {% if price_calculation == 'quantity_multiplied' %}
+          x-html="utils.formatMoney(pdp.selected_price * (pdp.quantity ?? 1) + pdp.upsell_total, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+        {% endif %} >
+      {{ price | money }}
+    </span>
+    {% if show_compare_as_price %}
+      <span class="{{ css_class }}"
+          {% if compare_at_price <= price %}
+            x-cloak
+          {% endif %}
+            x-show="(pdp.selected_compare_at_price || 0) + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total">
+        <span class="{{ discount_css_class }} line-through"
+            {% if price_calculation == 'normal' %}
+              x-html="utils.formatMoney((pdp.selected_compare_at_price || 0) + pdp.upsell_compare_at_total, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+            {% endif %}
+            {% if price_calculation == 'quantity_multiplied' %}
+              x-html="utils.formatMoney((pdp.selected_compare_at_price || 0) * (pdp.quantity ?? 1) + pdp.upsell_compare_at_total, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+            {% endif %} >
+          {{ compare_at_price | money }}
+        </span>
+      </span>
+    {% endif %}
+  </div>
+  {% break %}
+{% endif %}
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    x-ignore
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    class="inline-flex gap-2 {{ text_alignment | prepend: 'text-' }}">
+  <span
+      {% if compare_at_price > price %}
+        {% assign css_class = css_class | append: " discounted-price" %}
+      {% endif %}
+      class="{{ css_class }}"
+      {% if product.variants.size > 1 %}
+        x-effect="$el.classList.toggle('discounted-price', (pdp.selected_variant?.compare_at_price || 0) > (pdp.selected_variant?.price ?? 0)); $el.innerHTML = utils.formatMoney(pdp.selected_variant?.price * (+$el.getAttribute('data-fixed-quantity') ?? pdp.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+      {% endif %}
+      {% if price_calculation == 'normal' %}
+        data-fixed-quantity="1"
+      {% endif %} >
+    {% if currency_display == "store_default" or currency_display == "amount" %}
+      {{ price | money }}
+    {% endif %}
+    {% if currency_display == "amount_no_decimals" %}
+      {{ price | money_without_trailing_zeros }}
+    {% endif %}
+  </span>
+  {% if show_compare_as_price and product.variants.size > 1 or compare_at_price > price %}
+    <span
+        class="{{ discount_css_class }} line-through"
+        {% if compare_at_price <= price %}
+          x-cloak
+        {% endif %}
+        {% if product.variants.size > 1 %}
+          {% if compare_at_price > price %}
+            x-show="(pdp.selected_variant?.compare_at_price || 0) > pdp.selected_variant?.price"
+          {% else %}
+            x-show="(pdp.selected_variant?.compare_at_price || 0) > pdp.selected_variant?.price"
+          {% endif %}
+          x-effect="$el.innerHTML = utils.formatMoney(pdp.selected_variant?.compare_at_price * (+$el.getAttribute('data-fixed-quantity') ?? pdp.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+        {% endif %}
+        {% if price_calculation == 'normal' %}
+          data-fixed-quantity="1"
+        {% endif %} >
+      {% if currency_display == "store_default" or currency_display == "amount" %}
+        {{ compare_at_price | money }}
+      {% endif %}
+      {% if currency_display == "amount_no_decimals" %}
+        {{ compare_at_price | money_without_trailing_zeros }}
+      {% endif %}
+    </span>
+  {% endif %}
+</div>
+
+
+{% schema %}
+{
+  "name": "Price",
+  "settings": [
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "CSS class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "header",
+      "content": "Discounts"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_as_price",
+      "label": "Show compare as price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "discount_css_class",
+      "label": "Discount CSS class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "select",
+      "id": "price_calculation",
+      "label": "Price calculation",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "quantity_multiplied",
+          "label": "Quantity Multiplied"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "currency_display",
+      "label": "Currency display",
+      "default": "store_default",
+      "options": [
+        {
+          "value": "store_default",
+          "label": "Store Default"
+        },
+        {
+          "value": "amount",
+          "label": "Full"
+        },
+        {
+          "value": "amount_no_decimals",
+          "label": "No Decimals"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_total_price",
+      "label": "Show total price",
+      "info": "This includes any addon items added"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Price",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__price"
+}
+{% endschema %}

@@ -1,0 +1,318 @@
+@import "_shopify.css";
+@import "_layout.css";
+@import "_dynamics.css";
+@import "_tooltip.css";
+@import "_product.css";
+@import "_typography.css";
+
+@tailwind components;
+@tailwind utilities;
+
+picture {
+  object-fit: inherit;
+}
+
+.snap-m {
+  --tw-scroll-snap-strictness: mandatory;
+}
+
+[data-tooltip-container] ~ *:not(.z-\[2147483647\], .z-max).marker-app, [data-tooltip-container] ~ iframe:not(.z-\[2147483647\],.z-max) {
+  z-index: unset !important;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+[data-style-id][id] {
+  scroll-margin-top: 0;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(-48px);
+  transition: opacity .5s, transform .5s;
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+html.no-anim {
+  scroll-behavior: auto !important;
+}
+
+html.no-anim * {
+  animation: none !important;
+  transition: none !important;
+}
+
+.slide-indicator {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.slide-indicator.active {
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.slide-indicator::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: currentColor;
+}
+
+.slide-indicator.active.animate::before {
+  animation: slide-indicator-fill var(--indicator-duration, 0s) linear forwards;
+}
+
+.slide-indicators.paused .slide-indicator.active::before {
+  animation-play-state: paused;
+}
+
+html.no-anim .slide-indicator::before {
+  transform: scaleX(1) !important;
+}
+
+@keyframes slide-indicator-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*@media (max-width: 768px) {
+  .marker-app {
+    display: none !important;
+  }
+}*/
+
+.hide-dynamically-display {
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  left: 0;
+  padding: 6px;
+  border-top-right-radius: 6px;
+  background: #10c6c6;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.toggle-hidden {
+  display: none !important;
+}
+
+:root {
+  --border-w: 0;
+  --border-w-md: 0;
+}
+
+.z-max {
+  @apply z-[2147483647];
+}
+
+.navigation-bar--transparent {
+  @apply !bg-transparent !border-transparent border-none delay-200;
+}
+
+.force-block-scroll {
+  overflow: clip !important;
+}
+
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+  background: transparent; /* Chrome/Safari/Webkit */
+}
+
+[data-tooltip-container] ~ *:not(.z-\[2147483647\], .z-max) {
+  z-index: 51 !important;
+}
+
+/*= =============== Policy Pages ================ */
+
+.shopify-policy__container {
+  @apply w-full !max-w-4xl px-4;
+}
+
+.shopify-policy__container :where(h1,h2,h3,h4) {
+  @apply !font-bold mt-[2.5em];
+}
+
+.shopify-policy__title {
+  @apply text-xl mb-10;
+}
+
+@layer utilities {
+
+  .dragging {
+    @apply !cursor-grabbing [&_*]:!cursor-grabbing;
+  }
+
+  .bg-modal-backdrop {
+    background: var(--color-modal-backdrop-color);
+    --tw-backdrop-blur: var(--color-modal-backdrop-blur, blur(0px));
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  }
+
+  .scroll-justify-center-x {
+    @apply !justify-start;
+
+    :first-child {
+      @apply ml-auto;
+    }
+
+    :last-child {
+      @apply mr-auto;
+    }
+  }
+
+  .scroll-justify-center-y {
+    @apply !justify-start;
+
+    :first-child {
+      @apply mt-auto;
+    }
+
+    :last-child {
+      @apply mb-auto;
+    }
+  }
+}
+
+@supports (color: color-mix(in srgb, currentColor 50%, transparent)) {
+  :root {
+    --button-loading-transparent: color-mix(in srgb, currentColor 50%, transparent);
+  }
+}
+
+.button-loading {
+  @apply relative overflow-hidden pointer-events-none select-none;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+
+  &:before {
+    @apply inset-0 bg-inherit absolute z-10 rounded-[inherit];
+    content: '';
+    background: inherit;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+  }
+
+  &:after {
+    content: '' !important;
+    position: absolute !important;
+    z-index: 20 !important;
+    top: 50% !important;
+    left: 50% !important;
+    aspect-ratio: 1 !important;
+    height: min(54%, 44px) !important;
+    width: fit-content !important;
+    border-radius: 9999px !important;
+    background: none !important;
+    border: var(--button-loading-border-w, 4px) solid var(--button-loading-transparent, rgba(0, 0, 0, 0.5)) !important;
+    border-top-color: currentColor !important;
+    transform: translate(-50%, -50%);
+    animation: loading 0.5s linear infinite;
+    opacity: 1 !important;
+    mask: unset !important;
+    -webkit-mask: unset !important;
+    right: unset !important;
+  }
+}
+
+.button-loading-transparent {
+  @apply button-loading;
+
+  &:before {
+    @apply backdrop-blur-2xl pointer-events-auto;
+    opacity: 70%;
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.card-loading {
+  @apply animate-pulse;
+}
+
+.image-loading {
+  @apply animate-pulse rounded-md bg-gray-200/70
+}
+
+.object-\[inherit\] {
+  object-fit: inherit;
+}
+
+@keyframes transitioning {
+  0% {
+    clip-path: polygon(0% 0%, 0% 100%, -15% 100%, 0% 0%);
+  }
+  50% {
+    clip-path: polygon(0% 0%, -15% 100%, 100% 100%, 115% 0%);
+  }
+  100% {
+    clip-path: polygon(115% 0%, 100% 100%, 100% 100%, 100% 0%)
+  }
+}
+
+@layer utilities {
+  .link-effect {
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .link-effect:after {
+    position: absolute;
+    content: "";
+    background: currentColor;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    width: 0%;
+    transition: 300ms ease-in-out;
+  }
+
+  a:hover .link-effect:after, .link-effect:hover:after {
+    width: 100%;
+    left: 0;
+  }
+
+  [type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+

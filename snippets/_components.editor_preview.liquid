@@ -1,0 +1,119 @@
+<div class="mt-3">
+  <div class="text-lg font-bold text-gray-600 mb-3">Output Code</div>
+
+  <div class="bg-[#272822] p-4 rounded-md">
+    <div class="bg-[#2c2c2c] text-white text-[14px] px-6 pb-2 mb-2 -mx-4 border-b border-[#606060]">{{ filename }}</div>
+    <div class="min-h-20" id="ace_test_{{ block.id }}">
+    </div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const initAceEditor = async ({ id, selector, mode = "html", content = null }) => {
+      const Range = ace.require("ace/range").Range;
+      const container = document.getElementById(id);
+      if (!container || !window.ace?.edit) return;
+
+      // Destroy existing instance if already initialized
+      if (container.env?.editor) {
+        container.env.editor.destroy();
+        container.innerHTML = "";
+      }
+
+      const editor = ace.edit(container, {
+        mode: `ace/mode/${mode}`,
+        theme: "ace/theme/monokai",
+        readOnly: true,
+        fontSize: "14px",
+        maxLines: Infinity,
+        minLines: 1,
+        highlightActiveLine: false,
+        highlightGutterLine: false,
+        showPrintMargin: false,
+        showGutter: false,
+        displayIndentGuides: false,
+        wrap: true,
+        useWorker: false,
+      });
+
+      container.env = { editor };
+
+      let raw = content;
+      if (!raw && selector) {
+        const el = document.querySelector(selector)?.cloneNode(true);
+        if (el) {
+          el.getAttributeNames()?.forEach((attr) => {
+            if (/^(x-|@|:)/gi.test(attr)) el.removeAttribute(attr);
+          });
+          el.querySelectorAll("*").forEach((child) => {
+            child.getAttributeNames()?.forEach((attr) => {
+              if (/^(x-|@|:)/gi.test(attr)) child.removeAttribute(attr);
+            });
+          });
+          raw = el.outerHTML;
+        }
+      }
+
+      let formatted = raw ?? "";
+
+      try {
+        formatted = await prettier.format(formatted, {
+          parser: mode === "css" ? "css" : "html",
+          plugins: prettierPlugins,
+          printWidth: 120,
+          tabWidth: 2,
+          htmlWhitespaceSensitivity: "ignore",
+        });
+      } catch (err) {
+        console.error("Prettier formatting failed", err);
+      }
+
+      editor.session.setValue(formatted + "\n");
+
+      // Adjust height
+      setTimeout(() => {
+        const lineHeight = editor.renderer.lineHeight;
+        const lineCount = editor.session.getLength();
+        container.style.height = `${lineHeight * lineCount + 50}px`;
+        editor.resize();
+      }, 50);
+
+      // Optional fold for long class strings (mainly for HTML)
+      if (mode === "html") {
+        setTimeout(() => {
+          const session = editor.session;
+          const lines = session.getDocument().getAllLines();
+
+          lines.forEach((line, row) => {
+            const match = line.match(/class="([^"]+)"/);
+            if (match && match[1].length > 48) {
+              const start = line.indexOf('class="') + 7;
+              const end = start + match[1].length;
+              const range = new Range(row, start, row, end);
+              session.addFold("...", range);
+            }
+          });
+        }, 100);
+      }
+    };
+
+    // Init on DOM load or Shopify section re-renders
+    ['DOMContentLoaded', 'editor-load--{{ section.id }}'].forEach(event => {
+      document.addEventListener(event, () => {
+        initAceEditor({
+          id: "ace_test_{{ block.id }}",
+          selector: "{{ selector }}",
+          mode: "html",
+        });
+
+        initAceEditor({
+          id: "ace_test_css_{{ block.id }}",
+          content: `{{ css }}`,
+          mode: "css",
+        });
+      });
+    });
+  })();
+</script>
+

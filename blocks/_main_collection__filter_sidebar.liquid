@@ -1,0 +1,244 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_collection__filter_sidebar"
+  assign section_type = "main_collection"
+  assign inline_at_screens_above = block.settings.inline_at_screens_above
+  assign show_sidebar = block.settings.show_sidebar
+  assign sticky_sidebar = block.settings.sticky_sidebar
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  {% if inline_at_screens_above < 1536 %}
+  @media screen and (min-width: {{ inline_at_screens_above }}px) {
+    [data-modal-id="drawer--filters-{{ section.id }}"] .bg-modal-backdrop {
+      display: none;
+    }
+
+    [data-style-id="{{ section.id }}--{{ block.id }}"] {
+      position: relative;
+      top: unset;
+      bottom: unset;
+      left: unset;
+      right: unset;
+      --z-index: 50;
+    }
+  }
+
+  {% endif %}
+</style>
+
+{% if show_sidebar %}
+  <script type="filter-sidebar/show"></script>
+{% endif %}
+
+<div data-modal-id="drawer--filters-{{ section.id }}"
+    {% if inline_at_screens_above >= 1536 %}
+      x-data="{ show: false }"
+      x-init="$data.show_sidebar = false"
+      x-effect="if ($data.show_sidebar) { $modal.id = 'drawer--filters-{{ section.id }}'; $data.show_sidebar = false }; show = $modal.id === 'drawer--filters-{{ section.id }}'"
+    {% else %}
+      x-effect="if ($data.show_sidebar && window.innerWidth < +`{{ inline_at_screens_above }}`) { $modal.id = 'drawer--filters-{{ section.id }}'; $data.show_sidebar = false; } show = $data.windowWidth > +`{{ inline_at_screens_above }}` ? $data.show_sidebar : $modal.id === 'drawer--filters-{{ section.id }}';"
+      {% if sticky_sidebar %}
+        {% if inline_at_screens_above == 1280 %}
+          class="xl:h-max xl:sticky xl:top-[calc(var(--header-height-offset)+40px)] xl:max-h-[calc(100vh-var(--header-height-offset)-40px)] max-h-full overflow-y-auto scrollbar-none"
+        {% elsif inline_at_screens_above == 1024 %}
+          class="lg:h-max lg:sticky lg:top-[calc(var(--header-height-offset)+40px)] lg:max-h-[calc(100vh-var(--header-height-offset)-40px)] max-h-full overflow-y-auto scrollbar-none"
+        {% elsif inline_at_screens_above == 768 %}
+          class="md:h-max md:sticky md:top-[calc(var(--header-height-offset)+40px)] md:max-h-[calc(100vh-var(--header-height-offset)-40px)] max-h-full overflow-y-auto scrollbar-none"
+        {% endif %}
+      {% else %}
+        {% if inline_at_screens_above == 1280 %}
+          class="max-xl:max-h-full ax-xl:overflow-y-auto max-xl:scrollbar-none"
+        {% elsif inline_at_screens_above == 1024 %}
+          class="max-lg:max-h-full max-lg:overflow-y-auto max-lg:scrollbar-none"
+        {% elsif inline_at_screens_above == 768 %}
+          class="max-md:max-h-full max-md:overflow-y-auto max-md:scrollbar-none"
+        {% endif %}
+      {% endif %}
+      {% if show_sidebar %}
+        x-data="{ show: window.innerWidth > +`{{ inline_at_screens_above }}` }"
+        x-init="$data.show_sidebar = window.innerWidth > +`{{ inline_at_screens_above }}`"
+      {% else %}
+        x-data="{ show: false }"
+        x-init="$data.show_sidebar = false"
+      {% endif %}
+    {% endif %}
+     style="--z-index: 2147483647">
+  <div class="pointer-events-auto fixed inset-0 z-50 transition duration-75 ease-in-out bg-modal-backdrop"
+      {% if request.design_mode %}
+        x-effect="if ($editor?.select_block_id === '{{ block.id }}' || $el.parentElement.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)) { $data.show_sidebar = true }"
+      {% endif %}
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       x-show="show"
+       x-cloak
+       @click="$modal.setId('')"></div>
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      :class="clsx(show ? 'z-[var(--z-index)]' : '')"
+      class="pointer-events-auto fixed inset-y-0 right-0 flex h-full w-full max-w-sm flex-col justify-stretch overflow-y-auto duration-200 ease-in-out scrollbar-none"
+      x-init="$el.classList.add('transition-all')"
+      x-transition:enter-end="translate-x-0"
+      x-transition:leave-start="translate-x-0"
+      {% if inline_at_screens_above == 1536 %}
+        x-transition:enter-start="translate-x-full"
+        x-transition:leave-end="translate-x-full"
+      {% elsif inline_at_screens_above == 1280 %}
+        x-transition:enter-start="max-xl:translate-x-full"
+        x-transition:leave-end="max-xl:translate-x-full"
+      {% elsif inline_at_screens_above == 1024 %}
+        x-transition:enter-start="max-lg:translate-x-full"
+        x-transition:leave-end="max-lg:translate-x-full"
+      {% elsif inline_at_screens_above == 768 %}
+        x-transition:enter-start="max-md:translate-x-full"
+        x-transition:leave-end="max-md:translate-x-full"
+      {% endif %}
+      x-show="show"
+      data-filters
+      {% if inline_at_screens_above >= 1536 %}
+        x-trap.noautofocus="show"
+      {% else %}
+        x-trap.noautofocus="show && window.innerWidth < +`{{ inline_at_screens_above }}`"
+      {% endif %}
+  >
+    {% content_for 'blocks' %}
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Filter Sidebar",
+  "settings": [
+    {
+      "type": "range",
+      "id": "inline_at_screens_above",
+      "label": "Inline at screens above",
+      "default": 768,
+      "min": 768,
+      "max": 1536,
+      "step": 256,
+      "unit": "px",
+      "info": "Set to 1536 to disable the inline view."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sidebar",
+      "label": "Show sidebar on load",
+      "default": true,
+      "visible_if": "{{ block.settings.inline_at_screens_above != 1536 }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_sidebar",
+      "label": "Sticky on scroll",
+      "default": true,
+      "visible_if": "{{ block.settings.inline_at_screens_above != 1536 }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "slider"
+    },
+    {
+      "type": "_filter_tags"
+    },
+    {
+      "type": "_main_collection__product_count"
+    },
+    {
+      "type": "_main_collection__container"
+    },
+    {
+      "type": "_main_collection__collapsible"
+    },
+    {
+      "type": "_main_collection__filter_sidebar"
+    },
+    {
+      "type": "_main_collection__applied_count"
+    },
+    {
+      "type": "_main_collection__applied_filters"
+    },
+    {
+      "type": "_main_collection__filters"
+    },
+    {
+      "type": "_main_collection__sort"
+    },
+    {
+      "type": "_main_collection__filter_submit_button"
+    },
+    {
+      "type": "_main_collection__filter_clear_button"
+    },
+    {
+      "type": "_main_collection__filter_button"
+    },
+    {
+      "type": "_main_collection__product_cards"
+    },
+    {
+      "type": "_main_collection__empty_state"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filter Sidebar",
+      "category": "** Collection **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_collection__filter_sidebar"
+}
+{% endschema %}

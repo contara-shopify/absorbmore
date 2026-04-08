@@ -1,0 +1,271 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_footer__container"
+  assign section_type = "footer"
+  assign element_id = block.settings.element_id
+  assign custom_effect = block.settings.custom_effect
+  assign url = block.settings.url
+  assign accessibility_label = block.settings.accessibility_label
+  assign open_in_new_tab = block.settings.open_in_new_tab
+  assign scroll_reveal = block.settings.scroll_reveal
+  assign collapsible_handle = block.settings.collapsible_handle
+  assign show = block.settings.show
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  capture blocks_content
+    content_for 'blocks'
+  endcapture
+
+  capture container_content
+    render '_block.container', block: block, blocks_content: blocks_content
+  endcapture
+
+  if container_content contains '<script type="container/break"></script>'
+    break
+  endif
+  echo container_content
+%}
+
+{% schema %}
+{
+  "name": "Container",
+  "settings": [
+    {
+      "type": "text",
+      "id": "element_id",
+      "label": "Element ID"
+    },
+    {
+      "type": "select",
+      "id": "custom_effect",
+      "label": "Custom effect",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "scroll_reveal",
+          "label": "Scroll Reveal"
+        },
+        {
+          "value": "collapsible",
+          "label": "Collapsible"
+        },
+        {
+          "value": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Link Settings",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "info": "Please provide an accessibility label if the link has generic content. I.e. 'Read More' or only uses an image or icon.",
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false,
+      "visible_if": "{{ block.settings.custom_effect == 'link' }}"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Reveal Settings",
+      "visible_if": "{{ block.settings.custom_effect == 'scroll_reveal' }}"
+    },
+    {
+      "type": "select",
+      "id": "scroll_reveal",
+      "label": "Scroll Reveal",
+      "default": "children",
+      "options": [
+        {
+          "value": "container",
+          "label": "Box"
+        },
+        {
+          "value": "children",
+          "label": "Spread"
+        }
+      ],
+      "visible_if": "{{ block.settings.custom_effect == 'scroll_reveal' }}"
+    },
+    {
+      "type": "header",
+      "content": "Collapsible Content",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "In order for collapsible containers to operate, you will need to add a button targeting the trigger handle. Trigger handles have to be unique per page.",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "text",
+      "id": "collapsible_handle",
+      "label": "Collapsible Trigger Handle",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Default Open",
+      "visible_if": "{{ block.settings.custom_effect == 'collapsible' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "form"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "custom_liquid"
+    },
+    {
+      "type": "menu"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "social_icons"
+    },
+    {
+      "type": "collapsible"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_footer__international_store_select"
+    },
+    {
+      "type": "_footer__container"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Container",
+      "category": "** Footer **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___footer__container"
+}
+{% endschema %}

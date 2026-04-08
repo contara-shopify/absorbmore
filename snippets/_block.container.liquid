@@ -1,0 +1,80 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign element_id = block.settings.element_id
+  assign custom_effect = block.settings.custom_effect
+  assign url = block.settings.url
+  assign accessibility_label = block.settings.accessibility_label
+  assign open_in_new_tab = block.settings.open_in_new_tab
+  assign scroll_reveal = block.settings.scroll_reveal
+  assign collapsible_handle = block.settings.collapsible_handle
+  assign show = block.settings.show
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: ui_css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    {% if element_id != blank %} id="{{ element_id }}"{% endif %}
+    {{ html_attributes }}
+    {% if custom_effect == 'collapsible' and collapsible_handle != blank %}
+      class="transition-all overflow-hidden duration-200 ease-linear"
+      data-collapsible-handle="{{ collapsible_handle }}"
+      {% if show %}
+        data-default-open="true"
+        aria-expanded="true"
+      {% else %}
+        style="max-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important;"
+        aria-expanded="false"
+      {% endif %}
+    {% endif %}
+    {% if custom_effect == 'scroll_reveal' %}
+      {% if scroll_reveal == 'children' %}
+        data-reveal="children"
+      {% else %}
+        data-reveal="self"
+      {% endif %}
+      data-reveal-once="true"
+      data-reveal-initial-pad="8"
+      data-reveal-boost
+      data-reveal-root-margin="0px"
+      {% comment %} optional: data-reveal-threshold="0.1"{% endcomment %}
+    {% endif %}
+
+    {% if custom_effect == 'link' and url != blank %}
+      {% if accessibility_label != blank %}
+        aria-label="{{ accessibility_label }}"
+      {% endif %}
+      {% if open_in_new_tab %}
+        data-target="_blank"
+      {% endif %}
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el)"
+      data-href="{{ url }}"
+    {% endif %}
+>
+  {% if ui_css and appearance and background_image != blank %}
+    {% render '_object.image', image: background_image, class: "desktop-image block w-full h-full absolute inset-0 z-[-2] object-cover", preload: preload, sizes: sizes, max_width: max_width %}
+  {% endif %}
+  {% if ui_css and mb_appearance and mb_background_image != blank %}
+    {% render '_object.image', image: mb_background_image, class: "mobile-image block w-full h-full absolute inset-0 z-[-2] object-cover", preload: mb_preload, sizes: mb_sizes, max_width: mb_max_width %}
+  {% endif %}
+  {{ blocks_content }}
+</div>

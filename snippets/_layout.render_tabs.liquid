@@ -1,0 +1,115 @@
+{% capture tab_navigation_content %}
+  <button type="button"
+          @click="current_tabs[420421337] = `|%|TAB_LABEL|%|`"
+          @pointerover="if ($el.getAttribute('data-tab-hover-trigger') === 'true') { current_tabs[420421337] = `|%|TAB_LABEL|%|` }"
+          data-tab-hover-trigger="|%|TAB_HOVER_TRIGGER|%|"
+          class="shrink-0 |%|BUTTON_CLASS|%|"
+          :class="current_tabs[420421337] === '|%|TAB_LABEL|%|' ? 'active' : ''">|%|LABEL_CONTENT|%|
+  </button>
+{% endcapture %}
+
+{% capture section_tab_defaults %}x-data="{ ..._sections.initTabs($el) }"{% endcapture %}
+
+{% liquid
+  assign splitter = '|~|TABS_SPLIT|~|'
+  assign final_content = ''
+  assign section_arr = content | split: 'id="shopify-section'
+%}
+{% for section_content in section_arr %}
+
+  {% liquid
+    if forloop.first
+      assign final_content = final_content | append: section_content
+      continue
+    endif
+    unless section_content contains '<tab-content-label>'
+      assign final_content = final_content | append: section_tab_defaults | append: ' id="shopify-section' | append: section_content
+      continue
+    endunless
+
+    assign tab_block_groups = '' | split: '' | uniq
+
+    assign _section_content = section_content
+
+    for i in (0..1)
+      assign tab_group_splitter = '<tab-content-group>' | append: i | append: '</tab-content-group>'
+      assign tab_blocks = ''
+
+      assign section_content_array = _section_content | split: tab_group_splitter
+
+      assign _section_content = section_content_array | first
+
+      for tab_item in section_content_array
+        if forloop.first
+          continue
+        endif
+        assign tab_content = tab_item | replace_first: '<tab-content-label>', splitter | split: splitter | last
+        assign tab_label = tab_content | split: '</tab-content-label>' | first
+        assign tab_content_end = tab_content | replace_first: '</tab-content-label>', splitter | split: splitter | last
+
+        if forloop.index0 > 1
+          assign tab_content_end = tab_content_end | replace: 'data-tab-content-x-cloak-placeholder', 'x-cloak'
+        endif
+
+        assign _section_content = _section_content | append: tab_content_end
+        assign tab_blocks = tab_blocks | append: '|%S%|' | append: tab_label
+      endfor
+
+      assign tab_blocks = tab_blocks | replace_first: '|%S%|' | uniq
+      assign tab_block_groups = tab_block_groups | concat: tab_blocks
+    endfor
+
+    for i in (1..100)
+      if _section_content contains '<tab-navigation>'
+        assign section_array = _section_content | replace_first: "<tab-navigation>", splitter | split: splitter
+        assign start = section_array | first
+        assign end = section_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | last
+
+        assign tab_navigation = section_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | first
+
+        assign tab_label = tab_navigation | split: '</tab-label>' | first | replace: '<tab-label>'
+        assign tab_navigation = tab_navigation | split: '</tab-label>' | last
+
+        assign tab_label_richtext = tab_navigation | split: '</tab-label-richtext>' | first | replace: '<tab-label-richtext>'
+        assign tab_navigation = tab_navigation | split: '</tab-label-richtext>' | last
+
+        assign tab_group_index = tab_navigation | split: '</tab-group>' | first | replace: '<tab-group>' | times: 1
+        assign tab_navigation = tab_navigation | split: '</tab-group>' | last
+
+        assign tab_button_class = tab_navigation | split: '</tab-button-class>' | first | replace: '<tab-button-class>'
+        assign tab_navigation = tab_navigation | split: '</tab-button-class>' | last
+
+        assign tab_hover_trigger = tab_navigation | split: '</tab-hover-trigger>' | first | replace: '<tab-hover-trigger>' | strip
+        assign tab_navigation = tab_navigation | split: '</tab-hover-trigger>' | last
+
+        assign tab_navigation_buttons_markup = ''
+
+        assign tab_blocks = tab_block_groups[tab_group_index] | split: "|%S%|"
+
+        if tab_blocks.size < 1
+          assign _section_content = start | append: end
+          continue
+        endif
+
+        for tab in tab_blocks
+          assign tab_handle = tab | strip_html | handleize
+          assign tab_label_content = tab_label | replace: '[label]', tab
+          assign tab_label_richtext_content = tab_label_richtext | replace: '[label]', tab
+
+          assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab_handle | replace: "|%|TAB_HOVER_TRIGGER|%|", tab_hover_trigger | replace: "420421337", tab_group_index
+          assign tab_navigation_buttons_markup = tab_navigation_buttons_markup | append: tab_button_markup
+        endfor
+
+        assign tab_navigation = tab_navigation | replace: '<tab-navigation-buttons-placeholder />', tab_navigation_buttons_markup
+
+        assign _section_content = start | append: tab_navigation | append: end
+        continue
+      endif
+      break
+    endfor
+  %}
+  {% capture section_attributes %}data-tabs="{{ tab_block_groups | json | escape }}" {{ section_tab_defaults }} {% endcapture %}
+  {% assign final_content = final_content | append: section_attributes | append: ' id="shopify-section' | append: _section_content %}
+{% endfor %}
+
+{{ final_content }}

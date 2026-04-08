@@ -1,0 +1,83 @@
+{% liquid
+  for block_id in block_order
+    assign block = blocks[block_id]
+    if block.disabled
+      continue
+    endif
+    assign style_id = block_id
+    assign selector = '[data-style-id="' | append: style_id | append: '"]'
+
+    if block.type == '_card_product_card__labels'
+      render 'card_product_card.labels.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__rating'
+      render 'card_product_card.rating.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__add_to_cart_toggle'
+      render 'card_product_card.add_to_cart_toggle.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__tab_content'
+      render 'card_product_card.tab_content.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__image'
+      render 'card_product_card.image.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__option__color'
+      render 'card_product_card.option__color.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__option__color_w_caption'
+      render 'card_product_card.option__color_w_caption.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__option__radio'
+      render 'card_product_card.option__radio.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__option__radio_detailed'
+      render 'card_product_card.option__radio_detailed.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__option__select'
+      render 'card_product_card.option__select.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__collapsible'
+      render 'card_product_card.collapsible.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__cta_button'
+      render 'card_product_card.cta_button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__richtext'
+      render 'card_product_card.richtext.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__price'
+      render 'card_product_card.price.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__page'
+      render 'card_product_card.page.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__button'
+      render 'card_product_card.button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__gallery'
+      render 'card_product_card.gallery.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__accent_line'
+      render 'card_product_card.accent_line.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__variant_selector__radio'
+      render 'card_product_card.variant_selector__radio.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__temperature_range'
+      render 'card_product_card.temperature_range.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__variant_selector__select'
+      render 'card_product_card.variant_selector__select.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__variant_selector__color'
+      render 'card_product_card.variant_selector__color.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__container'
+      render 'card_product_card.container.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+    if block.type == '_card_product_card__addon_checkbox'
+      render 'card_product_card.addon_checkbox.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+    endif
+  endfor
+%}

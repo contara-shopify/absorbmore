@@ -1,0 +1,137 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__quantity_picker"
+  assign section_type = "card_line_item_card"
+  assign min = block.settings.min
+  assign max = block.settings.max
+  assign input_class = block.settings.input_class
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.line_item_cards[section.settings.line_item_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{-  css | append:custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<div
+    data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+    x-show="$data.showConditionally('{{ show_conditionally }}') && !line_card?.line_item?.properties?.['_Gifted']"
+    x-data="{
+      min: Math.max(line_card?.line_item?.properties?._p_required ? 1 : +'{{ min }}'),
+      max: Math.min(+'{{ max }}', line_card?.quantity_limit),
+      values: []
+    }"
+    x-effect="
+    min = Math.max(line_card?.line_item?.properties?._p_required ? 1 : +'{{ min }}');
+    max = Math.min(+'{{ max }}', line_card?.quantity_limit);
+    values = Array.from({ length: max + 1 }, (_, index) => min + index);
+  ">
+  {% render '_components.select',
+      dynamic: true,
+      values: 'values',
+      titles: 'values',
+      current_value: 'line_card?.line_item?.quantity',
+      current_title: 'line_card?.line_item?.quantity',
+      select_class: input_class,
+      label: 'Quantity',
+      setState: '_cart.updateLineItemQuantity(value, line_card?.line_item?.index)',
+      state: 'line_card?.line_item?.quantity'
+  %}
+</div>
+
+{% schema %}
+{
+  "name": "Quantity Picker",
+  "settings": [
+    {
+      "type": "number",
+      "id": "min",
+      "label": "Minimum quantity",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "max",
+      "label": "Maximum quantity",
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "input_class",
+      "label": "Input class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_addon_products",
+          "label": "Hide with Addon products"
+        },
+        {
+          "value": "addon_products",
+          "label": "Only with Addon Products"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quantity Picker",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_line_item_card__quantity_picker"
+}
+{% endschema %}

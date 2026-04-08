@@ -1,0 +1,146 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_color_wheel__color_collection"
+  assign section_type = "color_wheel"
+  assign _collection = block.settings.collection
+  assign limit = block.settings.limit
+  assign start_angle = block.settings.start_angle
+  assign end_angle = block.settings.end_angle
+  assign preload = block.settings.preload
+  assign product_card_class = block.settings.product_card_class
+  assign hide_out_of_stock = block.settings.hide_out_of_stock
+  assign hydrate_immediately = block.settings.hydrate_immediately
+  assign preload_images = block.settings.preload_images
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture block_settings %}
+  {
+  "collection": {%- render '_json.collection', collection: _collection -%},
+  "limit": {{ limit | json }},
+  "start_angle": {{ start_angle | json }},
+  "end_angle": {{ end_angle | json }},
+  "preload": {{ preload | json }}
+  }
+{% endcapture %}
+
+{% assign product_section = product_card_class.schema.value %}
+
+<script data-color-collection="{{ block_settings | escape }}" {% if preload != true %}data-no-preload{% endif %}></script>
+{% for product in _collection.products limit: limit %}
+  <div x-show="$data.color_wheel.state.currentCollection === `{{ _collection.handle }}`"
+       class="shrink-0 max-w-full w-full"
+       data-product-handle="{{ product.handle }}">
+    {% if product_section != blank %}
+      {% assign preload_images_boolean = true %}
+      {% if forloop.index0 >= preload_images %}
+        {% assign preload_images_boolean = false %}
+      {% endif %}
+      {% render "card_product_card._static",
+          product: product,
+          section: product_section,
+          is_bundle: false,
+          preload_images: preload_images_boolean
+      %}
+    {% else %}
+      <section class="card-loading product-card--{{ product_card_class }}"
+               data-card-handle="{{ product_card_class }}"
+               data-product-handle="{{ product.handle }}"
+               data-product-id="{{ product.id }}"
+               {% if request.visual_preview_mode or hydrate_immediately %}data-intersected{% endif %}
+               x-init="$nextTick(() => _sections.hydrateProductCard($el))"></section>
+    {% if preload %}
+      <script type="application/json"
+              data-product-data="{{ product.handle }}">{%- render '_json.product', product: product, product, card: true, meta_product: true -%}</script>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Color Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Limit",
+      "default": 10,
+      "min": 1,
+      "max": 16,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "start_angle",
+      "label": "Start angle (degrees)",
+      "default": 0,
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "end_angle",
+      "label": "End angle (degrees)",
+      "default": 45,
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "metaobject",
+      "id": "product_card_class",
+      "label": "Product card",
+      "metaobject_type": "product_cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_out_of_stock",
+      "label": "Hide out of stock",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "hydrate_immediately",
+      "label": "Hydrate immediately"
+    },
+    {
+      "type": "range",
+      "id": "preload_images",
+      "label": "Preload first images",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color Collection",
+      "category": "** Color Wheel **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___color_wheel__color_collection"
+}
+{% endschema %}

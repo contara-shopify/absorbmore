@@ -1,0 +1,201 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "accordion"
+  assign section_type = "global_design_elements"
+  assign class = block.settings.class
+  assign custom_css = block.settings.custom_css
+  assign icon_style = block.settings.icon_style
+  assign icon = block.settings.icon
+  assign richtext_class = block.settings.richtext_class
+  assign override_preview_background = block.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- liquid
+  assign selector = '.' | append: class | replace: '\/', '/' | replace: '/', '\/'
+%}
+
+{%- capture css -%}
+  & {
+  position: relative;
+  transition: all 150ms;
+  --richtext-class: {{ richtext_class }};
+  }
+
+  {% case icon_style %}
+    {% when "plus" %}
+      & > summary [data-simple-icon] {
+      display: none !important;
+      }
+
+
+    {% when "icon_plain" %}
+      & > summary [data-animated-icon] {
+      display: none !important;
+      }
+      & {
+      --accordion-icon: var(--icon-{{ icon | handleize }});
+      --accordion-icon-aspect-ratio: var(--icon-{{ icon | handleize }}-aspect-ratio);
+      }
+
+    {% when "icon_rotating" %}
+      & > summary [data-animated-icon] {
+      display: none !important;
+      }
+      & {
+      --accordion-icon: var(--icon-{{ icon | handleize }});
+      --accordion-icon-aspect-ratio: var(--icon-{{ icon | handleize }}-aspect-ratio);
+      --accordion-icon-rotate: -180deg;
+      }
+    {% when "icon_rotating" %}
+      & > summary [data-animated-icon] {
+      display: none !important;
+      }
+      & {
+      --accordion-icon: var(--icon-{{ icon | handleize }});
+      --accordion-icon-aspect-ratio: var(--icon-{{ icon | handleize }}-aspect-ratio);
+      --accordion-icon-rotate: -180deg;
+      }
+    {% when "none" %}
+      & > summary [data-animated-icon] {
+      display: none !important;
+      }
+      & > summary [data-simple-icon] {
+      display: none !important;
+      }
+  {% endcase %}
+
+{%- endcapture -%}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  {% if request.design_mode %}
+  {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+  {{- css | append: custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+  {% endif %}
+</style>
+
+{% if request.design_mode %}
+  {% if override_preview_background == blank or override_preview_background.alpha == 0 %}
+    {% assign override_preview_background = '#ffffff' %}
+  {% endif %}
+  {% capture test_data %}
+    <div>
+      <div>
+        <div>
+          <h1>
+            <span>Introducing</span>
+            <span>JavaScript for Beginners</span>
+          </h1>
+          <p>Aliquet nec orci mattis amet quisque ullamcorper neque, nibh sem. At arcu, sit dui mi, nibh dui, diam eget aliquam. Quisque id at vitae feugiat egestas ac. Diam nulla orci at in viverra scelerisque eget. Eleifend egestas fringilla sapien.</p>
+        </div>
+        <div>
+          <p>Faucibus commodo massa rhoncus, volutpat. <strong>Dignissim</strong> sed
+            <strong>eget risus enim</strong>. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim.
+            <a href="#">Mattis mauris semper</a> sed amet vitae sed turpis id.
+          </p>
+          <ul role="list">
+            <li>Quis elit egestas venenatis mattis dignissim.</li>
+            <li>Cras cras lobortis vitae vivamus ultricies facilisis tempus.</li>
+            <li>Orci in sit morbi dignissim metus diam arcu pretium.</li>
+          </ul>
+          <p>Quis semper vulputate aliquam venenatis egestas sagittis quisque orci. Donec commodo sit viverra aliquam porttitor ultrices gravida eu. Tincidunt leo, elementum mattis elementum ut nisl, justo, amet, mattis. Nunc purus, diam commodo tincidunt turpis. Amet, duis sed elit interdum dignissim.</p>
+          <h2>From beginner to expert in 30 days</h2>
+          <p>Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu ipsum urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh. Maecenas pellentesque id sed tellus mauris, ultrices mauris. Tincidunt enim cursus ridiculus mi. Pellentesque nam sed nullam sed diam turpis ipsum eu a sed convallis diam.</p>
+          <blockquote>
+            <p>Sagittis scelerisque nulla cursus in enim consectetur quam. Dictum urna sed consectetur neque tristique pellentesque. Blandit amet, sed aenean erat arcu morbi.</p>
+          </blockquote>
+          <p>Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit.</p>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;w=1310&amp;h=873&amp;q=80&amp;facepad=3"
+                 alt=""
+                 width="1310"
+                 height="873">
+            <figcaption>Sagittis scelerisque nulla cursus in enim consectetur quam.</figcaption>
+          </figure>
+          <h2>Everything you need to get up and running</h2>
+          <p>Purus morbi dignissim senectus mattis
+            <a href="#">adipiscing</a>. Amet, massa quam varius orci dapibus volutpat cras. In amet eu ridiculus leo sodales cursus tristique. Tincidunt sed tempus ut viverra ridiculus non molestie. Gravida quis fringilla amet eget dui tempor dignissim. Facilisis auctor venenatis varius nunc, congue erat ac. Cras fermentum convallis quam.
+          </p>
+          <p>Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit.</p>
+        </div>
+      </div>
+    </div>
+  {% endcapture %}
+  <section class="fixed inset-0 z-50 flex flex-col gap-16 overflow-y-auto bg-white py-16 text-black px-container-sm @container"
+           style="background: {{ override_preview_background }};"
+           data-section-id="{{ section.id }}"
+           data-preview-container
+           x-data="{tab: 'single-type'}"
+           x-show="$editor?.select_block_id === '{{ block.id }}'"
+           x-cloak {{ block.shopify_attributes }}>
+
+    <header class="flex gap-3 font-mono">
+      <button @click="tab='single-type'"
+              type="button"
+              :class="tab === 'single-type' ? 'bg-gray-600 text-gray-50 border-gray-900 hf:bg-gray-700':'border-gray-200/70 bg-gray-100 text-gray-700 hf:text-gray-900 hf:border-gray-300/80 hf:bg-gray-200/90'"
+              class="rounded-sm border px-3 text-sm font-medium py-1.5">{{ selector }}
+      </button>
+    </header>
+
+    <main class="mt-8">
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div class="text-lg font-bold text-gray-600">Desktop</div>
+        <div class="text-lg font-bold text-gray-600">Mobile</div>
+      </header>
+      <section x-show="tab === 'single-type'" class="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+          {% render '_components.collapsible',
+              class: class,
+              default_open: false,
+              label: 'Accordion Title',
+              content: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium blanditiis cupiditate eius enim et impedit natus numquam quis reprehenderit.</p>'
+          %}
+        </div>
+        <div class=" @container max-w-lg">
+          <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+            {% render '_components.collapsible',
+                class: class,
+                default_open: false,
+                label: 'Accordion Title',
+                content: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium blanditiis cupiditate eius enim et impedit natus numquam quis reprehenderit.</p>'
+            %}
+
+          </div>
+        </div>
+      </section>
+    </main>
+    <main class="mt-4">
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div class="text-lg font-bold text-gray-600">Desktop Long Content</div>
+        <div class="text-lg font-bold text-gray-600">Mobile Long Content</div>
+      </header>
+      <section x-show="tab === 'single-type'" class="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
+        {% assign _class = class | append: " active" %}
+        <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+          {% render '_components.collapsible',
+              class: class,
+              default_open: false,
+              label: 'Accordion Title',
+              content: test_data
+          %}
+        </div>
+        <div class=" @container max-w-lg">
+          <div x-data="{ selectValue: 'Select Dropdown', selectValues: ['Select Dropdown',2,3,4,5] }">
+            {% render '_components.collapsible',
+                class: class,
+                default_open: false,
+                label: 'Accordion Title',
+                content: test_data
+            %}
+          </div>
+        </div>
+      </section>
+    </main>
+    {% capture css_content %}
+      {{ css | replace: '&', selector }}
+    {% endcapture %}
+    {% render '_components.editor_preview_base_css', block: block, class: class, selector: selector, css: css_content, filename: 'snippets/_components.collapsible' %}
+    {% render '_components.editor_preview', block: block, css: css_content, class: class, selector: selector, filename: 'snippets/_components.collapsible' %}
+  </section>
+{% endif %}

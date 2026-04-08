@@ -1,0 +1,64 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__container"
+  assign section_type = "card_product_card"
+  assign dynamic_text_color = block.settings.dynamic_text_color
+  assign dynamic_background_color = block.settings.dynamic_background_color
+  assign dynamic_border_color = block.settings.dynamic_border_color
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+<div
+    data-style-id="{{ style_id }}"
+    class="group"
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $el.querySelector(`[data-style-id='${$editor?.select_block_id}']`) || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    {% if dynamic_text_color != blank or dynamic_background_color != blank or dynamic_border_color != blank %}
+      :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`"
+      style="color: {% render '_input.dynamic_content', content: dynamic_text_color, keys: 'product, variant, selected_variant', product: product, selected_variant: variant %};
+          background: {% render '_input.dynamic_content', content: dynamic_background_color, keys: 'product, variant, selected_variant', product: product, selected_variant: variant %};
+          border-color: {% render '_input.dynamic_content', content: dynamic_border_color, keys: 'product, variant, selected_variant', product: product, selected_variant: variant %};"
+    {% endif %} >
+  {% render "card_product_card._render_blocks",
+      product: product,
+      variant: variant,
+      section: section,
+      blocks: block.blocks,
+      block_order: block.block_order,
+      preorder: preorder,
+      preorder_date: preorder_date,
+      preorder_quantity: preorder_quantity,
+      price: price,
+      compare_at_price: compare_at_price,
+      is_bundle: is_bundle,
+      is_pdp: is_pdp,
+      preload_images: preload_images
+  %}
+</div>

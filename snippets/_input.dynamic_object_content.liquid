@@ -1,0 +1,134 @@
+{%- liquid
+  unless content contains '['
+    echo content
+    break
+  endunless
+  assign loop_index = forloop.index
+
+  assign matcher = '['
+  for i in (1..5)
+    if content contains matcher
+      assign split = content | replace_first: matcher, '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign before_content = split[0]
+      assign after_content = split_2[1]
+      assign properties = split_2[0] | strip | split: '.'
+      assign object = card_object
+      assign is_array = false
+
+      for property in properties
+        if is_array
+          assign numeric = property | plus: 0
+          if object[numeric] != blank
+            assign object = object[numeric]
+
+            if forloop.last
+              if object.media_type == 'image' or object.aspect_ratio != blank and max_width
+                assign image_url = object | image_url: width: max_width
+                assign object = image_url | append: '|%SPLIT%|' | append: object.aspect_ratio
+              endif
+            endif
+
+            continue
+          endif
+        endif
+
+        if properties contains 'metafields' and object[property].type and object[property].value != blank
+          if object[property].type contains 'list.'
+            assign object = object[property].value | uniq
+            assign is_array = true
+            if forloop.last
+              assign object = object | join: '|~|SPLIT|~|'
+            endif
+            continue
+          endif
+
+          if object[property].type == 'rich_text_field'
+            assign richtextStr = ""
+            assign richtext = object[property].value | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>"
+            for htmlBlock in richtext
+              if forloop.last
+                assign richtextStr = richtextStr | append: htmlBlock
+                break
+              endif
+              assign richtextStr = richtextStr | append: htmlBlock | append: "</div>"
+            endfor
+
+            assign object = richtextStr
+            continue
+          endif
+
+          assign object = object[property].value
+
+          if forloop.last
+            if object.media_type == 'image' or object.aspect_ratio != blank and max_width
+              assign image_url = object | image_url: width: max_width
+              assign object = image_url | append: '|%SPLIT%|' | append: object.aspect_ratio
+            endif
+          endif
+          continue
+        endif
+
+        if forloop.last
+          if property contains 'compare_at_price|no-decimals'
+            assign _property = property | replace: '|no-decimals', ''
+            if object[_property] > object.price
+              assign object = object[_property] | money_without_trailing_zeros | prepend: '<span class="opacity-50 line-through">' | append: '</span>'
+              break
+            endif
+            assign object = ''
+            break
+          endif
+
+          if property contains 'compare_at_price'
+            if object[property] > object.price
+              assign object = object[property] | money | prepend: '<span class="opacity-50 line-through">' | append: '</span>'
+              break
+            endif
+            assign object = ''
+            break
+          endif
+
+          if property == 'title' and object[property] == 'Default Title'
+            assign props = properties | join: '.'
+            if props contains 'variant.'
+              assign object = ''
+            endif
+          endif
+
+          assign ends_in = property | split: '_' | last
+          if ends_in contains 'price|no-decimals'
+            assign _property = property | replace: '|no-decimals', ''
+            assign object = object[_property] | money_without_trailing_zeros
+            break
+          endif
+
+          if ends_in contains 'price'
+            assign object = object[property] | money
+            break
+          endif
+        endif
+
+        if forloop.rindex0 == 1
+          assign ends_in = property | split: '_' | last
+          if ends_in == 'at'
+            assign dayjs_fmt = properties | last | replace: 'YYYY', '%Y' | replace: 'YY', '%y' | replace: 'MMMM', '%B' | replace: 'MMM', '%b' | replace: 'MM', '%m' | replace: 'M', '%-m' | replace: 'DDDD', '%j' | replace: 'DDD', '%j' | replace: 'DD', '%d' | replace: 'D', '%-d' | replace: 'dddd', '%A' | replace: 'ddd', '%a' | replace: 'HH', '%H' | replace: 'H', '%-H' | replace: 'hh', '%I' | replace: 'h', '%-I' | replace: 'mm', '%M' | replace: 'm', '%-M' | replace: 'ss', '%S' | replace: 's', '%-S' | replace: 'SSS', '%L' | replace: 'SS', '%L' | replace: 'S', '%L' | replace: 'A', '%p' | replace: 'a', '%P' | replace: 'ZZ', '%z' | replace: 'Z', '%:z' | replace: 'X', '%s' | replace: 'x', '%s' | replace: '[', '' | replace: ']', ''
+            assign object = object[property] | date: dayjs_fmt
+            break
+          endif
+        endif
+
+        assign object = object[property]
+
+        if object.media_type == 'image' or object.aspect_ratio != blank and max_width
+          assign image_url = object | image_url: width: max_width
+          assign object = image_url | append: '|%SPLIT%|' | append: object.aspect_ratio
+        endif
+      endfor
+      assign content = before_content | append: object | append: after_content
+      continue
+    endif
+    break
+  endfor
+-%}
+{{- content -}}

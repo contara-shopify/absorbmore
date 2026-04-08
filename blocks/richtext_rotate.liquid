@@ -1,0 +1,204 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "richtext_rotate"
+  assign title = block.settings.title
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign enable_rotate = block.settings.enable_rotate
+  assign rotate_text = block.settings.rotate_text
+  assign duration = block.settings.duration
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign content = title | default: ""
+  assign content_check = content | strip_html | strip
+
+  if content_check == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% if enable_rotate != true %}
+  {% assign content = content | replace: '[rotate_text]', '' %}
+{% endif %}
+{% capture rotate_template %}
+  <template x-for="(text, index) in texts" :key="index">
+    <div
+      x-show="activeIndex === index"
+      x-html="text"
+      class="inline"
+    ></div>
+  </template>
+{% endcapture %}
+{% assign rotate_array = rotate_text |  escape | split: ',' %}
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    class="relative {{ text_alignment | prepend: 'text-' }}"
+    x-data='{
+      texts: {{ rotate_array | json }},
+      activeIndex: 0,
+      init() {
+        setInterval(() => {
+          this.activeIndex = (this.activeIndex + 1) % this.texts.length
+        }, {{ duration | times: 1000 }})
+      }
+    }'>
+    {% assign content = content | replace: '[rotate_text]', rotate_template %}
+  {% render '_input.richtext', content: content, class: content_class %}
+</div>
+{% schema %}
+{
+  "name": "Richtext rotate",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_rotate",
+      "label": "Enable Rotate Text",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rotate_text",
+      "label": "Rotate Text",
+      "info": "Comma separated texts for rotating",
+      "visible_if": "{{ block.settings.enable_rotate == true }}"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Rotation Duration",
+      "default": 2,
+      "min": 1,
+      "max": 50,
+      "step": 0.5,
+      "unit": "s",
+      "visible_if": "{{ block.settings.enable_rotate == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Richtext rotate"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__richtext_rotate"
+}
+{% endschema %}

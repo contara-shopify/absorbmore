@@ -1,0 +1,615 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "featured_benefits"
+  assign title = section.settings.title
+  assign content_class = section.settings.content_class
+  assign scroll_pagination_class = section.settings.scroll_pagination_class
+  assign icon = section.settings.icon
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture section_content %}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+  
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+  
+  <section
+    data-style-id="{{ section.id }}--{{ block.id }}"
+    {% if section_id != blank %}
+      id="{{ section_id }}"
+    {% endif %}
+    class="relative {{ container_spacing }}"
+  >
+    {% if title != blank %}
+      <div class="mb-8 lg:hidden">
+        {% render '_input.richtext', content: title, class: content_class %}
+      </div>
+    {% endif %}
+    <div
+      class="grid items-center gap-6 lg:grid-cols-2 xl:gap-2"
+      x-defer="intersect"
+      x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer) }"
+    >
+      <section data-benefits-image class="flex flex-col justify-center">
+        <main
+          class="grid snap-mandatory auto-cols-[100%] grid-flow-col gap-4 overflow-x-auto overflow-y-hidden scrollbar-none"
+          x-ref="scrollContainer"
+          @resize.window="content_slider.handleResize"
+          x-init="$nextTick(() => content_slider.handleResize())"
+          @scroll="content_slider.handleScroll"
+          @scrollend="content_slider.handleInfiniteScroll"
+        >
+          {% assign index = 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'feature' %}
+              {% render 'featured_benefits.feature', block: block, forloop: forloop, index: index %}
+              {% assign index = index | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+        </main>
+        {% if scroll_pagination_class != blank %}
+          {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+        {% endif %}
+      </section>
+      <section data-benefits-content class="flex h-full flex-col justify-center relative lg:gap-8">
+        {% if title != blank %}
+          <div class="mb-2 max-lg:hidden">
+            {% render '_input.richtext', content: title, class: content_class %}
+          </div>
+        {% endif %}
+        <div class="lg:hidden flex items-center justify-between">
+          {% assign index = 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'feature' %}
+              {% liquid
+                if block.settings.dynamic_content_type == 'metafield'
+                  assign object_namespace_key = block.settings.metafield_namespace_key | replace: ' ', '' | strip | strip_newlines | split: '.'
+                  if object_namespace_key[0] == 'metaobjects'
+                    assign metafield = metaobjects[object_namespace_key[1]].values
+                  else
+                    assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+                  endif
+                endif
+              %}
+  
+              {% if block.settings.dynamic_content_type == 'metafield' %}
+                {% for item in metafield %}
+                  {% assign title = item[block.settings.metafield_title_key].value %}
+                  <button
+                    :class="content_slider?.state?.current_index !== +`{{ index }}` ? 'opacity-35' : ''"
+                    type="button"
+                    class="text-left transition-all duration-75 flex items-baseline"
+                    :tabindex="window.innerWidth > 768 ? '0' : '-1'"
+                    @click="content_slider?.scrollToIndex(+`{{ index }}`)"
+                  >
+                    {% render '_input.richtext',
+                      content: title,
+                      class: block.settings.title_class,
+                      block: block,
+                      forloop: forloop
+                    %}
+                  </button>
+                {% endfor %}
+              {% else %}
+                <button
+                  :class="content_slider?.state?.current_index !== +`{{ index }}` ? 'opacity-35' : ''"
+                  type="button"
+                  class="text-left transition-all duration-75 flex items-baseline"
+                  :tabindex="window.innerWidth > 768 ? '0' : '-1'"
+                  @click="content_slider?.scrollToIndex(+`{{ index }}`)"
+                >
+                  {% render '_input.richtext',
+                    content: block.settings.title,
+                    class: block.settings.title_class,
+                    block: block,
+                    forloop: forloop
+                  %}
+                </button>
+              {% endif %}
+              {% assign index = index | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+        </div>
+  
+        {% assign index = 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'feature' %}
+            {% liquid
+              if block.settings.dynamic_content_type == 'metafield'
+                assign object_namespace_key = block.settings.metafield_namespace_key | replace: ' ', '' | strip | strip_newlines | split: '.'
+                if object_namespace_key[0] == 'metaobjects'
+                  assign metafield = metaobjects[object_namespace_key[1]].values
+                else
+                  assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+                endif
+              endif
+            %}
+  
+            {% if block.settings.dynamic_content_type == 'metafield' %}
+              {% for item in metafield %}
+                {% assign title = item[block.settings.metafield_title_key].value %}
+                {% assign content = item[block.settings.metafield_content_key].value %}
+                <button
+                  :class="content_slider?.state?.current_index === +`{{ index }}` ? 'active' : ''"
+                  type="button"
+                  class="text-left transition-all duration-75 flex items-baseline"
+                  :tabindex="window.innerWidth > 768 ? '0' : '-1'"
+                  @click="content_slider?.scrollToIndex(+`{{ index }}`)"
+                >
+                  {% if icon != blank %}
+                    <span data-benefits-icon class="flex items-center justify-center flex-shrink-0">
+                      {% render '_components.icon', icon: icon, class: 'max-lg:hidden' %}
+                    </span>
+                  {% endif %}
+                  <div data-benefits-feature :class="content_slider?.state?.current_index === +`{{ index }}` ? 'active' : ''">
+                    <div class="max-lg:hidden ">
+                      {% render '_input.richtext',
+                        content: title,
+                        class: block.settings.title_class,
+                        block: block,
+                        forloop: forloop
+                      %}
+                    </div>
+                    {% render '_input.richtext',
+                      content: content,
+                      class: block.settings.content_class,
+                      block: block,
+                      forloop: forloop
+                    %}
+                  </div>
+                </button>
+              {% endfor %}
+  
+            {% else %}
+              <button
+                :class="content_slider?.state?.current_index === +`{{ index }}` ? 'active' : ''"
+                type="button"
+                class="text-left transition-all duration-75 flex items-baseline"
+                :tabindex="window.innerWidth > 768 ? '0' : '-1'"
+                @click="content_slider?.scrollToIndex(+`{{ index }}`)"
+              >
+                {% if icon != blank %}
+                  <span data-benefits-icon class="flex items-center justify-center flex-shrink-0">
+                    {% render '_components.icon', icon: icon, class: 'max-lg:hidden' %}
+                  </span>
+                {% endif %}
+                <div data-benefits-feature :class="content_slider?.state?.current_index === +`{{ index }}` ? 'active' : ''">
+                  <div class="max-lg:hidden ">
+                    {% render '_input.richtext',
+                      content: block.settings.title,
+                      class: block.settings.title_class,
+                      block: block,
+                      forloop: forloop
+                    %}
+                  </div>
+                  {% render '_input.richtext',
+                    content: block.settings.content,
+                    class: block.settings.content_class,
+                    block: block,
+                    forloop: forloop
+                  %}
+                </div>
+              </button>
+            {% endif %}
+            {% assign index = index | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      </section>
+    </div>
+  </section>
+  
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Featured benefits",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll pagination class",
+      "default": "scroll-pagination"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Feature",
+      "type": "feature",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Dynamic Repeater",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "paragraph",
+          "content": "List of Metaobjects with the subfields of: 'image' (type: file_reference), 'caption' (type: text, richtext), and 'url' (type: url). Accessing list of Objects i.e. `list.product_reference`, or `list.collection_reference` is also possible.",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "metafield_namespace_key",
+          "label": "Metaobject",
+          "placeholder": "product.smart.features",
+          "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `collection.smart.features` or `metaobjects.features`",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "metafield_image_key",
+          "label": "Image Key",
+          "default": "image",
+          "info": "Metaobject key for the image value. I.e. `image`",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Title",
+          "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)",
+          "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "metafield_title_key",
+          "label": "Title Key",
+          "default": "title",
+          "info": "Metaobject key for the title value. I.e. `content`",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "title_class",
+          "label": "Title class",
+          "default": "richtext-md"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)",
+          "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "metafield_content_key",
+          "label": "Content Key",
+          "default": "content",
+          "info": "Metaobject key for the content value. I.e. `content`",
+          "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+        },
+        {
+          "type": "text",
+          "id": "content_class",
+          "label": "Content class",
+          "default": "richtext-md"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "select",
+          "id": "dynamic_content_type",
+          "label": "Content Type",
+          "default": "default",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "metafield",
+              "label": "Metafield"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Block Globals"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n}\n"
+        },
+        {
+          "type": "select",
+          "id": "hide_if_empty",
+          "label": "If empty, hide:",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "section",
+              "label": "Section"
+            },
+            {
+              "value": "container",
+              "label": "Container"
+            },
+            {
+              "value": "block",
+              "label": "Block"
+            }
+          ],
+          "info": "Always shows in the Theme Editor."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Benefits",
+      "settings": {},
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Featured Benefits Slider",
+      "settings": {
+        "title": "{{ closest.product.metafields.smart.what_to_expect_title | metafield_tag }}",
+        "content_class": "richtext-md",
+        "scroll_pagination_class": "scroll-pagination-lg",
+        "icon": "circle-fill",
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 96px;\n  padding-bottom: 96px;\n}\n\n& .image-wrapper {\n  border-radius: 8px;\n  aspect-ratio: 5/4;\n  width: 100%;\n  height: auto;\n  overflow: hidden;\n  object-fit: cover;\n}\n\n& .scroll-pagination-lg {\n  margin-top: 24px;\n}\n\n& h3 {\n  margin-bottom: 16px;\n}\n\n& ul {\n  padding: 0;\n  list-style: none;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n\n& li {\n  list-style-type: none;\n  display: flex;\n  gap: 8px;\n}\n\n& li svg{\n  margin-top: 3px;\n}\n\n@media (max-width: 1023px) {\n  & {\n    padding-top: 40px;\n    padding-bottom: 40px;\n  }\n  & .image-wrapper {\n    border-radius: 8px;\n    aspect-ratio: 4/3;\n  }\n\n  & .scroll-pagination-lg {\n    background: transparent;\n    width: 100%;\n    justify-content: space-between;\n    position: relative;\n  }\n  & .scroll-pagination-lg::before {\n    content: \"\";\n    width: 100%;\n    position: absolute;\n    top: 50%;\n    left: 0;\n    right: 0;\n    transform: translateY(-50%);\n    height: 1px;\n    background: linear-gradient(\n      90deg,\n      transparent 0%,\n      black 20%,\n      black 50%,\n      black 80%,\n      transparent 100%\n    );\n  }\n  & .scroll-pagination-lg button,\n  & .scroll-pagination-lg button span {\n    opacity: 1;\n    transition: all 0.3s ease-in-out;\n  }\n  & .scroll-pagination-lg button {\n    border-radius: 100%;\n    width: 36px;\n    height: 36px;\n    z-index: 1;\n  }\n  & .scroll-pagination-lg button span {\n    background: #000;\n    width: 8px;\n    height: 8px;\n    opacity: 1;\n  }\n  & .scroll-pagination-lg button:has(span.active) {\n    background: #fff;\n  }\n  & .scroll-pagination-lg button span.active {\n    background: #4659ff;\n    width: 16px;\n    height: 16px;\n  }\n  \n  & [data-benefits-feature]:not(.active){\n    display: none;\n  }\n}\n\n@media (min-width: 1024px) {\n  & span[data-benefits-icon] {\n    width: 36px;\n    height: 36px;\n    border-radius: 100%;\n    margin-right: 40px;\n    z-index: 1;\n    opacity: 1;\n    transition: all 0.3s ease-in-out;\n  }\n\n  & [data-benefits-icon] svg {\n    width: 8px;\n    height: 8px;\n    color: #000;\n    transition: all 0.3s ease-in-out;\n  }\n  & .active [data-benefits-icon] {\n    background: #fff;\n  }\n  & .active svg {\n    width: 16px;\n    height: 16px;\n    color: #4659ff;\n  }\n\n  & [data-benefits-content] button:not(.active) .richtext-md {\n    opacity: 0.5;\n  }\n\n  & [data-benefits-image] {\n    order: 999;\n  }\n\n  & [data-benefits-content]::after {\n    content: \"\";\n    display: block;\n    width: 1px;\n    background: linear-gradient(\n      180deg,\n      transparent 0%,\n      black 50%,\n      transparent 100%\n    );\n    height: calc(100% - 118px);\n    position: absolute;\n    bottom: 0;\n    left: 18px;\n  }\n}",
+        "section_id": "what-to-expect",
+        "category_name": "",
+        "hidden_name_backup": "Featured Benefits Slider"
+      },
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "metafield_namespace_key": "",
+            "image": "{{ closest.product.metafields.smart.what_to_expect_1_image.value }}",
+            "metafield_image_key": "image",
+            "title": "<h3><strong>{{ closest.product.metafields.smart.what_to_expect_1_title.value }}</strong></h3>",
+            "metafield_title_key": "title",
+            "title_class": "richtext-md",
+            "content": "{{ closest.product.metafields.smart.what_to_expect_1_description | metafield_tag }}",
+            "metafield_content_key": "content",
+            "content_class": "richtext-md",
+            "dynamic_content_type": "default",
+            "custom_css": "@media (max-width: 1023px) {\n  & h3{\n    display: none;\n  }\n}",
+            "hide_if_empty": "section"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "metafield_namespace_key": "",
+            "image": "{{ closest.product.metafields.smart.what_to_expect_2_image.value }}",
+            "metafield_image_key": "image",
+            "title": "<h3><strong>{{ closest.product.metafields.smart.what_to_expect_2_title.value }}</strong></h3>",
+            "metafield_title_key": "title",
+            "title_class": "richtext-md",
+            "content": "{{ closest.product.metafields.smart.what_to_expect_2_description | metafield_tag }}",
+            "metafield_content_key": "content",
+            "content_class": "richtext-md",
+            "dynamic_content_type": "default",
+            "custom_css": "@media (max-width: 1023px) {\n  & h3{\n    display: none;\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "metafield_namespace_key": "",
+            "image": "{{ closest.product.metafields.smart.what_to_expect_3_image.value }}",
+            "metafield_image_key": "image",
+            "title": "<h3><strong>{{ closest.product.metafields.smart.what_to_expect_3_title.value }}</strong></h3>",
+            "metafield_title_key": "title",
+            "title_class": "richtext-md",
+            "content": "{{ closest.product.metafields.smart.what_to_expect_3_description | metafield_tag }}",
+            "metafield_content_key": "content",
+            "content_class": "richtext-md",
+            "dynamic_content_type": "default",
+            "custom_css": "@media (max-width: 1023px) {\n  & h3{\n    display: none;\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        }
+      ],
+      "category": "Basic"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card"
+    ]
+  },
+  "class": "shopify_section__featured_benefits"
+}
+{% endschema %}

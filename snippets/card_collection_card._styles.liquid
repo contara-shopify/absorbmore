@@ -1,0 +1,79 @@
+{% if block != blank %}
+  {% assign _settings = block.settings %}
+
+  {% capture css %}
+    & {
+    {% if _settings.text_color != 'rgba(0,0,0,0)' and _settings.text_color != blank %}color: {{ _settings.text_color }};{% endif %}
+    {% if _settings.background_color != 'rgba(0,0,0,0)' and _settings.background_color != blank %}background-color: {{ _settings.background_color }};{% endif %}
+    }
+  {% endcapture %}
+
+  {{ css | append: _settings.custom_css | replace: '&', selector | strip_newlines }}
+
+  {% for block_id in block.block_order %}
+    {% assign _block = block.blocks[block_id] %}
+    {% if _block.disabled %}{% continue %}{% endif %}
+    {% assign style_id = block_id %}
+    {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
+    {% render 'card_collection_card._styles', block: _block, block_id: block_id, section: section, style_id, selector: selector %}
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+{% if section != blank %}
+  {% capture styles %}
+    {% assign _settings = section.settings %}
+    {% assign section_id = _settings.collection_card | default: _settings.handle | handleize %}
+    {% capture selector %}.collection-card--{{ section_id }}{% endcapture %}
+
+    {% capture css %}
+      & {
+      {% if _settings.text_color != 'rgba(0,0,0,0)' and _settings.text_color != blank %}color: {{ _settings.text_color }};{% endif %}
+      {% if _settings.background_color != 'rgba(0,0,0,0)' and _settings.background_color != blank %}background-color: {{ _settings.background_color }};{% endif %}
+      }
+    {% endcapture %}
+    {{ css | append: _settings.custom_css | replace: '&', selector | strip_newlines }}
+
+    {% for block_id in section.block_order %}
+      {% assign block = section.blocks[block_id] %}
+      {% if block.disabled %}{% continue %}{% endif %}
+      {% assign style_id = block_id %}
+      {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
+      {% render 'card_collection_card._styles', block: block, block_id: block_id, section: section, style_id, selector: selector %}
+    {% endfor %}
+  {% endcapture %}
+
+  <style>
+    {{ styles | strip | strip_newlines }}
+  </style>
+  {% break %}
+{% endif %}
+
+{% capture styles %}
+  {% for card in metaobjects.collection_cards.values %}
+    {% assign section = card.schema.value %}
+    {% assign _settings = section.settings %}
+    {% assign section_id = _settings.collection_card | default: _settings.handle | handleize %}
+    {% capture selector %}.collection-card--{{ section_id }}{% endcapture %}
+
+    {% capture css %}
+      & {
+      {% if _settings.text_color != 'rgba(0,0,0,0)' and _settings.text_color != blank %}color: {{ _settings.text_color }};{% endif %}
+      {% if _settings.background_color != 'rgba(0,0,0,0)' and _settings.background_color != blank %}background-color: {{ _settings.background_color }};{% endif %}
+      }
+    {% endcapture %}
+    {{ css | append: _settings.custom_css | replace: '&', selector | strip_newlines }}
+
+    {% for block_id in section.block_order %}
+      {% assign block = section.blocks[block_id] %}
+      {% if block.disabled %}{% continue %}{% endif %}
+      {% assign style_id = block_id %}
+      {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
+      {% render 'card_collection_card._styles', block: block, block_id: block_id, section: section, style_id, selector: selector %}
+    {% endfor %}
+  {% endfor %}
+{% endcapture %}
+
+<style>
+  {{ styles | strip | strip_newlines }}
+</style>

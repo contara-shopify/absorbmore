@@ -1,0 +1,1250 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "main_cart"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture blocks_content %}{% content_for "blocks" %}{% endcapture %}
+
+{% if blocks_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% if section.location == 'custom.modal' %}
+  <div data-modal-id="modal--cart-drawer"
+       x-data="{ show: $modal.id === 'modal--cart-drawer' }"
+       x-effect="show = $editor?.select_section_id === '{{ section.id }}' || $modal.id === 'modal--cart-drawer'"
+       x-cloak>
+    <div class="fixed pointer-events-auto inset-0 transition duration-150 ease-in-out bg-modal-backdrop z-40"
+         x-show="show"
+         @click="$modal.setId('')"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"></div>
+    <div data-style-id="{{ section.id }}--{{ block.id }}"
+         {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+         class="fixed pointer-events-auto inset-y-0 min-h-full right-0 w-full max-w-md transition-all duration-150 ease-in-out isolate overflow-y-auto scrollbar-none {{ container_spacing }}"
+         :class="clsx(show ? 'z-max' : 'z-50')"
+         x-show="show"
+         @scroll="$refs?.header?.classList?.toggle('shadow', $el.scrollTop)"
+         x-trap.noautofocus="show"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full">
+      {{ blocks_content }}
+    </div>
+  </div>
+{% endif %}
+
+
+{% if section.location != 'custom.modal' %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}"
+       {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+       class="relative {{ container_spacing }}">
+    {{ blocks_content }}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_main_cart__checkout_button"
+    },
+    {
+      "type": "_main_cart__discount_details"
+    },
+    {
+      "type": "_main_cart__discount_code_input"
+    },
+    {
+      "type": "_main_cart__dynamic_richtext"
+    },
+    {
+      "type": "_main_cart__gift_with_purchase"
+    },
+    {
+      "type": "_main_cart__note"
+    },
+    {
+      "type": "_main_cart__progress_bar"
+    },
+    {
+      "type": "_main_cart__progress_bar_stacked"
+    },
+    {
+      "type": "_main_cart__total"
+    },
+    {
+      "type": "_main_cart__collapsible"
+    },
+    {
+      "type": "_main_cart__dynamic_checkout_button"
+    },
+    {
+      "type": "_main_cart__container"
+    },
+    {
+      "type": "_main_cart__subscription_selector"
+    },
+    {
+      "type": "_main_cart__subscription_button"
+    },
+    {
+      "type": "_main_cart__line_item_bundle"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Drawer",
+      "settings": {
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "#262626",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  overflow: unset;\n  display: flex;\n  flex-direction: column;\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Cart Drawer"
+      },
+      "blocks": [
+        {
+          "type": "_main_cart__container",
+          "name": "Header",
+          "settings": {
+            "show_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Header"
+          },
+          "blocks": [
+            {
+              "type": "slideshow",
+              "name": "Announcement",
+              "settings": {
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "auto_rotate": 10,
+                "pause_on_hover": true,
+                "infinite_scroll": "all",
+                "scrollbar_class": "scroll-buttons",
+                "scroll_pagination_class": "",
+                "container_spacing": "px-container-md",
+                "custom_css": "& {\n  margin-top: 0;\n  --grid-cols: 1;\n  --grid-gap: 0px;\n  position: relative;\n  color: white;\n}\n& .grid-container {\n   height: 100%;\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n& [data-scrollbar] {\n  position: absolute;\n  left: 20px;\n  right: 20px;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Announcement"
+              },
+              "blocks": [
+                {
+                  "type": "slide",
+                  "settings": {
+                    "url": "",
+                    "container_spacing": "px-container-fullwidth",
+                    "text_color": "#ffffff",
+                    "background_color": "#272824",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 8px 40px;\n}",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": ""
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "settings": {
+                        "title": "<h6><strong>Welcome to our store!</strong></h6>",
+                        "text_alignment": "center",
+                        "content_class": "richtext-md",
+                        "text_color": "",
+                        "custom_css": "& {\n}",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "slide",
+                  "settings": {
+                    "url": "",
+                    "container_spacing": "px-container-fullwidth",
+                    "text_color": "#ffffff",
+                    "background_color": "#272824",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 8px 40px;\n}",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": ""
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "settings": {
+                        "title": "<h6><strong>Welcome to our store!</strong></h6>",
+                        "text_alignment": "center",
+                        "content_class": "richtext-md",
+                        "text_color": "",
+                        "custom_css": "& {\n}",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_main_cart__progress_bar",
+              "name": "Progress Bar",
+              "settings": {
+                "show_conditionally": "always",
+                "incentive_type": "total_price",
+                "success_bg_color": "#272824",
+                "base_bg_color": "#cacacc",
+                "text_color": "",
+                "background_color": "#f2f2f2",
+                "custom_css": "& {\n  padding: 20px 20px 20px;\n  text-align: center;\n}\n\n& [data-progress-bar] {\n  height: 4px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__progress_bar_target",
+                  "name": "Incentive Target",
+                  "settings": {
+                    "target": 200000,
+                    "success_message": "Free Shipping unlocked",
+                    "incentive_message": "You are [difference] from <strong>Free Shipping</strong>",
+                    "content_class": "richtext-md h6"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_cart__progress_bar_target",
+                  "name": "Incentive Target",
+                  "settings": {
+                    "target": 300000,
+                    "success_message": "Free Shipping & Free Gift unlocked",
+                    "incentive_message": "You are [difference] from <strong>a Free Gift</strong>",
+                    "content_class": "richtext-md h6"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_cart__progress_bar_target",
+                  "name": "Incentive Target",
+                  "settings": {
+                    "target": 400000,
+                    "success_message": "<strong>You've unlocked Free Shipping, a Free Gift, and a 10% Discount</strong>",
+                    "incentive_message": "You are [difference] from a <strong>10% Discount</strong>",
+                    "content_class": "richtext-md h6"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Section Container",
+              "settings": {
+                "show_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  padding: 16px 20px;\n  border-bottom: 1px solid #e3e3e3;\n  border-top: 1px solid #e3e3e3;\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Section Container"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__dynamic_richtext",
+                  "name": "Dynamic Richtext",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "content": "<h5><strong>Your Cart ([cart.item_count])</strong></h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Close Button",
+                  "settings": {
+                    "type": "modal_close",
+                    "title": "[icon.x-mark.24]",
+                    "url": "",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "",
+                    "show_active_state": false,
+                    "accessibility_label": "Close Modal",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Empty Cart",
+          "settings": {
+            "show_conditionally": "cart_empty",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n  padding: 32px 20px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Empty Cart"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h3><strong>Your Cart is Empty</strong></h3>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  margin-bottom: 30px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "cards_collection",
+              "name": "Collection Cards",
+              "settings": {
+                "collections": [
+                  "collection10",
+                  "collection12",
+                  "collection13",
+                  "collection15",
+                  "collection17",
+                  "collection19",
+                  "collection2",
+                  "collection3"
+                ],
+                "order_offset": 1,
+                "display_limit": "12",
+                "collection_card_class": "collection-card-flat",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 2px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Cart Items",
+          "settings": {
+            "show_conditionally": "items_added",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  flex: 1;\n  overflow-y: auto;\n  padding: 32px 20px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Cart Items"
+          },
+          "blocks": [
+            {
+              "type": "_main_cart__container",
+              "name": "Container",
+              "settings": {
+                "show_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__gift_with_purchase",
+                  "name": "Gift with Purchase",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "target_type": "item_count",
+                    "target": 4,
+                    "products": [
+                      "amazing-aluminum-bag-collection12"
+                    ],
+                    "receives_quantity": 3,
+                    "allow_duplicates": false,
+                    "legend": "",
+                    "accordion_class": "accordion",
+                    "product_card_class": "product-card",
+                    "hide_out_of_stock": false,
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "infinite_scroll": "off",
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "custom_css": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "cards_line_item",
+                  "name": "Line Items",
+                  "settings": {
+                    "order_offset": 1,
+                    "line_item_card_class": "line-item-card",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-bottom: 16px;\n  padding-bottom: 16px;\n  border-bottom: 1px solid #e3e3e3;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Upsell items",
+              "settings": {
+                "show_conditionally": "items_added",
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 32px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Upsell items"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__dynamic_richtext",
+                  "name": "Dynamic Richtext",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "content": "<h5><strong>You may also like:</strong></h5>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-bottom: 16px;\n  order: -1;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "cards_product",
+                  "name": "Product Cards",
+                  "settings": {
+                    "primary_source": "complementary",
+                    "fallback_source": "related",
+                    "fallback_products": [],
+                    "fallback_collection": "soft-toys",
+                    "order_offset": 1,
+                    "targeting_type": "cart_ai",
+                    "target_product": "",
+                    "display_limit": "6",
+                    "hide_out_of_stock": true,
+                    "addon_products": false,
+                    "addon_auto_add": false,
+                    "addon_bundle_in_cart": true,
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 2px;\n  padding: 8px;\n  transition: background 0.2s;\n  border-radius: 6px;\n}\n\n&:where(:focus,:hover,:focus-within) {\n  background: #f3f3f3;\n}",
+                    "hide_if_empty": "container"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Footer: Items Added",
+          "settings": {
+            "show_conditionally": "items_added",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "rgba(0,0,0,0)",
+            "background_color": "#efefef",
+            "custom_css": "& {\n  border-top: 1px solid #e3e3e3;\n  padding: 20px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footer: Items Added"
+          },
+          "blocks": [
+            {
+              "type": "cards_product",
+              "name": "Product Cards",
+              "settings": {
+                "primary_source": "manual",
+                "fallback_source": "manual",
+                "fallback_products": [
+                  "amazing-aluminum-bag-collection2"
+                ],
+                "fallback_collection": "",
+                "order_offset": 0,
+                "targeting_type": "product",
+                "target_product": "",
+                "display_limit": "1",
+                "hide_out_of_stock": false,
+                "addon_products": false,
+                "addon_auto_add": false,
+                "addon_bundle_in_cart": true,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-bottom: 16px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__discount_code_input",
+              "name": "Discount Code input",
+              "settings": {
+                "show_conditionally": "always",
+                "input_class": "input-text",
+                "input_label": "Discount Code",
+                "input_placeholder": "Enter your coupon code",
+                "button_label": "Apply",
+                "button_class": "button-primary",
+                "custom_css": "& {\n  margin-bottom: 16px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__discount_details",
+              "name": "Discount Details",
+              "settings": {
+                "show_conditionally": "always",
+                "content": "<p><strong>Discounts:</strong></p>",
+                "content_class": "richtext-md",
+                "text_class": "richtext-md h5 !opacity-50",
+                "price_class": "richtext-md p font-bold",
+                "show_cart_discounts": true,
+                "show_line_item_discounts": true,
+                "show_discount_code_discounts": true,
+                "show_selling_plan_discounts": true,
+                "text_color": "",
+                "custom_css": "& {\n  margin-bottom: 16px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__checkout_button",
+              "name": "Checkout Button",
+              "settings": {
+                "show_conditionally": "always",
+                "label": "[icon.lock] [gap.12] Checkout [cart.total_price]",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__note",
+              "name": "Note",
+              "settings": {
+                "show_conditionally": "always",
+                "checkbox_enabled": true,
+                "checkbox_label": "Add a message",
+                "checkbox_class": "input-checkbox",
+                "checkbox_name": "Cart-note",
+                "checkbox_default_state": "unchecked",
+                "textarea_placeholder": "Write you gift note here",
+                "textarea_label": "Cart note",
+                "textarea_class": "input-textarea",
+                "dynamic_display": "show_checkbox_checked",
+                "custom_css": "& {\n  margin-top: 20px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Container",
+              "settings": {
+                "show_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  justify-content: space-between;\n  gap: 8px;\n  margin-top: 16px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h5><strong>Subtotal:</strong></h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_cart__total",
+                  "name": "Total",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "price_class": "richtext-md h5 !font-semibold",
+                    "compare_at_price_class": "richtext-md h5 !opacity-50",
+                    "text_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>Shipping and taxes calculated at checkout.</h6>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "#4e4e4e",
+                "custom_css": "& {\n  margin-top: 4px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Footer: Cart Empty",
+          "settings": {
+            "show_conditionally": "cart_empty",
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "rgba(0,0,0,0)",
+            "background_color": "#efefef",
+            "custom_css": "& {\n  border-top: 1px solid #e3e3e3;\n  padding: 20px;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footer: Cart Empty"
+          },
+          "blocks": [
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "modal_close",
+                "title": "Continue Shopping",
+                "url": "",
+                "collapsible_handle": "",
+                "target_handle": "",
+                "trigger_on_hover": false,
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "button-primary",
+                "show_active_state": false,
+                "accessibility_label": "Close Modal and continue shopping",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Cart"
+    },
+    {
+      "name": "Cart Page",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "#262626",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  padding-top: 64px;\n  padding-bottom: 64px;\n  display: grid;\n  grid-template-columns: 1fr 428px;\n  gap: 80px;\n}\n\n@media (max-width: 1200px) {\n  & {\n    gap: 32px;\n  }\n}\n\n@media (max-width: 960px) {\n  & {\n    padding-top: 40px;\n    padding-bottom: 40px;\n    display: block;\n  }\n}",
+        "section_id": "",
+        "hidden_name_backup": "Cart Page"
+      },
+      "blocks": [
+        {
+          "type": "_main_cart__container",
+          "name": "Empty Cart",
+          "settings": {
+            "show_conditionally": "cart_empty",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "@media (max-width: 768px) {\n  & {\n    padding-bottom: 56px;\n  }\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Empty Cart"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h4><strong>Your Cart is Empty</strong></h4>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  border-bottom: 1px solid #d3d3d3;\n  padding-bottom: 14px;\n  margin-bottom: 32px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<p>Looks like your cart is empty! Feel free to browse our selection and add some items you love.</p>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  max-width: 440px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "type": "button",
+                "title": "Start Shopping [icon.arrow-right]",
+                "url": "/",
+                "collapsible_handle": "",
+                "tab_group": "0",
+                "metafield_namespace_key": "",
+                "metafield_label_key": "label",
+                "metafield_url_key": "url",
+                "button_class": "button-primary",
+                "show_active_state": false,
+                "accessibility_label": "",
+                "metafield_accessibility_label_key": "title",
+                "dynamic_content_type": "default",
+                "custom_css": "& {\n  margin-top: 24px;\n  width: max-content;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Cart Items",
+          "settings": {
+            "show_conditionally": "items_added",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "@media (max-width: 768px) {\n  & {\n    padding-bottom: 56px;\n  }\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Cart Items"
+          },
+          "blocks": [
+            {
+              "type": "_main_cart__dynamic_richtext",
+              "name": "Dynamic Richtext",
+              "settings": {
+                "show_conditionally": "always",
+                "content": "<h4><strong>Your Cart ([cart.item_count])</strong></h4>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  border-bottom: 1px solid #d3d3d3;\n  padding-bottom: 14px;\n  margin-bottom: 32px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Container",
+              "settings": {
+                "show_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "cards_line_item",
+                  "name": "Line Items",
+                  "settings": {
+                    "order_offset": 1,
+                    "line_item_card_class": "line-item-card",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-bottom: 16px;\n  padding-bottom: 16px;\n  border-bottom: 1px solid #e3e3e3;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Upsell items",
+              "settings": {
+                "show_conditionally": "items_added",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 32px;\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Upsell items"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__dynamic_richtext",
+                  "name": "Dynamic Richtext",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "content": "<h5><strong>You may also like:</strong></h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-bottom: 16px;\n  order: -1;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "slider",
+                  "name": "Slider",
+                  "settings": {
+                    "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                    "slider_overflow_container": "",
+                    "auto_rotate": 0,
+                    "pause_on_hover": false,
+                    "scrollbar_class": "scrollbar",
+                    "scroll_pagination_class": "",
+                    "enable_show_more_button": false,
+                    "show_more_button_content": "See more",
+                    "show_less_button_content": "See less",
+                    "button_class": "button-primary",
+                    "display_limit": "12 / 4",
+                    "infinite_scroll": "off",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  border: 1px solid #e3e3e3;\n  border-radius: 6px;\n  padding: 16px;\n}\n& .grid-container {\n\n}",
+                    "hide_if_empty": "none",
+                    "generate_block_presets": "never",
+                    "hidden_name_backup": "Slider"
+                  },
+                  "blocks": [
+                    {
+                      "type": "cards_product",
+                      "name": "Product Cards",
+                      "settings": {
+                        "primary_source": "complementary",
+                        "fallback_source": "related",
+                        "fallback_products": [],
+                        "fallback_collection": "soft-toys",
+                        "order_offset": 1,
+                        "targeting_type": "cart_ai",
+                        "target_product": "",
+                        "display_limit": "6",
+                        "hide_out_of_stock": true,
+                        "text_color": "",
+                        "background_color": "",
+                        "custom_css": "& {\n  padding: 8px;\n  transition: background 0.2s;\n  border-bottom: 1px solid #e3e3e3;\n}\n&:last-of-type {\n  border-bottom: none;\n}\n\n&:where(:focus,:hover,:focus-within) {\n  border-radius: 6px;\n  background: #f3f3f3;\n  border-bottom: 1px solid transparent;\n}",
+                        "hide_if_empty": "container"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_cart__container",
+          "name": "Sidebar",
+          "settings": {
+            "show_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "rgba(0,0,0,0)",
+            "background_color": "#efefef",
+            "custom_css": "& {\n  border-radius: 6px;\n  padding: 20px;\n  height: max-content;\n  position: sticky;\n  top: calc(var(--header-height-offset) + 40px);\n  transition: top 200ms ease-in-out;\n}\n\n@media (max-width: 768px) {\n  & {\n    position: unset;\n    top: unset;\n  }\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Sidebar"
+          },
+          "blocks": [
+            {
+              "type": "_main_cart__progress_bar",
+              "name": "Progress Bar",
+              "settings": {
+                "show_conditionally": "always",
+                "incentive_type": "total_price",
+                "success_bg_color": "#272824",
+                "base_bg_color": "#cacacc",
+                "text_color": "",
+                "background_color": "rgba(0,0,0,0)",
+                "custom_css": "& {\n  padding: 10px 0 30px;\n  text-align: center;\n}\n\n& [data-progress-bar] {\n  height: 4px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_cart__progress_bar_target",
+                  "name": "Incentive Target",
+                  "settings": {
+                    "target": 400000,
+                    "success_message": "<strong>You've unlocked Free Shipping, a Free Gift, and a 10% Discount</strong>",
+                    "incentive_message": "You are [difference] from a <strong>10% Discount</strong>",
+                    "content_class": "richtext-md h6"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_cart__checkout_button",
+              "name": "Checkout Button",
+              "settings": {
+                "show_conditionally": "always",
+                "label": "[icon.lock] [gap.12] Checkout [cart.total_price]",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__note",
+              "name": "Note",
+              "settings": {
+                "show_conditionally": "always",
+                "checkbox_enabled": false,
+                "checkbox_label": "Add a message",
+                "checkbox_class": "input-checkbox",
+                "checkbox_name": "Cart-note",
+                "checkbox_default_state": "unchecked",
+                "textarea_placeholder": "Write you gift note here",
+                "textarea_label": "Cart note",
+                "textarea_class": "input-textarea",
+                "dynamic_display": "show_checkbox_checked",
+                "custom_css": "& {\n  margin-top: 20px;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_cart__container",
+              "name": "Container",
+              "settings": {
+                "show_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "rgba(0,0,0,0)",
+                "custom_css": "& {\n  display: flex;\n  justify-content: space-between;\n  gap: 8px;\n  margin-top: 16px;\n}",
+                "generate_block_presets": "never",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h5><strong>Subtotal:</strong></h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_cart__total",
+                  "name": "Total",
+                  "settings": {
+                    "show_conditionally": "always",
+                    "price_class": "richtext-md h5 !font-semibold",
+                    "compare_at_price_class": "richtext-md h5 !opacity-50",
+                    "text_color": "",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>Shipping and taxes calculated at checkout.</h6>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "#4e4e4e",
+                "custom_css": "& {\n  margin-top: 4px;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Cart"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "cart"
+    ],
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__main_cart"
+}
+{% endschema %}

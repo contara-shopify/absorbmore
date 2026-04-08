@@ -1,0 +1,63 @@
+{% liquid
+  unless article
+    assign not_a_article_page = true
+
+    if request.design_mode
+      assign article = articles.all.articles[0]
+    endif
+  endunless
+
+  unless article
+    break
+  endunless
+%}
+
+{% capture article_data %}
+  {%- render '_json.article', article: article, meta_article: false -%}
+{% endcapture %}
+
+<script type="application/json"
+        data-article-data="{{ article.handle }}"
+        data-primary-article-data="{{ article.handle }}">{{ article_data }}</script>
+
+<script data-article-data-init="{{ article.handle }}" type="application/javascript">
+  (() => {
+    const article = JSON.parse(document.querySelector(`[data-primary-article-data="{{ article.handle }}"]`)?.innerText);
+    window._article_card_article = article;
+
+    const articleData = {
+      loaded: false,
+      handleHydration: async (article) => {
+        const dbKey = `_${window.Shopify.theme.id}-article--${article.handle}`;
+        _articles[article.handle] = {
+          ...(await idbKeyval.get(dbKey) || {}),
+          ...article,
+        };
+
+        idbKeyval.set(dbKey, _articles[article.handle]);
+      },
+    };
+
+    document.addEventListener('index-db-loaded', () => {
+      if (articleData.loaded) return;
+      articleData.loaded = true;
+      articleData.handleHydration(article);
+    });
+
+
+    if (typeof idbKeyval !== "undefined" && !articleData.loaded) {
+      articleData.loaded = true;
+      articleData.handleHydration(article);
+    }
+  })();
+</script>
+
+
+
+
+{% schema %}
+{
+  "name": "Article Data",
+  "class": "shopify_section__data_article_json"
+}
+{% endschema %}

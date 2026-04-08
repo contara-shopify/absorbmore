@@ -1,0 +1,372 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_search"
+  assign limit = section.settings.limit
+  assign limit_type = section.settings.limit_type
+  assign unavailable_products = section.settings.unavailable_products
+  assign author = section.settings.author
+  assign body = section.settings.body
+  assign product_type = section.settings.product_type
+  assign tag = section.settings.tag
+  assign title = section.settings.title
+  assign variants_barcode = section.settings.variants_barcode
+  assign variants_sku = section.settings.variants_sku
+  assign variants_title = section.settings.variants_title
+  assign vendor = section.settings.vendor
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% capture blocks_content %}{% content_for "blocks" %}{% endcapture %}
+{% capture section_content %}
+  <div data-modal-id="search"
+       x-data="{ show: $modal.id === 'search', anchor: document.querySelector(`[x-ref='navSearchForm']`)?.getBoundingClientRect() }"
+       x-effect="show = $editor?.select_section_id === '{{ section.id }}' || $modal.id === 'search'; $watch('$data.windowWidth', () => { anchor = document.querySelector(`[x-ref='navSearchForm']`)?.getBoundingClientRect(); $nextTick(()=>{ anchor = document.querySelector(`[x-ref='navSearchForm']`)?.getBoundingClientRect() }) })"
+       :style="`--right: ${document.body.clientWidth - anchor?.right}px; --overlay-height: calc(var(--header-height-offset) - ${anchor?.bottom}px)`"
+       x-cloak>
+    <div class="pointer-events-auto fixed inset-x-0 bottom-0 top-[--header-height-offset] z-10 transition duration-75 ease-in-out bg-modal-backdrop"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-show="show"
+         x-cloak
+         @click="$modal.setId('')"></div>
+    <section data-style-id="{{ section.id }}--{{ block.id }}"
+             {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+        {% comment %}x-trap="window.innerWidth < 768 && show"{% endcomment %}
+             x-trap.noautofocus="show"
+             class="pointer-events-auto fixed max-md:bottom-0 top-[--header-height-offset] max-h-screen md:h-[unset] inset-x-0 max-md:overflow-y-auto scrollbar-none z-[110] ease-in-out {{ container_spacing }}"
+             x-transition:enter="md:delay-300 transition-all duration-75 md:duration-200 !z-20"
+             x-transition:enter-start="-translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             x-transition:leave="transition-all duration-75 !z-20"
+             x-transition:leave-start="opacity-100 !z-20"
+             x-transition:leave-end="opacity-0 !z-20"
+             x-data="{ ..._sections.initSearchModal($el,'search') }"
+             x-defer="intersect"
+             data-settings="{{ section.settings | json | escape }}"
+             style="-webkit-overflow-scrolling: touch;"
+             :class="clsx(show ? 'z-max' : 'z-50')"
+             x-cloak
+             x-show="show">
+      <div class="pointer-events-none absolute -top-[--overlay-height] bottom-[100%] z-20 w-full bg-transparent max-md:hidden"></div>
+      {{ blocks_content }}
+    </section>
+  </div>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Predictive Search Settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "Read More about Predictive Search [here](https://shopify.dev/docs/api/ajax/reference/predictive-search)"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Search Limit",
+      "default": 10,
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "limit_type",
+      "label": "Limit type",
+      "default": "each",
+      "options": [
+        {
+          "value": "each",
+          "label": "Each"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Unavailable Products"
+    },
+    {
+      "type": "select",
+      "id": "unavailable_products",
+      "label": "Unavailable products",
+      "default": "last",
+      "options": [
+        {
+          "value": "show",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "last",
+          "label": "Last"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Search Fields"
+    },
+    {
+      "type": "checkbox",
+      "id": "author",
+      "label": "author"
+    },
+    {
+      "type": "checkbox",
+      "id": "body",
+      "label": "body"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_type",
+      "label": "product_type",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tag",
+      "label": "tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "title",
+      "label": "title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "variants_barcode",
+      "label": "variants.barcode"
+    },
+    {
+      "type": "checkbox",
+      "id": "variants_sku",
+      "label": "variants.sku"
+    },
+    {
+      "type": "checkbox",
+      "id": "variants_title",
+      "label": "variants.title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "vendor",
+      "label": "vendor",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "_modal_search__dynamic_text"
+    },
+    {
+      "type": "_modal_search__static_search_suggestion"
+    },
+    {
+      "type": "_modal_search__dynamic_search_suggestions"
+    },
+    {
+      "type": "_modal_search__product_result_cards"
+    },
+    {
+      "type": "_modal_search__collection_result_cards"
+    },
+    {
+      "type": "_modal_search__page_result_cards"
+    },
+    {
+      "type": "_modal_search__article_result_cards"
+    },
+    {
+      "type": "_modal_search__search_input"
+    },
+    {
+      "type": "_modal_search__container"
+    },
+    {
+      "type": "_modal_search__loading_overlay"
+    }
+  ],
+  "limit": 1,
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_search"
+}
+{% endschema %}

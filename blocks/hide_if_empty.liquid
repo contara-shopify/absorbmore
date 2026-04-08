@@ -1,0 +1,40 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "hide_if_empty"
+  assign liquid_code = block.settings.liquid_code
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture content %}{{ liquid_code }}{% endcapture %}
+{% if content contains 'HIDE_CONTAINER' %}
+  <script type="container/break"></script>
+{% endif %}
+{% if content contains 'HIDE_SECTION' %}
+  <script type="section/break"></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "_Dynamically Hidden_",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Render out 'HIDE_CONTAINER' to hide the parent container or 'HIDE_SECTION' to hide the entire section."
+    },
+    {
+      "type": "liquid",
+      "id": "liquid_code",
+      "label": "Liquid code",
+      "default": "{% if collection.metafields.smart.feature_flag == blank %}\n  HIDE_CONTAINER\n{% endif %}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "_Dynamically Hidden_",
+      "category": "Utilities"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__hide_if_empty"
+}
+{% endschema %}

@@ -1,0 +1,8 @@
+||%!SPLIT%!||{% capture json %}[{% for line_item in cart.items %},{{ line_item.item_components | json }}{% endfor %}]{% endcapture %}{{ json | replace_first: ',' }}||%!SPLIT%!||
+
+{% schema %}
+{
+  "name": "Cart Data",
+  "class": "shopify_section__data_cart_json"
+}
+{% endschema %}

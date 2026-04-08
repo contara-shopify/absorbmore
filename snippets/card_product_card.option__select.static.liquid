@@ -1,0 +1,132 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__option__select"
+  assign section_type = "card_product_card"
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign option_type = block.settings.option_type
+  assign match_option_titles = block.settings.match_option_titles
+  assign match_option_index = block.settings.match_option_index
+  assign match_exact_word = block.settings.match_exact_word
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+
+  if sold_out_variants == 'hide' and product.available != true
+    break
+  endif
+
+  assign match_options = match_option_titles | split: ","
+
+  if option_type == 'by_name'
+    for option in product.options
+      assign optionIndex = forloop.index0
+      for match_option in match_options
+        if match_exact_word
+          assign _match_option = match_option | strip
+          assign _option = option
+        else
+          assign _match_option = match_option | strip | downcase
+          assign _option = option | downcase
+        endif
+
+        if _option == _match_option
+          assign _optionIndex = optionIndex
+          break
+        endif
+      endfor
+      if _optionIndex != blank
+        break
+      endif
+    endfor
+
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  if option_type == 'by_index'
+    assign _optionIndex = match_option_index | minus: 1
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+%}
+
+{% for i in (0..2) %}
+  {% liquid
+    if option_type == 'fallback_options'
+      assign _optionIndex = i
+      assign option = product.options_with_values[_optionIndex]
+    endif
+
+    if option == blank
+      break
+    endif
+
+    assign current_value = variant.options[_optionIndex] | default: option.name
+    assign content_legend = legend | replace: "[heading]", option.name
+    assign current_legend = content_legend | replace: "[value]", current_value
+
+    assign values = option.values | json
+  %}
+
+  <product-option {{ _optionIndex }} {{ option_type }}>
+    <fieldset
+        data-style-id="{{ style_id }}"
+        @click.stop="()=>{}"
+        x-data="{ index: +`{{ _optionIndex }}` }"
+        x-defer="intersect">
+      <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+              x-ignore
+              data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+              x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', p_card?.selected_options[index])">
+        {% render '_input.inline_richtext', content: current_legend %}
+      </legend>
+      {% render '_components.select',
+          values: values,
+          select_class: select_class,
+          label: option.name,
+          setState: "$data.setProductOption({ index, value: value })",
+          state: "p_card?.selected_options[index]",
+          disabled_items: 'p_card.product?.options_with_values[index]?.values?.map(value => !hasAvailableVariant(index, value)) ?? []',
+          current_value: current_value,
+          html_attributes: "x-ignore"
+      %}
+    </fieldset>
+  </product-option>
+
+  {% if option_type != 'fallback_options' %}
+    {% break %}
+  {% endif %}
+{% endfor %}

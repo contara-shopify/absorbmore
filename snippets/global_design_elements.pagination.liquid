@@ -1,0 +1,119 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "pagination"
+  assign section_type = "global_design_elements"
+  assign class = block.settings.class
+  assign custom_css = block.settings.custom_css
+  assign icon_previous = block.settings.icon_previous
+  assign icon_next = block.settings.icon_next
+  assign override_preview_background = block.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- liquid
+  assign selector = '.' | append: class | replace: '\/', '/' | replace: '/', '\/'
+%}
+
+{%- capture css -%}
+
+  & {
+  user-select: none;
+  --pagination-button-prev: var(--icon-{{ icon_previous | handleize }});
+  --pagination-button-prev-aspect-ratio: var(--icon_previous-{{ icon | handleize }}-aspect-ratio);
+  --pagination-button-next: var(--icon-{{ icon_next | handleize }});
+  --pagination-button-next-aspect-ratio: var(--icon_next-{{ icon | handleize }}-aspect-ratio);
+  }
+{%- endcapture -%}
+
+<style>
+  {{ custom_css | append: css | replace: '&', selector | strip_newlines }}
+  {% if request.design_mode %}
+  {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+  {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+  {% endif %}
+</style>
+
+{% if request.design_mode %}
+  {% liquid
+
+    assign current_collection = collection | default: collections['all']
+
+    if current_collection.products_count < 6 and current_collection.id != collection.id
+      for col in collections
+        if col.products_count > 6
+          assign current_collection = col
+        endif
+      endfor
+    endif
+
+    if search.results != blank
+      assign pagination_limit = search.results_count | default: 6 | divided_by: 8 | ceil | at_least: 1
+      paginate search.results by pagination_limit
+        assign _paginate = paginate
+      endpaginate
+    elsif current_collection.id == collection.id
+      assign pagination_limit = collection.products_count | default: 6 | divided_by: 8 | ceil | at_least: 1
+      paginate collection.products by pagination_limit
+        assign _paginate = paginate
+      endpaginate
+    elsif blog.articles
+      assign pagination_limit = blog.articles_count | default: 6 | divided_by: 8 | ceil | at_least: 1
+      paginate blog.articles by pagination_limit
+        assign _paginate = paginate
+      endpaginate
+    else
+      assign pagination_limit = current_collection.products_count | default: 6 | divided_by: 8 | ceil | at_least: 1
+      paginate current_collection.products by pagination_limit
+        assign _paginate = paginate
+      endpaginate
+    endif
+  %}
+
+  {% if override_preview_background == blank or override_preview_background.alpha == 0 %}
+    {% assign override_preview_background = '#ffffff' %}
+  {% endif %}
+  <section class="fixed inset-0 z-50 flex flex-col gap-16 overflow-y-auto bg-white py-16 text-black px-container-sm @container"
+           data-section-id="{{ section.id }}"
+           data-preview-container
+           x-data="{ tab: 'single-type' }"
+           style="background: {{ override_preview_background }};"
+           x-show="$editor?.select_block_id === '{{ block.id }}'"
+           x-cloak {{ block.shopify_attributes }}>
+
+    <header class="flex gap-3 font-mono">
+      <button @click="tab='single-type'"
+              type="button"
+              :class="tab === 'single-type' ? 'bg-gray-600 text-gray-50 border-gray-900 hf:bg-gray-700':'border-gray-200/70 bg-gray-100 text-gray-700 hf:text-gray-900 hf:border-gray-300/80 hf:bg-gray-200/90'"
+              class="rounded-sm border px-3 text-sm font-medium py-1.5">{{ selector }}
+      </button>
+    </header>
+
+    <main class="mt-8">
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div class="text-lg font-bold text-gray-600">Desktop</div>
+        <div class="text-lg font-bold text-gray-600">Mobile</div>
+      </header>
+      <section x-show="tab === 'single-type'" class="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div>
+          {% render '_components.pagination',
+              class: class,
+              paginate: _paginate,
+              pagination_container_ref: '$refs.pagination_content' %}
+        </div>
+        <div class=" @container max-w-lg">
+          {% render '_components.pagination',
+              class: class,
+              paginate: _paginate,
+              pagination_container_ref: '$refs.pagination_content' %}
+        </div>
+      </section>
+    </main>
+    {% capture css_content %}
+      {{ css | replace: '&', selector }}
+    {% endcapture %}
+    {% render '_components.editor_preview_base_css', block: block, class: class, selector: selector, css: css_content, filename: 'snippets/_components.pagination' %}
+    {% render '_components.editor_preview', block: block, css: css_content, class: class, selector: selector, filename: 'snippets/_components.pagination' %}
+
+  </section>
+{% endif %}
+

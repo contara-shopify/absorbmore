@@ -1,0 +1,2008 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "footer"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="relative {{ container_spacing }}">
+    {% content_for "blocks" %}
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "form"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "custom_liquid"
+    },
+    {
+      "type": "menu"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "social_icons"
+    },
+    {
+      "type": "collapsible"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_footer__international_store_select"
+    },
+    {
+      "type": "_footer__container"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  display: flex;\n  flex-wrap: wrap;\n  padding-top: 50px;\n  padding-bottom: 50px;\n  display: flex;\n  flex-direction: column;\n  gap: 64px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 40px;\n    padding-bottom: 20px;\n    gap: 30px;\n  }\n}",
+        "section_id": "",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "_footer__container",
+          "name": "Nav",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  justify-content: space-between;\n  gap: 30px;\n}\n\n@media (max-width: 1200px) {\n  & {\n    flex-direction: column;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Nav"
+          },
+          "blocks": [
+            {
+              "type": "_footer__container",
+              "name": "Newsletter Signup",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  max-width: 640px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Newsletter Signup"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>GET IN ON THE ACTION!</h3><p></p><p>Lorem ipsum dolor sit amet consectetur. Vulputate viverra egestas eget sed. Velit pharetra aliquam pulvinar commodo tortor aliquet diam ut sed at viverra cursus et viverra. </p>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>SAVE 20% WHEN YOU GET IN ON THE ACTION!</h3>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "form",
+                  "name": "Newsletter Sign-up Form",
+                  "settings": {
+                    "type": "newsletter_signup",
+                    "target_id": "",
+                    "target_visibility": "",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 20px;\n  display: flex;\n  gap: 12px;\n}\n\n@media (max-width: 768px) {\n  & {\n    flex-direction: column;\n  }\n}",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "Newsletter Sign-up Form"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_form__input_email",
+                      "name": "Input: Email",
+                      "settings": {
+                        "title": "Email",
+                        "placeholder": "Email",
+                        "input_class": "input-text",
+                        "name": "contact[email]",
+                        "type": "email",
+                        "autocomplete": "username",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_button",
+                      "name": "Input: Button",
+                      "settings": {
+                        "title": "sign up",
+                        "button_type": "submit",
+                        "name": "",
+                        "default_value": "",
+                        "button_class": "button-primary",
+                        "custom_css": "& {\n  white-space: nowrap;\n  flex-shrink: 1;\n  min-height:100%;\n}\n@media (max-width: 768px) {\n  & {\n    width: 100%;\n  }\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_tag",
+                      "settings": {},
+                      "blocks": [
+                        {
+                          "type": "_form__input_tag_value",
+                          "settings": {
+                            "title": "newsletter"
+                          },
+                          "blocks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "social_icons",
+                  "name": "Social Icons",
+                  "settings": {
+                    "text_color": "rgba(0,0,0,0)",
+                    "custom_css": "& {\n  margin-top: 30px;\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 24px;\n  \n}\n\n@media (max-width: 768px) {\n  & {\n    justify-content: center;\n    gap: 32px;\n  }\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "facebook",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "instagram",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "youtube",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "twitter",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "tiktok",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "snapchat",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "discord",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "twitch",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_footer__container",
+              "name": "Menus",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  max-width: 640px;\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 20px;\n}\n\n@media (max-width: 768px) {\n  & {\n     display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Menus"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "<strong>SHOP</strong>",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "<strong>ABOUT</strong>",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "link-effect",
+                    "content": "<strong>SUPPORT</strong>",
+                    "content_class": "richtext-md p",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_footer__container",
+              "name": "Menus",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n\n}\n\n@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Menus"
+              },
+              "blocks": [
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "SHOP",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "ABOUT",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "SUPPORT",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_footer__container",
+          "name": "Logos",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  gap: 15px 32px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n\n@media (max-width: 768px) {\n  & {\n    justify-content: center;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Logos"
+          },
+          "blocks": [
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "custom_css": "& {\n  height: 105px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "custom_css": "& {\n  height: 50px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "custom_css": "& {\n  height: 52px;\n  width: calc(275px / 2);\n  aspect-ratio: auto;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n  position: relative;\n}\n& img {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 275px;\n  height: 100%;\n  max-width: unset;\n}\n&:where(:hover,:focus) img {\n  left: unset;\n  right: 0;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_footer__container",
+          "name": "Footnote",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footnote"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>The statements contained in this website have not been evaluated by the Food and Drug Administration (FDA). No statements shall be construed as a claim or representation of a diagnosis, treatment, cure, or prevention of any disease. No product listed in this website is intended to diagnose, treat, cure, or prevent any disease. Products are not intended for those with a medical condition, pregnant or nursing.</h6>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_footer__container",
+              "name": "Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  justify-content: flex-start;\n  align-items: center;\n  margin-top: 20px;\n  gap: 24px;\n  flex-wrap: wrap;\n  overflow: clip;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "target_handle": "",
+                    "trigger_on_hover": false,
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "custom_liquid",
+                  "name": "Custom Liquid Code",
+                  "settings": {
+                    "custom_liquid": "<span>© {{ 'now' | date: \"%Y\" }} {{ shop.name | link_to: routes.root_url }}</span>",
+                    "custom_css": "& {\n  display: flex;\n  flex: 1;\n  justify-content: flex-end;\n  font-size: 14px;\n}\n@media (max-width: 768px) {\n  & {\n    flex: initial;\n    width: 100%;\n    justify-content: flex-start;\n    font-size: 12px;\n  }\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    },
+    {
+      "name": "undefined",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "#ffffff",
+        "custom_css": "& {\n  display: flex;\n  flex-wrap: wrap;\n  padding-top: 50px;\n  padding-bottom: 50px;\n  display: flex;\n  flex-direction: column;\n  gap: 64px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 40px;\n    padding-bottom: 20px;\n    gap: 30px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "_footer__container",
+          "name": "Nav",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  justify-content: space-between;\n  gap: 30px;\n}\n\n@media (max-width: 1200px) {\n  & {\n    flex-direction: column;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Nav"
+          },
+          "blocks": [
+            {
+              "type": "_footer__container",
+              "name": "Newsletter Signup",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  max-width: 640px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Newsletter Signup"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>GET IN ON THE ACTION!</h3><p></p><p><strong>Built for modern merchants.</strong> Our Shopify theme combines elegant design with lightning-fast performance, crafted to boost your store’s conversion and make customization easy. Explore the demo to see how seamlessly it adapts to your brand and products—no code required.</p>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h3>SAVE 20% WHEN YOU GET IN ON THE ACTION!</h3>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "form",
+                  "name": "Newsletter Sign-up Form",
+                  "settings": {
+                    "type": "newsletter_signup",
+                    "target_id": "",
+                    "target_visibility": "",
+                    "text_color": "",
+                    "background_color": "",
+                    "custom_css": "& {\n  margin-top: 20px;\n  display: flex;\n  gap: 12px;\n}\n\n@media (max-width: 768px) {\n  & {\n    flex-direction: column;\n  }\n}",
+                    "hide_if_empty": "block",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "Newsletter Sign-up Form"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_form__input_email",
+                      "name": "Input: Email",
+                      "settings": {
+                        "title": "Email",
+                        "placeholder": "Email",
+                        "input_class": "input-text",
+                        "name": "contact[email]",
+                        "type": "email",
+                        "autocomplete": "username",
+                        "default_value": "",
+                        "required": true,
+                        "custom_css": "& {\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_button",
+                      "name": "Input: Button",
+                      "settings": {
+                        "title": "sign up",
+                        "button_type": "submit",
+                        "name": "",
+                        "default_value": "",
+                        "button_class": "button-primary",
+                        "custom_css": "& {\n  white-space: nowrap;\n  flex-shrink: 1;\n  min-height:100%;\n}\n@media (max-width: 768px) {\n  & {\n    width: 100%;\n  }\n}"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_form__input_tag",
+                      "settings": {},
+                      "blocks": [
+                        {
+                          "type": "_form__input_tag_value",
+                          "settings": {
+                            "title": "newsletter"
+                          },
+                          "blocks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "social_icons",
+                  "name": "Social Icons",
+                  "settings": {
+                    "text_color": "rgba(0,0,0,0)",
+                    "custom_css": "& {\n  margin-top: 30px;\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 24px;\n  \n}\n\n@media (max-width: 768px) {\n  & {\n    justify-content: center;\n    gap: 32px;\n  }\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "facebook",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "instagram",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "youtube",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "twitter",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "tiktok",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "snapchat",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "discord",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    },
+                    {
+                      "type": "_social_icons__icon_button",
+                      "settings": {
+                        "title": "twitch",
+                        "url": "",
+                        "size": 24,
+                        "custom_css": "& {\n}",
+                        "generate_block_presets": "never",
+                        "category_name": "",
+                        "hidden_name_backup": "",
+                        "hide_if_empty": "none"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "_footer__container",
+              "name": "Menus",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  flex: 1;\n  max-width: 640px;\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 20px;\n}\n\n@media (max-width: 768px) {\n  & {\n     display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Menus"
+              },
+              "blocks": [
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "<strong>SHOP</strong>",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "richtext-md p link-effect",
+                    "content": "<strong>ABOUT</strong>",
+                    "content_class": "",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "menu",
+                  "name": "Menu",
+                  "settings": {
+                    "menu": "main-menu",
+                    "link_class": "link-effect",
+                    "content": "<strong>SUPPORT</strong>",
+                    "content_class": "richtext-md p",
+                    "content_url": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 8px;\n}\n& :first-child {\n  margin-bottom: 4px;\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "language_selector",
+                  "name": "Language Selector",
+                  "settings": {
+                    "select_class": "input-select",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "location_selector",
+                  "name": "Location Selector",
+                  "settings": {
+                    "select_class": "input-select",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_footer__container",
+              "name": "Menus",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n\n}\n\n@media (min-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Menus"
+              },
+              "blocks": [
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "SHOP",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "ABOUT",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                },
+                {
+                  "type": "collapsible",
+                  "name": "Collapsible",
+                  "settings": {
+                    "label": "SUPPORT",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "title",
+                    "accordion_class": "accordion",
+                    "content": "",
+                    "show": false,
+                    "metafield_content_key": "content",
+                    "metafield_default_state": "closed",
+                    "auto_close_siblings": true,
+                    "dynamic_content_type": "default",
+                    "custom_css": "& summary {\n  font-size: 12px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "menu",
+                      "name": "Menu",
+                      "settings": {
+                        "menu": "main-menu",
+                        "link_class": "link-effect",
+                        "content": "",
+                        "content_class": "",
+                        "content_url": "",
+                        "text_color": "",
+                        "custom_css": "& {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_footer__container",
+          "name": "Logos",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  gap: 15px 32px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n\n@media (max-width: 768px) {\n  & {\n    justify-content: center;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Logos"
+          },
+          "blocks": [
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "mobile_max_width": 1200,
+                "custom_css": "& {\n  height: 105px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "mobile_max_width": 1200,
+                "custom_css": "& {\n  height: 50px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image",
+              "name": "Image",
+              "settings": {
+                "url": "",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "mobile_max_width": 1200,
+                "custom_css": "& {\n  height: 52px;\n  width: calc(275px / 2);\n  aspect-ratio: auto;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n  position: relative;\n}\n& img {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 275px;\n  height: 100%;\n  max-width: unset;\n}\n&:where(:hover,:focus) img {\n  left: unset;\n  right: 0;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_footer__container",
+          "name": "Footnote",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Footnote"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>The statements contained in this website have not been evaluated by the Food and Drug Administration (FDA). No statements shall be construed as a claim or representation of a diagnosis, treatment, cure, or prevention of any disease. No product listed in this website is intended to diagnose, treat, cure, or prevent any disease. Products are not intended for those with a medical condition, pregnant or nursing.</h6>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_footer__container",
+              "name": "Container",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  justify-content: flex-start;\n  align-items: center;\n  margin-top: 20px;\n  gap: 24px;\n  flex-wrap: wrap;\n  overflow: clip;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Container"
+              },
+              "blocks": [
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "button",
+                  "name": "Button",
+                  "settings": {
+                    "type": "button",
+                    "title": "Privacy Policy",
+                    "url": "#",
+                    "collapsible_handle": "",
+                    "tab_group": "0",
+                    "metafield_namespace_key": "",
+                    "metafield_label_key": "label",
+                    "metafield_url_key": "url",
+                    "button_class": "richtext-md h6 underline",
+                    "show_active_state": false,
+                    "accessibility_label": "",
+                    "metafield_accessibility_label_key": "title",
+                    "dynamic_content_type": "default",
+                    "custom_css": "& {\n  width: max-content;\n  whitespace: no-wrap;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "custom_liquid",
+                  "name": "Custom Liquid Code",
+                  "settings": {
+                    "custom_liquid": "<span>© {{ 'now' | date: \"%Y\" }} {{ shop.name | link_to: routes.root_url }}</span>",
+                    "custom_css": "& {\n  display: flex;\n  flex: 1;\n  justify-content: flex-end;\n  font-size: 14px;\n}\n@media (max-width: 768px) {\n  & {\n    flex: initial;\n    width: 100%;\n    justify-content: flex-start;\n    font-size: 12px;\n  }\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "category": "Navigation"
+    },
+    {
+      "name": "Footer: Centered",
+      "settings": {
+        "container_spacing": "px-container-sm",
+        "text_color": "#ffffff",
+        "background_color": "#000000",
+        "custom_css": "& {\n  padding-top: 64px;\n  padding-bottom: 56px;\n  position: relative;\n  z-index: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 40px;\n}\n\n@media (max-width: 899px) {\n  & {\n    padding-top: 56px;\n    padding-bottom: 24px;\n    gap: 32px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "category": "Footer",
+      "blocks": [
+        {
+          "type": "_footer__container",
+          "name": "Menu | Newsletter",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr 300px 1fr 1fr;\n  gap: 32px;\n}\n\n@media (max-width: 899px) {\n  & {\n    grid-template-columns: 1fr 1fr;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "smart-footer-shop",
+                "link_class": "richtext-md h6 link-effect",
+                "content": "<strong>Shop</strong>",
+                "content_class": "richtext-md h5",
+                "content_url": "",
+                "text_color": "rgba(0,0,0,0)",
+                "custom_css": "& .h5{\n  margin-bottom: 8px;\n}\n\n& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  text-align: center;\n  align-items: center;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "smart-footer-learn",
+                "link_class": "richtext-md h6 link-effect",
+                "content": "<strong>Learn</strong>",
+                "content_class": "richtext-md h5",
+                "content_url": "",
+                "text_color": "rgba(0,0,0,0)",
+                "custom_css": "& .h5{\n  margin-bottom: 8px;\n  \n}\n& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  text-align: center;\n  align-items: center;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "form",
+              "name": "Newsletter Sign-up Form",
+              "settings": {
+                "type": "newsletter_signup",
+                "target_id": "",
+                "target_visibility": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n& .h-captcha {\n  display: none;\n}\n\n@media (max-width: 899px) {\n  & {\n    order: -1;\n    grid-column: span 2 / span 2;\n  }\n}",
+                "hide_if_empty": "block",
+                "generate_block_presets": "never",
+                "category_name": "Footer: Centered",
+                "hidden_name_backup": "Newsletter Sign-up Form"
+              },
+              "blocks": [
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h4><strong>Stay Connected</strong></h4>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_form__input_email",
+                  "name": "Input: Email",
+                  "settings": {
+                    "title": "Email",
+                    "placeholder": "Email",
+                    "input_class": "input-text-light",
+                    "name": "contact[email]",
+                    "type": "email",
+                    "autocomplete": "username",
+                    "default_value": "",
+                    "required": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_form__input_button",
+                  "name": "Input: Button",
+                  "settings": {
+                    "title": "Submit",
+                    "button_type": "submit",
+                    "name": "",
+                    "default_value": "Sign In",
+                    "button_class": "button-secondary",
+                    "custom_css": "& {\n  white-space: nowrap;\n}\n@media (max-width: 899px) {\n  & {\n    width: 100%;\n  }\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_form__input_tag",
+                  "settings": {},
+                  "blocks": [
+                    {
+                      "type": "_form__input_tag_value",
+                      "settings": {
+                        "title": "newsletter"
+                      },
+                      "blocks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "smart-footer-support",
+                "link_class": "richtext-md h6 link-effect",
+                "content": "<strong>Support</strong>",
+                "content_class": "richtext-md h5",
+                "content_url": "",
+                "text_color": "rgba(0,0,0,0)",
+                "custom_css": "& .h5{\n  margin-bottom: 8px;\n  \n}\n& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  text-align: center;\n  align-items: center;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h5><strong>Contact</strong></h5><h6>Contact us</h6><h6><a href=\"tel:(805) 222-0097\" title=\"tel:(805) 222-0097\">(805) 222-0097</a></h6><h6><a href=\"mailto:hello@absorbmore.com\" title=\"mailto:hello@absorbmore.com\">hello@absorbmore.com</a></h6>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& h5{\n  margin-bottom: 8px;\n}\n\n& .richtext-md{\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n& a{\n  text-decoration: none;\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "image",
+          "name": "Desktop Logo",
+          "settings": {
+            "image": "shopify://shop_images/logo-white.svg",
+            "url": "",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "100vw",
+            "max_width": 1900,
+            "mobile_max_width": 1200,
+            "custom_css": "@media (max-width: 899px) {\n  & {\n    display: none;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image",
+          "name": "Mobile Logo",
+          "settings": {
+            "image": "shopify://shop_images/logo-white-2.svg",
+            "url": "",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "100vw",
+            "max_width": 1900,
+            "mobile_max_width": 1200,
+            "custom_css": "&{\n  margin-top: 32px;\n  border-top: 1px solid #333;\n  padding-top: 32px;\n  width: 100%;\n}\n\n@media (min-width: 900px) {\n  & {\n    display: none;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_footer__container",
+          "name": "Disclaimer | Social Links",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  gap: 24px;\n  align-items: center;\n}\n\n\n@media (max-width: 899px) {\n  & {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "Richtext",
+              "settings": {
+                "title": "<h6>*These products have not been approved by or evaluated by the Food and Drug Administration and are not intended to diagnose, treat, cure or prevent any disease.</h6>",
+                "text_alignment": "inherit",
+                "content_class": "richtext-md",
+                "text_color": "",
+                "custom_css": "& {\n  padding: 16px 8px;\n  border: 1px solid #6f6f6f;\n  width: 100%;\n}\n\n@media (max-width: 899px) {\n  & {\n  order: 999;\n  grid-column: span 2 / span 2;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "social_icons",
+              "name": "Social Icons",
+              "settings": {
+                "text_color": "#ffffff",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  flex-shrink: 0;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_social_icons__icon_button",
+                  "name": "Icon Button",
+                  "settings": {
+                    "title": "instagram",
+                    "url": "",
+                    "size": 32,
+                    "custom_css": "& {\n}",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_social_icons__icon_button",
+                  "name": "Icon Button",
+                  "settings": {
+                    "title": "tiktok",
+                    "url": "",
+                    "size": 32,
+                    "custom_css": "& {\n}",
+                    "generate_block_presets": "never",
+                    "category_name": "",
+                    "hidden_name_backup": "",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_footer__container",
+              "name": "Copyright",
+              "settings": {
+                "element_id": "",
+                "custom_effect": "off",
+                "url": "",
+                "accessibility_label": "",
+                "open_in_new_tab": false,
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  text-align: right;\n  display: flex;\n  gap: 24px;\n  justify-content: end;\n  align-items: center;\n  flex-wrap: wrap;\n  margin-left: auto;\n  flex-shrink: 0;\n}\n\n@media (max-width: 1024px) {\n  & {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: end;\n    justify-content: center;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": ""
+              },
+              "blocks": [
+                {
+                  "type": "custom_liquid",
+                  "name": "Custom Liquid Code",
+                  "settings": {
+                    "custom_liquid": "<span class=\"richtext-md h5\"><strong>© {{ 'now' | date: \"%Y\" }}, Absorption Co</strong></span>",
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<p>·</p>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "name": "Richtext",
+                  "settings": {
+                    "title": "<h5><strong>Powered by </strong><a href=\"https://www.platter.com/\" target=\"_blank\" title=\"https://www.platter.com/\"><strong>Platter</strong></a></h5>",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_footer__container",
+          "name": "Payment | Location Country Selectors",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  padding: 40px 0;\n  border-top: 1px solid #6a6a6a;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 24px;\n}\n\n@media (max-width: 899px) {\n  & {\n    flex-direction: column;\n    padding: 0;\n    align-items: center;\n    border: none;\n    gap: 16px;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "payment_types",
+              "name": "Payment Types",
+              "settings": {
+                "custom_css": "& {\n  width: 100%;\n}\n\n@media (max-width: 899px) {\n  & {\n    order: 999;\n    width: fit-content;\n  }\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "language_selector",
+              "name": "Language Selector",
+              "settings": {
+                "select_class": "input-select-light",
+                "custom_css": "& {\n  width: 100%;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "location_selector",
+              "name": "Location Selector",
+              "settings": {
+                "select_class": "input-select-light",
+                "custom_css": "& {\n  width: 100%;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.footer"
+    ]
+  },
+  "class": "shopify_section__footer"
+}
+{% endschema %}

@@ -1,0 +1,118 @@
+{% assign product_bundle_variants = product.metafields.custom.product_bundle_variants.value %}
+{% assign single_product = product_bundle_variants.single_product.value %}
+{% assign single_product_title = product_bundle_variants.single_product_title.value %}
+{% assign single_product_subheading = product_bundle_variants.single_product_subheading.value %}
+{% assign bundle_product = product_bundle_variants.bundle_product.value %}
+{% assign bundle_product_title = product_bundle_variants.bundle_product_title.value %}
+{% assign bundle_product_subheading = product_bundle_variants.bundle_product_subheading.value %}
+
+{% style %}
+  ul.product-bundle-variants,
+  ul.product-bundle-variants li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  ul.product-bundle-variants {
+    margin-top: 15px;
+  }
+
+  ul.product-bundle-variants li {
+    flex-direction: column;
+    gap: 5px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  ul.product-bundle-variants li a {
+    display: block;
+    position: relative;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
+
+  ul.product-bundle-variants li div:first-child {
+    justify-items: center;
+  }
+
+  ul.product-bundle-variants li h3,
+  .richtext-md[data-content*="Subscribe & Save"] {
+    font-weight: 500;
+  }
+
+  ul.product-bundle-variants li span.label-secondary {
+    position: absolute;
+    top: -12px;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    width: 74px;
+    height: 24px;
+    text-transform: uppercase;
+    line-height: 24px;
+  }
+
+  ul.product-bundle-variants li.active a,
+  ul.product-bundle-variants li a:hover {
+    border-color: #000000;
+  }
+
+  div[data-style-id*="main_product_subscribe_toggle_card"] {
+    margin-top: 15px !important;
+  }
+
+  @media (max-width: 768px) {
+    ul.product-bundle-variants li {
+      flex-basis: calc(50% - 7.5px);
+      max-width: calc(50% - 7.5px);
+    }
+
+    ul.product-bundle-variants li a {
+      height: 100%;
+    }
+  }
+{% endstyle %}
+
+{% if product_bundle_variants != blank %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+    <ul class="product-bundle-variants">
+      <li {% if single_product.title == product.title %}class="active"{% endif %}>
+        <a href="{{ single_product.url }}" title="{{ single_product_title | escape }}">
+          <div>
+            <img src="{{ single_product.featured_image | image_url: width: 200, height: 200 }}" alt="{{ single_product.title | escape }}" width="100" height="100">
+          </div>
+          <h3 title="{{ single_product_title | escape }}">{{ single_product_title }}</h3>
+          <p>{{single_product_subheading}}</p>
+        </a>
+      </li>
+      <li {% if bundle_product.title == product.title %}class="active"{% endif %}>
+        <a href="{{ bundle_product.url }}" title="{{ bundle_product_title | escape }}">
+          <div>
+            <img src="{{ bundle_product.featured_image | image_url: width: 200, height: 200 }}" alt="{{ bundle_product.title | escape }}" width="100" height="100">
+          </div>
+          <h3 title="{{ bundle_product_title | escape }}">{{ bundle_product_title }}</h3>
+          <p>{{ bundle_product_subheading }}</p>
+          <span class="empty:hidden label-secondary">Best Deal</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Bundle Variants",
+  "settings": [],
+  "class": "shopify_block___main_product__bundle_variants",
+  "presets": [
+    {
+      "name": "Bundle Variants",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

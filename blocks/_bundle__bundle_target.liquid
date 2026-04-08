@@ -1,0 +1,79 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_bundle__bundle_target"
+  assign section_type = "bundle"
+  assign label = block.settings.label
+  assign target = block.settings.target
+  assign discount_percentage = block.settings.discount_percentage
+  assign discount_amount = block.settings.discount_amount
+  assign select_label = block.settings.select_label
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture bundle_target_settings %}
+  { "id": {{ block.id | json }}, "settings": {{ block.settings | json }}, "label": "{% render '_input.inline_richtext', content: select_label, escape: true, block: block, forloop: forloop %}" }
+{% endcapture %}
+
+<div class="!hidden" data-bundle-target="{{ bundle_target_settings | strip_newlines | escape }}"></div>
+
+{% schema %}
+{
+  "name": "Bundle Target",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Title",
+      "default": "Bundle Special",
+      "info": "This shows in the cart drawer on the line items."
+    },
+    {
+      "type": "paragraph",
+      "content": "Important. This section does not create actual discounts. All discounts need to be created in the Shopify Admin Dashboard to match the settings here."
+    },
+    {
+      "type": "number",
+      "id": "target",
+      "label": "Target",
+      "default": 4,
+      "info": "Use cents for target calculation based on amount (i.e. For a target of $39,40 set this to 3940)"
+    },
+    {
+      "type": "range",
+      "id": "discount_percentage",
+      "label": "Discount percentage",
+      "default": 15,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "info": "Set to 0 to disable percentage based discount."
+    },
+    {
+      "type": "number",
+      "id": "discount_amount",
+      "label": "Discount amount",
+      "default": 0,
+      "info": "Use cents for target calculation based on amount (i.e. For a target of $39,40 set this to 3940). Set to 0 to disable amount based discount."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "select_label",
+      "label": "Label override",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle Target",
+      "category": "Settings"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___bundle__bundle_target"
+}
+{% endschema %}

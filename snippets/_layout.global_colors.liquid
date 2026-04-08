@@ -1,0 +1,53 @@
+<style>
+
+  html {
+    background: {{ settings.color__background_color }};
+    color: {{ settings.color__text_color }};
+  }
+
+  :focus-visible {
+    outline-color: {{ settings.color__focus_outline }};
+  }
+
+  :root {
+    --color-error--rgb: {%- render '_input.color_rgb', color: settings.color__error -%};
+    --color-error--hex: {{ settings.color__error }};
+    --color-error-text--hex: {{ settings.color__error | color_darken: 30 }};
+    --color-error: var(--color-error--rgb, {{ settings.color__error }});
+    --color-warning--rgb: {%- render '_input.color_rgb', color: settings.color__warning -%};
+    --color-warning--hex: {{ settings.color__warning }};
+    --color-warning-text--hex: {{ settings.color__warning  | color_darken: 30 }};
+    --color-warning: var(--color-warning--rgb, {{ settings.color__warning }});
+    --color-success--rgb: {%- render '_input.color_rgb', color: settings.color__success -%};
+    --color-success--hex: {{ settings.color__success }};
+    --color-success-text--hex: {{ settings.color__success | color_darken: 30 }};
+    --color-success: var(--color-success--rgb, {{ settings.color__success }});
+    --color-info--rgb: {%- render '_input.color_rgb', color: settings.color__info -%};
+    --color-info--hex: {{ settings.color__info }};
+    --color-info-text--hex: {{ settings.color__info | color_darken: 30 }};
+    --color-info: var(--color-info--rgb, {{ settings.color__info }});
+    --color-review-stars--rgb: {%- render '_input.color_rgb', color: settings.color__review_stars -%};
+    --color-review-stars--hex: {{ settings.color__review_stars }};
+    --color-review-stars: var(--color-review-stars--rgb, {{ settings.color__review_stars }});
+    --color-review-stars-base--rgb: {%- render '_input.color_rgb', color: settings.color__review_stars_base -%};
+    --color-review-stars-base--hex: {{ settings.color__review_stars_base }};
+    --color-review-stars-base: var(--color-review-stars--rgb, {{ settings.color__review_stars_base }});
+    --color-modal-backdrop-color: {{ settings.color__modal_backdrop }};
+    --color-modal-backdrop-blur: {{ settings.color__modal_backdrop_blur }};
+  }
+
+  :root {
+    --color-gray-50: 249 250 251;
+    --color-gray-100: 243 244 246;
+    --color-gray-200: 229 231 235;
+    --color-gray-300: 209 213 219;
+    --color-gray-400: 156 163 175;
+    --color-gray-500: 107 114 128;
+    --color-gray-600: 75 85 99;
+    --color-gray-700: 55 65 81;
+    --color-gray-800: 31 41 55;
+    --color-gray-900: 17 24 39;
+  }
+
+
+</style>

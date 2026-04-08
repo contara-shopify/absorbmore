@@ -1,0 +1,564 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "button"
+  assign type = block.settings.type
+  assign title = block.settings.title
+  assign url = block.settings.url
+  assign collapsible_handle = block.settings.collapsible_handle
+  assign target_handle = block.settings.target_handle
+  assign trigger_on_hover = block.settings.trigger_on_hover
+  assign side_effect = block.settings.side_effect
+  assign tab_group = block.settings.tab_group
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign metafield_label_key = block.settings.metafield_label_key
+  assign metafield_url_key = block.settings.metafield_url_key
+  assign button_class = block.settings.button_class
+  assign show_active_state = block.settings.show_active_state
+  assign accessibility_label = block.settings.accessibility_label
+  assign metafield_accessibility_label_key = block.settings.metafield_accessibility_label_key
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | remove: " " | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type != 'metafield'
+    assign content = title | default: ""
+    assign content_check = content | strip_html | strip
+
+    if type != 'modal_close' and type != 'submenu_close' and url == blank or content_check == blank
+      assign is_empty = true
+    endif
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+
+  if show_active_state
+    if url == request.path
+      assign active_class = 'active'
+    endif
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if dynamic_content_type == 'metafield' %}
+  {% for item in metafield %}
+    {% liquid
+      assign active_class = ''
+      if show_active_state
+        if item[metafield_url_key] == request.path
+          assign active_class = 'active'
+        endif
+      endif
+    %}
+    <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+        {% if url contains '#' %}
+          x-data="{ target: document.getElementById($el.href?.split('#')?.[1]?.split('?')?.[0]), isExternal: utils.isExternalURL($el.href) }"
+          {% if show_active_state %}
+            x-init="if (!isExternal && target) { new IntersectionObserver(([entry]) => $el.classList.toggle('active', entry.isIntersecting), { rootMargin: '100px 0px 0px 0px', threshold: 0.5 }).observe(target);  }"
+          {% endif %}
+          {% if hide_if_empty != 'none' and request.design_mode != true %}
+            x-show="isExternal || target"
+            x-cloak
+          {% endif %}
+        {% endif %}
+      {% if accessibility_label != blank %}aria-label="{{ item[metafield_accessibility_label_key] }}"{% endif %}
+       href="{{ item[metafield_url_key] }}"
+       class="w-full {{ button_class }} {{ active_class }}">
+      {% render '_input.inline_richtext', content: item[metafield_label_key] %}
+    </a>
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+{% if type == 'popup' and url != blank %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     href="{{ url }}"
+      {% if url contains '#' %}
+        x-data="{ target: document.getElementById($el.href?.split('#')?.[1]?.split('?')?.[0]), isExternal: utils.isExternalURL($el.href) }"
+        {% if show_active_state %}
+          x-init="if (!isExternal && target) { new IntersectionObserver(([entry]) => $el.classList.toggle('active', entry.isIntersecting), { rootMargin: '100px 0px 0px 0px', threshold: 0.5 }).observe(target);  }"
+        {% endif %}
+        {% if hide_if_empty != 'none' and request.design_mode != true %}
+          x-show="isExternal || target"
+          x-cloak
+        {% endif %}
+      {% endif %}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+     type="button"
+     @click="(e) => { $modal.id === `modal--{{ target_handle | handleize }}` ? ($modal.setId(``),$modal.setSubId(``)) : (e.preventDefault(),$modal.setId(`modal--{{ target_handle | handleize }}`)); {{ side_effect }} }"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setId(`modal--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.id === `modal--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+     class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </a>
+{% elsif type == 'modal' and url != blank %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     href="{{ url }}"
+      {% if url contains '#' %}
+        x-data="{ target: document.getElementById($el.href?.split('#')?.[1]?.split('?')?.[0]), isExternal: utils.isExternalURL($el.href) }"
+        {% if show_active_state %}
+          x-init="if (!isExternal && target) { new IntersectionObserver(([entry]) => $el.classList.toggle('active', entry.isIntersecting), { rootMargin: '100px 0px 0px 0px', threshold: 0.5 }).observe(target);  }"
+        {% endif %}
+        {% if hide_if_empty != 'none' and request.design_mode != true %}
+          x-show="isExternal || target"
+          x-cloak
+        {% endif %}
+      {% endif %}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+     type="button"
+     @click="(e) =>{ $modal.id === `megamenu--{{ target_handle | handleize }}` ? ($modal.setId(``),$modal.setSubId(``)) : (e.preventDefault(),$modal.setId(`megamenu--{{ target_handle | handleize }}`)); {{ side_effect }} }"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setId(`megamenu--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.id === `megamenu--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+     class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </a>
+{% elsif type == 'sub_modal' and url != blank %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     href="{{ url }}"
+      {% if url contains '#' %}
+        x-data="{ target: document.getElementById($el.href?.split('#')?.[1]?.split('?')?.[0]), isExternal: utils.isExternalURL($el.href) }"
+        {% if show_active_state %}
+          x-init="if (!isExternal && target) { new IntersectionObserver(([entry]) => $el.classList.toggle('active', entry.isIntersecting), { rootMargin: '100px 0px 0px 0px', threshold: 0.5 }).observe(target);  }"
+        {% endif %}
+        {% if hide_if_empty != 'none' and request.design_mode != true %}
+          x-show="isExternal || target"
+          x-cloak
+        {% endif %}
+      {% endif %}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+     type="button"
+     @click="(e) => { $modal.sub_id === `megamenu-submenu--{{ target_handle | handleize }}` ? ($modal.setSubId(``)) : (e.preventDefault(),$modal.setSubId(`megamenu-submenu--{{ target_handle | handleize }}`)); {{ side_effect }} }"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setSubId(`megamenu-submenu--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.sub_id === `megamenu-submenu--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+     class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </a>
+{% elsif type == 'popup' and url == blank %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          @click="$modal.id === `modal--{{ target_handle | handleize }}` ? ($modal.setId(``),$modal.setSubId(``)) : $modal.setId(`modal--{{ target_handle | handleize }}`); {{ side_effect }}"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setId(`modal--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.id === `modal--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'modal' and url == blank %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          @click="$modal.id === `megamenu--{{ target_handle | handleize }}` ? ($modal.setId(``),$modal.setSubId(``)) : $modal.setId(`megamenu--{{ target_handle | handleize }}`); {{ side_effect }}"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setId(`megamenu--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.id === `megamenu--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'sub_modal' and url == blank %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          @click="$modal.sub_id === `megamenu-submenu--{{ target_handle | handleize }}` ? ($modal.setSubId(``)) : $modal.setSubId(`megamenu-submenu--{{ target_handle | handleize }}`); {{ side_effect }}"
+      {% if trigger_on_hover %}
+        @pointerenter="$modal.setSubId(`megamenu-submenu--{{ target_handle | handleize }}`, true); {{ side_effect }}"
+      {% endif %}
+      {% if show_active_state %}
+        :class="$modal.sub_id === `megamenu-submenu--{{ target_handle | handleize }}` ? 'active' :'' "
+      {% endif %}
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'modal_close' %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          @click.prevent.stop="$modal.setId(''); $modal.setSubId('')"
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'submenu_close' %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          @click.prevent.stop="$modal.setSubId('')"
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'toggle_collapsible' %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="button"
+          x-data="{ ...utils.initCollapsible($el, document.querySelector(`[data-collapsible-handle='{{ collapsible_handle }}']`), document.querySelector(`[data-collapsible-handle='{{ collapsible_handle }}']`)?.hasAttribute('data-default-open'))}"
+          id="{{ block.id }}"
+          @click.prevent.stop="toggleOpen()"
+          :class="collapsible?.open_accordion ? 'active' : ''"
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif type == 'trigger_tab' %}
+  <button
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+      type="button"
+      @click="current_tabs[+`{{ tab_group }}`] = `{{ target_handle }}`; {{ side_effect }}"
+      {% if trigger_on_hover %}
+        @pointerover="current_tabs[+`{{ tab_group }}`] = `{{ target_handle }}`; {{ side_effect }}"
+      {% endif %}
+      class="shrink-0 {{ button_class }}"
+      :class="current_tabs[+`{{ tab_group }}`] === '{{ target_handle }}' ? 'active' : ''">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% elsif url and type != 'submit' %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+      {% if url contains '#' %}
+        x-data="{ target: document.getElementById($el.href?.split('#')?.[1]?.split('?')?.[0]), isExternal: utils.isExternalURL($el.href) }"
+        {% if show_active_state %}
+          x-init="if (!isExternal && target) { new IntersectionObserver(([entry]) => $el.classList.toggle('active', entry.isIntersecting), { rootMargin: '100px 0px 0px 0px', threshold: 0.5 }).observe(target);  }"
+        {% endif %}
+        {% if hide_if_empty != 'none' and request.design_mode != true %}
+          x-show="isExternal || target"
+          x-cloak
+        {% endif %}
+      {% endif %}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+     href="{{ url }}"
+     class="w-full {{ button_class }} {{ active_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </a>
+{% else %}
+  <button data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    {% if accessibility_label != blank %}aria-label="{{ accessibility_label }}"{% endif %}
+          type="{{ type }}"
+      {% if url != blank %}
+        x-init="utils.simulateAnchorTag($el)"
+        data-href="{{ url }}"
+      {% endif %}
+          class="w-full {{ button_class }}">
+    {% render '_input.inline_richtext', content: content %}
+  </button>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Button",
+  "settings": [
+    {
+      "type": "select",
+      "id": "type",
+      "label": "Type",
+      "default": "button",
+      "options": [
+        {
+          "value": "button",
+          "label": "Button"
+        },
+        {
+          "value": "submit",
+          "label": "Submit"
+        },
+        {
+          "value": "reset",
+          "label": "Reset"
+        },
+        {
+          "value": "popup",
+          "label": "Popup"
+        },
+        {
+          "value": "modal",
+          "label": "Modal Menu"
+        },
+        {
+          "value": "sub_modal",
+          "label": "Modal Submenu"
+        },
+        {
+          "value": "modal_close",
+          "label": "Close Modal"
+        },
+        {
+          "value": "submenu_close",
+          "label": "Close Submenu"
+        },
+        {
+          "value": "toggle_collapsible",
+          "label": "Toggle Collapsible"
+        },
+        {
+          "value": "trigger_tab",
+          "label": "Trigger Tab Content"
+        }
+      ],
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Label",
+      "default": "Shop now",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'button' or block.settings.type == 'modal' or block.settings.type == 'sub_modal' or block.settings.type == 'popup' }}"
+    },
+    {
+      "type": "text",
+      "id": "collapsible_handle",
+      "label": "Collapsible handle",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'toggle_collapsible' }}"
+    },
+    {
+      "type": "text",
+      "id": "target_handle",
+      "label": "Target Handle",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'trigger_tab' or block.settings.type == 'modal' or block.settings.type == 'sub_modal' or block.settings.type == 'popup' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "trigger_on_hover",
+      "label": "Trigger on hover",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'trigger_tab' or block.settings.type == 'modal' or block.settings.type == 'sub_modal' or block.settings.type == 'popup' }}"
+    },
+    {
+      "type": "textarea",
+      "id": "side_effect",
+      "label": "Side effect",
+      "info": "This adds JavaScript into the Click event handler. Add this with care.",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'trigger_tab' or block.settings.type == 'modal' or block.settings.type == 'sub_modal' or block.settings.type == 'popup' }}"
+    },
+    {
+      "type": "select",
+      "id": "tab_group",
+      "label": "Tab group",
+      "default": "0",
+      "info": "Configure up to 3 Tab groups for any given Section.",
+      "options": [
+        {
+          "value": "0",
+          "label": "1"
+        },
+        {
+          "value": "1",
+          "label": "2"
+        },
+        {
+          "value": "2",
+          "label": "3"
+        }
+      ],
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' and block.settings.type == 'trigger_tab' }}"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Repeater",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "List of Metaobjects with the subfields of: 'label' (type: text) and 'url' (type: url).",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace_key",
+      "label": "Metaobject",
+      "placeholder": "product.smart.features",
+      "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `collection.smart.features` or `metaobjects.features`. Accessing list of Objects i.e. `list.product_reference`, or `list.collection_reference` is also possible.",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_label_key",
+      "label": "Label Key",
+      "default": "label",
+      "info": "Metaobject key for the label value. I.e. `label`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_url_key",
+      "label": "Url Key",
+      "default": "url",
+      "info": "Metaobject key for the url value. I.e. `url`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield'  }}"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_active_state",
+      "label": "Show active state",
+      "info": "Show button as active if the url matches the current path",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' or block.settings.type != 'modal_close' or block.settings.type != 'submenu_close' and block.settings.type != 'toggle_collapsible' }}",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "info": "Please provide an accessibility label if the button has generic content. I.e. 'Read More' or only uses an icon.",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_accessibility_label_key",
+      "label": "Accessibility Label Key",
+      "default": "title",
+      "info": "Metaobject key for the accessibility label value. I.e. `accessibility_label`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Button",
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__button"
+}
+{% endschema %}

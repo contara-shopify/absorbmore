@@ -1,0 +1,146 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_header_navigation_bar__menu"
+  assign section_type = "header_navigation_bar"
+  assign menu = block.settings.menu
+  assign link_class = block.settings.link_class
+  assign megamenu_handle = block.settings.megamenu_handle
+  assign use_link_handle = block.settings.use_link_handle
+  assign open_on_hover = block.settings.open_on_hover
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if menu == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+{% if use_link_handle and megamenu_handle == blank %}
+  {% assign megamenu_handle = 'main-megamenu-group' %}
+{% endif %}
+
+<nav data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     data-megamenu-effect-block="megamenu--{{ megamenu_handle }}">
+  {% for link in menu.links %}
+    {% assign active_class = '' %}
+    {% if link.active %}{% assign active_class = 'active' %}{% endif %}
+    <a href="{{ link.url }}"
+        {% if use_link_handle %}
+          {% assign megamenu_handle = link.handle %}
+        {% endif %}
+       data-megamenu-handle="megamenu--{{ megamenu_handle }}"
+       data-megamenu-submenu-handle="megamenu-submenu--{{ link.handle }}"
+        {% if link.type == 'http_link' and link.url contains '//' and link.active != true and link.child_active != true and link.child_current != true %}
+          target="_blank"
+          rel="noopener noreferrer"
+        {% endif %}
+        {% if open_on_hover %}
+          @pointerenter="$modal.setId(`megamenu--{{ megamenu_handle }}`, true); $modal.setSubId(`megamenu-submenu--{{ link.handle }}`, true)"
+        {% endif %}
+       x-effect="$el.classList.toggle('active', $router.pathname === $el.href.replace(window.origin, '')?.split(/(\#|\?)/gi)?.[0])"
+       class="shrink-0 {{ link_class }} {{ active_class }}">
+      {{ link.title }}
+    </a>
+  {% endfor %}
+</nav>
+
+{% schema %}
+{
+  "name": "Menu",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "link_class",
+      "label": "Link class",
+      "default": "richtext-md p link-effect"
+    },
+    {
+      "type": "header",
+      "content": "Megamenu"
+    },
+    {
+      "type": "text",
+      "id": "megamenu_handle",
+      "label": "Megamenu handle"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_link_handle",
+      "label": "Use link handle"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_on_hover",
+      "label": "Open Megamenu on Hover"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu",
+      "category": "** Navigation Bar **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___header_navigation_bar__menu"
+}
+{% endschema %}

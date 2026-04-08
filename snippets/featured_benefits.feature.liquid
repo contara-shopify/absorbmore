@@ -1,0 +1,134 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "feature"
+  assign section_type = "featured_benefits"
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign image = block.settings.image
+  assign metafield_image_key = block.settings.metafield_image_key
+  assign title = block.settings.title
+  assign metafield_title_key = block.settings.metafield_title_key
+  assign title_class = block.settings.title_class
+  assign content = block.settings.content
+  assign metafield_content_key = block.settings.metafield_content_key
+  assign content_class = block.settings.content_class
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | replace: ' ', '' | strip | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type != 'metafield'
+    if image == blank
+      assign is_empty = true
+    endif
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% liquid
+  assign hide_if_empty = hide_if_empty
+  assign is_empty = false
+  if request.design_mode != true
+    if image == blank
+      assign is_empty = true
+    endif
+    if is_empty and hide_if_empty != 'none'
+      capture hide_conditionally
+        if hide_if_empty == 'block'
+          echo '<script type="block/hide"></script>'
+          assign hide_attribute = 'data-hide-if-empty-block'
+        endif
+        if hide_if_empty == 'container'
+          echo '<script type="container/break"></script>'
+          assign hide_attribute = 'data-hide-if-empty-container'
+        endif
+        if hide_if_empty == 'section'
+          echo '<script type="section/break"></script>'
+          assign hide_attribute = 'data-hide-if-empty-section'
+        endif
+      endcapture
+
+      if request.design_mode != true and hide_conditionally contains '<script'
+        echo hide_conditionally
+        break
+      endif
+      assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+    endif
+  endif
+%}
+
+{% if dynamic_content_type == 'metafield' %}
+  {% for item in metafield %}
+    {% assign image = item[metafield_image_key].value %}
+    <figure
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {{ block.shopify_attributes }}
+      {{ hide_attribute }}
+      class="flex flex-col gap-4"
+    >
+      <div data-style-image class="image-wrapper relative snap-center overflow-hidden">
+        {% render '_object.image',
+          image: image,
+          class: 'w-full h-full object-[inherit]',
+          sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw'
+        %}
+      </div>
+    </figure>
+  {% endfor %}
+  {% break %}
+{% endif %}
+<figure
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {{ block.shopify_attributes }}
+  {{ hide_attribute }}
+  class="flex flex-col gap-4"
+>
+  <div data-style-image class="image-wrapper relative snap-center overflow-hidden">
+    {% render '_object.image',
+      image: image,
+      class: 'w-full h-full object-[inherit]',
+      sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw'
+    %}
+  </div>
+</figure>

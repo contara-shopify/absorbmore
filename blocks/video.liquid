@@ -1,0 +1,218 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "video"
+  assign video = block.settings.video
+  assign video_url = block.settings.video_url
+  assign mobile_video = block.settings.mobile_video
+  assign mobile_video_url = block.settings.mobile_video_url
+  assign autoplay = block.settings.autoplay
+  assign controls = block.settings.controls
+  assign muted = block.settings.muted
+  assign loop = block.settings.loop
+  assign preview_image = block.settings.preview_image
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign video = video | default: video_url
+  assign mobile_video = mobile_video | default: mobile_video_url
+
+  if video == blank
+    assign is_empty = true
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}{% endcapture %}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<figure data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+        x-data="{ video_playing: false, video_player: { playVideo: () => $el.querySelector('video')?.play().catch(() => {}), pauseVideo: () => $el.querySelector('video')?.pause().catch(() => {}) } }"
+        class="relative overflow-hidden shrink- object-contain">
+  {% if mobile_video != blank %}
+    {% render '_object.media',
+        media: video,
+        class: "w-full h-full transition-all object-[inherit] max-md:hidden",
+        autoplay: autoplay,
+        controls: controls,
+        loop: loop,
+        muted: muted,
+        preview_image: preview_image,
+        html_attributes: 'x-effect="video_playing = playing; video_player = player || video_player;"' %}
+    {% render '_object.media',
+        media: mobile_video,
+        class: "w-full h-full transition-all object-[inherit] md:hidden",
+        autoplay: autoplay,
+        controls: controls,
+        loop: loop,
+        muted: muted,
+        preview_image: preview_image,
+        html_attributes: 'x-effect="video_playing = playing; video_player = player || video_player;"' %}
+  {% else %}
+    {% render '_object.media',
+        media: video,
+        class: "w-full h-full transition-all object-[inherit]",
+        autoplay: autoplay,
+        controls: controls,
+        loop: loop,
+        muted: muted,
+        preview_image: preview_image,
+        html_attributes: 'x-effect="video_playing = playing; video_player = player || video_player;"' %}
+  {% endif %}
+
+  {% content_for "blocks" %}
+</figure>
+
+{% schema %}
+{
+  "name": "Video",
+  "settings": [
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video",
+      "accept": [
+        "youtube"
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mobile Content (optional)"
+    },
+    {
+      "type": "video",
+      "id": "mobile_video",
+      "label": "Video"
+    },
+    {
+      "type": "video_url",
+      "id": "mobile_video_url",
+      "label": "Video",
+      "accept": [
+        "youtube"
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Video settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Automatically mutes the video."
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show controls",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop"
+    },
+    {
+      "type": "image_picker",
+      "id": "preview_image",
+      "label": "Preview Image"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_video__play_button"
+    },
+    {
+      "type": "_video__pause_button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video",
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__video"
+}
+{% endschema %}

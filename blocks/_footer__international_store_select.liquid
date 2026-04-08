@@ -1,0 +1,91 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_footer__international_store_select"
+  assign section_type = "footer"
+  assign label = block.settings.label
+  assign menu = block.settings.menu
+  assign select_class = block.settings.select_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign values = menu.links | map: "url"
+  assign titles = menu.links | map: "title"
+  assign _label = label | uniq
+  assign _values = _label | concat: values | json
+  assign _titles = _label | concat: titles | json
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-data="{ values: utils.JSONParse($el.getAttribute('data-values')), titles: utils.JSONParse($el.getAttribute('data-titles')) }"
+     data-titles="{{ _titles | escape }}"
+     data-values="{{ _values | escape }}">
+  {% render '_components.select',
+      dynamic: true,
+      values: 'values',
+      titles: 'titles',
+      disabled_items: '[values[0]]',
+      select_class: select_class,
+      label: label,
+      setState: "values[0] !== value ? window.location.href = value : null;",
+      state: 'values',
+      current_value: 'values[0]',
+      current_title: 'values[0]'
+  %}
+</div>
+
+{% schema %}
+{
+  "name": "Store Selector",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "CHANGE LOCATION"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store Selector",
+      "category": "** Footer **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___footer__international_store_select"
+}
+{% endschema %}

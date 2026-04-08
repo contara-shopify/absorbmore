@@ -1,0 +1,45 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__remove_button"
+  assign section_type = "card_line_item_card"
+  assign label = block.settings.label
+  assign button_class = block.settings.button_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% if line_item.properties._p_required %}
+  {% break %}
+{% endif %}
+
+<button
+    data-style-id="{{ style_id }}"
+    type="button"
+    :disabled="$cart.loading"
+    class="hf:opacity-70 {{ button_class }}"
+    @click="_cart.updateLineItemQuantity(0, line_card?.line_item?.index)">
+  {% render '_input.inline_richtext', content: label %}
+</button>

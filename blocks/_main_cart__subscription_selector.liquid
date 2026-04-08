@@ -1,0 +1,100 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_cart__subscription_selector"
+  assign section_type = "main_cart"
+  assign show_conditionally = block.settings.show_conditionally
+  assign label = block.settings.label
+  assign select_class = block.settings.select_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}" x-show="_cart.showConditionally('{{ show_conditionally }}')" {% endcapture %}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+<script type="no_effect" class="!hidden" x-init="_cart.setSubscription($cart.cart_selling_plan_id);"
+        x-effect="$cart.global_subscriptions = !!$cart.state.items.filter(item=>item.quantity > 0)?.length"></script>
+
+{% render '_components.select',
+    dynamic: true,
+    values: '$cart.possible_selling_plans?.length ? [`undefined`, ...($cart.possible_selling_plans?.map((selling_plan)=> selling_plan?.id) ?? [])] : []',
+    titles: "$cart.possible_selling_plans?.length ? ['One time purchase', ...($cart.possible_selling_plans?.map((selling_plan)=> selling_plan?.name) ?? [])] : []",
+    select_class: select_class,
+    label: label,
+    setState: "_cart.setSubscription(+value)",
+    state: "`${$cart.cart_selling_plan_id}`",
+    current_value: '`${$cart.cart_selling_plan_id}`',
+    current_title: "$cart.cart_selling_plan_name",
+    loading: "$cart.isSubscriptionChanging ?? 'One time purchase'",
+    disabled: '$cart?.isChanging || $cart.loading || $cart.isSubscriptionChanging',
+    html_attributes: html_attributes
+%}
+
+{% schema %}
+{
+  "name": "Subscription Selector",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "cart_empty",
+          "label": "Cart Empty"
+        },
+        {
+          "value": "items_added",
+          "label": "Items Added"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Subscription Selector"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription Selector",
+      "category": "** Cart **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_cart__subscription_selector"
+}
+{% endschema %}

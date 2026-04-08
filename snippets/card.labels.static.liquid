@@ -1,0 +1,29 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__labels"
+  assign section_type = "card"
+  assign content_source = block.settings.content_source
+  assign label_class__content = block.settings.label_class__content
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if content_source != blank
+    unless content_source contains '['
+      assign content_source = '[' | append: content_source | append: ']'
+    endunless
+  endif
+%}
+
+<div data-style-id="{{ style_id }}">
+  {% capture labels %}{% render '_input.dynamic_object_content', content: content_source, card_object: card_object %}{% endcapture %}
+  {% if labels contains '|~|SPLIT|~|' %}
+    {% assign labels = labels | split: '|~|SPLIT|~|' %}
+  {% endif %}
+  {% for label in labels %}
+    <label class="{{ label_class__content }}">
+      {{ label }}
+    </label>
+  {% endfor %}
+</div>

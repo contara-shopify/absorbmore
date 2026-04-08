@@ -1,0 +1,76 @@
+{% liquid
+
+  unless product and variant
+    break
+  endunless
+
+  assign variant_namespaces = section.blocks | where: "type", "variant_metafield" | map: "settings" | map: "title" | join: ',' | prepend: 'smart,' | split: ',' | uniq
+
+  assign _preorder_namespace_key = settings.data__product__variant__preorder | replace: " ", '' | split: "."
+  assign preorder = variant.metafields[_preorder_namespace_key.first][_preorder_namespace_key.last].value
+
+  assign _preorder_date_namespace_key = settings.data__product__variant__preorder_date | replace: " ", '' | split: "."
+  assign preorder_date = variant.metafields[_preorder_date_namespace_key.first][_preorder_date_namespace_key.last].value
+
+  assign _preorder_quantity_namespace_key = settings.data__product__variant__preorder_quantity | replace: " ", '' | split: "."
+  assign preorder_quantity = variant.metafields[_preorder_quantity_namespace_key.first][_preorder_quantity_namespace_key.last].value
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+%}
+
+{% capture json %}
+  {
+  "available": {{ variant.available | json }},
+  {% capture featured_media %}{{ variant.featured_media | json }}{% endcapture %}
+  "featured_media": {{ featured_media }},
+  "image": {{ featured_media }},
+  "option1": {{ variant.option1 | json }},
+  "option2": {{ variant.option2 | json }},
+  "option3": {{ variant.option3 | json }},
+  "options": {{ variant.options | json }},
+  "price": {{ price | json }},
+  "compare_at_price": {{ compare_at_price | json }},
+  "id": {{ variant.id | json }},
+  "sku": {{ variant.sku | json }},
+  "title": {{ variant.title | json }},
+  "product_id": {{ variant.product.id }},
+  "product_handle": "{{ variant.product.handle }}",
+  "inventory_quantity": {{ variant.inventory_quantity | json }},
+  "inventory_policy": {{ variant.inventory_policy | json }},
+  "inventory_management": {{ variant.inventory_management | json }},
+  "preorder": {{ preorder | json }},
+  "preorder_date": {{ preorder_date | json }},
+  "preorder_quantity": {{ preorder_quantity | json }},
+  "selling_plan_allocations": [{% for plan in variant.selling_plan_allocations %}{
+  "checkout_charge_amount": {{ plan.checkout_charge_amount | json }},
+  "compare_at_price": {{ plan.compare_at_price | json }},
+  "per_delivery_price": {{ plan.per_delivery_price | json }},
+  "price": {{ plan.price | json }},
+  "selling_plan": {{ plan.selling_plan | json }},
+  "selling_plan_group_id": {{ plan.selling_plan_group_id | json }}
+  }{% unless forloop.last %},{% endunless %}{% endfor %}],
+  "metafields": {
+  {% unless skip_metafields == true %}
+    {%- for namespace in variant_namespaces -%}
+      "{{- namespace -}}": {%- render '_json.metafield', namespace: variant.metafields[namespace], with_product_data: settings.data__product__variant__load_product_data -%}{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  {% endunless %}
+  }
+  }
+{% endcapture %}
+{% if escape %}
+  {{- json | strip | strip_newlines | escape -}}
+{% else %}
+  {{- json | strip | strip_newlines -}}
+{% endif %}
+

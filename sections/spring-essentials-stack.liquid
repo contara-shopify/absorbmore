@@ -1,0 +1,1376 @@
+{% comment %}
+  Spring Essentials Stack — Landing Page Section
+  The Absorption Company / AbsorbMore
+  Design: "Seasonal Shift" — Editorial Warmth
+  Mobile-first, conversion-focused, subscription-focused
+  NOTE: This section does NOT include a header or announcement bar —
+        those are already provided by the Shopify theme.
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================
+     SPRING ESSENTIALS STACK — LANDING PAGE CSS
+     All rules scoped to #ses-root to avoid
+     conflicts with the Shopify theme.
+     Colors:
+       Cream bg:       #F5F2EC
+       Black:          #0A0A0A
+       Vitamin D gold: #D4A820
+       Curcumin amber: #E07820
+       CoQ10 red:      #D43010
+       Spring green:   #3D6B35
+  ============================================ */
+
+  /* Break out of Shopify's page content container */
+  .ses-full-bleed {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  #ses-root {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    color: #0A0A0A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  #ses-root * {
+    box-sizing: border-box;
+  }
+
+  #ses-root a { text-decoration: none; cursor: pointer; }
+  #ses-root button { border: none; background: none; cursor: pointer; font-family: inherit; }
+  #ses-root img { display: block; max-width: 100%; }
+
+  /* Inner content max-width for mobile-focused layout */
+  .ses-inner {
+    width: 100%;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .ses-inner {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .ses-display {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  /* Scroll reveal */
+  .ses-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .ses-reveal.ses-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Shimmer button */
+  @keyframes ses-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .ses-btn-shimmer {
+    background: linear-gradient(90deg, #0A0A0A 0%, #0A0A0A 40%, #3a3a3a 50%, #0A0A0A 60%, #0A0A0A 100%);
+    background-size: 200% auto;
+    animation: ses-shimmer 3s linear infinite;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1.1rem 1.5rem;
+    font-size: 0.8rem;
+    color: #F5F2EC !important;
+    transition: opacity 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .ses-btn-shimmer:hover { opacity: 0.9; }
+
+  /* ---- ANNOUNCEMENT BAR ---- */
+  #ses-root .ses-announce {
+    background-color: #D43010;
+    color: #F5F2EC;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ---- HERO ---- */
+  #ses-root .ses-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #0A0A0A;
+  }
+  #ses-root .ses-hero-bg {
+    position: absolute;
+    inset: 0;
+  }
+  #ses-root .ses-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+  #ses-root .ses-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.5) 55%, rgba(10,10,10,0.88) 100%);
+  }
+  #ses-root .ses-hero-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 2.5rem;
+    min-height: 90vh;
+  }
+  #ses-root .ses-hero-badge {
+    display: inline-block;
+    background-color: #D4A820;
+    color: #0A0A0A;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+  #ses-root .ses-hero h1 {
+    font-size: clamp(2.4rem, 9vw, 3.8rem);
+    color: #F5F2EC;
+    line-height: 1.0;
+    margin: 0 0 1rem 0;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  #ses-root .ses-hero h1 span { color: #D4A820; }
+  #ses-root .ses-hero-sub {
+    color: rgba(245,242,236,0.88);
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+  #ses-root .ses-hero-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+  #ses-root .ses-hero-price-main {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #F5F2EC;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  #ses-root .ses-hero-price-old {
+    font-size: 1.1rem;
+    text-decoration: line-through;
+    color: rgba(245,242,236,0.5);
+  }
+  #ses-root .ses-hero-price-badge {
+    background-color: #D43010;
+    color: #F5F2EC;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+  }
+  #ses-root .ses-hero-sub-label {
+    font-size: 0.85rem;
+    color: rgba(245,242,236,0.7);
+    margin-bottom: 1.5rem;
+  }
+  #ses-root .ses-hero-note {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.6);
+  }
+
+  /* ---- TRUST BAR ---- */
+  #ses-root .ses-trust-bar {
+    background-color: #0A0A0A;
+    border-bottom: 1px solid rgba(212,168,32,0.3);
+    padding: 0.9rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #ses-root .ses-trust-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 1.25rem;
+    min-width: max-content;
+  }
+  #ses-root .ses-trust-item {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #D4A820;
+    white-space: nowrap;
+  }
+
+  /* ---- SECTIONS ---- */
+  #ses-root .ses-section { padding: 4rem 0; }
+  #ses-root .ses-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  #ses-root .ses-h2 {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 2.5rem;
+  }
+  #ses-root .ses-product-img {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 2.5rem;
+  }
+
+  /* Product cards */
+  #ses-root .ses-product-cards { display: flex; flex-direction: column; gap: 1rem; }
+  #ses-root .ses-product-card {
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 1.25rem;
+  }
+  #ses-root .ses-product-card-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  #ses-root .ses-product-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  #ses-root .ses-product-card h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  #ses-root .ses-absorption-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+    line-height: 1.4;
+  }
+  #ses-root .ses-product-tagline {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  #ses-root .ses-product-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 0.75rem;
+  }
+  #ses-root .ses-product-dose {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #999;
+  }
+
+  /* Benefits */
+  #ses-root .ses-benefits-section { background-color: #0A0A0A; }
+  #ses-root .ses-benefits-list { display: flex; flex-direction: column; gap: 1.25rem; }
+  #ses-root .ses-benefit-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background-color: rgba(245,242,236,0.05);
+  }
+  #ses-root .ses-benefit-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+  #ses-root .ses-benefit-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+  #ses-root .ses-benefit-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #F5F2EC;
+  }
+  #ses-root .ses-benefit-badge {
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 0.15rem 0.4rem;
+  }
+  #ses-root .ses-benefit-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(245,242,236,0.7);
+    margin: 0;
+  }
+
+  /* Lifestyle break */
+  #ses-root .ses-lifestyle {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+  }
+  #ses-root .ses-lifestyle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #ses-root .ses-lifestyle-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(10,10,10,0.45);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  #ses-root .ses-lifestyle-quote {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #F5F2EC;
+    margin-bottom: 0.5rem;
+    line-height: 1.15;
+  }
+  #ses-root .ses-lifestyle-quote span { color: #D4A820; }
+  #ses-root .ses-lifestyle-sub {
+    font-size: 0.85rem;
+    color: rgba(245,242,236,0.75);
+    margin: 0;
+  }
+
+  /* Subscription section */
+  #ses-root .ses-sub-section { background-color: #F5F2EC; }
+  #ses-root .ses-toggle {
+    display: flex;
+    border: 2px solid #0A0A0A;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  #ses-root .ses-toggle-btn {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: background-color 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+  #ses-root .ses-toggle-btn.ses-active { background-color: #0A0A0A; color: #F5F2EC; }
+  #ses-root .ses-toggle-btn:not(.ses-active) { background-color: transparent; color: #0A0A0A; }
+
+  #ses-root .ses-price-box {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #0A0A0A;
+  }
+  #ses-root .ses-price-box.ses-sub-mode { background-color: #0A0A0A; }
+  #ses-root .ses-price-box.ses-one-mode { background-color: #fff; }
+
+  #ses-root .ses-price-box-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 0.75rem;
+  }
+  #ses-root .ses-price-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+  }
+  #ses-root .ses-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  #ses-root .ses-price-main {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  #ses-root .ses-price-old {
+    font-size: 1.1rem;
+    text-decoration: line-through;
+  }
+  #ses-root .ses-price-period {
+    font-size: 0.82rem;
+    margin-top: 0.25rem;
+  }
+  #ses-root .ses-discount-badge {
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    background-color: #D43010;
+    flex-shrink: 0;
+  }
+  #ses-root .ses-discount-badge-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #F5F2EC;
+    line-height: 1;
+  }
+  #ses-root .ses-discount-badge-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #F5F2EC;
+  }
+  #ses-root .ses-sub-perks { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+  #ses-root .ses-sub-perk {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+  #ses-root .ses-sub-perk-check { color: #D4A820; font-weight: 700; }
+  #ses-root .ses-buy-btn {
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1rem;
+    font-size: 0.8rem;
+    transition: opacity 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+  #ses-root .ses-buy-btn:hover { opacity: 0.9; }
+
+  #ses-root .ses-trust-badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  #ses-root .ses-trust-badge {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    border: 1px solid rgba(10,10,10,0.15);
+  }
+  #ses-root .ses-trust-badge-icon { font-size: 1.25rem; margin-bottom: 0.25rem; }
+  #ses-root .ses-trust-badge-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #444;
+  }
+
+  /* Timeline */
+  #ses-root .ses-timeline-section { background-color: #3D6B35; }
+  #ses-root .ses-month-tabs {
+    display: flex;
+    border: 2px solid rgba(245,242,236,0.3);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  #ses-root .ses-month-tab {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: background-color 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+  #ses-root .ses-month-tab.ses-active { background-color: #F5F2EC; color: #0A0A0A; }
+  #ses-root .ses-month-tab:not(.ses-active) { background-color: transparent; color: rgba(245,242,236,0.7); }
+
+  #ses-root .ses-month-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #F5F2EC;
+    margin-bottom: 1.25rem;
+    line-height: 1.2;
+  }
+  #ses-root .ses-month-points { display: flex; flex-direction: column; gap: 0.75rem; }
+  #ses-root .ses-month-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: rgba(245,242,236,0.1);
+  }
+  #ses-root .ses-month-num {
+    color: #D4A820;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+  }
+  #ses-root .ses-month-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(245,242,236,0.9);
+    margin: 0;
+  }
+  #ses-root .ses-timeline-cta {
+    margin-top: 2rem;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1rem;
+    font-size: 0.8rem;
+    background-color: #D4A820;
+    color: #0A0A0A !important;
+    transition: opacity 0.2s;
+  }
+  #ses-root .ses-timeline-cta:hover { opacity: 0.9; }
+
+  /* Expert quote */
+  #ses-root .ses-expert-section { background-color: #0A0A0A; }
+  #ses-root .ses-quote {
+    font-size: clamp(1.2rem, 4.5vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #F5F2EC;
+    line-height: 1.4;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+  #ses-root .ses-quote-author { font-weight: 700; font-size: 0.9rem; color: #D4A820; }
+  #ses-root .ses-quote-title { font-size: 0.75rem; color: rgba(245,242,236,0.5); margin-top: 0.25rem; }
+  #ses-root .ses-clinician-box {
+    margin-top: 2.5rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(245,242,236,0.15);
+  }
+  #ses-root .ses-clinician-title { font-size: 0.9rem; font-weight: 700; color: #F5F2EC; margin-bottom: 0.25rem; }
+  #ses-root .ses-clinician-sub { font-size: 0.75rem; color: rgba(245,242,236,0.5); margin: 0; }
+
+  /* Product detail */
+  #ses-root .ses-detail-section { background-color: #F5F2EC; }
+  #ses-root .ses-detail-img { width: 100%; margin-bottom: 2rem; }
+  #ses-root .ses-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  #ses-root .ses-pillar {
+    text-align: center;
+    padding: 1rem 0.5rem;
+    border-top-width: 3px;
+    border-top-style: solid;
+  }
+  #ses-root .ses-pillar-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    color: #444;
+    margin: 0;
+  }
+
+  /* FAQ */
+  #ses-root .ses-faq-section { background-color: #F5F2EC; }
+  #ses-root .ses-faq-list { border-top: 1px solid rgba(10,10,10,0.15); }
+  #ses-root .ses-faq-item { border-bottom: 1px solid rgba(10,10,10,0.15); }
+  #ses-root .ses-faq-btn {
+    width: 100%;
+    text-align: left;
+    padding: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  #ses-root .ses-faq-q { font-weight: 600; font-size: 0.9rem; line-height: 1.4; color: #0A0A0A; margin: 0; }
+  #ses-root .ses-faq-icon {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: #0A0A0A;
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  #ses-root .ses-faq-icon.ses-open { transform: rotate(45deg); }
+  #ses-root .ses-faq-answer {
+    padding-bottom: 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #555;
+    display: none;
+    margin: 0;
+  }
+  #ses-root .ses-faq-answer.ses-open { display: block; }
+
+  /* Final CTA */
+  #ses-root .ses-final-section { background-color: #0A0A0A; }
+  #ses-root .ses-final-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  #ses-root .ses-final-price-main {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #F5F2EC;
+    line-height: 1;
+  }
+  #ses-root .ses-final-price-old {
+    font-size: 1.25rem;
+    text-decoration: line-through;
+    color: rgba(245,242,236,0.35);
+  }
+  #ses-root .ses-final-perks { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
+  #ses-root .ses-final-perk {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(245,242,236,0.7);
+    margin: 0;
+  }
+  #ses-root .ses-final-perk-check { color: #D4A820; }
+
+  /* Footer */
+  #ses-root .ses-lp-footer {
+    background-color: #0A0A0A;
+    border-top: 1px solid rgba(245,242,236,0.1);
+    padding: 2.5rem 0;
+    text-align: center;
+  }
+  #ses-root .ses-footer-logo { height: 1.75rem; width: auto; margin: 0 auto 1rem; opacity: 0.85; }
+  #ses-root .ses-footer-copy { font-size: 0.7rem; color: rgba(245,242,236,0.4); margin-bottom: 1rem; }
+  #ses-root .ses-footer-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  #ses-root .ses-footer-link {
+    font-size: 0.7rem;
+    color: rgba(245,242,236,0.4);
+    transition: opacity 0.2s;
+  }
+  #ses-root .ses-footer-link:hover { opacity: 0.7; }
+
+  /* Sticky CTA bar */
+  #ses-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background-color: #0A0A0A;
+    border-top: 2px solid #D4A820;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  #ses-sticky-bar.ses-visible { transform: translateY(0); }
+  #ses-root .ses-sticky-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  #ses-root .ses-sticky-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #D4A820;
+    margin-bottom: 0.15rem;
+  }
+  #ses-root .ses-sticky-price-row { display: flex; align-items: baseline; gap: 0.5rem; }
+  #ses-root .ses-sticky-price { font-weight: 700; font-size: 1.1rem; color: #F5F2EC; }
+  #ses-root .ses-sticky-old { font-size: 0.75rem; text-decoration: line-through; color: rgba(245,242,236,0.4); }
+  #ses-root .ses-sticky-off { font-size: 0.75rem; font-weight: 700; color: #D43010; }
+  #ses-root .ses-sticky-cta {
+    flex-shrink: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    color: #F5F2EC !important;
+    background: linear-gradient(90deg, #0A0A0A 0%, #0A0A0A 40%, #3a3a3a 50%, #0A0A0A 60%, #0A0A0A 100%);
+    background-size: 200% auto;
+    animation: ses-shimmer 3s linear infinite;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+</style>
+
+<div id="ses-root">
+
+  <!-- ANNOUNCEMENT BAR (Spring-specific, below theme header) -->
+  <div class="ses-full-bleed ses-announce">
+    Spring Sale — 33% Off Your Our Stack + Free Gifts Valued at $55
+  </div>
+
+  <!-- HERO -->
+  <div class="ses-full-bleed ses-hero">
+    <div class="ses-hero-bg">
+            <picture>
+        <source
+          media="(min-width: 768px )"
+          srcset="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/hero_spring_desktop-486eiPYfu57rAjFBo4bpSQ.webp"
+        />
+        <img
+          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/hero_spring_outdoor-guUJCtayPhXLqR6eLr3bGT.webp"
+          alt="Spring outdoor lifestyle"
+          loading="eager"
+        />
+      </picture>
+
+      <div class="ses-hero-overlay"></div>
+    </div>
+    <div class="ses-hero-content ses-inner">
+      <div class="ses-reveal">
+        <span class="ses-hero-badge">Spring 2026 — Built for Outside Days</span>
+      </div>
+      <h1 class="ses-display ses-reveal">
+        Your Body Is Ready<br>
+        <span>for Spring.</span>
+      </h1>
+      <p class="ses-hero-sub ses-reveal">
+        Three clinically-formulated supplements that replenish what winter took, reduce the inflammation slowing you down, and fuel the energy your body needs to actually get outside.
+      </p>
+      <div class="ses-reveal">
+        <div class="ses-hero-price">
+          <span class="ses-hero-price-main ses-display">$87.10</span>
+          <span class="ses-hero-price-old">$130.00</span>
+          <span class="ses-hero-price-badge">33% OFF</span>
+        </div>
+        <p class="ses-hero-sub-label">Subscribe &amp; Save · Cancel anytime</p>
+      </div>
+      <a
+        href="https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073"
+        class="ses-btn-shimmer ses-reveal"
+      >
+        GET THE SPRING STACK — $87.10
+      </a>
+      <p class="ses-hero-note ses-reveal">Free shipping · 30-day money-back guarantee · HSA/FSA eligible</p>
+    </div>
+  </div>
+
+  <!-- TRUST BAR -->
+  <div class="ses-full-bleed ses-trust-bar">
+    <div class="ses-trust-bar-inner">
+      <span class="ses-trust-item">✓ Third Party Tested</span>
+      <span class="ses-trust-item">✓ 149× Better Absorption</span>
+      <span class="ses-trust-item">✓ Glyphosate-Free</span>
+      <span class="ses-trust-item">✓ Non-GMO</span>
+      <span class="ses-trust-item">✓ 30-Day Guarantee</span>
+      <span class="ses-trust-item">✓ HSA/FSA Eligible</span>
+    </div>
+  </div>
+
+  <!-- PRODUCT SECTION -->
+  <div class="ses-full-bleed ses-section" style="background-color:#F5F2EC;">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#E07820;">The Stack</span>
+      <h2 class="ses-h2 ses-display ses-reveal">Three Supplements.<br>One Spring Mission.</h2>
+      <img
+        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/spring_stack_main_9313d436.png"
+        alt="Spring Essentials Stack — Vitamin D3+K2, Curcumin, CoQ10"
+        class="ses-product-img ses-reveal"
+        loading="lazy"
+      />
+      <div class="ses-product-cards ses-reveal">
+        <div class="ses-product-card" style="border:2px solid #D4A820;">
+          <div class="ses-product-card-bar" style="background-color:#D4A820;"></div>
+          <div class="ses-product-card-header">
+            <h3 class="ses-display">Vitamin D3 + K2</h3>
+            <span class="ses-absorption-badge" style="background-color:#D4A820;color:#0A0A0A;">1.9× MORE ABSORPTION</span>
+          </div>
+          <p class="ses-product-tagline" style="color:#D4A820;">Replenish what winter took</p>
+          <p class="ses-product-desc">Rebuilds depleted Vitamin D levels to restore mood, energy, and immune function after months of low sunlight.</p>
+          <p class="ses-product-dose">2600IU D3 | 100mcg K2 · 60 capsules</p>
+        </div>
+        <div class="ses-product-card" style="border:2px solid #E07820;">
+          <div class="ses-product-card-bar" style="background-color:#E07820;"></div>
+          <div class="ses-product-card-header">
+            <h3 class="ses-display">Curcumin</h3>
+            <span class="ses-absorption-badge" style="background-color:#E07820;color:#F5F2EC;">149× MORE ABSORPTION</span>
+          </div>
+          <p class="ses-product-tagline" style="color:#E07820;">Move without the ache</p>
+          <p class="ses-product-desc">Reduces systemic inflammation so your joints move freely, soreness fades faster, and allergy symptoms quiet down.</p>
+          <p class="ses-product-dose">500mg Curcuwin® Ultra+ · 60 capsules</p>
+        </div>
+        <div class="ses-product-card" style="border:2px solid #D43010;">
+          <div class="ses-product-card-bar" style="background-color:#D43010;"></div>
+          <div class="ses-product-card-header">
+            <h3 class="ses-display">CoQ10</h3>
+            <span class="ses-absorption-badge" style="background-color:#D43010;color:#F5F2EC;">10× MORE ABSORPTION</span>
+          </div>
+          <p class="ses-product-tagline" style="color:#D43010;">Fuel your energy at the source</p>
+          <p class="ses-product-desc">Powers cellular energy production so you have the drive and stamina to actually get outside and stay active.</p>
+          <p class="ses-product-dose">50mg NuQ10® · 60 capsules</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENEFITS -->
+  <div class="ses-full-bleed ses-section ses-benefits-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D4A820;">Why It Works</span>
+      <h2 class="ses-h2 ses-display ses-reveal" style="color:#F5F2EC;">Six Reasons Your<br>Spring Starts Here.</h2>
+      <div class="ses-benefits-list">
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #D43010;">
+          <span class="ses-benefit-icon">⚡</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Energy That Shows Up</span>
+              <span class="ses-benefit-badge" style="background-color:#D43010;color:#F5F2EC;">CoQ10</span>
+            </div>
+            <p class="ses-benefit-desc">CoQ10 fuels your cells at the source so you have the drive to go all in on what matters most this season.</p>
+          </div>
+        </div>
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #E07820;">
+          <span class="ses-benefit-icon">🏃</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Move Without the Ache</span>
+              <span class="ses-benefit-badge" style="background-color:#E07820;color:#F5F2EC;">Curcumin</span>
+            </div>
+            <p class="ses-benefit-desc">Curcumin reduces inflammation so your body can keep up with everything spring has planned — hikes, runs, all of it.</p>
+          </div>
+        </div>
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #D4A820;">
+          <span class="ses-benefit-icon">☀️</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Better Mood, Faster</span>
+              <span class="ses-benefit-badge" style="background-color:#D4A820;color:#0A0A0A;">Vitamin D3+K2</span>
+            </div>
+            <p class="ses-benefit-desc">Vitamin D3 replenishes what winter took so your mood and energy finally catch up with the season.</p>
+          </div>
+        </div>
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #3D6B35;">
+          <span class="ses-benefit-icon">🌿</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Fight Histamine Season</span>
+              <span class="ses-benefit-badge" style="background-color:#3D6B35;color:#F5F2EC;">Curcumin + D3</span>
+            </div>
+            <p class="ses-benefit-desc">Feel less stuffy, achy, and drained as curcumin and Vitamin D quiet your histamine response.</p>
+          </div>
+        </div>
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #D43010;">
+          <span class="ses-benefit-icon">🛡️</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Immune Support Built In</span>
+              <span class="ses-benefit-badge" style="background-color:#D43010;color:#F5F2EC;">Vitamin D3+K2</span>
+            </div>
+            <p class="ses-benefit-desc">Vitamin D3+K2 keeps your immune system strong so nothing slows your spring down.</p>
+          </div>
+        </div>
+        <div class="ses-benefit-item ses-reveal" style="border-left:3px solid #E07820;">
+          <span class="ses-benefit-icon">🔬</span>
+          <div>
+            <div class="ses-benefit-title-row">
+              <span class="ses-benefit-title">Absorption You Can Feel</span>
+              <span class="ses-benefit-badge" style="background-color:#E07820;color:#F5F2EC;">All Three</span>
+            </div>
+            <p class="ses-benefit-desc">Three of the hardest nutrients to absorb. We changed that with up to 149× better absorption.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIFESTYLE BREAK -->
+  <div class="ses-full-bleed ses-lifestyle">
+    <img
+      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/spring_nature_bg-ZbZy78TrtfKqTtKAnSNeqP.webp"
+      alt="Spring meadow"
+      loading="lazy"
+    />
+    <div class="ses-lifestyle-overlay">
+      <p class="ses-lifestyle-quote ses-display">
+        "Your body is ready.<br>
+        <span>Are you?"</span>
+      </p>
+      <p class="ses-lifestyle-sub">900+ clinicians recommend our products on FrontrowMD</p>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTION OFFER -->
+  <div class="ses-full-bleed ses-section ses-sub-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D43010;">Limited Time Offer</span>
+      <h2 class="ses-h2 ses-display ses-reveal">Subscribe &amp; Save.<br>Cancel Anytime.</h2>
+      <p class="ses-reveal" style="font-size:0.9rem;color:#666;line-height:1.6;margin-bottom:2rem;">
+        Your first subscription order is 33% off. That's $42.90 back in your pocket to spend on spring adventures.
+      </p>
+
+      <div class="ses-toggle ses-reveal">
+        <button class="ses-toggle-btn ses-active" id="ses-sub-btn" onclick="sesSetMode(true)">Subscribe &amp; Save 33%</button>
+        <button class="ses-toggle-btn" id="ses-one-btn" onclick="sesSetMode(false)">One-Time</button>
+      </div>
+
+      <div class="ses-price-box ses-sub-mode ses-reveal" id="ses-price-box">
+        <div class="ses-price-box-header">
+          <div>
+            <p class="ses-price-label" id="ses-price-label" style="color:#D4A820;">Subscribe &amp; Save</p>
+            <div class="ses-price-row">
+              <span class="ses-price-main ses-display" id="ses-price-main" style="color:#F5F2EC;">$87.10</span>
+              <span class="ses-price-old" id="ses-price-old" style="color:rgba(245,242,236,0.4);">$130.00</span>
+            </div>
+            <p class="ses-price-period" id="ses-price-period" style="color:rgba(245,242,236,0.7);">Every 30 days · Maximize benefits</p>
+          </div>
+          <div class="ses-discount-badge" id="ses-discount-badge">
+            <div class="ses-discount-badge-num">33%</div>
+            <div class="ses-discount-badge-label">OFF</div>
+          </div>
+        </div>
+        <div class="ses-sub-perks" id="ses-sub-perks">
+          <div class="ses-sub-perk"><span class="ses-sub-perk-check">✓</span><span style="color:rgba(245,242,236,0.85);">33% off today — save $42.90</span></div>
+          <div class="ses-sub-perk"><span class="ses-sub-perk-check">✓</span><span style="color:rgba(245,242,236,0.85);">Update, pause, or cancel anytime</span></div>
+          <div class="ses-sub-perk"><span class="ses-sub-perk-check">✓</span><span style="color:rgba(245,242,236,0.85);">FREE gifts valued at $55</span></div>
+          <div class="ses-sub-perk"><span class="ses-sub-perk-check">✓</span><span style="color:rgba(245,242,236,0.85);">Free shipping on every order</span></div>
+        </div>
+        <a
+          href="https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073"
+          class="ses-buy-btn"
+          id="ses-buy-btn"
+          style="background-color:#D4A820;color:#0A0A0A;"
+        >
+          Subscribe Now — $87.10/mo
+        </a>
+      </div>
+
+      <div class="ses-trust-badges ses-reveal">
+        <div class="ses-trust-badge">
+          <div class="ses-trust-badge-icon">🔬</div>
+          <div class="ses-trust-badge-label">Third Party Tested</div>
+        </div>
+        <div class="ses-trust-badge">
+          <div class="ses-trust-badge-icon">🌿</div>
+          <div class="ses-trust-badge-label">Glyphosate-Free</div>
+        </div>
+        <div class="ses-trust-badge">
+          <div class="ses-trust-badge-icon">↩️</div>
+          <div class="ses-trust-badge-label">30-Day Guarantee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="ses-full-bleed ses-section ses-timeline-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D4A820;">What to Expect</span>
+      <h2 class="ses-h2 ses-display ses-reveal" style="color:#F5F2EC;">Your Spring<br>Transformation.</h2>
+
+      <div class="ses-month-tabs ses-reveal">
+        <button class="ses-month-tab ses-active" onclick="sesSetMonth(0)" id="ses-tab-0">Month 1</button>
+        <button class="ses-month-tab" onclick="sesSetMonth(1)" id="ses-tab-1">Month 2</button>
+        <button class="ses-month-tab" onclick="sesSetMonth(2)" id="ses-tab-2">Month 3</button>
+      </div>
+
+      <div id="ses-month-content"></div>
+
+      <a
+        href="https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073"
+        class="ses-timeline-cta ses-reveal"
+      >
+        Start Your Spring Transformation
+      </a>
+    </div>
+  </div>
+
+  <!-- EXPERT QUOTE -->
+  <div class="ses-full-bleed ses-section ses-expert-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D4A820;">Backed by Experts</span>
+      <blockquote style="margin:0;">
+        <p class="ses-quote ses-reveal">
+          "The lack of consistency in supplement absorption has been a huge issue in the industry. I am grateful to be part of a team that is dramatically improving the quality and absorption of supplements."
+        </p>
+        <footer class="ses-reveal">
+          <p class="ses-quote-author">Dr. Matt Hand, DO</p>
+          <p class="ses-quote-title">Chief of Pediatric Nephrology at Dartmouth Children's Hospital</p>
+        </footer>
+      </blockquote>
+      <div class="ses-clinician-box ses-reveal">
+        <p class="ses-clinician-title">900+ Clinicians Recommend Our Products</p>
+        <p class="ses-clinician-sub">Shared on FrontrowMD without compensation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL IMAGE -->
+  <div class="ses-full-bleed ses-section ses-detail-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#E07820;">The Science</span>
+      <h2 class="ses-h2 ses-display ses-reveal">Every Capsule<br>Counts.</h2>
+      <img
+        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/spring_stack_pdp3_b21912de.png"
+        alt="Spring Essentials Stack — Replenish, Move, Fuel"
+        class="ses-detail-img ses-reveal"
+        loading="lazy"
+      />
+      <div class="ses-pillars ses-reveal">
+        <div class="ses-pillar" style="border-top-color:#D4A820;">
+          <p class="ses-pillar-label">Replenish what winter took</p>
+        </div>
+        <div class="ses-pillar" style="border-top-color:#E07820;">
+          <p class="ses-pillar-label">Move without the ache</p>
+        </div>
+        <div class="ses-pillar" style="border-top-color:#D43010;">
+          <p class="ses-pillar-label">Fuel your energy at the source</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="ses-full-bleed ses-section ses-faq-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D43010;">FAQs</span>
+      <h2 class="ses-h2 ses-display ses-reveal">Common Questions.</h2>
+      <div class="ses-faq-list ses-reveal">
+        <div class="ses-faq-item">
+          <button class="ses-faq-btn" onclick="sesFaqToggle(0)">
+            <span class="ses-faq-q">What makes this different from other supplements?</span>
+            <span class="ses-faq-icon" id="ses-faq-icon-0">+</span>
+          </button>
+          <p class="ses-faq-answer" id="ses-faq-0">Our supplements use Capsoil® enhanced absorption technology — up to 149× better than standard capsules. Most supplements pass through your body largely unabsorbed. We changed that so every capsule actually counts.</p>
+        </div>
+        <div class="ses-faq-item">
+          <button class="ses-faq-btn" onclick="sesFaqToggle(1)">
+            <span class="ses-faq-q">Why these three supplements together?</span>
+            <span class="ses-faq-icon" id="ses-faq-icon-1">+</span>
+          </button>
+          <p class="ses-faq-answer" id="ses-faq-1">Vitamin D3+K2 replenishes what winter depleted, Curcumin reduces the inflammation that's been building all season, and CoQ10 fuels the cellular energy your body needs to actually feel the difference. Together, they address the three biggest barriers to feeling your best in spring.</p>
+        </div>
+        <div class="ses-faq-item">
+          <button class="ses-faq-btn" onclick="sesFaqToggle(2)">
+            <span class="ses-faq-q">Are these third-party tested?</span>
+            <span class="ses-faq-icon" id="ses-faq-icon-2">+</span>
+          </button>
+          <p class="ses-faq-answer" id="ses-faq-2">Yes. Every product is tested by Light Labs (Dec 2025) — 12 substances tested for quality and purity. We're also Glyphosate Residue-Free certified, Non-GMO, and manufactured in an FDA-registered, GMP-certified facility.</p>
+        </div>
+        <div class="ses-faq-item">
+          <button class="ses-faq-btn" onclick="sesFaqToggle(3)">
+            <span class="ses-faq-q">Can I cancel my subscription anytime?</span>
+            <span class="ses-faq-icon" id="ses-faq-icon-3">+</span>
+          </button>
+          <p class="ses-faq-answer" id="ses-faq-3">Absolutely. Update, pause, or cancel anytime — no questions asked. We also offer a 30-day money-back guarantee if you're not satisfied.</p>
+        </div>
+        <div class="ses-faq-item">
+          <button class="ses-faq-btn" onclick="sesFaqToggle(4)">
+            <span class="ses-faq-q">How long until I feel results?</span>
+            <span class="ses-faq-icon" id="ses-faq-icon-4">+</span>
+          </button>
+          <p class="ses-faq-answer" id="ses-faq-4">Most customers notice improved energy and reduced morning stiffness within the first 2–4 weeks. Full benefits — including measurably lower inflammation and locked-in results — typically develop over 2–3 months of consistent use.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="ses-full-bleed ses-section ses-final-section">
+    <div class="ses-inner">
+      <span class="ses-eyebrow ses-reveal" style="color:#D4A820;">Spring Essentials Stack</span>
+      <h2 class="ses-h2 ses-display ses-reveal" style="color:#F5F2EC;">This Is Your<br><span style="color:#D4A820;">Spring.</span></h2>
+      <p class="ses-reveal" style="font-size:0.9rem;color:rgba(245,242,236,0.7);line-height:1.7;margin-bottom:2rem;">
+        Vitamin D3+K2, Curcumin, and CoQ10 — formulated with up to 149× better absorption so every capsule actually counts this season.
+      </p>
+      <div class="ses-reveal" style="margin-bottom:1rem;">
+        <div class="ses-final-price-row">
+          <span class="ses-final-price-main ses-display">$87.10</span>
+          <span class="ses-final-price-old">$130.00</span>
+        </div>
+        <p style="font-size:0.85rem;color:rgba(245,242,236,0.5);margin:0;">Subscribe &amp; Save 33%</p>
+      </div>
+      <a
+        href="https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073"
+        class="ses-btn-shimmer ses-reveal"
+      >
+        Subscribe &amp; Save 33% — $87.10/mo
+      </a>
+      <div class="ses-final-perks ses-reveal">
+        <p class="ses-final-perk"><span class="ses-final-perk-check">✓</span> Free shipping on orders $50+</p>
+        <p class="ses-final-perk"><span class="ses-final-perk-check">✓</span> 30-day money-back guarantee</p>
+        <p class="ses-final-perk"><span class="ses-final-perk-check">✓</span> Cancel or pause anytime</p>
+        <p class="ses-final-perk"><span class="ses-final-perk-check">✓</span> FREE gifts valued at $55 with first subscription</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LP FOOTER (minimal, above Shopify theme footer) -->
+  <div class="ses-full-bleed ses-lp-footer">
+    <div class="ses-inner">
+      <img
+        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397667003/KQurDGhXMafSUxMqMFEs4L/logo_white_c15ad721.png"
+        alt="The Absorption Company"
+        class="ses-footer-logo"
+        loading="lazy"
+      />
+      <p class="ses-footer-copy">© 2025 The Absorption Company. All rights reserved.</p>
+      <div class="ses-footer-links">
+        <a href="https://www.absorbmore.com/collections/all" class="ses-footer-link">Shop</a>
+        <a href="https://www.absorbmore.com/pages/science" class="ses-footer-link">Science</a>
+        <a href="https://www.absorbmore.com/policies/terms-of-service" class="ses-footer-link">Terms</a>
+        <a href="https://www.absorbmore.com/policies/refund-policy" class="ses-footer-link">Returns</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #ses-root -->
+
+<!-- STICKY CTA BAR (outside #ses-root so it's not clipped) -->
+<div id="ses-sticky-bar">
+  <div class="ses-sticky-inner">
+    <div>
+      <p class="ses-sticky-label">Spring Stack</p>
+      <div class="ses-sticky-price-row">
+        <span class="ses-sticky-price">$87.10</span>
+        <span class="ses-sticky-old">$130</span>
+        <span class="ses-sticky-off">33% OFF</span>
+      </div>
+    </div>
+    <a
+      href="https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073"
+      class="ses-sticky-cta"
+    >
+      Subscribe &amp; Save
+    </a>
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // SPRING ESSENTIALS STACK — INTERACTIVE JS
+  // Namespaced with "ses" prefix to avoid conflicts
+  // ============================================
+
+  // Scroll Reveal
+  (function() {
+    if (!window.IntersectionObserver) return;
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('ses-visible');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.ses-reveal').forEach(function(el) {
+      observer.observe(el);
+    });
+  })();
+
+  // Sticky CTA Bar
+  window.addEventListener('scroll', function() {
+    var bar = document.getElementById('ses-sticky-bar');
+    if (bar) {
+      bar.classList.toggle('ses-visible', window.scrollY > 500);
+    }
+  }, { passive: true });
+
+  // Subscribe / One-Time Toggle
+  var SUB_URL = 'https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761&selling_plan=691089015073';
+  var ONE_URL = 'https://www.absorbmore.com/products/spring-essentials-stack?variant=52400084713761';
+
+  function sesSetMode(isSub) {
+    var subBtn = document.getElementById('ses-sub-btn');
+    var oneBtn = document.getElementById('ses-one-btn');
+    var box = document.getElementById('ses-price-box');
+    var label = document.getElementById('ses-price-label');
+    var priceMain = document.getElementById('ses-price-main');
+    var priceOld = document.getElementById('ses-price-old');
+    var pricePeriod = document.getElementById('ses-price-period');
+    var discBadge = document.getElementById('ses-discount-badge');
+    var perks = document.getElementById('ses-sub-perks');
+    var buyBtn = document.getElementById('ses-buy-btn');
+    if (!subBtn) return;
+
+    if (isSub) {
+      subBtn.classList.add('ses-active');
+      oneBtn.classList.remove('ses-active');
+      box.className = 'ses-price-box ses-sub-mode ses-reveal ses-visible';
+      label.style.color = '#D4A820';
+      label.innerHTML = 'Subscribe &amp; Save';
+      priceMain.style.color = '#F5F2EC';
+      priceMain.textContent = '$87.10';
+      priceOld.style.display = 'inline';
+      priceOld.style.color = 'rgba(245,242,236,0.4)';
+      priceOld.textContent = '$130.00';
+      pricePeriod.style.display = 'block';
+      pricePeriod.style.color = 'rgba(245,242,236,0.7)';
+      pricePeriod.textContent = 'Every 30 days \u00b7 Maximize benefits';
+      discBadge.style.display = 'block';
+      perks.style.display = 'flex';
+      buyBtn.style.backgroundColor = '#D4A820';
+      buyBtn.style.color = '#0A0A0A';
+      buyBtn.textContent = 'Subscribe Now \u2014 $87.10/mo';
+      buyBtn.href = SUB_URL;
+    } else {
+      subBtn.classList.remove('ses-active');
+      oneBtn.classList.add('ses-active');
+      box.className = 'ses-price-box ses-one-mode ses-reveal ses-visible';
+      label.style.color = '#999';
+      label.textContent = 'One-Time Purchase';
+      priceMain.style.color = '#0A0A0A';
+      priceMain.textContent = '$130.00';
+      priceOld.style.display = 'none';
+      pricePeriod.style.display = 'none';
+      discBadge.style.display = 'none';
+      perks.style.display = 'none';
+      buyBtn.style.backgroundColor = '#0A0A0A';
+      buyBtn.style.color = '#F5F2EC';
+      buyBtn.textContent = 'Buy Once \u2014 $130.00';
+      buyBtn.href = ONE_URL;
+    }
+  }
+
+  // Month Timeline
+  var sesMonths = [
+    {
+      title: 'Your body starts catching up.',
+      points: [
+        'Energy starts feeling more consistent, less dependent on caffeine',
+        'Morning stiffness eases and daily movement feels less forced',
+        'Mood lifts as Vitamin D levels start to replenish after winter',
+        'Your body finally feels like it\'s catching up with the season'
+      ]
+    },
+    {
+      title: 'You start doing the things.',
+      points: [
+        'Joints move easier and post-activity soreness fades faster',
+        'Steady energy through the afternoon without the crash',
+        'Clearer mood and sharper focus become your new normal',
+        'You start doing the things you were only thinking about before'
+      ]
+    },
+    {
+      title: 'Results that feel locked in.',
+      points: [
+        'Inflammation is measurably lower and your body feels it',
+        'Energy, mood, and immunity are all working together consistently',
+        'You recover faster, move better, and stay active longer',
+        'Results that feel locked in, not temporary'
+      ]
+    }
+  ];
+  var sesActiveMonth = 0;
+
+  function sesRenderMonth() {
+    var m = sesMonths[sesActiveMonth];
+    var html = '<h3 class="ses-month-title ses-display">' + m.title + '</h3><div class="ses-month-points">';
+    m.points.forEach(function(point, i) {
+      html += '<div class="ses-month-point"><span class="ses-month-num">0' + (i+1) + '</span><p class="ses-month-text">' + point + '</p></div>';
+    });
+    html += '</div>';
+    var el = document.getElementById('ses-month-content');
+    if (el) el.innerHTML = html;
+  }
+
+  function sesSetMonth(idx) {
+    sesActiveMonth = idx;
+    [0,1,2].forEach(function(i) {
+      var tab = document.getElementById('ses-tab-' + i);
+      if (tab) tab.classList.toggle('ses-active', i === idx);
+    });
+    sesRenderMonth();
+  }
+  sesRenderMonth();
+
+  // FAQ Accordion
+  var sesActiveFaq = null;
+  function sesFaqToggle(idx) {
+    var prev = sesActiveFaq;
+    if (prev !== null && prev !== idx) {
+      var prevEl = document.getElementById('ses-faq-' + prev);
+      var prevIcon = document.getElementById('ses-faq-icon-' + prev);
+      if (prevEl) prevEl.classList.remove('ses-open');
+      if (prevIcon) prevIcon.classList.remove('ses-open');
+    }
+    var el = document.getElementById('ses-faq-' + idx);
+    var icon = document.getElementById('ses-faq-icon-' + idx);
+    if (sesActiveFaq === idx) {
+      if (el) el.classList.remove('ses-open');
+      if (icon) icon.classList.remove('ses-open');
+      sesActiveFaq = null;
+    } else {
+      if (el) el.classList.add('ses-open');
+      if (icon) icon.classList.add('ses-open');
+      sesActiveFaq = idx;
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Spring Essentials Stack",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Spring Essentials Stack"
+    }
+  ]
+}
+{% endschema %}

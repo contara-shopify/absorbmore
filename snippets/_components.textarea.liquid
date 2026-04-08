@@ -1,0 +1,49 @@
+{% comment %}
+    Textarea Input
+
+    Accepts:
+    - class: {string}
+    - label: {string}
+    - placeholder: {string}
+    - name: {string}
+    - form {liquid_form_object}
+    - default_value: {string} default_state
+    - html_attributes: {string} use this to set autocomplete / autocapitalize attributes.
+    - setState: {function} i.e. `$data.quantity(value)`
+
+    Usage:
+    {% render '_components.textarea',
+        class: textarea_class,
+        label: label,
+        placeholder: placeholder,
+        name: name,
+        form: form,
+        default_value: default_value,
+        html_attributes: "",
+        setState: setState
+    %}
+{% endcomment %}
+
+<label class="relative fw:outline {{ class }}" {{ html_attributes }}
+       x-data="{ ...window._textarea.init($el, { maxRows: +`{{ maxRows | default: 0 }}` }),  label: $el, value: $refs.textarea.value }"
+       x-init="$watch('$data.windowWidth', () => { textarea.paddingLeft = getComputedStyle($refs.textarea).paddingLeft; })"
+       :class="textarea.active ? 'active' : ''">
+  <span x-ref="label" :style="`padding-left: ${textarea.paddingLeft};`">{{- label -}}</span>
+  <textarea
+      name="{{ name }}"
+      x-ref="textarea"
+      aria-label="{{ label | default: placeholder }}"
+      placeholder="{{- placeholder -}}"
+      {% if form_block %}
+        form="{{ form_block.id }}"
+      {% endif %}
+      {% if required %}
+        required="required"
+      {% endif %}
+      {% if maxlength > 0 %}
+        maxlength="{{ maxlength }}"
+      {% endif %}
+      :disabled="{{ disabled | default: false }}"
+      class="relative w-full bg-transparent !outline-none" {{ html_attributes }}
+      @input="textarea.active = !!$el.value && !!$refs.label.textContent; value = $el.value; {{ setState }}; resizeTextarea()">{{- default_value -}}</textarea>
+</label>

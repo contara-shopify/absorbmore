@@ -1,0 +1,50 @@
+{% liquid
+  for block_id in block_order
+    assign block = blocks[block_id]
+    if block.disabled
+      continue
+    endif
+    assign style_id = block_id
+    assign selector = '[data-style-id="' | append: style_id | append: '"]'
+
+    if block.type == '_card_line_item_card__container'
+      render 'card_line_item_card.container.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__image'
+      render 'card_line_item_card.image.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__richtext'
+      render 'card_line_item_card.richtext.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__button'
+      render 'card_line_item_card.button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__price'
+      render 'card_line_item_card.price.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__quantity_selector'
+      render 'card_line_item_card.quantity_selector.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__remove_button'
+      render 'card_line_item_card.remove_button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__subscription_selector'
+      render 'card_line_item_card.subscription_selector.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__subscription_button'
+      render 'card_line_item_card.subscription_button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__properties'
+      render 'card_line_item_card.properties.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__discounts'
+      render 'card_line_item_card.discounts.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__addon_items'
+      render 'card_line_item_card.addon_items.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+    if block.type == '_card_line_item_card__quantity_picker'
+      render 'card_line_item_card.quantity_picker.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, line_item: line_item, has_addon_products: has_addon_products, child_line_items: child_line_items, preload_images: preload_images
+    endif
+  endfor
+%}

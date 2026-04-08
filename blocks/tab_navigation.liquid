@@ -1,0 +1,256 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "tab_navigation"
+  assign label = block.settings.label
+  assign button_class = block.settings.button_class
+  assign trigger_on_hover = block.settings.trigger_on_hover
+  assign tab_group = block.settings.tab_group
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+%}
+
+<tab-navigation>
+  <tab-label>{{ label }}</tab-label>
+  <tab-label-richtext>{% render '_input.inline_richtext', content: label %}</tab-label-richtext>
+  <tab-group>{{ tab_group }}</tab-group>
+  <tab-button-class>{{ button_class }}</tab-button-class>
+  <tab-hover-trigger>{% if trigger_on_hover %}true{% endif %}</tab-hover-trigger>
+
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+       class="relative flex flex-col"
+       x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, undefined, `{{ enable_mouse_dragging }}` === 'true') }"
+       x-defer="intersect">
+    <nav class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+         x-ref="scrollContainer"
+         @resize.window="content_slider.handleResize"
+         x-init="$nextTick(() => content_slider.handleResize())"
+         @scroll="content_slider.handleScroll"
+         @scrollend="content_slider.handleInfiniteScroll"
+    >
+      <tab-navigation-buttons-placeholder />
+    </nav>
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  </div>
+</tab-navigation>
+
+{% schema %}
+{
+  "name": "Tab navigation",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "❗ This section only shows if at least one Tab Content group is setup in a section."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "[label]",
+      "info": "Use [label] for the dynamic content."
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "checkbox",
+      "id": "trigger_on_hover",
+      "label": "Trigger Tab on hover"
+    },
+    {
+      "type": "select",
+      "id": "tab_group",
+      "label": "Tab group",
+      "default": "0",
+      "info": "Configure up to 3 Tab groups for any given Section.",
+      "options": [
+        {
+          "value": "0",
+          "label": "1"
+        },
+        {
+          "value": "1",
+          "label": "2"
+        },
+        {
+          "value": "2",
+          "label": "3"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "header",
+      "content": "Infinite Scroll"
+    },
+    {
+      "type": "paragraph",
+      "content": "Infinite scroll works best when all cards have a fixed size. Dynamic cards may cause issues, and enabling a scrollbar can lead to unexpected behavior."
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  margin-top: 12px;\n}\n& .grid-container {\n  display: flex;\n  gap: 4px;\n}\n\n& [data-scrollbar] {\n  margin-top: 16px;\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab navigation",
+      "category": "Tabs"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__tab_navigation"
+}
+{% endschema %}

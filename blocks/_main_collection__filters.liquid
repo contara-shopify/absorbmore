@@ -1,0 +1,289 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_collection__filters"
+  assign section_type = "main_collection"
+  assign accordion_class = block.settings.accordion_class
+  assign dropdown_menu = block.settings.dropdown_menu
+  assign default_state = block.settings.default_state
+  assign auto_open_active_filters = block.settings.auto_open_active_filters
+  assign auto_close_siblings = block.settings.auto_close_siblings
+  assign submit_button_class = block.settings.submit_button_class
+  assign checkbox_class = block.settings.checkbox_class
+  assign filters_show_count = block.settings.filters_show_count
+  assign show_empty_entries = block.settings.show_empty_entries
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  capture blocks_content
+    content_for "blocks"
+  endcapture
+
+  assign content_array = blocks_content | split: '<filter-override>'
+
+  assign blocks_content = content_array | first
+  assign all_filter_blocks = '' | split: '' | uniq
+  assign all_filter_block_handles = '' | split: '' | uniq
+  assign force_open_array = '' | split: '' | uniq
+
+  for filter_block in content_array
+    if forloop.first
+      continue
+    endif
+    assign force_open = false | uniq
+
+    assign filter_block_handle = filter_block | split: '</filter-handle>' | first | replace: '<filter-handle>' | strip | uniq
+    assign _filter_block = filter_block | split: '</filter-handle>' | last
+
+    if _filter_block contains '<filter-open-by-default></filter-open-by-default>'
+      assign force_open = true | uniq
+      assign _filter_block = _filter_block | replace: '<filter-open-by-default></filter-open-by-default>', ''
+    endif
+
+    assign filter_block_content = _filter_block | split: '</filter-override>' | first | uniq
+    assign filter_content_end = _filter_block | split: '</filter-override>' | last
+
+
+    assign all_filter_block_handles = all_filter_block_handles | concat: filter_block_handle
+    assign all_filter_blocks = all_filter_blocks | concat: filter_block_content
+
+    assign blocks_content = blocks_content | append: filter_content_end
+    assign filter_blocks = filter_blocks | append: ',' | append: filter_label
+
+    assign force_open_array = force_open_array | concat: force_open
+  endfor
+
+  if dropdown_menu
+    assign auto_open_active_filters = false
+    assign auto_close_siblings = true
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     data-filters
+     class="pointer-events-auto">
+  {{ blocks_content }}
+  {% liquid
+    assign override_index = 0
+    for filter in collection.filters
+      assign _label = filter.label | downcase | strip
+
+      if show_empty_entries == false and filter.type == 'list' or filter.type == 'boolean'
+        assign filter_count_arr = filter.values | where: 'count', 0
+
+        if filter_count_arr.size == filter.values.size
+          break
+        endif
+      endif
+
+      if dropdown_menu != true
+        case default_state
+          when 'show_first'
+            assign open_accordion = forloop.first
+          when 'show'
+            assign open_accordion = true
+          when 'hide'
+            assign open_accordion = false
+        endcase
+      endif
+
+      assign active_size = filter.values | where: 'active' | size
+      if auto_open_active_filters and active_size > 0
+        assign open_accordion = true
+      endif
+      assign index = all_filter_block_handles | find_index: _label
+
+      capture filter_content
+        if index != blank
+          echo all_filter_blocks[index]
+          if dropdown_menu != true and force_open_array[index] == true
+            assign open_accordion = true
+          endif
+        else
+          if filter.type == 'list' or filter.type == 'boolean'
+            render 'main_collection.filters.checkboxes', block: block, collection: collection, filter: filter, checkbox_class: checkbox_class, filters_show_count: filters_show_count
+          endif
+          if filter.type == 'price_range'
+            render 'main_collection.filters.price', block: block, filter: filter
+          endif
+        endif
+      endcapture
+
+
+      render '_components.collapsible', label: filter.label, content: filter_content, default_open: open_accordion, class: accordion_class, auto_close_siblings: auto_close_siblings, dropdown_menu: dropdown_menu
+    endfor
+  %}
+
+  {% if submit_button_class != blank %}
+    <div>
+      <button type="submit"
+              class="w-full {{ submit_button_class }}"
+              :class="main_collection.state.loading ? 'button-loading': ''">
+        Apply Filters
+      </button>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Filters",
+  "settings": [
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "checkbox",
+      "id": "dropdown_menu",
+      "label": "As dropdown menu"
+    },
+    {
+      "type": "select",
+      "id": "default_state",
+      "label": "Default state",
+      "default": "show_first",
+      "options": [
+        {
+          "value": "show_first",
+          "label": "Open First"
+        },
+        {
+          "value": "show",
+          "label": "Open All"
+        },
+        {
+          "value": "hide",
+          "label": "Closed"
+        }
+      ],
+      "visible_if": "{{ block.settings.dropdown_menu != true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_open_active_filters",
+      "label": "Auto open active filters",
+      "default": true,
+      "visible_if": "{{ block.settings.dropdown_menu != true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_close_siblings",
+      "label": "Auto close siblings",
+      "visible_if": "{{ block.settings.dropdown_menu != true }}"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_class",
+      "label": "Submit Button Class"
+    },
+    {
+      "type": "header",
+      "content": "Default Style"
+    },
+    {
+      "type": "text",
+      "id": "checkbox_class",
+      "label": "Checkbox class",
+      "default": "input-checkbox"
+    },
+    {
+      "type": "checkbox",
+      "id": "filters_show_count",
+      "label": "Filters show count",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty_entries",
+      "label": "Show empty entries"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "_main_collection__container"
+    },
+    {
+      "type": "_main_collection__collapsible"
+    },
+    {
+      "type": "_main_collection__applied_filters"
+    },
+    {
+      "type": "_main_collection__color_override"
+    },
+    {
+      "type": "_main_collection__image_override"
+    },
+    {
+      "type": "_main_collection__radio_button_override"
+    },
+    {
+      "type": "_main_collection__checkbox_override"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filters",
+      "category": "** Collection **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_collection__filters"
+}
+{% endschema %}

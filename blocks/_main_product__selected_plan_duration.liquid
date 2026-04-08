@@ -1,0 +1,88 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__selected_plan_duration"
+  assign section_type = "main_product"
+  assign css_class = block.settings.css_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+  data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ block.shopify_attributes }}
+  data-quick-view-visibility="{{ quick_view_visibility }}"
+  class="{{ css_class }}"
+  x-data="{
+    planLabel: '',
+    formatPlan(name) {
+      if (!name) return '';
+
+      const match = name.match(/\d+/);
+      if (!match) return name;
+
+      const days = parseInt(match[0], 10);
+      const months = days > 29 ? days / 30 : days;
+
+      return `${months} Month${months > 1 ? 's' : ''}`;
+    }
+  }"
+  x-init="planLabel = formatPlan(pdp.selected_selling_plan); console.log(pdp.selected_selling_plan, 'pdp.selected_selling_plan');"
+  x-effect="
+    console.log(pdp, 'pdp')
+    const plan = pdp.selected_selling_plan;
+    planLabel = plan ? formatPlan(plan.name) : '';
+  "
+  x-html="planLabel"
+></div>
+{% schema %}
+{
+  "name": "Selected Plan Duration",
+  "settings": [
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "CSS class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Selected Plan Duration",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__selected_plan_duration"
+}
+{% endschema %}

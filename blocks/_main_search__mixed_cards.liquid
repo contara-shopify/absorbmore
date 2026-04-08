@@ -1,0 +1,567 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_search__mixed_cards"
+  assign section_type = "main_search"
+  assign pagination_size = block.settings.pagination_size
+  assign product_card_class = block.settings.product_card_class
+  assign collection_card_class = block.settings.collection_card_class
+  assign article_card_class = block.settings.article_card_class
+  assign page_card_class = block.settings.page_card_class
+  assign pagination_style = block.settings.pagination_style
+  assign pagination_class = block.settings.pagination_class
+  assign results_count = block.settings.results_count
+  assign results_count_class = block.settings.results_count_class
+  assign load_more_button_text = block.settings.load_more_button_text
+  assign load_more_button_class = block.settings.load_more_button_class
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign container_spacing = section.settings.container_spacing
+  assign order_offset = order_offset | default: 1
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+%}
+
+{% paginate search.results by pagination_size %}
+  {% assign results_count = results_count | replace: '[total]', paginate.items %}
+  {% assign current_count = paginate.page_size | at_most: paginate.items %}
+  {% assign results_count_transformed = results_count | replace: '[count]', current_count %}
+
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <section data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+           class="relative flex flex-col"
+           x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, undefined, `{{ enable_mouse_dragging }}` === 'true') }"
+           x-defer="intersect">
+    <div class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+         x-ref="scrollContainer"
+         @resize.window="content_slider.handleResize"
+         x-init="$nextTick(() => content_slider.handleResize())"
+         @scroll="content_slider.handleScroll"
+         @scrollend="content_slider.handleInfiniteScroll"
+         data-next-url="{{ paginate.next.url }}">
+      {% content_for 'blocks' %}
+      {% for result in search.results limit: max_display_limit %}
+        {% assign order_index = forloop.index0 | plus: order_offset %}
+        {% if pagination_style == 'manual' or pagination_style == 'auto' %}
+          {% assign order_index = paginate.current_offset | plus: forloop.index0 | plus: order_offset %}
+        {% endif %}
+        {% if result.object_type == 'article' %}
+          {% if article_card_class == blank %}{% continue %}{% endif %}
+          {% assign article_section = article_card_class.schema.value %}
+          {% assign article = result %}
+          <div class="shrink-0 max-w-full w-full h-full"
+               data-render-index="{{ block.id }}--{{ forloop.index0 }}"
+               data-article-handle="{{ article.handle }}"
+               style="--order: {{ order_index | times: 10 }}">
+            {% if article_section != blank %}
+              {% assign preload_images_boolean = true %}
+              {% if forloop.index0 >= preload_images %}
+                {% assign preload_images_boolean = false %}
+              {% endif %}
+              {% render "card_article_card._static", article: article, section: article_section, preload_images: preload_images_boolean %}
+            {% else %}
+              <section class="card-loading article-card--{{ article_card_class }}"
+                       data-article-handle="{{ article.handle }}"
+                       data-article-id="{{ article.id }}"
+                       data-card-handle="{{ article_card_class }}"
+                       x-init="$nextTick(() => _sections.hydrateArticleCard($el))"></section>
+              <script type="application/json"
+                      data-article-data="{{ article.handle }}">{%- render '_json.article', article: article, card: true, meta_article: true -%}</script>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if result.object_type == 'page' %}
+          {% if page_card_class == blank %}{% continue %}{% endif %}
+          {% assign page_section = page_card_class.schema.value %}
+
+          {% assign page = result %}
+          <div class="shrink-0 max-w-full w-full h-full"
+               data-render-index="{{ block.id }}--{{ forloop.index0 }}"
+               data-page-handle="{{ page.handle }}"
+               style="--order: {{ order_index | times: 10 }}">
+            {% if page_section != blank %}
+              {% assign preload_images_boolean = true %}
+              {% if forloop.index0 >= preload_images %}
+                {% assign preload_images_boolean = false %}
+              {% endif %}
+              {% render "card_page_card._static", page: page, section: page_section, preload_images: preload_images_boolean %}
+            {% else %}
+              <section class="card-loading page-card--{{ page_card_class }}"
+                       data-page-handle="{{ page.handle }}"
+                       data-page-id="{{ page.id }}"
+                       data-card-handle="{{ page_card_class }}"
+                       x-init="$nextTick(() => _sections.hydratePageCard($el))"></section>
+              <script type="application/json"
+                      data-page-data="{{ page.handle }}">{%- render '_json.page', page: page, card: true, meta_page: true -%}</script>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if result.object_type == 'product' %}
+          {% if product_card_class == blank %}{% continue %}{% endif %}
+          {% assign product_section = product_card_class.schema.value %}
+
+          {% assign product = result %}
+          <div class="shrink-0 max-w-full w-full h-full"
+               data-render-index="{{ block.id }}--{{ forloop.index0 }}"
+               data-product-handle="{{ product.handle }}"
+               style="--order: {{ order_index | times: 10 }}">
+            {% if product_section != blank %}
+              {% assign preload_images_boolean = true %}
+              {% if forloop.index0 >= preload_images %}
+                {% assign preload_images_boolean = false %}
+              {% endif %}
+              {% render "card_product_card._static",
+                  product: product,
+                  section: product_section,
+                  is_bundle: false,
+                  preload_images: preload_images_boolean
+              %}
+            {% else %}
+              <section class="card-loading product-card--{{ product_card_class }}"
+                       data-card-handle="{{ product_card_class }}"
+                       data-product-handle="{{ product.handle }}"
+                       data-product-id="{{ product.id }}"
+                       x-init="$nextTick(() => _sections.hydrateProductCard($el))"></section>
+              <script type="application/json"
+                      data-product-data="{{ product.handle }}">{%- render '_json.product', product: product, card: true, meta_product: true -%}</script>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if result.object_type == 'collection' %}
+          {% if collection_card_class == blank %}{% continue %}{% endif %}
+          {% assign collection_section = collection_card_class.schema.value %}
+
+          {% assign collection = result %}
+          <div class="shrink-0 max-w-full w-full h-full"
+               data-render-index="{{ block.id }}--{{ forloop.index0 }}"
+               data-collection-handle="{{ collection.handle }}"
+               style="--order: {{ order_index | times: 10 }}">
+            {% if collection_section != blank %}
+              {% assign preload_images_boolean = true %}
+              {% if forloop.index0 >= preload_images %}
+                {% assign preload_images_boolean = false %}
+              {% endif %}
+              {% render "card_collection_card._static", collection: collection, section: collection_section, preload_images: preload_images_boolean %}
+            {% else %}
+              <section class="card-loading collection-card--{{ collection_card_class }}"
+                       data-collection-handle="{{ collection.handle }}"
+                       data-collection-id="{{ collection.id }}"
+                       data-card-handle="{{ collection_card_class }}"
+                       x-init="$nextTick(() => _sections.hydrateCollectionCard($el))"></section>
+              <script type="application/json"
+                      data-collection-data="{{ collection.handle }}">{%- render '_json.collection', collection: collection, card: true, meta_collection: true -%}</script>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% case pagination_style %}
+      {% when 'classic' %}
+        {% if pagination_class != blank %}
+          {% render '_components.pagination', class: pagination_class, paginate: paginate, pagination_container_ref: '$refs.scrollContainer' %}
+        {% endif %}
+      {% when 'manual' %}
+        <footer x-show="!!main_search.state.next_url"
+                class="flex justify-center items-center flex-col text-center mt-14 gap-4">
+          <div class="{{ results_count_class }}"
+               x-html="$el.getAttribute('data-results-content').replaceAll('[count]',`${main_search?.state?.count}`)"
+               data-results-content="{% render '_input.inline_richtext', content: results_count, escape: true %}">
+            {% render '_input.inline_richtext', content: results_count_transformed %}
+          </div>
+          <button type="button"
+                  :disabled="main_search.state.loading"
+                  :class="main_search.state.loading ? 'button-loading' : ''"
+                  @click="main_search.loadNextPage()"
+                  class="{{ load_more_button_class }} max-md:w-full"
+                  x-show="main_search?.state?.count < +`{{ paginate.items }}`">
+            {% render '_input.inline_richtext', content: load_more_button_text %}
+          </button>
+        </footer>
+      {% when 'auto' %}
+        <div x-show="!!main_search.state.next_url"
+             class="p-4"
+             x-intersect.margin.1200px="main_search.loadNextPage"
+             x-effect="!main_search.state.loading && ($el.getBoundingClientRect().top - window.innerHeight) < 1200 ? main_search.loadNextPage() : null"
+        >
+          <div class="relative h-12 button-loading">
+          </div>
+        </div>
+    {% endcase %}
+
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  </section>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Mixed Cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "range",
+      "id": "pagination_size",
+      "label": "Pagination size",
+      "default": 12,
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Product Cards"
+    },
+    {
+      "type": "metaobject",
+      "id": "product_card_class",
+      "label": "Product card",
+      "metaobject_type": "product_cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "To hide out of stock items, please configure this via the Search & Discovery App."
+    },
+    {
+      "type": "header",
+      "content": "Collection Cards"
+    },
+    {
+      "type": "text",
+      "id": "collection_card_class",
+      "label": "Collection Card class",
+      "default": "collection-card"
+    },
+    {
+      "type": "header",
+      "content": "Article Cards"
+    },
+    {
+      "type": "text",
+      "id": "article_card_class",
+      "label": "Article Card class",
+      "default": "article-card"
+    },
+    {
+      "type": "header",
+      "content": "Page Cards"
+    },
+    {
+      "type": "text",
+      "id": "page_card_class",
+      "label": "Page Card class",
+      "default": "page-card"
+    },
+    {
+      "type": "header",
+      "content": "Grid Layout Settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Pagination Settings"
+    },
+    {
+      "type": "select",
+      "id": "pagination_style",
+      "label": "Pagination style",
+      "default": "manual",
+      "options": [
+        {
+          "value": "classic",
+          "label": "Classic"
+        },
+        {
+          "value": "manual",
+          "label": "Manual"
+        },
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "pagination_class",
+      "label": "Pagination class",
+      "visible_if": "{{ block.settings.pagination_style == 'classic' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "results_count",
+      "label": "Results count",
+      "default": "showing [count] of [total] results",
+      "visible_if": "{{ block.settings.pagination_style == 'manual' }}",
+      "info": "Use [count] and [total] as placeholders."
+    },
+    {
+      "type": "text",
+      "id": "results_count_class",
+      "label": "Results count class",
+      "default": "richtext-md p",
+      "visible_if": "{{ block.settings.pagination_style == 'manual' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "load_more_button_text",
+      "label": "Load more button text",
+      "default": "load more products",
+      "visible_if": "{{ block.settings.pagination_style == 'manual' }}"
+    },
+    {
+      "type": "text",
+      "id": "load_more_button_class",
+      "label": "Load more button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.pagination_style == 'manual' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Horizontal Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "container"
+    },
+    {
+      "type": "cards_video_product"
+    },
+    {
+      "type": "cards_testimonial"
+    },
+    {
+      "type": "image_with_caption"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mixed Cards",
+      "category": "** Search **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_search__mixed_cards"
+}
+{% endschema %}

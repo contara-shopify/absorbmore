@@ -1,0 +1,81 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__image"
+  assign section_type = "card"
+  assign primary_image = block.settings.primary_image
+  assign show_secondary_image = block.settings.show_secondary_image
+  assign secondary_image = block.settings.secondary_image
+  assign link_to_object = block.settings.link_to_object
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% assign max_width = max_width | default: 600 %}
+{% assign primary_image_sources = primary_image | remove: " " | split: ',' %}
+{% for source in primary_image_sources %}
+  {% capture primary %}{% render '_input.dynamic_object_content', content: source, card_object: card_object, max_width: max_width %}{% endcapture %}
+  {% assign primary = primary | remove: " " %}
+  {% if primary contains '|%SPLIT%|' %}
+    {% assign primary_image_url = primary | split: "|%SPLIT%|" | first %}
+    {% assign primary_image_aspect_ratio = primary | split: "|%SPLIT%|" | last | times: 1.0 %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if show_secondary_image %}
+  {% assign secondary_image_sources = secondary_image | remove: " " | split: ',' %}
+  {% for source in secondary_image_sources %}
+    {% capture secondary %}{% render '_input.dynamic_object_content', content: source, card_object: card_object, max_width: max_width %}{% endcapture %}
+    {% assign secondary = secondary | remove: " " %}
+    {% if secondary contains '|%SPLIT%|' %}
+      {% assign secondary_image_url = secondary | split: "|%SPLIT%|" | first %}
+      {% assign secondary_image_aspect_ratio = secondary | split: "|%SPLIT%|" | last | times: 1.0 %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div
+    data-style-id="{{ style_id }}"
+    {% if link_to_object %}
+      aria-label="{{ card_object.title }}"
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el);"
+      data-href="{{ card_object.url }}"
+    {% endif %}
+    class="relative block shrink-0 overflow-hidden group">
+  {% capture html_attributes %}
+    :loading="utils.isInViewport($el) ? 'eager' : 'lazy'"
+  {% endcapture %}
+  {% assign classes = 'pointer-events-none relative h-full w-full select-none overflow-hidden object-[inherit] transition-opacity duration-100 ease-in' %}
+  {% if secondary_image_url != blank %}
+    {% assign classes = classes | append: ' group-hf:opacity-0' %}
+  {% endif %}
+  {% if primary_image_url != blank %}
+    {% render '_object.image_from_url',
+        image_url: primary_image_url,
+        aspect_ratio: primary_image_aspect_ratio,
+        alt: card_object.title,
+        max_width: max_width,
+        sizes: sizes,
+        class: classes,
+        preload: preload_images,
+        html_attributes: html_attributes %}
+  {% endif %}
+  {% if secondary_image_url != blank %}
+    {% assign classes = 'absolute inset-0 h-full w-full select-none overflow-hidden object-[inherit] group-hf:opacity-100 bg-inherit opacity-0 transition-opacity duration-100 ease-in' %}
+    {% render '_object.image_from_url',
+        image_url: secondary_image_url,
+        aspect_ratio: secondary_image_aspect_ratio,
+        alt: card_object.title,
+        max_width: max_width,
+        sizes: sizes,
+        class: classes,
+        html_attributes: html_attributes %}
+  {% endif %}
+</div>

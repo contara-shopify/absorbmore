@@ -1,0 +1,435 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_back_in_stock_notification"
+  assign heading = section.settings.heading
+  assign heading_class = section.settings.heading_class
+  assign select_class = section.settings.select_class
+  assign input_class = section.settings.input_class
+  assign input_label = section.settings.input_label
+  assign input_placeholder = section.settings.input_placeholder
+  assign enable_phone_capture = section.settings.enable_phone_capture
+  assign input_label_phone = section.settings.input_label_phone
+  assign input_placeholder_phone = section.settings.input_placeholder_phone
+  assign enable_subscribe_checkbox = section.settings.enable_subscribe_checkbox
+  assign subscribe_label = section.settings.subscribe_label
+  assign checkbox_class = section.settings.checkbox_class
+  assign klaviyo_list_id = section.settings.klaviyo_list_id
+  assign button_class = section.settings.button_class
+  assign button_content = section.settings.button_content
+  assign footer = section.settings.footer
+  assign footer_class = section.settings.footer_class
+  assign api_key = section.settings.api_key
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="back_in_stock"
+     x-data="{ show: $modal.id === 'back_in_stock', loading: false }"
+     x-effect="show = $editor?.select_section_id === '{{ section.id }}' || $modal.id === 'back_in_stock'"
+     class="pointer-events-none"
+     x-cloak>
+  <div class="pointer-events-auto fixed inset-0 flex flex-col items-center justify-center transition-all duration-150 ease-in-out bg-modal-backdrop z-max"
+       x-show="show"
+       x-cloak
+       @click="$modal.setId('')"
+       x-data="{  ..._sections.initBackInStock($el, `{{ api_key }}`, `{{ klaviyo_list_id }}`) }"
+       x-trap.noautofocus="show"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0">
+    <main @click.stop="() => {}" data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+          class="pointer-events-auto relative grid h-max w-full max-w-lg bg-white p-8">
+      <div class="absolute right-6 top-6 z-10">
+        <button type="button"
+                @click="$modal.setId('')"
+                class="w-fit">
+          {% render '_input.inline_richtext', content: '[icon.x-mark]' %}
+        </button>
+      </div>
+      <form class="grid h-max gap-4"
+            @submit.stop.prevent="submitBackInStockForm">
+        {% render '_input.richtext', content: heading, class: heading_class %}
+        <div x-cloak
+             x-show="back_in_stock?.product?.variants?.length && back_in_stock?.product?.variants?.[0]?.title !== 'Default Title'">
+          <h4 class="text-lg font-bold" x-text="back_in_stock?.product?.title"></h4>
+          {% render '_components.select',
+              dynamic: true,
+              values: "back_in_stock?.product?.variants?.map(variant => variant.id) ?? []",
+              titles: "back_in_stock?.product?.variants?.map(variant => variant.title) ?? []",
+              disabled_items: 'back_in_stock?.product?.variants?.map(variant => variant.available) ?? []',
+              select_class: select_class,
+              setState: "back_in_stock.selected_variant = back_in_stock?.product?.variants?.find((v) => v.id === value);",
+              state: "back_in_stock?.selected_variant?.id",
+              current_value: "back_in_stock?.product?.selected_or_first_available_variant?.id || '' ",
+              current_title: "back_in_stock?.product?.selected_or_first_available_variant?.title || '' "
+          %}
+        </div>
+        <div>
+          {% render '_components.input',
+              name: 'email',
+              type: 'email',
+              label: input_label,
+              placeholder: input_placeholder,
+              autocomplete: 'email',
+              inline_button: false,
+              button_content: '',
+              class: input_class,
+              setState: 'back_in_stock.email = value;'
+          %}
+        </div>
+        {% if enable_phone_capture %}
+          <div>
+            {% render '_components.input',
+                name: 'phone number',
+                type: 'tel',
+                label: input_label_phone,
+                placeholder: input_placeholder_phone,
+                autocomplete: 'tel',
+                inline_button: false,
+                button_content: '',
+                class: input_class,
+                setState: 'back_in_stock.phone_number = value;'
+            %}
+          </div>
+        {% endif %}
+        {% if enable_subscribe_checkbox %}
+          <div x-init="back_in_stock.subscribe = true">
+            {% render '_components.checkbox',
+                name: 'subscribe',
+                label: subscribe_label,
+                class: checkbox_class,
+                default_checked: true,
+                setState: 'back_in_stock.subscribe = value;'
+            %}
+          </div>
+        {% endif %}
+        <button type="submit" class="w-full {{ button_class }}"
+                :class="back_in_stock.loading ? 'button-loading' : ''">
+          {% render '_input.inline_richtext', content: button_content %}
+        </button>
+        {% render '_input.richtext', content: footer, class: footer_class %}
+      </form>
+    </main>
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "t:sections.back_in_stock_notification.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Modal Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<h3>Notify me when available</h3>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "heading_class",
+      "label": "Heading class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Variant Selector"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Email input"
+    },
+    {
+      "type": "text",
+      "id": "input_class",
+      "label": "Input class",
+      "default": "input-text"
+    },
+    {
+      "type": "text",
+      "id": "input_label",
+      "label": "Input label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Phone input"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_phone_capture",
+      "label": "Enable phone capture"
+    },
+    {
+      "type": "text",
+      "id": "input_label_phone",
+      "label": "Input label",
+      "default": "Phone",
+      "visible_if": "{{ section.settings.enable_phone_capture }}"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder_phone",
+      "label": "Input placeholder",
+      "default": "Enter your phone",
+      "visible_if": "{{ section.settings.enable_phone_capture }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Subscribe to Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_subscribe_checkbox",
+      "label": "Enable Subscribe Checkbox"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subscribe_label",
+      "label": "Subscribe label",
+      "default": "Subscribe to Newsletter",
+      "visible_if": "{{ section.settings.enable_subscribe_checkbox }}"
+    },
+    {
+      "type": "text",
+      "id": "checkbox_class",
+      "label": "Checkbox class",
+      "default": "input-checkbox",
+      "visible_if": "{{ section.settings.enable_subscribe_checkbox }}"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo list ID",
+      "info": "Y6nRLr",
+      "visible_if": "{{ section.settings.enable_subscribe_checkbox }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Submit Button"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_content",
+      "label": "Button content",
+      "default": "Notify me",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "richtext",
+      "id": "footer",
+      "label": "Footer",
+      "default": "<h6>We'll notify you when this product arrives.</h6>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "footer_class",
+      "label": "Footer class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Klaviyo API Settings"
+    },
+    {
+      "type": "text",
+      "id": "api_key",
+      "label": "Klaviyo Company ID / Public API Key"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "limit": 1,
+  "presets": [
+    {
+      "name": "Back in Stock Notification",
+      "category": "Product"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_back_in_stock_notification"
+}
+{% endschema %}

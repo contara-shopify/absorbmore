@@ -1,0 +1,58 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__button"
+  assign section_type = "card_line_item_card"
+  assign label = block.settings.label
+  assign url = block.settings.url
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+  assign accessibility_label = block.settings.accessibility_label
+  assign button_class = block.settings.button_class
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% capture dynamic_parsed_label %}{% render '_input.dynamic_content', content: label, keys: 'product, variant, line_item', product: line_item.product, variant: line_item.variant, line_item: line_item %}{% endcapture %}
+{% capture parsed_url %}{% render '_input.dynamic_content', content: url, keys: 'product, variant, line_item', product: line_item.product, variant: line_item.variant, line_item: line_item %}{% endcapture %}
+
+<button
+    data-style-id="{{ style_id }}"
+    type="submit"
+    formaction="{{ parsed_url }}"
+    formmethod="get"
+    form="global_link_form"
+    role="link"
+    tabindex="0"
+    x-init="utils.simulateAnchorTag($el)"
+    data-href="{{ parsed_url }}"
+    {% if accessibility_label != blank %}
+      aria-label="{% render '_input.dynamic_content', content: accessibility_label, keys: 'product, variant, line_item', product: line_item.product, variant: line_item.variant, line_item: line_item %}"
+    {% endif %}
+    {% if open_in_new_tab %}
+      data-target="_blank"
+    {% endif %}
+    class="{{ button_class }}">
+  {% render '_input.inline_richtext', content: dynamic_parsed_label %}
+</button>

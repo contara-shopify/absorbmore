@@ -1,0 +1,222 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_quick_view"
+  assign preview_product = section.settings.preview_product
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% if preview_product == blank and request.design_mode == true %}
+  {% assign preview_product = collections.all.products[0] %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div x-data="{ show: $quickView.show }"
+     x-effect="() => {
+       show = $editor?.select_section_id === '{{ section.id }}' || $quickView.show;
+       if ($editor?.select_section_id === '{{ section.id }}' && show) {
+          $quickView.renderQuickView(`{{ preview_product.handle }}` || Object.values(_products)?.[0]?.handle);
+       }
+       if (show && $editor?.deselect_section_id === `{{ section.id }}`) {
+          $quickView.show = false
+          show = false
+       }
+     }"
+     x-cloak>
+  <div class="fixed inset-0 transition duration-300 ease-in-out bg-modal-backdrop"
+       :class="clsx(show ? 'z-max' : 'z-50')"
+       x-show="show"
+       x-cloak
+       @click="$quickView.show = false"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"></div>
+  <section data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+           class="fixed flex flex-col h-screen max-lg:max-h-[90vh] bottom-0 lg:top-0 right-0 max-lg:left-0 transition-[transform,opacity] duration-300 ease-in-out"
+           :class="clsx(show ? 'z-max' : 'z-50')"
+           style="--100vw-no-scrollbar: 100vw"
+           x-show="show"
+           x-cloak
+           x-trap.noautofocus="show"
+           x-transition:enter-start="translate-x-1/2 opacity-0"
+           x-transition:enter-end="translate-x-0 opacity-100"
+           x-transition:leave-start="translate-x-0 opacity-100"
+           x-transition:leave-end="translate-x-1/2 opacity-0">
+    <div class="quick-view relative flex-1 h-full overflow-hidden" data-quick-view-container></div>
+    {% content_for 'blocks' %}
+    <div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-inherit opacity-0 transition-all duration-75"
+         data-quick-view-loading>
+      <div class="h-36 w-full button-loading" style="--button-loading-border-w: 8px"></div>
+    </div>
+  </section>
+</div>
+
+{% if request.design_mode or request.visual_preview_mode %}
+  <script type="application/json"
+          data-product-data="{{ preview_product.handle }}">{%- render '_json.product', product: preview_product, card: true -%}</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Quick View",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "product",
+      "id": "preview_product",
+      "label": "Preview Product"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_modal_quick_view__close_button"
+    },
+    {
+      "type": "_modal_quick_view__view_button"
+    }
+  ],
+  "limit": 1,
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_quick_view"
+}
+{% endschema %}

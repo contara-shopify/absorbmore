@@ -1,0 +1,105 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_color_wheel__dynamic_richtext"
+  assign section_type = "color_wheel"
+  assign content = block.settings.content
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="{{ text_alignment | prepend: 'text-' }}"
+     data-content="{% render '_input.richtext', content: content, class: content_class, escape: true, skip_pluralization: true %}"
+     x-html="color_wheel.getDynamicTextWithFormattedPrice($el.getAttribute('data-content'))">
+  {% render '_input.richtext', content: content, class: content_class %}
+</div>
+
+{% schema %}
+{
+  "name": "Richtext",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Content accepts 'collection' object access via the bracket notation. i.e.'[collection.title]' "
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Richtext",
+      "category": "** Color Wheel **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___color_wheel__dynamic_richtext"
+}
+{% endschema %}

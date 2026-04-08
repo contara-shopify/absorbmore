@@ -1,0 +1,123 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_header_navigation_bar__megamenu_button"
+  assign section_type = "header_navigation_bar"
+  assign url = block.settings.url
+  assign megamenu_handle = block.settings.megamenu_handle
+  assign submenu_handle = block.settings.submenu_handle
+  assign title = block.settings.title
+  assign title_class = block.settings.title_class
+  assign icon = block.settings.icon
+  assign open_on_hover = block.settings.open_on_hover
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign megamenu_url = 'megamenu--' | append: megamenu_handle
+  if url contains '#megamenu--'
+    assign megamenu_url = url | split: '#' | last
+  endif
+  assign icon_class = "h-4 group-ac:rotate-180 transition-transform duration-300"
+  if open_on_hover
+    assign icon_class = icon_class | append: " group-hf:rotate-180"
+  endif
+  assign has_submenu = submenu_handle | default: false
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+   type="button"
+   href="{{ url }}"
+   data-megamenu-handle="{{ megamenu_url }}"
+   data-megamenu-effect-block="megamenu--{{ megamenu_url }}"
+    {% if open_on_hover %}
+      @click="(e) => { if ($modal.id !== `{{ megamenu_url }}`) { e.preventDefault(); $modal.setId(`{{ megamenu_url }}`); $modal.setSubId(`megamenu-submenu--{{ submenu_handle }}`) } }"
+      @pointerenter="$modal.setId(`{{ megamenu_url }}`, true); {% if has_submenu %} $modal.setSubId(`megamenu-submenu--{{ submenu_handle }}`, true){% endif %}"
+    {% endif %}
+    {% if has_submenu %}
+      data-megamenu-submenu-handle="megamenu-submenu--{{ submenu_handle }}"
+    {% endif %}
+   :class="$modal.id === `{{ megamenu_url }}` || $modal.sub_id === `megamenu-submenu--{{ submenu_handle }}` ? 'active' :'' "
+   class="group relative shrink-0 flex gap-0.5 items-center group whitespace-nowrap">
+  <span class="relative {{ title_class }}">{% render '_input.inline_richtext', content: title %}</span>
+  {% if icon != blank %}
+    {% render '_components.icon', icon: icon, class: icon_class %}
+  {% endif %}
+</a>
+
+{% schema %}
+{
+  "name": "Megamenu Button",
+  "settings": [
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url"
+    },
+    {
+      "type": "text",
+      "id": "megamenu_handle",
+      "label": "Megamenu handle"
+    },
+    {
+      "type": "text",
+      "id": "submenu_handle",
+      "label": "Submenu handle",
+      "default": "shop"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "Shop",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "title_class",
+      "label": "Title class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon",
+      "default": "chevron-down"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_on_hover",
+      "label": "Open on Hover"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Megamenu Button",
+      "category": "** Navigation Bar **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___header_navigation_bar__megamenu_button"
+}
+{% endschema %}

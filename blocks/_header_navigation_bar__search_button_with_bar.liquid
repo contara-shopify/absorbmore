@@ -1,0 +1,125 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_header_navigation_bar__search_button_with_bar"
+  assign section_type = "header_navigation_bar"
+  assign label = block.settings.label
+  assign placeholder = block.settings.placeholder
+  assign input_class = block.settings.input_class
+  assign icon = block.settings.icon
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% assign search_icon = '[icon.' | append: icon | append: ']' %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% assign default_value = search.terms | escape %}
+
+<form data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      action="{{ routes.search_url }}"
+      x-data="{ hasFocus: false }"
+      x-effect="() => { if ($modal.id !== 'search' && hasFocus) { hasFocus= false; $refs.navSearchButton.focus() }}"
+      x-ref="navSearchForm"
+      class="relative flex items-center group before:absolute b:bottom-0 b:h-0.5 b:bg-current b:right-0 b:transition-all b:duration-300 b:ease-linear ac:b:w-full b:w-0"
+      :class="hasFocus || $modal.id === 'search' ? 'active' : 'inactive [&_label]:hidden'">
+  <div class="overflow-hidden transition-all duration-300 ease-linear w-screen max-w-0 group-ac:max-w-[360px]"
+       @keydown.document="(e) => {
+       if (e.key === 'k' && e.ctrlKey) {
+         e.preventDefault();
+         e.stopPropagation();
+         if (!hasFocus) {
+           hasFocus = true;
+           $modal.setId('search')
+           $nextTick(() => $el.querySelector('input')?.focus())
+         }
+       }
+       if (e.key === 'Escape' && hasFocus) {
+         e.preventDefault();
+         e.stopPropagation();
+         hasFocus = false;
+         $modal.id = '';
+         $refs.navSearchButton.focus()
+       }
+    }">
+    {% render '_components.input',
+        name: 'q',
+        type: 'search',
+        label: label,
+        placeholder: placeholder,
+        autocomplete: 'off',
+        inline_button: true,
+        button_content: '',
+        class: input_class,
+        setState: '$search.query = value',
+        default_value: default_value,
+        value: '$search.query',
+        onFocus: "if ($modal.id !== 'search') { $modal.setId('search') }",
+        onBlur: "if (!$search.query) { setTimeout(() => { hasFocus = false }, 300) }; "
+    %}
+  </div>
+  <button type="button"
+          x-ref="navSearchButton"
+          @click="() => {
+             if (hasFocus && $modal.id !== 'search') {
+                $refs.navSearchForm.classList.remove('active');
+                setTimeout(()=> { hasFocus = false }, 300)
+                return;
+             }
+             hasFocus = true;
+             $modal.setId('search')
+             if (window.innerWidth > 768) { $nextTick(()=> $refs.navSearchForm.querySelector('input').focus()) }
+           }">
+    <span class="sr-only">Search</span>
+    {% render '_components.icon', icon: icon %}
+  </button>
+</form>
+
+
+{% schema %}
+{
+  "name": "t:blocks.search_button_with_inline_input.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "input_class",
+      "label": "Input class",
+      "default": "input-text-inline"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon",
+      "default": "search"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Button with Inline Input",
+      "category": "** Navigation Bar **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___header_navigation_bar__search_button_with_bar"
+}
+{% endschema %}

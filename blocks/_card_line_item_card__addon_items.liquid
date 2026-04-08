@@ -1,0 +1,181 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__addon_items"
+  assign section_type = "card_line_item_card"
+  assign order_offset = block.settings.order_offset
+  assign line_item_card_class = block.settings.line_item_card_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.line_item_cards[section.settings.line_item_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<script x-effect="() => {
+  if (line_card?.line_item?.properties?._p_id) {
+    _cart.initDynamicLineItemCards($el, {
+      line_item_card_class: `{{ line_item_card_class }}`,
+      hide_if_empty: `{{ hide_if_empty }}`,
+      handleResize: () => { $data?.content_slider?.handleResize() },
+      order_offset: +`{{ order_offset }}`,
+      section_id: `{{ section.id }}`,
+      block_id: `{{ block.id }}--${line_card?.line_item?.properties?._p_id}`,
+      addon_id: line_card?.line_item?.properties?._p_id ?? 'NO_RENDER'
+    });
+    $nextTick(() =>{ $el.remove(); })
+  }
+}"></script>
+
+{% schema %}
+{
+  "name": "Addon items",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "number",
+      "id": "order_offset",
+      "label": "Order index offset",
+      "default": 1,
+      "info": "Use this when mixing multiple sources and order items. Defaults to 1."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "metaobject",
+      "id": "line_item_card_class",
+      "label": "Line Item Card",
+      "metaobject_type": "line_item_cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_addon_products",
+          "label": "Hide with Addon products"
+        },
+        {
+          "value": "addon_products",
+          "label": "Only with Addon Products"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Addon items",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_line_item_card__addon_items"
+}
+{% endschema %}

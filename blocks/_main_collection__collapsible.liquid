@@ -1,0 +1,156 @@
+
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_collection__collapsible"
+  assign section_type = "main_collection"
+  assign label = block.settings.label
+  assign accordion_class = block.settings.accordion_class
+  assign show = block.settings.show
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture container_content %}
+  {% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {% endcapture %}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  {% capture accordion_content %}
+    {% content_for 'blocks' %}
+  {% endcapture %}
+  {% render '_components.collapsible', label: label, content: accordion_content, default_open: show, class: accordion_class, html_attributes: html_attributes %}
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ container_content }}
+
+
+{% schema %}
+{
+  "name": "Collapsible",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Accordion Title",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Open"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "slider"
+    },
+    {
+      "type": "_filter_tags"
+    },
+    {
+      "type": "_main_collection__product_count"
+    },
+    {
+      "type": "_main_collection__container"
+    },
+    {
+      "type": "_main_collection__collapsible"
+    },
+    {
+      "type": "_main_collection__filter_sidebar"
+    },
+    {
+      "type": "_main_collection__applied_count"
+    },
+    {
+      "type": "_main_collection__applied_filters"
+    },
+    {
+      "type": "_main_collection__filters"
+    },
+    {
+      "type": "_main_collection__sort"
+    },
+    {
+      "type": "_main_collection__filter_submit_button"
+    },
+    {
+      "type": "_main_collection__filter_clear_button"
+    },
+    {
+      "type": "_main_collection__filter_button"
+    },
+    {
+      "type": "_main_collection__product_cards"
+    },
+    {
+      "type": "_main_collection__empty_state"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collapsible",
+      "category": "** Collection **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_collection__collapsible"
+}
+{% endschema %}

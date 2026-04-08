@@ -1,0 +1,751 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_hotspots__hotspot"
+  assign section_type = "hotspots"
+  assign top = block.settings.top
+  assign left = block.settings.left
+  assign metafield_top_key = block.settings.metafield_top_key
+  assign metafield_left_key = block.settings.metafield_left_key
+  assign preferred_content_alignment = block.settings.preferred_content_alignment
+  assign icon_style = block.settings.icon_style
+  assign closed_icon = block.settings.closed_icon
+  assign open_icon = block.settings.open_icon
+  assign button_text_color = block.settings.button_text_color
+  assign button_background_color = block.settings.button_background_color
+  assign button_custom_css = block.settings.button_custom_css
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign target_element_id = block.settings.target_element_id
+  assign image = block.settings.image
+  assign caption = block.settings.caption
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign metafield_image_key = block.settings.metafield_image_key
+  assign metafield_caption_key = block.settings.metafield_caption_key
+  assign caption_class = block.settings.caption_class
+  assign description = block.settings.description
+  assign metafield_description_key = block.settings.metafield_description_key
+  assign description_class = block.settings.description_class
+  assign text_alignment = block.settings.text_alignment
+  assign metafield_url_key = block.settings.metafield_url_key
+  assign url = block.settings.url
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture target_id %}{{ section.id }}--{{ block.id }}{% endcapture %}
+
+{% liquid
+  if dynamic_content_type == 'target_element'
+    assign target_id = target_element_id
+  endif
+
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | remove: " " | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type == 'default'
+    capture blocks_content
+      content_for 'blocks'
+    endcapture
+
+    assign stripped_blocks_content = blocks_content | strip
+
+    if image == blank and stripped_blocks_content == blank
+      assign is_empty = true
+    endif
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture button_selector %}[data-style-id="button--{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if button_text_color != blank or button_text_color.alpha != 0 or button_background_color != blank %}
+  {% capture button_css %}
+    & {
+    {% if button_text_color != blank and button_text_color.alpha != 0 %}color: {{ button_text_color }};{% endif %}
+    {% if button_background_color != blank %}background-color: {{ button_background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ button_css | append: button_custom_css | replace: '&', button_selector | strip_newlines }}
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% if dynamic_content_type != 'metafield' %}
+  <div x-data="{ active: hs.current_id === `{{ target_id }}`, place: () => placeHotspotItem($el.children[0], $el.children[1],`{{ preferred_content_alignment }}`, +`{{ left }}`, +`{{ top }}`) }"
+       x-effect="() => {
+           active = hs.current_id === `{{ target_id }}` || $editor.select_block_id === `{{ block.id }}`;
+           if (active) $nextTick(place);
+         }"
+       @resize.window="if (active) place()"
+       @scroll.window.passive="if (active) place()">
+    <button data-style-id="button--{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+            id="button--{{ target_id }}"
+            aria-haspopup="dialog"
+            :aria-expanded="active.toString()"
+            aria-controls="popover--{{ target_id }}"
+            aria-label="{{ caption | strip_html | strip_newlines | escape | truncatewords: 12 }}"
+            type="button"
+            class="absolute pointer-events-auto z-10 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out -translate-y-1/2 -translate-x-1/2"
+            :class="active ? 'active' : ''"
+            @click.prevent.stop="hs.current_id = hs.current_id === `{{ target_id }}` ? '' : `{{ target_id }}`"
+            style="top: {{ top | append: '%' }}; left: {{ left | append: '%' }};">
+      {% if icon_style == 'plus' %}
+        <i class="rounded-full flex shrink-0 items-center justify-center w-4 aspect-1">
+          <span class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-4"
+                :class="active ? 'rotate-0' : '-rotate-180'">
+          </span>
+          <span class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-4"
+                :class="active ? 'rotate-0' : '-rotate-90'">
+          </span>
+        </i>
+      {% endif %}
+      {% if icon_style == 'icon_plain' %}
+        <i class="relative block rounded-full">
+          {% render '_components.icon', icon: closed_icon, class: 'w-5 h-5 transition-opacity duration-200 [.active>i>&]:opacity-0' %}
+          {% render '_components.icon', icon: open_icon, class: 'w-5 h-5 transition-opacity duration-200 absolute inset-0 opacity-0 [.active>i>&]:opacity-100' %}
+        </i>
+      {% endif %}
+      {% if icon_style == 'icon_rotating' %}
+        <i class="block rounded-full">
+          {% render '_components.icon', icon: closed_icon, class: 'w-5 h-5 [.active>i>&]:-rotate-180 transition-all duration-200' %}
+        </i>
+      {% endif %}
+    </button>
+
+    {% if dynamic_content_type == 'default' %}
+      <figure data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+              id="popover--{{ target_id }}"
+              role="dialog"
+              aria-modal="false"
+              :aria-hidden="(!active).toString()"
+              aria-labelledby="button--{{ target_id }}"
+              x-show="active"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              x-cloak
+          {% if url != blank %}
+            role="link"
+            tabindex="0"
+            x-init="utils.simulateAnchorTag($el)"
+            data-href="{{ url }}"
+          {% endif %}
+              class="transition-opacity duration-200 pointer-events-auto {{ text_alignment | prepend: 'text-' }}">
+        <div class="image-wrapper relative">
+          {% render '_object.image', image: image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+        </div>
+        <figcaption>
+          {% render '_input.richtext', content: caption, class: caption_class %}
+          {% if description != blank %}
+            {% render '_input.richtext', content: description, class: description_class %}
+          {% endif %}
+        </figcaption>
+      </figure>
+    {% endif %}
+    {% if dynamic_content_type == 'target_element' and target_element_id != blank %}
+      <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+           id="popover--{{ target_id }}"
+           role="dialog"
+           aria-modal="false"
+           :aria-hidden="(!active).toString()"
+           aria-labelledby="button--{{ target_id }}"
+           x-show="active"
+           x-init="initTargetElement($el, `{{ target_element_id }}`, `{{ target_id }}`, $el.parentElement?.firstElementChild)"
+           x-transition:enter-start="opacity-0"
+           x-transition:enter-end="opacity-100"
+           x-transition:leave-start="opacity-100"
+           x-transition:leave-end="opacity-0"
+           x-cloak
+           class="absolute transition-opacity duration-200 pointer-events-auto">
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% if dynamic_content_type == 'metafield' %}
+  {% for item in metafield %}
+    {% capture target_id %}{{ section.id }}--{{ block.id }}--{{ forloop.index0 }}{% endcapture %}
+    {% assign top = item[metafield_top_key].value.url | default: item[metafield_top_key].value %}
+    {% assign left = item[metafield_left_key].value.url | default: item[metafield_left_key].value %}
+    {% assign item_url = item[metafield_url_key].value.url | default: item[metafield_url_key].value %}
+    {% assign item_content = item[metafield_caption_key].value %}
+    {%- if item[metafield_caption_key].type == "rich_text_field" -%}
+      {% assign richtextStr = "" %}
+      {% assign richtext = item[metafield_caption_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>" %}
+      {% for htmlBlock in richtext %}
+        {% if forloop.last %}
+          {% assign richtextStr = richtextStr | append: htmlBlock %}
+          {% break %}
+        {% endif %}
+        {% assign richtextStr = richtextStr | append: htmlBlock | append: "</div>" %}
+      {% endfor %}
+      {% assign item_content = richtextStr %}
+    {% endif %}
+    {% assign item_description = item[metafield_description_key].value %}
+    {%- if item[metafield_description_key].type == "rich_text_field" -%}
+      {% assign richtextStr = "" %}
+      {% assign richtext = item[metafield_description_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>" %}
+      {% for htmlBlock in richtext %}
+        {% if forloop.last %}
+          {% assign richtextStr = richtextStr | append: htmlBlock %}
+          {% break %}
+        {% endif %}
+        {% assign richtextStr = richtextStr | append: htmlBlock | append: "</div>" %}
+      {% endfor %}
+      {% assign item_description = richtextStr %}
+    {% endif %}
+
+    <div x-data="{ active: hs.current_id === `{{ target_id }}`, place: () => placeHotspotItem($el.children[0], $el.children[1],`{{ preferred_content_alignment }}`, +`{{ left }}`, +`{{ top }}`) }"
+         x-effect="() => {
+           active = hs.current_id === `{{ target_id }}` || $editor.select_block_id === `{{ block.id }}`;
+           if (active) $nextTick(place);
+         }"
+         @resize.window="if (active) place()"
+         @scroll.window.passive="if (active) place()">
+      <button data-style-id="button--{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+              id="button--{{ target_id }}"
+              aria-haspopup="dialog"
+              :aria-expanded="active.toString()"
+              aria-controls="popover--{{ target_id }}"
+              aria-label="{{ caption | strip_html | strip_newlines | escape | truncatewords: 12 }}"
+              type="button"
+              class="absolute pointer-events-auto z-10 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out -translate-y-1/2 -translate-x-1/2"
+              :class="active ? 'active' : ''"
+              @click.prevent.stop="hs.current_id = hs.current_id === `{{ target_id }}` ? '' : `{{ target_id }}`"
+              style="top: {{ top | append: '%' }}; left: {{ left | append: '%' }};">
+        {% if icon_style == 'plus' %}
+          <i class="rounded-full flex shrink-0 items-center justify-center w-4 aspect-1">
+            <span class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-4"
+                  :class="active ? 'rotate-0' : '-rotate-180'">
+            </span>
+            <span class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-4"
+                  :class="active ? 'rotate-0' : '-rotate-90'">
+            </span>
+          </i>
+        {% endif %}
+        {% if icon_style == 'icon_plain' %}
+          <i class="relative block rounded-full">
+            {% render '_components.icon', icon: closed_icon, class: 'w-5 h-5 transition-opacity duration-200 [.active>i>&]:opacity-0' %}
+            {% render '_components.icon', icon: open_icon, class: 'w-5 h-5 transition-opacity duration-200 absolute inset-0 opacity-0 [.active>i>&]:opacity-100' %}
+          </i>
+        {% endif %}
+        {% if icon_style == 'icon_rotating' %}
+          <i class="block rounded-full">
+            {% render '_components.icon', icon: closed_icon, class: 'w-5 h-5 [.active>i>&]:-rotate-180 transition-all duration-200' %}
+          </i>
+        {% endif %}
+      </button>
+      <figure
+          data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+          x-show="active"
+          id="popover--{{ target_id }}"
+          role="dialog"
+          aria-modal="false"
+          :aria-hidden="(!active).toString()"
+          aria-labelledby="button--{{ target_id }}"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          x-cloak
+          {% if item_url != blank %}
+            tabindex="0"
+            x-init="utils.simulateAnchorTag($el)"
+            data-href="{{ item_url }}"
+          {% endif %}
+          class="transition-opacity duration-200 pointer-events-auto {{ text_alignment | prepend: 'text-' }}">
+        <div class="image-wrapper relative">
+          {% render '_object.image', image: item[metafield_image_key].value, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+        </div>
+        <figcaption>
+          {% render '_input.richtext', content: item_content, class: caption_class %}
+          {% if item_description != blank %}
+            {% render '_input.richtext', content: item_description, class: description_class %}
+          {% endif %}
+        </figcaption>
+      </figure>
+    </div>
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Hotspot",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Position"
+    },
+    {
+      "type": "range",
+      "id": "top",
+      "label": "Top position",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "range",
+      "id": "left",
+      "label": "Left position",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_top_key",
+      "label": "Top Position Key",
+      "default": "top",
+      "info": "Metaobject key for the top percentage value. I.e. `top`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_left_key",
+      "label": "Left Position Key",
+      "default": "left",
+      "info": "Metaobject key for the left percentage value. I.e. `left`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "select",
+      "id": "preferred_content_alignment",
+      "label": "Preferred content alignment",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Hotspot Button"
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "default": "plus",
+      "options": [
+        {
+          "value": "plus",
+          "label": "plus/minus"
+        },
+        {
+          "value": "icon_plain",
+          "label": "icon"
+        },
+        {
+          "value": "icon_rotating",
+          "label": "rotating"
+        },
+        {
+          "value": "none",
+          "label": "none"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "closed_icon",
+      "label": "Icon",
+      "default": "plus",
+      "visible_if": "{{ block.settings.icon_style == 'icon_plain' or block.settings.icon_style == 'icon_rotating' }}"
+    },
+    {
+      "type": "text",
+      "id": "open_icon",
+      "label": "Open icon",
+      "default": "minus",
+      "visible_if": "{{ block.settings.icon_style == 'icon_plain' }}"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "button_text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "button_background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "button_custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        },
+        {
+          "value": "target_element",
+          "label": "Target Element"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "target_element_id",
+      "label": "Target element id",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'target_element' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'default' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "caption",
+      "label": "Caption",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'default' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Repeater",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "List of Metaobjects with the subfields of: 'image' (type: file_reference), 'caption' (type: text, richtext), and 'url' (type: url). Accessing list of Objects i.e. `list.product_reference`, or `list.collection_reference` is also possible.",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace_key",
+      "label": "Metaobject",
+      "placeholder": "product.smart.features",
+      "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `collection.smart.features` or `metaobjects.features`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_image_key",
+      "label": "Image Key",
+      "default": "image",
+      "info": "Metaobject key for the image value. I.e. `image`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_caption_key",
+      "label": "Caption Key",
+      "default": "caption",
+      "info": "Metaobject key for the caption value. I.e. `content`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "caption_class",
+      "label": "Caption class",
+      "default": "richtext-md",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'default' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_description_key",
+      "label": "Description Key",
+      "default": "description",
+      "info": "Metaobject key for the description value. I.e. `content`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "description_class",
+      "label": "Description class",
+      "default": "richtext-md",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ],
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_url_key",
+      "label": "Url Key",
+      "default": "url",
+      "info": "Metaobject key for the url value. I.e. `url`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'default' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content).",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 256,
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes).",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "header",
+      "content": "Content Styling",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor.",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'target_element' }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_with_caption"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hotspot",
+      "category": "** Hotspots **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___hotspots__hotspot"
+}
+{% endschema %}

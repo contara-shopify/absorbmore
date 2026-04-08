@@ -1,0 +1,280 @@
+{%- if current_page != 420420 and current_page != 133737 and request.design_mode != true or settings.development__block_card_sections -%}
+  {%- if section.settings.comment_card != blank -%}
+    {%- render 'card_comment_card._styles', section: metaobjects.comment_cards[section.settings.comment_card].schema.value -%}
+  {%- endif -%}
+  {%- break -%}
+{%- endif -%}
+
+{%- if settings.development__block_card_sections != true and request.design_mode == true or current_page != 420420 or current_page != 133737 -%}
+  {%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "card_comment_card"
+  assign _handle = section.settings.handle
+  assign comment_card = section.settings.comment_card
+  assign preview_article = section.settings.preview_article
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+  assign override_preview_background = section.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+    if comment_card != blank
+      assign _handle = comment_card | json | handleize
+    endif
+
+    assign card_class = _handle | handleize | prepend: "comment-card--"
+  %}
+
+  {% if request.design_mode or metaobjects.comment_cards[comment_card] == blank %}
+    {% capture selector %}.comment-card--{{ _handle | handleize }}{% endcapture %}
+
+    {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+      {% capture css %}
+        & {
+        {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+        {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+        }
+      {% endcapture %}
+    {% endif %}
+
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+      {% if request.design_mode %}
+      {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+      {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+      {% endif %}
+    </style>
+  {% endif %}
+
+  {% capture render_card %}
+    <div
+        data-comment-card="{{ _handle }}"
+        data-comment-id="{{ _comment.id | default: 'theme_editor_preview_comment' }}"
+        x-data="{ ...(!!$el.getAttribute('data-comment-id') ? _sections.initCommentCard($el, $refs, $el.getAttribute('data-comment-id')) : {}) }"
+        x-defer="intersect"
+        {% if request.design_mode != true or _comment.handle == blank %}
+          x-ignore
+        {% endif %}
+        class="block {{ card_class }} card-loading {{ container_spacing }}"
+        x-effect="() => { if (card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading') }">
+      {% content_for "blocks" %}
+    </div>
+  {% endcapture %}
+
+  {% if request.design_mode or request.visual_preview_mode %}
+    <script type="application/json"
+            data-comment-data="{{ comment.id | default: 'theme_editor_preview_comment' }}">{
+        "created_at": "2018-05-08T13:52:15-0400",
+        "id": 3857383442,
+        "author": "Tim Cook",
+        "email": "tim@apple.com",
+        "content": "<p>Great post! I appreciate how clearly you explained the key features and benefits of the theme—it’s always helpful to understand what sets a theme apart from others in the Shopify ecosystem. I’d love to see more examples or live demos of stores using the theme to get a better sense of its real-world application. Looking forward to more content like this!</p>",
+        "status": "published",
+        "updated_at": "2018-05-08T13:52:15-0400",
+        "url": "/blogs/news/the-g-fuel-scoop-november-2017#3857383442"
+      }
+    </script>
+  {% endif %}
+
+  {% render '_components.card_preview', render_card: render_card %}
+
+  {% if request.design_mode or metaobjects.product_cards[product_card] == blank %}
+    <script>
+      document.querySelectorAll(`[data-comment-card="{{ _handle }}"] style`).forEach(styleEl => document.querySelector('[data-cards-styles-section]')?.appendChild(styleEl));
+      document.currentScript?.remove();
+    </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Comment Card",
+  "blocks": [
+    {
+      "type": "_card__container"
+    },
+    {
+      "type": "_card__image"
+    },
+    {
+      "type": "_card__button"
+    },
+    {
+      "type": "_card__text"
+    },
+    {
+      "type": "_card__labels"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "comment-card",
+      "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+    },
+    {
+      "type": "metaobject",
+      "id": "comment_card",
+      "label": "Comment card",
+      "metaobject_type": "comment_cards"
+    },
+    {
+      "type": "article",
+      "id": "preview_article",
+      "label": "Preview Article",
+      "info": "Fallbacks to the first available article"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "override_preview_background",
+      "label": "Override preview background"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comment Card",
+      "category": "Cards"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.card"
+    ]
+  },
+  "class": "shopify_section__card_comment_card"
+}
+{% endschema %}

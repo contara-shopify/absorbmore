@@ -1,0 +1,955 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_ingredient"
+  assign metaobjects = block.settings.metaobjects
+  assign metafield_image_key = block.settings.metafield_image_key
+  assign metafield_title_key = block.settings.metafield_title_key
+  assign metafield_short_description_key = block.settings.metafield_short_description_key
+  assign percentages_label = block.settings.percentages_label
+  assign percentage_1_label = block.settings.percentage_1_label
+  assign metafield_percentage_1_key = block.settings.metafield_percentage_1_key
+  assign percentage_2_label = block.settings.percentage_2_label
+  assign metafield_percentage_2_key = block.settings.metafield_percentage_2_key
+  assign show_popup = block.settings.show_popup
+  assign popup_button_label = block.settings.popup_button_label
+  assign popup_button_class = block.settings.popup_button_class
+  assign metafield_description_key = block.settings.metafield_description_key
+  assign content_1_label = block.settings.content_1_label
+  assign metafield_content_1_key = block.settings.metafield_content_1_key
+  assign content_2_label = block.settings.content_2_label
+  assign metafield_content_2_key = block.settings.metafield_content_2_key
+  assign product_button_label = block.settings.product_button_label
+  assign product_button_class = block.settings.product_button_class
+  assign metafield_product_handle_key = block.settings.metafield_product_handle_key
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign auto_rotate = block.settings.auto_rotate
+  assign pause_on_hover = block.settings.pause_on_hover
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign enable_show_more_button = block.settings.enable_show_more_button
+  assign show_more_button_content = block.settings.show_more_button_content
+  assign show_less_button_content = block.settings.show_less_button_content
+  assign button_class = block.settings.button_class
+  assign display_limit = block.settings.display_limit
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign display_limit = display_limit | strip_newlines | replace: ' ', '' | split: '|'
+  assign display_limit = display_limit[0] | split: '/'
+
+  assign desktop_display_limit = display_limit.first | abs
+  assign mobile_display_limit = display_limit.last | abs
+%}
+{% capture meterStyling %}
+   
+    & meter {  
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 5px;
+    border-radius: 100px;
+    background: var(--color-review-stars-base--hex);
+    }
+  
+    & meter:-moz-meter-optimum::-moz-meter-bar {
+    height: 5px;
+    background: var(--color-review-stars--hex);
+    }
+  
+    /* The gray background in Webkit browsers */
+  
+    & meter::-webkit-meter-bar {
+    background: transparent;
+    border-radius: 100px;
+    border: 0;
+    height: 5px;
+    }
+  
+    /* The bar in Webkit browsers */
+  
+    & meter::-webkit-meter-optimum-value {
+    height: 5px;
+    background: var(--color-review-stars--hex);
+    }
+  
+  {% endcapture %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+    {{- meterStyling | replace: '&', selector  | strip_newlines  -}}
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {{ block.shopify_attributes }}
+  class="relative max-w-full"
+>
+  <div
+    data-style-id="{{ section.id }}--{{ block.id }}"
+    {{ block.shopify_attributes }}
+    class="relative max-w-full"
+    {% if enable_show_more_button %}
+      x-data="
+        {
+          ...utils.initContentSlider($el, $refs.scrollContainer, undefined,false, undefined, false),
+          show_all_items: false,
+          desktop_display_limit: +`{{ desktop_display_limit }}`,
+          mobile_display_limit: +`{{ mobile_display_limit }}`,
+          show_show_more_buttons: ($data.windowWidth >= 768 ? +`{{ desktop_display_limit }}` : +`{{ mobile_display_limit }}`) < [...($refs.scrollContainer.children ?? [])].filter(el => !['SCRIPT','STYLE'].includes(el.tagName) && (el.classList.contains('toggle-hidden') || getComputedStyle(el).display !== 'none')).length,
+          show_more_children: [...($refs.scrollContainer.children ?? [])].filter(el => !['SCRIPT','STYLE'].includes(el.tagName))
+        }
+      "
+    {% else %}
+      x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,false, undefined, false), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+    {% endif %}
+    {% if request.design_mode %}
+      x-effect="if ($editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)) { utils.scrollToX(0, $el.offsetLeft, content_slider.container); }"
+    {% endif %}
+  >
+    <div
+      class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden"
+      x-ref="scrollContainer"
+      @resize.window="content_slider.handleResize"
+      @scroll="content_slider.handleScroll"
+      {% if enable_show_more_button %}
+        x-effect="show_more_children?.forEach((child, i) => child.classList.toggle('toggle-hidden', !show_all_items && ($data.windowWidth >= 768 ? desktop_display_limit : mobile_display_limit) <= i))"
+        x-init="$nextTick(() => content_slider.handleResize()); const observer = new MutationObserver(() => { show_more_children = [...$el.children].filter(el => !['SCRIPT','STYLE'].includes(el.tagName)) }); observer.observe($el, { childList: true, subtree: false })"
+      {% else %}
+        x-init="$nextTick(() => content_slider.handleResize())"
+      {% endif %}
+    >
+      {% for metaobject in metaobjects %}
+        {% liquid
+          assign image = metaobject[metafield_image_key].value
+          assign title = metaobject[metafield_title_key].value
+          assign short_description = metaobject[metafield_short_description_key].value
+          assign percentage_1 = metaobject[metafield_percentage_1_key].value
+          assign percentage_2 = metaobject[metafield_percentage_2_key].value
+        %}
+
+        <div
+          class="relative overflow-hidden flex flex-col gap-4 rounded-lg p-4 md:p-6 border border-white"
+          data-ingredients-card="{{ metaobject.handle }}"
+        >
+          <div class="grid grid-cols-[55px_1fr] md:grid-cols-[96px_1fr] gap-x-4 max-md:items-center md:gap-x-6 gap-y-2 richtext-md">
+            {% render '_object.image',
+              image: image,
+              class: 'w-full rounded-lg md:row-span-2 aspect-[8/5] object-cover',
+              preload: preload, 
+              sizes: sizes, 
+              max_width: max_width
+            %}
+            <div class="flex justify-between items-center">
+              <p>
+                <strong>{% render '_input.inline_richtext', content: title %}</strong>
+              </p>
+              {% if show_popup %}
+                <button
+                  data-ingredient-popup-button
+                  class="w-6 h-6 bg-white flex items-center justify-center flex-shrink-0 rounded-full {{ popup_button_class }}"
+                  @click="
+                    () => {
+                      $modal.setId('ingredients-popup');
+                      setTimeout(() => {
+                        $dispatch('scrolltoindex', { index: +'{{ forloop.index0 }}' })
+                      },100)
+                    }
+                  "
+                >
+                  {% render '_input.inline_richtext', content: popup_button_label %}
+                </button>
+              {% endif %}
+            </div>
+
+            <h6 class="text-[#6A6A6A] h6 max-md:col-span-2">
+              {% render '_input.inline_richtext', content: short_description %}
+            </h6>
+          </div>
+
+          {% if percentages_label != blank
+            or percentage_1 > 0
+            or percentage_2 > 0
+            or percentage_1_label != blank
+            or percentage_2_label != blank
+          %}
+            <div class="flex gap-4 md:gap-6 items-center {% if percentage_1 == blank and percentage_2 == blank %}hidden{% endif %}">
+              {% if percentages_label != blank %}
+                <div class="px-2 md:px-4 h-full flex items-center justify-center richtext-md rounded-lg text-center w-[75px] md:w-24 flex-shrink-0 bg-[#f0ede7]">
+                  <h6 class="text-black">{{ percentages_label }}</h6>
+                </div>
+              {% endif %}
+              <div class="flex flex-col w-full richtext-md">
+                <div class="flex flex-col">
+                  {% if percentage_1 > 0 or percentage_1_label != blank %}
+                    <div class="flex justify-between mb-1.5 gap-2" data-ingredient-percentage>
+                      {% if percentage_1_label != blank %}
+                        <h6 class="text-[#6A6A6A]">{{ percentage_1_label }}</h6>
+                      {% endif %}
+                      {% if percentage_1 > 0 %}
+                        <div class="h6">{{ percentage_1 }}%</div>
+                      {% endif %}
+                    </div>
+                    {% if percentage_1 > 0 %}
+                      <meter class="relative block appearance-none shrink-0" value="{{ percentage_1 }}" min="0" max="100"></meter>
+                    {% endif %}
+                  {% endif %}
+
+                  {% if percentage_2 > 0 or percentage_2_label != blank %}
+                    <div class="flex justify-between mb-1.5 mt-3 gap-2" data-ingredient-percentage>
+                      {% if percentage_2_label != blank %}
+                        <h6 class="text-[#6A6A6A]">{{ percentage_2_label }}</h6>
+                      {% endif %}
+                      {% if percentage_2 > 0 %}
+                        <div class="h6">{{ percentage_2 }}%</div>
+                      {% endif %}
+                    </div>
+                    {% if percentage_2 > 0 %}
+                      <meter class="relative block appearance-none shrink-0" value="{{ percentage_2 }}" min="0" max="100"></meter>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if enable_show_more_button %}
+      {% if show_more_button_content != blank %}
+        <button
+          type="button"
+          data-show-more-button
+          class="{{ button_class }}"
+          x-effect="show_show_more_buttons = ($data.windowWidth >= 768 ? desktop_display_limit : mobile_display_limit) < show_more_children.filter(el => el.classList.contains('toggle-hidden') || getComputedStyle(el).display !== 'none').length"
+          x-cloak
+          @click="show_all_items = true"
+          x-show="!show_all_items && show_show_more_buttons"
+        >
+          {% render '_input.inline_richtext', content: show_more_button_content %}
+        </button>
+      {% endif %}
+      {% if show_less_button_content != blank -%}
+        <button
+          type="button"
+          data-show-more-button
+          class="{{ button_class }}"
+          x-cloak
+          @click="show_all_items = false"
+          x-show="show_all_items && show_show_more_buttons"
+        >
+          {% render '_input.inline_richtext', content: show_less_button_content %}
+        </button>
+      {% endif %}
+    {% endif %}
+  </div>
+  {% if show_popup %}
+    {% liquid
+      assign container_spacing = section.settings.container_spacing
+      case slider_overflow_container
+        when 'all'
+          assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: ' scroll-' | append: container_spacing | append: ' ' | append: container_spacing
+        when 'mobile'
+          assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: ' max-md:scroll-' | append: container_spacing | append: ' max-md:' | append: container_spacing
+        when 'desktop'
+          assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: ' md:scroll-' | append: container_spacing | append: ' md:' | append: container_spacing
+      endcase
+    %}
+    <div
+      data-ingredients-popup
+      x-data="{ show: $modal.id === 'ingredients-popup'}"
+      x-effect="show = $editor?.select_section_id === '{{ section.id }}' || ($modal.id === 'ingredients-popup')"
+      x-cloak
+    >
+      <div
+        class="fixed pointer-events-auto inset-0 transition duration-150 ease-in-out bg-modal-backdrop z-40"
+        x-show="show"
+        @click="$modal.setId('')"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+      ></div>
+      <div
+        class="fixed pointer-events-auto top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-200 ease-in-out isolate scrollbar-none flex items-center justify-center h-fit w-full max-md:px-container-md"
+        :class="clsx(show ? 'z-max' : 'z-50')"
+        x-show="show"
+        x-trap.noautofocus="show"
+        x-transition:enter-start="opacity-0 md:translate-y-full"
+        x-transition:enter-end="opacity-100 md:translate-y-0"
+        x-transition:leave-start="opacity-100 md:translate-y-0"
+        x-transition:leave-end="opacity-0 md:translate-y-full"
+      >
+        <div
+          class="relative max-w-full"
+          style="-webkit-overflow-scrolling: touch;  touch-action: pan-x;"
+          x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`, `{{ enable_mouse_dragging }}` === 'true') }"
+          {% if request.design_mode %}
+            x-effect="
+              () => {
+                content_slider.state.rotatePause = $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)
+              }
+            "
+          {% endif %}
+          {% if pause_on_hover %}
+            @pointerover="content_slider.state.rotatePause = true"
+            @pointerout="content_slider.state.rotatePause = false"
+          {% endif %}
+        >
+          <div
+            class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+            x-ref="scrollContainer"
+            @resize.window="content_slider.handleResize"
+            x-init="$nextTick(() => content_slider.handleResize())"
+            @scroll="content_slider.handleScroll"
+            @scrollend="content_slider.handleInfiniteScroll"
+            @scrolltoindex.window="content_slider.scrollToIndex($event.detail.index)"
+          >
+            {% for metaobject in metaobjects %}
+              {% liquid
+                assign image = metaobject[metafield_image_key].value
+                assign title = metaobject[metafield_title_key].value
+            
+                assign description = metaobject[metafield_description_key].value
+                if metaobject[metafield_description_key].type == "rich_text_field"
+                  assign richtextStr = ""
+                  assign richtext = metaobject[metafield_description_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>"
+                  for htmlBlock in richtext
+                    if forloop.last
+                      assign richtextStr = richtextStr | append: htmlBlock
+                      break
+                    endif
+                    assign richtextStr = richtextStr | append: htmlBlock | append: "</div>"
+                  endfor
+                  assign description = richtextStr
+                endif
+                
+                assign percentage_1 = metaobject[metafield_percentage_1_key].value
+                assign percentage_2 = metaobject[metafield_percentage_2_key].value
+
+                assign content_1 = metaobject[metafield_content_1_key].value
+                if metaobject[metafield_content_1_key].type == "rich_text_field"
+                  assign richtextStr = ""
+                  assign richtext = metaobject[metafield_content_1_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>"
+                  for htmlBlock in richtext
+                    if forloop.last
+                      assign richtextStr = richtextStr | append: htmlBlock
+                      break
+                    endif
+                    assign richtextStr = richtextStr | append: htmlBlock | append: "</div>"
+                  endfor
+                  assign content_1 = richtextStr
+                endif
+
+                assign content_2 = metaobject[metafield_content_2_key].value
+                if metaobject[metafield_content_2_key].type == "rich_text_field"
+                  assign richtextStr = ""
+                  assign richtext = metaobject[metafield_content_2_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>"
+                  for htmlBlock in richtext
+                    if forloop.last
+                      assign richtextStr = richtextStr | append: htmlBlock
+                      break
+                    endif
+                    assign richtextStr = richtextStr | append: htmlBlock | append: "</div>"
+                  endfor
+                  assign content_2 = richtextStr
+                endif
+                
+                assign product_handle = metaobject[metafield_product_handle_key].value
+              %}
+
+              <div
+                class="relative overflow-hidden flex flex-col gap-6 md:gap-8 rounded-lg py-8 px-6 md:p-16 border border-white"
+                data-ingredients-card="{{ metaobject.handle }}"
+              >
+                <button @click="$modal.setId('')" class="absolute top-8 md:top-6 right-6">
+                  {% render '_components.icon', icon: 'x-mark', class: 'w-3 h-3' %}
+                </button>
+
+                <div class="flex max-md:flex-col gap-4 md:gap-8 pb-6 md:pb-8 border-b border-white items-start">
+                  {% render '_object.image',
+                    image: image,
+                    class: 'w-full rounded-lg max-w-[98px] h-auto aspect-[8/5] md:aspect-1 flex-shrink-0 object-cover',
+                    sizes: '(max-width: 768px) 90vw, (max-width: 1200px) 30vw, 25vw'
+                  %}
+                  <div class="flex flex-col gap-2 w-full richtext-md">
+                    <h4 class="h4">
+                      <strong>
+                        {% render '_input.inline_richtext', content: title %}
+                      </strong>
+                    </h4>
+                    <p class="text-[#6A6A6A] max-md:col-span-2">
+                      {% render '_input.inline_richtext', content: description %}
+                    </p>
+                  </div>
+                </div>
+
+                {% if content_1 != blank %}
+                  <div class="flex flex-col richtext-md gap-2">
+                    {% if content_1_label != blank %}
+                      <h4 class="h4">
+                        {% render '_input.inline_richtext', content: content_1_label %}
+                      </h4>
+                    {% endif %}
+                    {% if content_1 != blank %}
+                      <p class="text-[#6a6a6a]">
+                        {% render '_input.inline_richtext', content: content_1 %}
+                      </p>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {% if content_2 != blank %}
+                  <div class="flex flex-col richtext-md gap-2">
+                    {% if content_2_label != blank %}
+                      <h4 class="h4">
+                        {% render '_input.inline_richtext', content: content_2_label %}
+                      </h4>
+                    {% endif %}
+                    {% if content_2 != blank %}
+                      <p class="text-[#6a6a6a]">
+                        {% render '_input.inline_richtext', content: content_2 %}
+                      </p>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {% if percentages_label != blank
+                  or percentage_1 > 0
+                  or percentage_2 > 0
+                  or percentage_1_label != blank
+                  or percentage_2_label != blank
+                %}
+                  <div class="flex gap-4 md:gap-6 items-stretch {% if percentage_1 == blank and percentage_2 == blank %}hidden{% endif %}">
+                    {% if percentages_label != blank %}
+                      <div class="px-2 md:px-4 h-full flex items-center justify-center richtext-md rounded-lg text-center w-min min-w-[86px] md:min-w-24 flex-shrink-0 bg-[#f0ede7] h-auto">
+                        <h5 class="text-black">{{ percentages_label }}</h5>
+                      </div>
+                    {% endif %}
+                    <div class="flex flex-col w-full richtext-md">
+                      <div class="flex flex-col">
+                        {% if percentage_1 > 0 or percentage_1_label != blank %}
+                          <div class="flex justify-between mb-1.5 gap-2" data-ingredient-percentage>
+                            {% if percentage_1_label != blank %}
+                              <h5 class="text-[#6A6A6A]">{{ percentage_1_label }}</h5>
+                            {% endif %}
+                            {% if percentage_1 > 0 %}
+                              <div class="h5">{{ percentage_1 }}%</div>
+                            {% endif %}
+                          </div>
+                          {% if percentage_1 > 0 %}
+                            <meter
+                              class="relative block appearance-none shrink-0"
+                              value="{{ percentage_1 }}"
+                              min="0"
+                              max="100"
+                            ></meter>
+                          {% endif %}
+                        {% endif %}
+
+                        {% if percentage_2 > 0 or percentage_2_label != blank %}
+                          <div class="flex justify-between mb-1.5 mt-3 gap-2" data-ingredient-percentage>
+                            {% if percentage_2_label != blank %}
+                              <h5 class="text-[#6A6A6A]">{{ percentage_2_label }}</h5>
+                            {% endif %}
+                            {% if percentage_2 > 0 %}
+                              <div class="h5">{{ percentage_2 }}%</div>
+                            {% endif %}
+                          </div>
+                          {% if percentage_2 > 0 %}
+                            <meter
+                              class="relative block appearance-none shrink-0"
+                              value="{{ percentage_2 }}"
+                              min="0"
+                              max="100"
+                            ></meter>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if product_handle != blank and product_button_label != blank %}
+                  <div class="flex flex-1 flex-col justify-end">
+                    <a href="/products/{{- product_handle -}}" class="w-fit {{ product_button_class }}">
+                      {{ product_button_label }}
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          {% if scrollbar_class != blank %}
+            {% render '_components.scrollbar', class: scrollbar_class, scroll_container_ref: '$refs.scrollContainer' %}
+          {% endif %}
+          {% if scroll_pagination_class != blank %}
+            {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Cards ingredient",
+  "settings": [
+    {
+      "type": "metaobject_list",
+      "metaobject_type": "ingredients",
+      "id": "metaobjects",
+      "label": "Metaobjects"
+    },
+    {
+      "type": "header",
+      "content": "Card Content"
+    },
+    {
+      "type": "text",
+      "id": "metafield_image_key",
+      "label": "Image Key",
+      "default": "image",
+      "info": "Metaobject key for the image value. I.e. `image`"
+    },
+    {
+      "type": "text",
+      "id": "metafield_title_key",
+      "label": "Title Key",
+      "default": "title",
+      "info": "Metaobject key for the title value. I.e. `title`"
+    },
+    {
+      "type": "text",
+      "id": "metafield_short_description_key",
+      "label": "Short Description Key",
+      "default": "short_description",
+      "info": "Metaobject key for the description value. I.e. `description`"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "Comparison Percentages"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "percentages_label",
+      "label": "Percentages label",
+      "default": "Absorption Percentage",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "percentage_1_label",
+      "label": "Percentage 1 label",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "metafield_percentage_1_key",
+      "label": "Percentage 1 Key",
+      "default": "absorption_percentage_industry_standard",
+      "info": "Metaobject key for the percentage_1 value. I.e. `percentage_1`"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "percentage_2_label",
+      "label": "Percentage 2 label",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "metafield_percentage_2_key",
+      "label": "Percentage 2 Key",
+      "default": "absorption_percentage_our_products",
+      "info": "Metaobject key for the percentage_2 value. I.e. `percentage_2`"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Pop Up"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_popup",
+      "label": "Show pop up"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "popup_button_label",
+      "label": "Popup button label",
+      "default": "[icon.plus]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "popup_button_class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "header",
+      "content": "Pop Up Card Content",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_description_key",
+      "label": "Description Key",
+      "default": "description",
+      "info": "Metaobject key for the description value. I.e. `description`",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Additional Content",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content_1_label",
+      "label": "Content 1 Label",
+      "default": "What it does:",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_content_1_key",
+      "label": "Content 1 Key",
+      "default": "what_it_does",
+      "info": "Metaobject key for the first content value. I.e. `what_it_does`",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content_2_label",
+      "label": "Content 2 Label",
+      "default": "What it does:",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_content_2_key",
+      "label": "Content 2 Key",
+      "default": "why_it_matters",
+      "info": "Metaobject key for the second content value. I.e. `why_it_matters`",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Product Button",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "product_button_label",
+      "label": "Product Button Label",
+      "default": "Shop Now",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "product_button_class",
+      "label": "Product Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_product_handle_key",
+      "label": "Product Handle Key",
+      "default": "product_handle",
+      "info": "Metaobject key for the product_handle value. I.e. `product_handle`",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "header",
+      "content": "Pop Up Slider Settings",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate",
+      "label": "Auto rotate",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "s",
+      "info": "Set to 0 to disable auto rotate.",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on Hover",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable.",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "header",
+      "content": "Infinite Scroll",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Infinite scroll works best when all cards have a fixed size. Dynamic cards may cause issues, and enabling a scrollbar can lead to unexpected behavior.",
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_popup }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Show More Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_show_more_button",
+      "label": "Enable Show more button"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "show_more_button_content",
+      "label": "Show more content",
+      "default": "See more",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "show_less_button_content",
+      "label": "Show less content",
+      "default": "See less",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "text",
+      "id": "display_limit",
+      "label": "Display limit",
+      "default": "12 / 4",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 256
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes)."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cards ingredient",
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_ingredient"
+}
+{% endschema %}

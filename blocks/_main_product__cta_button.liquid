@@ -1,0 +1,576 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__cta_button"
+  assign section_type = "main_product"
+  assign default__action = block.settings.default__action
+  assign default__content = block.settings.default__content
+  assign default__class = block.settings.default__class
+  assign default__product_modal_handle = block.settings.default__product_modal_handle
+  assign variant__enable = block.settings.variant__enable
+  assign variant__action = block.settings.variant__action
+  assign variant__content = block.settings.variant__content
+  assign variant__class = block.settings.variant__class
+  assign variant__product_modal_handle = block.settings.variant__product_modal_handle
+  assign subscription__enable = block.settings.subscription__enable
+  assign subscription__action = block.settings.subscription__action
+  assign subscription__content = block.settings.subscription__content
+  assign subscription__class = block.settings.subscription__class
+  assign subscription__product_modal_handle = block.settings.subscription__product_modal_handle
+  assign preorder__enable = block.settings.preorder__enable
+  assign preorder__action = block.settings.preorder__action
+  assign preorder__content = block.settings.preorder__content
+  assign preorder__class = block.settings.preorder__class
+  assign preorder__product_modal_handle = block.settings.preorder__product_modal_handle
+  assign sold_out__enable = block.settings.sold_out__enable
+  assign sold_out__action = block.settings.sold_out__action
+  assign sold_out__content = block.settings.sold_out__content
+  assign sold_out__class = block.settings.sold_out__class
+  assign sold_out__product_modal_handle = block.settings.sold_out__product_modal_handle
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+  assign theme_editor_preview = block.settings.theme_editor_preview
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+  {% if request.design_mode %}
+  {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+  {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+  {% endif %}
+</style>
+
+<button
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    type="submit"
+    x-data="{ ...getCTAButtonProps($el, $el.closest('[data-preview-container]') && `{{ theme_editor_preview }}`) }"
+    x-init="$watch('pdp.selected_variant', () => { const update = getCTAButtonProps($el, $el.closest('[data-preview-container]') && `{{ theme_editor_preview }}`); action = update.action; content = update.content; classes = update.classes; product_modal_handle = update.product_modal_handle })"
+    x-ignore
+    class="w-full"
+    :class="clsx(pdp.isAdding && action === 'add_to_cart' && 'button-loading', classes)"
+    x-html="content"
+    @click.prevent.stop="action === 'add_to_cart' ? handleAddToCart($event)
+                       : action === 'product_modal' ? $modal.setId(`modal--product-${product_modal_handle}`, false, pdp.product?.handle, pdp.product?.id, pdp.selected_variant?.id, updateProductState)
+                       : action === 'quick_view' ? ($modal.setId(''),$quickView.renderQuickView(pdp.product?.handle, $data, $refs?.bundle_button, pdp.selected_variant?.id))
+                       : action === 'link_to_product' ? barba.go(`${_stores.router?.pathname?.replace(/^.*?(\/collections\/[^/]*)?.*$/gi,'$1')?.replace(/^\/$/gi,'') ?? ''}/products/${pdp.product?.handle}?variant=${pdp.selected_variant?.id}`)
+                       : action === 'back_in_stock' ? handleBackInStockNotification($event) : null"
+    data-content="{% render '_input.inline_richtext', content: default__content, escape: true %}"
+    data-class="{{ default__class }}"
+    {% assign initial_class = default__class %}
+    {% capture parse_content %}{% render '_input.dynamic_content', content: default__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+    {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+    data-action="{{ default__action }}"
+    {% if default__action == 'product_modal' %}
+      data-product-modal-handle="{{ default__product_modal_handle }}"
+    {% endif %}
+    {% if variant__enable %}
+      data-variant-content="{% render '_input.inline_richtext', content: variant__content, escape: true %}"
+      data-variant-class="{{ variant__class }}"
+      {% if product.variants.size > 1 %}
+        {% assign initial_class = variant__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: variant__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-variant-action="{{ variant__action }}"
+      {% if variant__action == 'product_modal' %}
+        data-variant-product-modal-handle="{{ variant__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if subscription__enable %}
+      data-subscription-content="{% render '_input.inline_richtext', content: subscription__content, escape: true %}"
+      data-subscription-class="{{ subscription__class }}"
+      {% if product.selling_plan_groups.size > 0 %}
+        {% assign initial_class = subscription__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: subscription__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-subscription-action="{{ subscription__action }}"
+      {% if subscription__action == 'product_modal' %}
+        data-subscription-product-modal-handle="{{ subscription__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if preorder__enable %}
+      data-preorder-content="{% render '_input.inline_richtext', content: preorder__content, escape: true %}"
+      data-preorder-class="{{ preorder__class }}"
+      {% assign preorder_threshold = settings.data__product__variant__preorder_threshold | default: 1 %}
+      {% if preorder and variant.available and variant.inventory_quantity < preorder_threshold %}
+        {% assign initial_class = preorder__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: preorder__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-preorder-action="{{ preorder__action }}"
+      {% if preorder__action == 'product_modal' %}
+        data-preorder-product-modal-handle="{{ preorder__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if sold_out__enable %}
+      data-sold-out-content="{% render '_input.inline_richtext', content: sold_out__content, escape: true %}"
+      data-sold-out-class="{{ sold_out__class }}"
+      {% if product.available != true %}
+        {% assign initial_class = sold_out__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: sold_out__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-sold-out-action="{{ sold_out__action }}"
+      {% if sold_out__action == 'product_modal' %}
+        data-sold-out-product-modal-handle="{{ sold_out__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    class="w-full {{ initial_class }}"
+    :disabled="action === 'disabled'">
+  {{ initial_content }}
+</button>
+
+{% schema %}
+{
+  "name": "CTA Button",
+  "settings": [
+    {
+      "content": "Baseline Settings",
+      "type": "header"
+    },
+    {
+      "type": "select",
+      "id": "default__action",
+      "label": "Primary action",
+      "default": "add_to_cart",
+      "options": [
+        {
+          "value": "add_to_cart",
+          "label": "Add to cart"
+        },
+        {
+          "value": "quick_view",
+          "label": "Open quick view"
+        },
+        {
+          "value": "product_modal",
+          "label": "Open product modal"
+        },
+        {
+          "value": "link_to_product",
+          "label": "Link to Product"
+        }
+      ]
+    },
+    {
+      "type": "inline_richtext",
+      "id": "default__content",
+      "label": "Button content",
+      "default": "[icon.lock] Add To Cart • [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] and [compare_at_price] to display the price of the selected variant."
+    },
+    {
+      "type": "text",
+      "id": "default__class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "text",
+      "id": "default__product_modal_handle",
+      "label": "Product modal handle",
+      "default": "product",
+      "visible_if": "{{ block.settings.default__action == 'product_modal' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "content": "With Variants",
+      "type": "header"
+    },
+    {
+      "type": "checkbox",
+      "id": "variant__enable",
+      "label": "Customize With Variants Button"
+    },
+    {
+      "type": "select",
+      "id": "variant__action",
+      "label": "Primary action",
+      "default": "link_to_product",
+      "options": [
+        {
+          "value": "add_to_cart",
+          "label": "Add to cart"
+        },
+        {
+          "value": "quick_view",
+          "label": "Open quick view"
+        },
+        {
+          "value": "product_modal",
+          "label": "Open product modal"
+        },
+        {
+          "value": "link_to_product",
+          "label": "Link to Product"
+        }
+      ],
+      "visible_if": "{{ block.settings.variant__enable == true }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "variant__content",
+      "label": "Button content",
+      "default": "[icon.lock] Add To Cart • [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] and [compare_at_price] to display the price of the selected variant.",
+      "visible_if": "{{ block.settings.variant__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "variant__class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.variant__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "variant__product_modal_handle",
+      "label": "Product modal handle",
+      "default": "product",
+      "visible_if": "{{ block.settings.variant__enable == true and block.settings.variant__action == 'product_modal' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.variant__enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.variant__enable == true }}"
+    },
+    {
+      "content": "With Subscription",
+      "type": "header"
+    },
+    {
+      "type": "checkbox",
+      "id": "subscription__enable",
+      "label": "Customize With Subscription Button"
+    },
+    {
+      "type": "select",
+      "id": "subscription__action",
+      "label": "Primary action",
+      "default": "link_to_product",
+      "options": [
+        {
+          "value": "add_to_cart",
+          "label": "Add to cart"
+        },
+        {
+          "value": "quick_view",
+          "label": "Open quick view"
+        },
+        {
+          "value": "product_modal",
+          "label": "Open product modal"
+        },
+        {
+          "value": "link_to_product",
+          "label": "Link to Product"
+        }
+      ],
+      "visible_if": "{{ block.settings.subscription__enable == true }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subscription__content",
+      "label": "Button content",
+      "default": "[icon.lock] Add To Cart • [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] and [compare_at_price] to display the price of the selected variant.",
+      "visible_if": "{{ block.settings.subscription__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "subscription__class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.subscription__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "subscription__product_modal_handle",
+      "label": "Product modal handle",
+      "default": "product",
+      "visible_if": "{{ block.settings.subscription__enable == true and block.settings.subscription__action == 'product_modal' }}"
+    },
+    {
+      "content": "Preorder",
+      "type": "header"
+    },
+    {
+      "type": "checkbox",
+      "id": "preorder__enable",
+      "label": "Customize Preorder Button",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "preorder__action",
+      "label": "Primary action",
+      "default": "add_to_cart",
+      "options": [
+        {
+          "value": "add_to_cart",
+          "label": "Add to cart"
+        },
+        {
+          "value": "quick_view",
+          "label": "Open quick view"
+        },
+        {
+          "value": "product_modal",
+          "label": "Open product modal"
+        },
+        {
+          "value": "link_to_product",
+          "label": "Link to Product"
+        }
+      ],
+      "visible_if": "{{ block.settings.preorder__enable == true }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "preorder__content",
+      "label": "Button content",
+      "default": "[icon.timer] Preorder • [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] and [compare_at_price] to display the price of the selected variant.",
+      "visible_if": "{{ block.settings.preorder__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "preorder__class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.preorder__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "preorder__product_modal_handle",
+      "label": "Product modal handle",
+      "default": "product",
+      "visible_if": "{{ block.settings.preorder__enable == true  and block.settings.preorder__action == 'product_modal' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.preorder__enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.preorder__enable == true }}"
+    },
+    {
+      "content": "Out of Stock",
+      "type": "header"
+    },
+    {
+      "type": "checkbox",
+      "id": "sold_out__enable",
+      "label": "Customize out of stock Button",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "sold_out__action",
+      "label": "Primary action",
+      "default": "disabled",
+      "options": [
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        },
+        {
+          "value": "quick_view",
+          "label": "Open quick view"
+        },
+        {
+          "value": "product_modal",
+          "label": "Open product modal"
+        },
+        {
+          "value": "link_to_product",
+          "label": "Link to Product"
+        },
+        {
+          "value": "back_in_stock",
+          "label": "Back in Stock notifications"
+        }
+      ],
+      "visible_if": "{{ block.settings.sold_out__enable == true }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "sold_out__content",
+      "label": "Button content",
+      "default": "Sold out",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] and [compare_at_price] to display the price of the selected variant.",
+      "visible_if": "{{ block.settings.sold_out__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "sold_out__class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.sold_out__enable == true }}"
+    },
+    {
+      "type": "text",
+      "id": "sold_out__product_modal_handle",
+      "label": "Product modal handle",
+      "default": "product",
+      "visible_if": "{{ block.settings.sold_out__enable == true  and block.settings.sold_out__action == 'product_modal' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.sold_out__enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.sold_out__enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "theme_editor_preview",
+      "label": "Theme editor preview",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "variant",
+          "label": "Variant"
+        },
+        {
+          "value": "subscription",
+          "label": "Subscription"
+        },
+        {
+          "value": "bundle",
+          "label": "Bundle"
+        },
+        {
+          "value": "bundle_added",
+          "label": "Bundle Added"
+        },
+        {
+          "value": "in_pdp",
+          "label": "In Product Details"
+        },
+        {
+          "value": "in_pdp_added",
+          "label": "In Product Details Added"
+        },
+        {
+          "value": "out_of_stock",
+          "label": "Out of stock"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA Button",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__cta_button"
+}
+{% endschema %}

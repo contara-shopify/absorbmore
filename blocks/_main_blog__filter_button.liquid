@@ -1,0 +1,63 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_blog__filter_button"
+  assign section_type = "main_blog"
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<section data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+         x-data
+         x-cloak
+         x-show="true"
+         class="fixed bottom-[55px] inset-x-0 md:hidden z-40 py-4 px-6 flex justify-center items-center bg-white shadow-invert">
+  <button type="button"
+          class="{{ button_class }}"
+          @click="$modal.setId('drawer--filters-{{ section.id }}')">Filter By
+  </button>
+</section>
+
+{% schema %}
+{
+  "name": "Filter Mobile Buttons",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary-outline"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filter Mobile Buttons",
+      "category": "** Blog **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_blog__filter_button"
+}
+{% endschema %}

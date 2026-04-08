@@ -1,0 +1,254 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "main_list_collections"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div data-style-id="{{ section.id }}--{{ block.id }}"
+       x-data="{ ..._sections.initMainListCollections($el) }"
+       {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+       class="{{ container_spacing }}">
+    {% content_for "blocks" %}
+  </div>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Main List Collections",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "breadcrumbs"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "_main_list_collections__container"
+    },
+    {
+      "type": "_main_list_collections__collection_cards"
+    },
+    {
+      "type": "_main_list_collections__empty_state"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main List Collections",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n  display: grid;\n  gap: 20px;\n  \n  \n}\n@media (max-width: 768px) {\n  & {\n   grid-template-columns: 1fr;\n  }\n}",
+        "section_id": ""
+      },
+      "blocks": [
+        {
+          "type": "_main_list_collections__empty_state",
+          "settings": {
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 60px 0;\n}"
+          },
+          "blocks": [
+            {
+              "type": "image",
+              "settings": {
+                "image": "shopify://shop_images/dog.svg",
+                "url": "",
+                "preload": false,
+                "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                "max_width": 1200,
+                "custom_css": "& {\n\n  width: auto;\n  height: 140px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "richtext",
+              "settings": {
+                "title": "<h3>No Collections Found</h3>",
+                "text_alignment": "center",
+                "content_class": "richtext-md",
+                "custom_css": "& {\n  margin-top: 24px;\n}",
+                "hide_if_empty": "none"
+              }
+            }
+          ]
+        },
+        {
+          "type": "_main_list_collections__collection_cards",
+          "settings": {
+            "pagination_size": 12,
+            "collection_card_class": "collection-card",
+            "pagination_class": "pagination",
+            "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+            "slider_overflow_container": "",
+            "infinite_scroll": "off",
+            "scrollbar_class": "",
+            "scroll_pagination_class": "",
+            "custom_css": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: var(--grid-gap);\n}\n\n& .pagination {\n  padding:32px 0;\n}\n\n@media (max-width: 1200px) {\n  & .grid-container {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}"
+          }
+        },
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<p>We think the most welcoming homes are sparkling clean. And our wide variety of hardworking Household Cleaners’ll get every nook and cranny sparkling. Choose from our hardworking Multi-Surface and Glass Cleaners, garden-fresh Bathroom Cleaners and grease-tackling Kitchen Cleaners to get your stainless steel appliances, stovetops, counters, bathroom tile and kitchen surfaces sparkling clean. And don't miss our new Multi-Surface Everyday Cleaner Starter Kits–complete with glass dispenser and refill bottles. Or up your cleaning game with our Baking Soda and Vinegar Cleaners – they’re made with ingredients you know and scents you love. Our collections are made with cruelty-free formulas containing essential oils and other thoughtfully chosen ingredients. Available in our best-loved scents, including Lavender, Lemon Verbena, Basil, Honeysuckle, Peony, Iowa Pine and more! And check out our Probiotic Cleaners for a next-level, microscopic deep clean!</p>",
+            "text_alignment": "left",
+            "content_class": "richtext-md",
+            "custom_css": "& {\n  margin-top: 48px;\n}\n@media (max-width: 768px) {\n  & {\n    margin-top: 32px;\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        }
+      ],
+      "category": "Collection"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "list-collections"
+    ]
+  },
+  "class": "shopify_section__main_list_collections"
+}
+{% endschema %}

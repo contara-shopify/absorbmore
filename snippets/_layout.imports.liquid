@@ -1,0 +1,120 @@
+<link data-css-src rel="preload" as="style" href="{{ 'reset.css' | asset_url }}">
+<link data-css-src rel="preload" as="style" href="{{ 'tailwind.css' | asset_url }}">
+<link data-css-src rel="preload" as="style" href="{{ 'custom.css' | asset_url }}">
+
+{% if request.design_mode != true %}
+  <noscript data-css-src-noscript>
+    <link rel="stylesheet" href="{{ 'reset.css' | asset_url }}" type="text/css" media="all">
+    <link rel="stylesheet" href="{{ 'tailwind.css' | asset_url }}" type="text/css" media="all">
+    <link rel="stylesheet" href="{{ 'custom.css' | asset_url }}" type="text/css" media="all">
+  </noscript>
+
+  <script>
+    (() => {
+      const linkElements = document.querySelectorAll("[data-css-src]");
+      const fetchPromises = [];
+      const CACHE_EXPIRATION_MS = 1000 * 60 * 60; // 1 hour
+      const now = Date.now();
+
+      linkElements.forEach((linkElement) => {
+        const cssUrl = linkElement.getAttribute("href");
+        const cssSrc = cssUrl.split("/").at(-1);
+        const [key, version] = cssSrc?.split("?") ?? [];
+        const cacheKey = `__css_${`{{ theme.id }}`}_${key}`;
+
+        if (!cssUrl) return;
+
+        const cachedData = JSON.parse(localStorage.getItem(cacheKey) ?? "{}");
+
+        if (typeof cachedData?.css === 'string') {
+          try {
+            const style = document.createElement("style");
+            style.textContent = cachedData?.css;
+            document.head.appendChild(style);
+            linkElement?.remove();
+            if (now - cachedData.timestamp < CACHE_EXPIRATION_MS && cachedData.version === version) {
+              return;
+            }
+          } catch (err) {
+            localStorage.removeItem(cacheKey);
+          }
+        }
+
+        if (linkElement && typeof cachedData?.css !== 'string') {
+          linkElement.setAttribute("rel", "stylesheet");
+          linkElement.removeAttribute("as");
+        }
+
+
+        const fetchPromise = fetch(cssUrl)
+          .then((res) => {
+            if (!res.ok) throw new Error(`Failed to fetch ${cssUrl}`);
+            return res.text();
+          })
+          .then((css) => {
+            localStorage.setItem(
+              cacheKey,
+              JSON.stringify({
+                css: `/* Cached CSS */\n\n${css}`,
+                timestamp: now,
+                version: version,
+              }),
+            );
+
+            const style = document.createElement("style");
+            style.textContent = css;
+            document.head.appendChild(style);
+
+            linkElement?.remove();
+          })
+          .catch((err) => {
+            console.warn("Failed to inline CSS for", cssUrl, err);
+          });
+
+        fetchPromises.push(fetchPromise);
+      });
+
+      Promise.all(fetchPromises).then(() => {
+        // console.log("All CSS fetched and inlined");
+      });
+    })();
+  </script>
+{% else %}
+  <link rel="stylesheet" href="{{ 'reset.css' | asset_url }}" type="text/css" media="all">
+  <link rel="stylesheet" href="{{ 'tailwind.css' | asset_url }}" type="text/css" media="all">
+  <link rel="stylesheet" href="{{ 'custom.css' | asset_url }}" type="text/css" media="all">
+{% endif %}
+
+{%- if request.design_mode -%}
+  <script type="module" src="{{ 'editor.js' | asset_url }}"></script>
+{%- endif -%}
+
+<link rel="modulepreload" href="{{ 'theme.module.js' | asset_url }}" />
+<script defer type="module" src="{{ 'theme.module.js' | asset_url }}"></script>
+
+<script>
+  (() => {
+    const current = document.currentScript;
+    const supportsModules = 'noModule' in document.createElement('script');
+    const supportsModern = typeof Symbol !== 'undefined' && !!Symbol.iterator;
+
+    const loadScript = (src, type) => {
+      const s = document.createElement('script');
+      if (type) s.type = type;
+      s.src = src;
+      s.async = false;
+      current.parentNode.insertBefore(s, current.nextSibling);
+    };
+
+    if (supportsModules) {
+      console.log('import via module', performance.now());
+    } else if (supportsModern) {
+      console.log('import via modern', performance.now());
+      loadScript('{{ "theme.modern.js" | asset_url }}');
+    } else {
+      console.log('import via legacy', performance.now());
+      loadScript('{{ "theme.legacy.js" | asset_url }}');
+    }
+
+  })();
+</script>

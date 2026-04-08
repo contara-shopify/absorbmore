@@ -1,0 +1,34 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__text"
+  assign section_type = "card"
+  assign content = block.settings.content
+  assign text_alignment = block.settings.text_alignment
+  assign css_class = block.settings.css_class
+  assign link_to_object = block.settings.link_to_object
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture dynamic_parsed_content %}{% render '_input.dynamic_object_content', content: content, card_object: card_object %}{% endcapture %}
+
+{% if dynamic_parsed_content == blank %}
+  {% break %}
+{% endif %}
+
+<div
+    data-style-id="{{ style_id }}"
+    class="{{ text_alignment | prepend: 'text-' }}"
+    {% if link_to_object %}
+      aria-label="{{ card_object.title }}"
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el)"
+      {% if open_in_new_tab %}
+        data-target="_blank"
+      {% endif %}
+    {% endif %}
+    data-href="{{ card_object.url }}">
+  {% render '_input.richtext', content: dynamic_parsed_content, class: css_class %}
+</div>

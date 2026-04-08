@@ -1,0 +1,292 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "global_page_transitions"
+  assign theme_editor_preview = section.settings.theme_editor_preview
+  assign enable = section.settings.enable
+  assign ignore_routes = section.settings.ignore_routes
+  assign logo_desktop = section.settings.logo_desktop
+  assign logo_height_desktop = section.settings.logo_height_desktop
+  assign background_color_desktop = section.settings.background_color_desktop
+  assign logo_mobile = section.settings.logo_mobile
+  assign logo_height_mobile = section.settings.logo_height_mobile
+  assign background_color_mobile = section.settings.background_color_mobile
+  assign enable_loading_screen = section.settings.enable_loading_screen
+  assign loading_screen__background_color = section.settings.loading_screen__background_color
+  assign loading_screen__desktop_video = section.settings.loading_screen__desktop_video
+  assign loading_screen__mobile_video = section.settings.loading_screen__mobile_video
+  assign loading_screen__hide_for = section.settings.loading_screen__hide_for
+  assign loading_screen__cookie_key = section.settings.loading_screen__cookie_key
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign logo_desktop_render_height = logo_height_desktop | times: 1.8 | round
+  assign logo_mobile_render_height = logo_height_mobile | times: 1.8 | round
+
+  assign _theme_editor_preview = theme_editor_preview
+  if section.settings.enable != true
+    assign _theme_editor_preview = 'loading_screen'
+  endif
+  if section.settings.enable_loading_screen != true
+    assign _theme_editor_preview = 'page_transition'
+  endif
+%}
+<script>
+  window.page_transitions_enabled = false;
+  window.page_transitions_ignore = {{ ignore_routes | strip_newlines | remove: " " | split: ',' | json }};
+</script>
+{% if enable %}
+  <script>
+    window.page_transitions_enabled = true;
+  </script>
+{% endif %}
+
+{% if enable %}
+  <div class="pointer-events-none fixed inset-0 z-max @container">
+    <div class="pointer-events-none relative flex h-full w-full -translate-x-full items-center justify-center opacity-0 transition-all [&.out-active:not(.active)]:translate-x-full ease-in-out group ac:pointer-events-auto ac:opacity-100 ac:translate-x-0 "
+         style="--transition-logo-height: {{ logo_height_mobile }}px; --transition-logo-height-md: {{ logo_height_desktop }}px;
+             --transition-background: {{ background_color_mobile }};  --transition-background-md: {{ background_color_desktop }};"
+         x-effect="$el.classList.toggle('active', $editor?.select_section_id === '{{ section.id }}' && '{{ _theme_editor_preview }}' === 'page_transition')"
+         data-transition-overlay>
+      <div class="flex h-full w-full items-center justify-center px-[--gutter] bg-[--transition-background] md:bg-[--transition-background-md]">
+        <div class="relative">
+          <div class="image-wrapper relative flex h-[--transition-logo-height] w-full max-w-sm opacity-30 md:h-[--transition-logo-height-md]">
+            {% render '_object.image',
+                image: logo_desktop,
+                mobile_image: logo_mobile,
+                height: logo_desktop_render_height,
+                placeholder: 'product-1',
+                default_alt: shop.name,
+                class: "relative w-full h-full object-contain" %}
+          </div>
+          <div class="absolute inset-0 flex  h-[--transition-logo-height] md:h-[--transition-logo-height-md] w-full max-w-sm !animation-pause group-ac:!animation-play"
+               style="animation: transitioning 2.6s ease-in-out infinite;">
+            {% render '_object.image',
+                image: logo_desktop,
+                mobile_image: logo_mobile,
+                height: logo_desktop_render_height,
+                placeholder: 'product-1',
+                default_alt: shop.name,
+                class: "relative w-full h-full object-contain" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% if enable_loading_screen %}
+  <div class="pointer-events-none fixed inset-0 z-max @container" x-data="{}" x-ref="loading_container">
+    <div class="pointer-events-none relative flex h-full w-full items-center justify-center opacity-0 transition-all [&.out-active:not(.active)]:scale-[0] ease-in-out group ac:pointer-events-auto ac:opacity-100 ac:scale-100"
+         x-data="{ show: $editor?.select_section_id === '{{ section.id }}' && '{{ _theme_editor_preview }}' === 'loading_screen' }"
+        {% if request.design_mode %}
+          x-effect="show = $editor?.select_section_id === '{{ section.id }}' && '{{ _theme_editor_preview }}' === 'loading_screen'; $el.classList.toggle('active', show);"
+        {% endif %}
+         style="background: {{ loading_screen__background_color }};">
+      {% if request.design_mode != true %}
+        <script>
+          (() => {
+            if (utils.checkCookie(`_platter_loading_screen2__{{ loading_screen__cookie_key }}`)) {
+              document.currentScript?.parentElement?.parentElement?.remove();
+              return null;
+            }
+            document.currentScript?.parentElement?.classList.add("active");
+            utils.setCookie(`_platter_loading_screen2__{{ loading_screen__cookie_key }}`, 'loading_screen', +`{{ loading_screen__hide_for | times: 60 | round }}`);
+            setTimeout(() => {
+              document.querySelector('[x-ref="loading_container"]')?.remove();
+            }, 5000);
+          })();
+        </script>
+      {% endif %}
+      {% assign loading_screen__mobile_video = loading_screen__mobile_video | default: loading_screen__desktop_video %}
+      <div class="absolute inset-0 max-md:hidden"
+           x-data="{ video_ended: false }"
+           x-effect="if (video_ended && !show) { $el.parentElement?.classList?.remove('active'); if (!window?.Shopify?.designMode) { setTimeout(()=> { $refs.loading_container?.remove();  }, 350) } }">
+        {% render '_object.media',
+            media: loading_screen__desktop_video,
+            class: "relative w-full h-full object-cover",
+            autoplay: true,
+            controls: false,
+            loop: false,
+            muted: true,
+            html_attributes: 'x-effect="video_ended = ended; $el.loop = show" style="bg-[inherit]"' %}
+      </div>
+      <div class="absolute inset-0 md:hidden"
+           x-data="{ video_ended: false }"
+           x-effect="if (video_ended && !show) { $el.parentElement?.classList?.remove('active'); if (!window?.Shopify?.designMode) { setTimeout(()=> { $refs.loading_container?.remove();  }, 350) } }">
+        {% render '_object.media',
+            media: loading_screen__mobile_video,
+            class: "relative w-full h-full object-cover",
+            autoplay: true,
+            controls: false,
+            loop: false,
+            muted: true,
+            html_attributes: 'x-effect="video_ended = ended; $el.loop = show" style="bg-[inherit]"' %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Page Transitions",
+  "class": "shopify_section__global_page_transitions",
+  "settings": [
+    {
+      "type": "select",
+      "id": "theme_editor_preview",
+      "label": "Theme editor preview",
+      "default": "page_transition",
+      "options": [
+        {
+          "value": "page_transition",
+          "label": "Page transition"
+        },
+        {
+          "value": "loading_screen",
+          "label": "Loading Screen"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable == true and section.settings.enable_loading_screen == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Route Transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable page transitions",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "ignore_routes",
+      "label": "Ignore routes",
+      "info": "Comma separated list of paths. Use '/:any' as a catch all path. Examples: /apps, /products/:any, /pages/contact, /collections/all",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Desktop",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_desktop",
+      "label": "Logo",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "range",
+      "id": "logo_height_desktop",
+      "label": "Logo Height",
+      "default": 150,
+      "min": 0,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color_desktop",
+      "label": "Background color",
+      "default": "#FFFFFF",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Mobile",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_mobile",
+      "label": "Logo",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "label": "Logo Height Mobile",
+      "default": 150,
+      "min": 0,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color_mobile",
+      "label": "Background color",
+      "default": "#FFFFFF",
+      "visible_if": "{{ section.settings.enable == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Initial Loading Screen"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_loading_screen",
+      "label": "Enable loading screen"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "loading_screen__background_color",
+      "label": "Background color",
+      "visible_if": "{{ section.settings.enable_loading_screen == true }}"
+    },
+    {
+      "type": "video",
+      "id": "loading_screen__desktop_video",
+      "label": "Desktop video",
+      "visible_if": "{{ section.settings.enable_loading_screen == true }}"
+    },
+    {
+      "type": "video",
+      "id": "loading_screen__mobile_video",
+      "label": "Mobile video",
+      "visible_if": "{{ section.settings.enable_loading_screen == true }}"
+    },
+    {
+      "type": "range",
+      "id": "loading_screen__hide_for",
+      "label": "Hide Duration",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "hrs",
+      "visible_if": "{{ section.settings.enable_loading_screen == true }}"
+    },
+    {
+      "type": "text",
+      "id": "loading_screen__cookie_key",
+      "label": "Cookie key",
+      "default": "loading_screen",
+      "info": "Changing this will reset the duration for all visitors",
+      "visible_if": "{{ section.settings.enable_loading_screen == true }}"
+    }
+  ]
+}
+{% endschema %}

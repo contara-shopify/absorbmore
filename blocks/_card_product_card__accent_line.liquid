@@ -1,0 +1,138 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__accent_line"
+  assign section_type = "card_product_card"
+  assign height = block.settings.height
+  assign border_color = block.settings.border_color
+  assign style = block.settings.style
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+     x-show="$editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+     role="separator"
+     class=""
+     style="border-top: {{ height }}px {{ style }} {{ border_color }};">
+  <div></div>
+</div>
+
+{% schema %}
+{
+  "name": "Accent line",
+  "settings": [
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Height",
+      "default": 1,
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "default": "solid",
+      "options": [
+        {
+          "value": "solid",
+          "label": "solid"
+        },
+        {
+          "value": "dashed",
+          "label": "dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "dotted"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Accent line",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__accent_line"
+}
+{% endschema %}

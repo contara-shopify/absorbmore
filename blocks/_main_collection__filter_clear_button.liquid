@@ -1,0 +1,111 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_collection__filter_clear_button"
+  assign section_type = "main_collection"
+  assign button_text = block.settings.button_text
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+  assign current_sort = collection.sort_options | where: 'value', current_sort | first
+%}
+
+{% assign url_to_remove_filters = false %}
+{% for filter in collection.filters %}
+  {% if url_to_remove_filters %}{% break %}{% endif %}
+  {% case filter.type %}
+    {% when 'price_range' %}
+      {% if filter.max_value.value < filter.range_max or filter.min_value.value > 0 %}
+        {% assign url_to_remove_filters = filter.url_to_remove | split: "?" | first %}
+        {% break %}
+      {% endif %}
+    {% when 'boolean' or 'list' %}
+      {% for value in filter.active_values %}
+        {% assign url_to_remove_filters = filter.url_to_remove | split: "?" | first %}
+        {% break %}
+      {% endfor %}
+  {% endcase %}
+{% endfor %}
+
+{% if url_to_remove_filters %}
+  {% if search.terms %}
+    {% capture search_query_params %}q={{ search.terms }}&type={{ search.types | join: "," }}&{% endcapture %}
+  {% endif %}
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<button
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    type="button"
+    x-data="{ clicked: false }"
+    class="w-full {{ button_class }}"
+    :class="clicked ? 'button-loading': ''"
+    {% if url_to_remove_filters %}
+      @click="async () => {
+          const url = new URL(`${window.location.origin}{{ url_to_remove_filters }}?{{ search_query_params }}sort_by={{ current_sort.value }}`)
+          url.searchParams.set('barba_prefetch', 'true');
+          clicked = true;
+          await main_collection.updateSortAndFilters(url);
+          clicked = false;
+          $modal.setId('');
+      }"
+      :disabled="main_collection.state.loading"
+    {% else %}
+      disabled="disabled"
+    {% endif %}
+>
+  {% render '_input.inline_richtext', content: button_text %}
+</button>
+
+{% schema %}
+{
+  "name": "Filter Clear Button",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Clear Filters",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filter Clear Button",
+      "category": "** Collection **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_collection__filter_clear_button"
+}
+{% endschema %}

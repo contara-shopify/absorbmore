@@ -1,0 +1,19 @@
+{% liquid
+  unless comment
+    break
+  endunless
+%}
+
+{% capture json %}
+  {
+  "created_at": "{{ comment.created_at | date: "%Y-%m-%dT%H:%M:%S%z" }}",
+  "id": {{ comment.id | json }},
+  "author": {{ comment.author | json }},
+  "email": {{ comment.email | json }},
+  "content": {{ comment.content | json }},
+  "status": {{ comment.status | json }},
+  "updated_at": "{{ comment.updated_at | date: "%Y-%m-%dT%H:%M:%S%z" }}",
+  "url": {{ comment.url | json }}
+  }
+{% endcapture %}
+{{- json | strip | strip_newlines -}}

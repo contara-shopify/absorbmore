@@ -1,0 +1,19 @@
+{% if request.design_mode %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.2/ace.js" defer></script>
+  <script src="https://unpkg.com/prettier@3.2.5/standalone.js" defer></script>
+  <script src="https://unpkg.com/prettier@3.2.5/parser-html.js" defer></script>
+  <script src="https://unpkg.com/prettier@3.2.5/parser-postcss.js"></script>
+{% endif %}
+<script src="{{ '_barba-prefetch.umd.min.js' | asset_url }}" defer></script>
+<script src="{{ '_barba.umd.min.js' | asset_url }}" defer></script>
+<script src="{{ '_dayjs.min.js' | asset_url }}" defer></script>
+{% if request.design_mode != true %}
+  <script src="{{ '_alpinejs.focus.min.js' | asset_url }}" defer></script>
+{% endif %}
+<script src="{{ '_alpinejs.intersect.min.js' | asset_url }}" defer></script>
+<script src="{{ '_alpinejs.collapse.min.js' | asset_url }}" defer></script>
+<script src="{{ '_alpinejs.anchor.min.js' | asset_url }}" defer></script>
+<script src="{{ '_alpinejs.min.js' | asset_url }}" defer></script>
+<script src="{{ '_inert-polifyill.min.js' | asset_url }}" defer></script>
+
+<script defer type="module" src="{{ 'custom.js' | asset_url }}"></script>

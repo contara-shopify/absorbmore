@@ -1,0 +1,130 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__dynamic_buy_button"
+  assign section_type = "main_product"
+  assign button_class = block.settings.button_class
+  assign out_of_stock_content = block.settings.out_of_stock_content
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  assign product_form_id = 'product-details-form-' | append: section.id
+%}
+
+{% capture no_render %}
+  {% form "product", product, id: product_form_id, novalidate: "novalidate" %}
+    {% capture payment_button %}
+      {{ form | payment_button }}
+    {% endcapture %}
+  {% endform %}
+{% endcapture %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    x-init="$data.styleDynamicBuyButton($el)"
+{% if out_of_stock_content != blank %}style='--out-of-stock: {{ out_of_stock_content | json }};' {% else %}data-no-out-of-stock{% endif %}
+    data-button-class="{{ button_class }}">
+  {{ payment_button }}
+  <div data-pre-styled-button class="!opacity-0 {{ button_class }}"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Dynamic buy button",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Out of stock"
+    },
+    {
+      "type": "text",
+      "id": "out_of_stock_content",
+      "label": "Out of stock content",
+      "default": "Out of Stock"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic buy button",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__dynamic_buy_button"
+}
+{% endschema %}

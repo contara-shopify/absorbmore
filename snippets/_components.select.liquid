@@ -1,0 +1,292 @@
+{% comment %}
+    Select Element
+
+    Accepts:
+    - values: {Array}
+    - titles: {Array} Optional, defaults to value
+    - swatches: {Array} Optional
+    - select_class: {string}
+    - label: {string}
+    - setState: {string} i.e. `$data.setProductOption({ index, value: value })`
+    - state: {string} i.e. `$data.state.options[index]`
+    - current_value: {string} default_state
+    - current_title: {string} default_title
+    - button_prefix: {string}
+
+    Usage:
+    {% render '_components.select',
+        values: option.values,
+        select_class: select_class,
+        label: option.name,
+        setState: "$data.setProductOption({ index, value: value })",
+        state: "$data.state.options[index]",
+        current_value: current_value
+        current_title: current_title
+    %}
+{% endcomment %}
+
+{% assign state = state | default: 'localState' %}
+{% assign setState = setState | default: 'localState = value;' %}
+
+{% if values == blank or state == blank or setState == blank %}
+  {% break %}
+{% endif %}
+
+{% if dynamic != true %}
+  <div x-data="{
+         show: false,
+         focusIndex: 0,
+         values: utils.JSONParse($el.getAttribute('data-values') ?? '[]')?.filter(Boolean) ?? [],
+         titles: utils.JSONParse($el.getAttribute('data-titles') ?? '[]')?.filter(Boolean) ?? [],
+         swatches: utils.JSONParse($el.getAttribute('data-swatches') ?? '[]')?.filter(Boolean) ?? [],
+         option_labels: utils.JSONParse($el.getAttribute('data-option-labels') ?? '[]')?.filter(Boolean) ?? [],
+         disabledItems: utils.JSONParse($el.getAttribute('data-disabled-items') ?? '[]') ?? [],
+         value: $el.getAttribute('data-value'),
+         localState: $el.getAttribute('data-value'),
+         title: $el.getAttribute('data-title'),
+         pos: { top: 0, left:0, width: 0, height:0 },
+         select: $refs.select,
+         scrollElements: utils.findCurrentlyAllScrollableParents($refs.select),
+         handleScroll: () => { $data.pos = $refs.select.getBoundingClientRect(); $nextTick(() => { if (!utils.isElementFullyVisible($refs.select)) { document.activeElement = null; $data.show = false; } }) }
+       }"
+       data-select
+       x-effect="() => {
+          $el.classList.toggle('!hidden', !values.length);
+          focusIndex = values.findIndex(val => val === {{ state }});
+          if ($data.show) {
+            $nextTick(() => {
+              if (scrollElements){
+                scrollElements = utils.findCurrentlyAllScrollableParents(select)
+                scrollElements?.forEach(el => el.addEventListener('scroll', handleScroll))
+              }
+            })
+         } else {
+          if (scrollElements){
+            scrollElements?.forEach(el => el.removeEventListener('scroll', handleScroll))
+          }
+         }
+       }"
+       x-init="pos = select.getBoundingClientRect()"
+       data-value="{{ current_value }}"
+       data-title="{{ current_title | default: current_value }}"
+       data-titles="{{ titles | default: values | escape | replace: ', nil', ', null,' | replace: 'nil,', 'null,' }}"
+       data-swatches="{{ swatches | escape | replace: ', nil', ', null,' | replace: 'nil,', 'null,' }}"
+       data-option-labels="{{ option_labels | escape | replace: ', nil', ', null,' | replace: 'nil,', 'null,' }}"
+       data-values="{{ values | escape | replace: ', nil', ', null' | replace: 'nil,', 'null,' }}"
+       data-disabled-items="{{ disabled_items | escape | replace: ', nil', ', null' | replace: 'nil,', 'null,' | default: '[]' }}"
+      {{ html_attributes }}>
+    <button class="w-full {{ select_class }}"
+            type="button"
+            x-ref="select"
+            aria-label="{{ label }}"
+            @click.prevent.stop="show = !show"
+            @keydown.space.prevent="show = !show"
+            @keydown.enter.prevent="show = !show"
+            aria-haspopup="listbox"
+            style="anchor-name: --{{ section.id }}--{{ block.id }}--select"
+            :aria-expanded="show">
+      <span class="w-full flex items-center gap-3" :style="swatches[focusIndex]">
+        <span class="rounded-full inline-block w-4 h-4 p-0.5"
+              x-show="swatches[focusIndex]"
+              style="background: var(--primary-swatch);"></span>
+        <span class="truncate text-left"
+              :class="disabledItems[focusIndex] ? 'opacity-50 hf:opacity-100' : ''"
+              x-html="`{{ button_prefix }}<span>${titles[focusIndex]}</span>`">
+          {{ button_prefix }}<span>{{ current_title | default: current_value | default: "Loading" }}</span>
+        </span>
+       {% comment %}  <span class="{{ label_class }}" x-cloak x-show="option_labels[focusIndex]" x-html="`${option_labels[focusIndex]}`"></span> {% endcomment %}
+      </span>
+    </button>
+    <input
+        type="hidden"
+        {% if form_block %}
+          form="{{ form_block.id }}"
+        {% endif %}
+        name="{{ name }}"
+        :disabled="!!(!values.length || disabledItems[focusIndex])"
+        x-init="$watch('{{ state }}', () => { $el.dispatchEvent(new Event('input', { bubbles: true })) })"
+        :value="{{ state }}">
+    <template x-teleport="body">
+      <template x-if="show">
+        <ul x-data="{ show_popover: false, alignTop: false, alignRight: false }"
+            x-init="$nextTick(() => { show_popover = true }); pos = select.getBoundingClientRect();"
+            x-effect="value = values[focusIndex]; title = titles[focusIndex]; $nextTick(() => { if ($el.getBoundingClientRect().bottom > (document.scrollingElement?.scrollHeight - document.scrollingElement?.scrollTop)) { alignTop = true }; if ($el.getBoundingClientRect().right > window.innerWidth) { alignRight = true }});"
+            x-trap.noreturn="show_popover"
+            :style="clsx(`top: ${pos.top + pos.height + 2}px; width: ${pos.width}px;`, alignTop && `transform: translateY(calc(-100% - ${pos.height + 12}px));`, alignRight ? `right: ${document.body.clientWidth - pos.right}px;` : `left: ${pos.left}px;`)"
+            @click.outside.capture="() => { ;if (!select?.contains($event.target) && select !== $event.target) { show_popover = false; show = false; } }"
+            @scroll.window="pos = select.getBoundingClientRect()"
+            @resize.window="pos = select.getBoundingClientRect()"
+            @keydown.esc="show_popover = false; show = false;"
+            @keydown.left.prevent.stop="focusIndex = focusIndex > 0 ? focusIndex -1 : values.length - 1"
+            @keydown.up.prevent.stop="focusIndex = focusIndex > 0 ? focusIndex -1 : values.length - 1"
+            @keydown.down.prevent.stop="focusIndex = focusIndex + 1 < values.length ? focusIndex + 1 : 0"
+            @keydown.right.prevent.stop="focusIndex = focusIndex + 1 < values.length ? focusIndex + 1 : 0"
+            @keydown.space.prevent.stop="{{ setState }}"
+            @keydown.enter.prevent.stop="{{ setState }}; show_popover = false; show = false;"
+            class="fixed z-max min-w-max mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-none ring-1 ring-black/5 transition-opacity duration-75 focus:outline-none sm:text-sm {{ select_class | strip | prepend: 'dropdown--' }}"
+            aria-label="{{ label }}"
+            aria-orientation="vertical"
+            role="listbox"
+            tabindex="0"
+            x-show="show_popover"
+            x-cloak
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
+          <template x-for="(value, i) in values">
+            <li class="relative cursor-default select-none py-2 pl-10 pr-4 text-gray-900 ac:bg-gray-100 hf:bg-gray-100"
+                @click.prevent.stop="async () => {
+                  if (disabledItems[i]) return;
+                  {{ setState }}; focusIndex = i; show_popover = false; show = false;
+                }"
+                :disabled="!!disabledItems[i]"
+                :class="i === focusIndex && !disabledItems[i] ? 'active' : disabledItems[i] ? 'opacity-40' :''"
+                x-effect="i === focusIndex && $el.parentElement ? $el.parentElement.scrollTop = $el.offsetTop - 120 : null"
+                role="option"
+                tabindex="-1"
+                :aria-selected="i === focusIndex">
+              <div class="flex items-center gap-3" :style="swatches[i]">
+                <span class="rounded-full inline-block w-4 h-4 p-0.5"
+                      x-show="!!swatches[i]"
+                      style="background: var(--primary-swatch);"></span>
+                <span class="block truncate" x-html="titles[i]"></span>
+                <span class="{{ label_class }}" x-cloak x-show="option_labels[i]" x-html="`${option_labels[i]}`"></span>
+              </div>
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-theme-accent"
+                    :class="value === {{ state }} && !disabledItems[i] ? 'opacity-100':'opacity-0'">
+                {% render '_components.icon', icon: 'check-mark', class: "size-5 opacity-60" %}
+              </span>
+            </li>
+          </template>
+        </ul>
+      </template>
+    </template>
+  </div>
+  {% break %}
+{% endif %}
+
+<div x-data="{
+        show: false,
+        focusIndex: 0,
+        values: {{ values }},
+        titles: {{ titles | default: values }},
+        swatches: {{ swatches | default: '[]' }},
+        option_labels: {{ option_labels | default: '[]' }},
+        disabledItems: {{ disabled_items | default: '[]' }},
+        value: {{ current_value }},
+        localState: {{ current_value }},
+        title: {{ current_title | default: current_value }},
+        pos: { top: 0, left:0, width: 0, height:0 },
+        select: $refs.select,
+        scrollElements: utils.findCurrentlyAllScrollableParents($refs.select),
+        handleScroll: () => { $data.pos = $refs.select.getBoundingClientRect(); $nextTick(() => { if (!utils.isElementFullyVisible($refs.select)) { document.activeElement = null; $data.show = false; } }) }
+     }"
+     x-effect="()=> {
+       values = {{ values }};
+       $el.classList.toggle('!hidden', !values.length);
+       focusIndex = values.findIndex(val=> val === {{ state }});
+       titles = {{ titles }};
+       disabledItems = {{ disabled_items | default: '[]' }};
+       if ($data.show) {
+          $nextTick(() => {
+            scrollElements = utils.findCurrentlyAllScrollableParents(select)
+            scrollElements?.forEach(el => el.addEventListener('scroll', handleScroll))
+          })
+       } else {
+          scrollElements?.forEach(el => el.removeEventListener('scroll', handleScroll))
+       }
+      }"
+     x-init="pos = select.getBoundingClientRect()"
+    {{ html_attributes }}>
+  <button class="w-full  {{ select_class }}"
+          :class="{{ loading | default: 'false' }} ? 'button-loading' : ''"
+          :disabled="{{ disabled | default: 'false' }}"
+          type="button"
+          x-ref="select"
+          aria-label="{{ label }}"
+          @click.prevent.stop="show = !show"
+          @keydown.space.prevent="show = !show"
+          @keydown.enter.prevent="show = !show"
+          aria-haspopup="listbox"
+          aria-expanded="false">
+    <span class="w-full flex items-center gap-3" :style="swatches[focusIndex]">
+      <span class="rounded-full inline-block w-4 h-4 p-0.5"
+            x-show="swatches[focusIndex]"
+            x-cloak
+            style="background: var(--primary-swatch);"></span>
+      <span class="truncate text-left"
+            :class="disabledItems[focusIndex] ? 'opacity-50 hf:opacity-100' : ''"
+            x-html="`{{ button_prefix }}${titles[focusIndex] || '{{ label | strip_newlines }}' || 'Choose an option'}`">
+        {{ button_prefix }}{{ server_rendered_title | default: current_title | default: current_value | default: "Loading" }}
+      </span>
+      <span class="{{ label_class }}" x-show="option_labels[focusIndex]" x-cloak x-html="`${option_labels[focusIndex]}`"></span>
+    </span>
+  </button>
+  <input
+      type="hidden"
+      {% if form_block %}
+        form="{{ form_block.id }}"
+      {% endif %}
+      name="{{ name }}"
+      :disabled="!!(!values.length || disabledItems[focusIndex])"
+      :value="value">
+  <template x-teleport="body">
+    <template x-if="show">
+      <ul x-data="{ show_popover: false, alignTop: false, alignRight: false }"
+          x-init="$nextTick(() => { show_popover = true }); pos = select.getBoundingClientRect();"
+          x-effect="value = values[focusIndex]; title = titles[focusIndex]; $nextTick(() => { if ($el.getBoundingClientRect().bottom > (document.scrollingElement?.scrollHeight - document.scrollingElement?.scrollTop)) { alignTop = true } if ($el.getBoundingClientRect().right > window.innerWidth) { alignRight = true } });"
+          x-trap.noreturn="show_popover"
+          :style="clsx(`top: ${pos.top + pos.height + 2}px; width: ${pos.width}px;`, alignTop && `transform: translateY(calc(-100% - ${pos.height + 12}px));`, alignRight ? `right: ${document.body.clientWidth - pos.right}px;` : `left: ${pos.left}px;`)"
+          @click.outside.capture="() => { ;if (!select?.contains($event.target) && select !== $event.target) { show_popover = false; show = false; } }"
+          @scroll.window="handleScroll()"
+          @resize.window="handleScroll()"
+          @keydown.esc="show_popover = false; show = false;"
+          @keydown.left.prevent.stop="focusIndex = focusIndex > 0 ? focusIndex -1 : values.length - 1"
+          @keydown.up.prevent.stop="focusIndex = focusIndex > 0 ? focusIndex -1 : values.length - 1"
+          @keydown.down.prevent.stop="focusIndex = focusIndex + 1 < values.length ? focusIndex + 1 : 0"
+          @keydown.right.prevent.stop="focusIndex = focusIndex + 1 < values.length ? focusIndex + 1 : 0"
+          @keydown.space.prevent.stop="{{ setState }}"
+          @keydown.enter.prevent.stop="{{ setState }}; show_popover = false; show = false;"
+          class="fixed z-max min-w-max mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-none ring-1 ring-black/5 transition-opacity duration-75 focus:outline-none sm:text-sm {{ select_class | strip | prepend: 'dropdown--' }}"
+          aria-label="{{ label }}"
+          aria-orientation="vertical"
+          role="listbox"
+          tabindex="0"
+          x-show="show_popover"
+          x-cloak
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0">
+        <template x-for="(value, i) in values">
+          <li class="relative cursor-default select-none py-2 pl-10 pr-4 text-gray-900 ac:bg-gray-100 hf:bg-gray-100"
+              @click.prevent.stop="async () => {
+                if (disabledItems[i] && `{{ disabled_clickable }}` !== 'true') return;
+                {{ setState }}; focusIndex = i; show_popover = false; show = false;
+              }"
+              :disabled="!!disabledItems[i]"
+              :class="i === focusIndex ? 'active' : disabledItems[i] ? 'opacity-40' :''"
+              x-effect="i === focusIndex && $el.parentElement ? $el.parentElement.scrollTop = $el.offsetTop - 120 : null"
+              role="option"
+              tabindex="-1"
+              :aria-selected="i === focusIndex">
+
+            <div class="flex items-center gap-3" :style="swatches[i]">
+              <span class="rounded-full inline-block w-4 h-4 p-0.5"
+                    x-show="!!swatches[i]"
+                    x-cloak
+                    style="background: var(--primary-swatch);"></span>
+              <span class="block truncate" x-html="titles[i]"></span>
+              <span class="{{ label_class }}" x-show="option_labels[i]" x-cloak x-html="`${option_labels[i]}`"></span>
+            </div>
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-theme-accent"
+                  :class="value === {{ state }} ? 'opacity-100':'opacity-0'">
+              {% render '_components.icon', icon: 'check-mark', class: "size-5 opacity-60" %}
+            </span>
+          </li>
+        </template>
+      </ul>
+    </template>
+  </template>
+</div>

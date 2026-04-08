@@ -1,0 +1,72 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__richtext"
+  assign section_type = "card_line_item_card"
+  assign title = block.settings.title
+  assign text_alignment = block.settings.text_alignment
+  assign css_class = block.settings.css_class
+  assign link_to_product = block.settings.link_to_product
+  assign open_in_new_tab = block.settings.open_in_new_tab
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% capture dynamic_parsed_content %}{% render '_input.dynamic_content', content: title, keys: 'product, variant, line_item', product: line_item.product, variant: line_item.variant, line_item: line_item %}{% endcapture %}
+
+{% unless title contains 'line_item.quantity' or title contains 'selected_' %}
+  {% if dynamic_parsed_content == blank %}
+    {% break %}
+  {% endif %}
+{% endunless %}
+
+<div
+    data-style-id="{{ style_id }}"
+    {% if title contains 'line_item.quantity' or title contains 'selected_' %}
+      x-data="{ content: getDynamicText($el.getAttribute('data-content')), content_check: getDynamicText($el.getAttribute('data-content-check')) }"
+      data-content="{% render '_input.richtext', content: title, class: css_class, escape: true, skip_pluralization: true %}"
+      data-content-check="{{ title | strip_html | escape }}"
+      x-effect="() => { if (line_card?.variant || line_card?.hydrated) { content = getDynamicText($el.getAttribute('data-content')); content_check = getDynamicText($el.getAttribute('data-content-check')); utils.hideIfEmpty($el, `{{ hide_if_empty }}`, !content_check.trim()) } }"
+      x-show="!!content_check.trim() && $data.showConditionally('{{ show_conditionally }}')"
+      x-html="content"
+      :data-href="line_card?.url"
+      {% if dynamic_parsed_content == blank %}
+        x-cloak
+      {% endif %}
+    {% endif %}
+    class="{{ text_alignment | prepend: 'text-' }}"
+    {% if link_to_product %}
+      aria-label="{{ line_item.title }}"
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el)"
+      {% if open_in_new_tab %}
+        data-target="_blank"
+      {% endif %}
+      data-href="{{ line_item.url }}"
+    {% endif %} >
+  {{ dynamic_parsed_content }}
+</div>

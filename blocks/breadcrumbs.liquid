@@ -1,0 +1,274 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "breadcrumbs"
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign inactive_text_color = block.settings.inactive_text_color
+  assign icon = block.settings.icon
+  assign divider_color = block.settings.divider_color
+  assign product_vendor_collection = block.settings.product_vendor_collection
+  assign show_all_collections_step = block.settings.show_all_collections_step
+  assign show_home_route = block.settings.show_home_route
+  assign home_label = block.settings.home_label
+  assign content = block.settings.content
+  assign url = block.settings.url
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture tag_url -%}{{ collection.url }}/{{ current_tags | join: "+" }}{%- endcapture -%}
+
+{% liquid
+
+  assign templatePrefix = template | split: '.' | first
+
+  assign url_1 = false
+  assign title_1 = false
+  assign url_2 = false
+  assign title_2 = false
+
+  case templatePrefix
+    when 'page'
+      assign url_1 = page.url
+      assign title_1 = page.title
+
+    when 'product'
+      if collection.url
+        assign url_1 = collection.url
+        assign title_1 = collection.title
+      endif
+
+      if product_vendor_collection and url_1 == false
+        for collection in product.collections
+          if collection.title == product.vendor
+            assign url_1 = collection.url
+            assign title_1 = collection.title
+            break
+          endif
+        endfor
+        if url_1 == false
+          assign vendor = product.vendor | escape
+          assign url_1 = "/collections/vendors?q=" | append: vendor
+          assign title_1 = product.vendor
+        endif
+      endif
+
+      assign url_2 = product.url
+      assign title_2 = product.title
+
+      if url_1 == false
+        assign collection_handles = product.collections | map: 'handle'
+        assign collection_titles = product.collections | map: 'title'
+      endif
+
+    when 'collection' and collection.handle
+      assign url_1 = collection.url
+      assign title_1 = collection.title
+
+      if current_tags
+        assign url_2 = tag_url
+        assign title_2 = current_tags | join: " + "
+      endif
+
+    when 'blog'
+      assign url_1 = blog.url
+      assign title_1 = blog.title
+
+      if current_tags
+        assign url_2 = tag_url
+        assign title_2 = current_tags | join: " + "
+      endif
+
+    when 'article'
+      assign url_1 = blog.url
+      assign title_1 = blog.title
+
+      assign url_2 = article.url
+      assign title_2 = article.title
+
+    else
+      assign url_2 = request.path
+      assign title_2 = page_title
+  endcase
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% capture css %}
+  & {
+  {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+  }
+  & .divider {
+  color: {{ divider_color | default: "#999999" }};
+  }
+  & .inactive {
+  color: {{ inactive_text_color | default: "#999999" }};
+  }
+{% endcapture %}
+
+<style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<nav data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="grid auto-cols-min grid-flow-col-dense whitespace-nowrap gap-1 items-center select-none overflow-hidden max-w-full {{ content_class }}"
+    {% if templatePrefix == 'product' and url_1 == false %}
+      x-data="{
+         titles: utils.JSONParse($el.getAttribute('data-collection-titles')),
+         handles: utils.JSONParse($el.getAttribute('data-collection-handles')),
+         index: utils.JSONParse($el.getAttribute('data-collection-handles'))?.findIndex(handle => _stores.router.pathname.includes(`/collections/${handle}`))
+     }"
+      data-collection-handles="{{ collection_handles | json | escape }}"
+      data-collection-titles="{{ collection_titles | json | escape }}"
+    {% endif %}
+     role="navigation"
+     aria-label="breadcrumbs">
+  {% if show_home_route %}
+    <a class="hf:underline" href="{{ routes.root_url }}">{{ home_label }}</a>
+  {% endif %}
+  {% if content != blank %}
+    {% if show_home_route %}
+      {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+    {% endif %}
+    {% if url != blank %}
+      <a class="hf:underline" href="{{ url }}">{{ content }}</a>
+    {% else %}
+      <span class="truncate inactive">{{ content }}</span>
+    {% endif %}
+  {% endif %}
+  {% if collection.handle and show_all_collections_step %}
+    {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+    <a class="hf:underline" href="/collections">Collections</a>
+  {% endif %}
+  {% if url_1 and url_2 %}
+    {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+    <a class="hf:underline" href="{{ url_1 }}">{{ title_1 }}</a>
+    {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+    <span class="truncate inactive">{{ title_2 }}</span>
+  {% elsif templatePrefix == 'product' %}
+    {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+    <a class="hf:underline"
+       :href="`/collections/${handles[index]}`"
+       x-cloak
+       x-show="index !== -1"
+       x-html="titles[index]"></a>
+    {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]", html_attributes: ' x-show="index !== -1" x-cloak' %}
+    <span class="truncate inactive">{{ title_2 }}</span>
+  {% else %}
+    {% if url_1 != blank %}
+      {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+      <span class="truncate inactive">{{ title_1 }}</span>
+    {% endif %}
+
+    {% if url_2 != blank %}
+      {% render '_components.icon', icon: icon, class: "divider w-[1em] h-[1em]" %}
+      <span class="truncate inactive">{{ title_2 }}</span>
+    {% endif %}
+  {% endif %}
+</nav>
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md h6"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "inactive_text_color",
+      "label": "Inactive text color"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Divider Icon",
+      "default": "chevron-right"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "divider_color",
+      "label": "Divider color"
+    },
+    {
+      "type": "header",
+      "content": "Collection Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_vendor_collection",
+      "label": "Product vendor collection",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_all_collections_step",
+      "label": "Show all collections step"
+    },
+    {
+      "type": "header",
+      "content": "Home Route"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_home_route",
+      "label": "Show home route",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "home_label",
+      "label": "Home label",
+      "default": "Home"
+    },
+    {
+      "type": "header",
+      "content": "Custom Step"
+    },
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs",
+      "category": "Links"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__breadcrumbs"
+}
+{% endschema %}

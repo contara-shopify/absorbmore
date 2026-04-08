@@ -1,0 +1,90 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__rating"
+  assign section_type = "card_product_card"
+  assign reviews_heading = block.settings.reviews_heading
+  assign css_class = block.settings.css_class
+  assign icon = block.settings.icon
+  assign icon_active_color = block.settings.icon_active_color
+  assign icon_base_color = block.settings.icon_base_color
+  assign hide_zero_reviews = block.settings.hide_zero_reviews
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+  if icon_active_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars--hex:" | append: icon_active_color | append: ";"
+  endif
+
+  if icon_base_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars-base--hex:" | append: icon_base_color | append: ";"
+  endif
+%}
+
+{% liquid
+  assign reviews_rating = settings.data__product__reviews_rating | replace: " ", '' | split: "."
+  assign reviews_rating = product.metafields[reviews_rating.first][reviews_rating.last].value
+  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 0 | times: 1.0
+
+  assign reviews_count = settings.data__product__reviews_count | replace: " ", '' | split: "."
+  assign reviews_count = product.metafields[reviews_count.first][reviews_count.last].value | default: 0 | times: 1
+
+  assign reviews_count_content = reviews_count
+  assign reviews_rating_content = reviews_rating
+
+  if reviews_rating <= 0
+    assign reviews_count_content = 'No Rating'
+    assign reviews_rating_content = ''
+  endif
+  assign reviews_content = reviews_heading | replace: "[count]", reviews_count_content | replace: "[rating]", reviews_rating_content
+%}
+
+{% if hide_zero_reviews != blank and reviews_count <= hide_zero_reviews %}
+  {% break %}
+{% endif %}
+
+<label
+    data-style-id="{{ style_id }}"
+    x-ignore
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="($editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+    {% endif %}
+    aria-label="Product Rating"
+    style="{{ styles }}">
+  <meter class="relative block appearance-none shrink-0"
+         value="{{ reviews_rating }}"
+         min="0"
+         max="5">
+    <span>
+      <span>{{ reviews_rating }}</span>/
+      <span>5</span>
+    </span>
+  </meter>
+  <div class="{{ css_class }}">
+    {% render '_input.inline_richtext', content: reviews_content %}
+  </div>
+</label>

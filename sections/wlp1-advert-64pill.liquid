@@ -1,0 +1,1823 @@
+<div class="wlp1-section">
+<style type="text/css">
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #F7F3ED;
+  --cream-dark: #EDE8DF;
+  --ink: #1A1A18;
+  --ink-light: #3A3A36;
+  --ink-muted: #6B6B64;
+  --accent: #5E91D5;
+  --accent-dark: #4A78B8;
+  --warm: #C4A46D;
+  --warm-light: #D4BC8E;
+  --red-subtle: #C45A3C;
+  --green-subtle: #2D8C55;
+  --serif: 'EB Garamond', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--serif);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── STICKY BAR ─── */
+.sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ink);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  z-index: 200;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+.sticky-bar p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--cream);
+  font-weight: 500;
+}
+.sticky-bar p span { color: var(--warm-light); font-weight: 700; }
+.sticky-bar .btn {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+}
+.sticky-bar .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+/* ─── TOP BANNER ─── */
+.top-banner {
+  background: var(--ink);
+  color: var(--cream);
+  text-align: center;
+  padding: 10px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+}
+.top-banner span { color: var(--warm-light); font-weight: 700; }
+
+/* ─── HERO ─── */
+.hero {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+  text-align: center;
+}
+.hero .pub-line {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5.5vw, 48px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero .subhead {
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  max-width: 620px;
+  margin: 0 auto 28px;
+}
+.hero .hero-cta {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 16px 40px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  margin-bottom: 12px;
+}
+.hero .hero-cta:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.hero .hero-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* ─── TRUST STRIP ─── */
+.trust-strip {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 24px 20px 0;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.trust-item {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.trust-item .check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--green-subtle);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* ─── HERO IMAGE ─── */
+.hero-img {
+  max-width: 740px;
+  margin: 36px auto 0;
+  padding: 0 24px;
+}
+.hero-img img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+
+/* ─── CONTENT WRAPPER ─── */
+.content {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px 100px;
+}
+.content p {
+  font-size: 18.5px;
+  margin-bottom: 22px;
+  color: var(--ink-light);
+}
+.content p strong { color: var(--ink); font-weight: 600; }
+
+/* ─── SECTION HEADERS ─── */
+.sec-kicker {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 52px 0 10px;
+}
+.sec-head {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+/* ─── CALLOUT BOX ─── */
+.callout {
+  background: #fff;
+  border-left: 4px solid var(--accent);
+  padding: 24px 28px;
+  border-radius: 0 10px 10px 0;
+  margin: 32px 0;
+}
+.callout p {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink-light);
+  margin-bottom: 0;
+  line-height: 1.65;
+}
+.callout p strong { color: var(--ink); }
+
+/* ─── PROBLEM CARDS ─── */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 28px 0;
+}
+.p-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  border: 1px solid rgba(26,26,24,0.08);
+}
+.p-card .p-icon { font-size: 28px; margin-bottom: 10px; }
+.p-card h4 {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.p-card p {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  margin-bottom: 0;
+  line-height: 1.55;
+}
+
+/* ─── STAT BLOCKS ─── */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 32px 0;
+}
+.stat-block {
+  background: var(--ink);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.stat-block .num {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--warm-light);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-block .desc {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: rgba(247,243,237,0.6);
+  line-height: 1.5;
+}
+
+/* ─── REVIEW CARDS ─── */
+.review {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 20px 0;
+  border: 1px solid rgba(26,26,24,0.06);
+}
+.review .stars {
+  color: var(--warm);
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.review blockquote {
+  font-size: 17px;
+  color: var(--ink-light);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+.review .attribution {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+.review .attribution span { font-weight: 400; }
+.review .verified {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--green-subtle);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ─── STEPS ─── */
+.steps { margin: 28px 0; }
+.step {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 16px;
+}
+.step-text h4 {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.step-text p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin-bottom: 0;
+  line-height: 1.55;
+}
+
+/* ─── INGREDIENT CHIPS ─── */
+.ingredient-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 28px 0;
+}
+.ing-chip {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+  border: 1px solid rgba(26,26,24,0.08);
+}
+.ing-chip .chip-name {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.ing-chip .chip-benefit {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+.ing-chip .chip-stat {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-subtle);
+}
+
+/* ─── TIMELINE ─── */
+.timeline { margin: 28px 0; }
+.tl-row {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(26,26,24,0.08);
+  align-items: baseline;
+}
+.tl-row:last-child { border-bottom: none; }
+.tl-when {
+  flex-shrink: 0;
+  width: 90px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.tl-what h4 {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.tl-what p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/* ─── INLINE CTA ─── */
+.cta-inline {
+  background: var(--accent);
+  border-radius: 12px;
+  padding: 36px 32px;
+  text-align: center;
+  margin: 40px 0;
+}
+.cta-inline h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.cta-inline p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 20px;
+}
+.cta-inline .btn-w {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--accent);
+  padding: 14px 36px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.cta-inline .btn-w:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.cta-inline .sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+/* ─── FINAL CTA ─── */
+.final-cta {
+  background: var(--ink);
+  border-radius: 14px;
+  padding: 48px 32px;
+  text-align: center;
+  margin: 48px 0 24px;
+}
+.final-cta .fc-kicker {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--warm-light);
+  margin-bottom: 14px;
+}
+.final-cta h2 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+.final-cta .guarantee {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: rgba(247,243,237,0.6);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.final-cta .btn-big {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 17px 48px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.final-cta .btn-big:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.final-cta .pricing {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: rgba(247,243,237,0.45);
+  margin-top: 14px;
+}
+.final-cta .fc-trust {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.final-cta .fc-trust span {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(247,243,237,0.4);
+}
+
+/* ─── FAQ ─── */
+.faq-item {
+  border-bottom: 1px solid rgba(26,26,24,0.08);
+  padding: 20px 0;
+}
+.faq-q {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+.faq-q .toggle {
+  font-size: 20px;
+  color: var(--ink-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.faq-a {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding-top: 0;
+}
+.faq-item.open .faq-a { max-height: 300px; padding-top: 12px; }
+.faq-item.open .toggle { transform: rotate(45deg); }
+
+/* ─── DISCLAIMER ─── */
+.disclaimer {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  opacity: 0.6;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(26,26,24,0.08);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 640px) {
+  .sticky-bar { flex-direction: column; gap: 8px; padding: 10px 16px; }
+  .sticky-bar p { font-size: 12px; text-align: center; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .ingredient-strip { grid-template-columns: 1fr; }
+  .hero { padding-top: 32px; }
+  .content { padding-bottom: 120px; }
+  .tl-row { flex-direction: column; gap: 4px; }
+  .tl-when { width: auto; }
+  .trust-strip { gap: 12px; }
+}
+
+/* ─── SECTION IMAGES ─── */
+.sec-img {
+  margin: 32px 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sec-img img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+.sec-img-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 32px 0;
+}
+.sec-img-duo img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+/* ─── BULLET LIST ─── */
+.benefit-list {
+  margin: 20px 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.benefit-list .bl-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink-light);
+  line-height: 1.55;
+}
+.benefit-list .bl-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: rgba(71,89,255,0.1);
+  color: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+/* ─── QUIZ CTA BLOCK ─── */
+.quiz-cta {
+  background: var(--cream-dark);
+  border: 2px solid rgba(71,89,255,0.15);
+  border-radius: 14px;
+  padding: 36px 32px;
+  text-align: center;
+  margin: 44px 0;
+}
+.quiz-cta .quiz-emoji { font-size: 32px; margin-bottom: 12px; }
+.quiz-cta h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.quiz-cta p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.quiz-cta .btn-quiz {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 36px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.quiz-cta .btn-quiz:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.quiz-cta .quiz-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+/* ─── FADE ─── */
+.fi { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fi.vis { opacity: 1; transform: translateY(0); }
+</style>
+
+{%- comment -%} ═══ TOP BANNER ═══ {%- endcomment -%}
+<div class="wlp1-top-banner">
+  {{ section.settings.top_banner_text }}
+</div>
+
+{%- comment -%} ═══ HERO ═══ {%- endcomment -%}
+<section class="wlp1-hero">
+  <div class="wlp1-hero__inner">
+    <div class="wlp1-pub-line">{{ section.settings.pub_line }}</div>
+    <h1 class="wlp1-hero__title">{{ section.settings.headline }}</h1>
+    <p class="wlp1-hero__subhead">{{ section.settings.subhead }}</p>
+    <a href="{{ section.settings.hero_cta_url }}" class="wlp1-btn wlp1-btn--hero">{{ section.settings.hero_cta_text }}</a>
+    <p class="wlp1-hero__sub">{{ section.settings.hero_sub_text }}</p>
+  </div>
+</section>
+
+{%- comment -%} ═══ TRUST STRIP ═══ {%- endcomment -%}
+<div class="wlp1-trust-strip">
+  {%- for i in (1..5) -%}
+    {%- assign trust_key = 'trust_' | append: i -%}
+    {%- if section.settings[trust_key] != blank -%}
+      <div class="wlp1-trust-item"><span class="wlp1-check">✓</span> {{ section.settings[trust_key] }}</div>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+{%- comment -%} ═══ HERO IMAGE ═══ {%- endcomment -%}
+{%- if section.settings.hero_image != blank -%}
+  <figure class="wlp1-hero-img">
+    {{ section.settings.hero_image | image_url: width: 1480 | image_tag: loading: 'eager', alt: 'WLP-1 by The Absorption Company' }}
+  </figure>
+{%- endif -%}
+
+{%- comment -%} ═══ CONTENT ═══ {%- endcomment -%}
+<div class="wlp1-content">
+
+  {%- comment -%} ─── PROBLEM ─── {%- endcomment -%}
+  <p>{{ section.settings.problem_intro_1 }}</p>
+  <p><strong>{{ section.settings.problem_bold }}</strong></p>
+  <p>{{ section.settings.problem_intro_2 }}</p>
+
+  <div class="wlp1-problem-grid wlp1-fi">
+    <div class="wlp1-p-card">
+      <div class="wlp1-p-icon">{{ section.settings.problem_card_1_icon }}</div>
+      <h4>{{ section.settings.problem_card_1_title }}</h4>
+      <p>{{ section.settings.problem_card_1_text }}</p>
+    </div>
+    <div class="wlp1-p-card">
+      <div class="wlp1-p-icon">{{ section.settings.problem_card_2_icon }}</div>
+      <h4>{{ section.settings.problem_card_2_title }}</h4>
+      <p>{{ section.settings.problem_card_2_text }}</p>
+    </div>
+  </div>
+
+  <p>{{ section.settings.bridge_text }}</p>
+  <p><strong>{{ section.settings.bridge_bold }}</strong></p>
+
+  {%- comment -%} ─── FIRST CTA ─── {%- endcomment -%}
+  <div class="wlp1-cta-inline wlp1-fi">
+    <h3>{{ section.settings.first_cta_heading }}</h3>
+    <p>{{ section.settings.first_cta_text }}</p>
+    <a href="{{ section.settings.first_cta_button_url }}" class="wlp1-btn wlp1-btn--white">{{ section.settings.first_cta_button_text }}</a>
+    <p class="wlp1-cta-sub">{{ section.settings.first_cta_sub }}</p>
+  </div>
+
+  {%- comment -%} ─── WHAT IS IT ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.what_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.what_heading }}</h2>
+
+  {%- if section.settings.what_image_1 != blank and section.settings.what_image_2 != blank -%}
+    <div class="wlp1-sec-img-duo wlp1-fi">
+      {{ section.settings.what_image_1 | image_url: width: 740 | image_tag: loading: 'lazy', alt: 'WLP-1 capsule' }}
+      {{ section.settings.what_image_2 | image_url: width: 740 | image_tag: loading: 'lazy', alt: 'WLP-1 product' }}
+    </div>
+  {%- endif -%}
+
+  <p>{{ section.settings.what_text }}</p>
+
+  <div class="wlp1-benefit-list wlp1-fi">
+    {%- for i in (1..6) -%}
+      {%- assign icon_key = 'benefit_' | append: i | append: '_icon' -%}
+      {%- assign text_key = 'benefit_' | append: i | append: '_text' -%}
+      {%- if section.settings[text_key] != blank -%}
+        <div class="wlp1-bl-item">
+          <span class="wlp1-bl-icon">{{ section.settings[icon_key] }}</span>
+          {{ section.settings[text_key] }}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ─── CLINICAL PROOF ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.proof_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.proof_heading }}</h2>
+  <p>{{ section.settings.proof_intro }}</p>
+
+  <div class="wlp1-stat-row wlp1-fi">
+    {%- for i in (1..4) -%}
+      {%- assign num_key = 'stat_' | append: i | append: '_number' -%}
+      {%- assign label_key = 'stat_' | append: i | append: '_label' -%}
+      <div class="wlp1-stat-block">
+        <div class="wlp1-stat-num">{{ section.settings[num_key] }}</div>
+        <div class="wlp1-stat-desc">{{ section.settings[label_key] }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <div class="wlp1-callout wlp1-fi">
+    <p><strong>{{ section.settings.callout_heading }}</strong></p>
+    <div class="wlp1-benefit-list" style="margin-top: 12px; margin-bottom: 0;">
+      {%- for i in (1..3) -%}
+        {%- assign cb_icon = 'callout_bullet_' | append: i | append: '_icon' -%}
+        {%- assign cb_text = 'callout_bullet_' | append: i -%}
+        {%- if section.settings[cb_text] != blank -%}
+          <div class="wlp1-bl-item">
+            <span class="wlp1-bl-icon">{{ section.settings[cb_icon] }}</span>
+            {{ section.settings[cb_text] }}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} ─── WHAT'S INSIDE ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.ingredients_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.ingredients_heading }}</h2>
+
+  <div class="wlp1-ingredient-strip wlp1-fi">
+    {%- for i in (1..3) -%}
+      {%- assign name_key = 'ing_' | append: i | append: '_name' -%}
+      {%- assign ben_key = 'ing_' | append: i | append: '_benefit' -%}
+      {%- assign stat_key = 'ing_' | append: i | append: '_stat' -%}
+      <div class="wlp1-ing-chip">
+        <div class="wlp1-chip-name">{{ section.settings[name_key] }}</div>
+        <div class="wlp1-chip-benefit">{{ section.settings[ben_key] }}</div>
+        <div class="wlp1-chip-stat">{{ section.settings[stat_key] }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <p>{{ section.settings.delivery_text }}</p>
+
+  <div class="wlp1-benefit-list wlp1-fi">
+    {%- for i in (1..3) -%}
+      {%- assign di_key = 'delivery_bullet_' | append: i | append: '_icon' -%}
+      {%- assign dt_key = 'delivery_bullet_' | append: i -%}
+      {%- if section.settings[dt_key] != blank -%}
+        <div class="wlp1-bl-item">
+          <span class="wlp1-bl-icon">{{ section.settings[di_key] }}</span>
+          {{ section.settings[dt_key] }}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ─── SOCIAL PROOF ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.review_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.review_heading }}</h2>
+
+  {%- for i in (1..3) -%}
+    {%- assign rt_key = 'review_' | append: i | append: '_text' -%}
+    {%- assign rn_key = 'review_' | append: i | append: '_name' -%}
+    {%- assign rd_key = 'review_' | append: i | append: '_detail' -%}
+    {%- if section.settings[rt_key] != blank -%}
+      <div class="wlp1-review wlp1-fi">
+        <div class="wlp1-stars">★★★★★</div>
+        <blockquote>"{{ section.settings[rt_key] }}"</blockquote>
+        <div class="wlp1-attribution">{{ section.settings[rn_key] }} <span>· {{ section.settings[rd_key] }}</span></div>
+        <div class="wlp1-verified">✓ Verified Buyer</div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} ─── QUIZ CTA ─── {%- endcomment -%}
+  <div class="wlp1-quiz-cta wlp1-fi">
+    <div class="wlp1-quiz-emoji">📋</div>
+    <h3>{{ section.settings.quiz_heading }}</h3>
+    <p>{{ section.settings.quiz_text }}</p>
+    <a href="{{ section.settings.quiz_button_url }}" class="wlp1-btn wlp1-btn--quiz">{{ section.settings.quiz_button_text }}</a>
+    <p class="wlp1-quiz-sub">{{ section.settings.quiz_sub }}</p>
+  </div>
+
+  {%- comment -%} ─── WHAT TO EXPECT ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.timeline_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.timeline_heading }}</h2>
+
+  {%- if section.settings.timeline_image != blank -%}
+    <div class="wlp1-sec-img wlp1-fi">
+      {{ section.settings.timeline_image | image_url: width: 1360 | image_tag: loading: 'lazy', alt: 'WLP-1 weight management' }}
+    </div>
+  {%- endif -%}
+
+  <div class="wlp1-timeline wlp1-fi">
+    {%- for i in (1..4) -%}
+      {%- assign tw_key = 'tl_' | append: i | append: '_when' -%}
+      {%- assign tt_key = 'tl_' | append: i | append: '_title' -%}
+      {%- assign tx_key = 'tl_' | append: i | append: '_text' -%}
+      {%- if section.settings[tt_key] != blank -%}
+        <div class="wlp1-tl-row">
+          <div class="wlp1-tl-when">{{ section.settings[tw_key] }}</div>
+          <div class="wlp1-tl-what">
+            <h4>{{ section.settings[tt_key] }}</h4>
+            <p>{{ section.settings[tx_key] }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ─── HOW IT WORKS ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.steps_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.steps_heading }}</h2>
+
+  {%- if section.settings.steps_image != blank -%}
+    <div class="wlp1-sec-img wlp1-fi">
+      {{ section.settings.steps_image | image_url: width: 1360 | image_tag: loading: 'lazy', alt: 'Morning routine with WLP-1' }}
+    </div>
+  {%- endif -%}
+
+  <div class="wlp1-steps wlp1-fi">
+    {%- for i in (1..3) -%}
+      {%- assign st_key = 'step_' | append: i | append: '_title' -%}
+      {%- assign sx_key = 'step_' | append: i | append: '_text' -%}
+      {%- if section.settings[st_key] != blank -%}
+        <div class="wlp1-step">
+          <div class="wlp1-step-num">{{ i }}</div>
+          <div class="wlp1-step-text">
+            <h4>{{ section.settings[st_key] }}</h4>
+            <p>{{ section.settings[sx_key] }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ─── FINAL CTA ─── {%- endcomment -%}
+  <div class="wlp1-final-cta wlp1-fi" id="offer">
+    <div class="wlp1-fc-kicker">{{ section.settings.final_cta_kicker }}</div>
+    <h2>{{ section.settings.final_cta_heading }}</h2>
+    <p class="wlp1-guarantee">{{ section.settings.final_cta_guarantee }}</p>
+    <a href="{{ section.settings.final_cta_button_url }}" class="wlp1-btn wlp1-btn--big">{{ section.settings.final_cta_button_text }}</a>
+    <div class="wlp1-fc-trust">
+      <span>🔒 Secure checkout</span>
+      <span>📦 Free U.S. shipping</span>
+      <span>✓ 3rd-party tested</span>
+      <span>🇺🇸 Made in USA</span>
+    </div>
+  </div>
+
+  {%- comment -%} ─── FAQ ─── {%- endcomment -%}
+  <div class="wlp1-sec-kicker">{{ section.settings.faq_kicker }}</div>
+  <h2 class="wlp1-sec-head">{{ section.settings.faq_heading }}</h2>
+
+  {%- for i in (1..6) -%}
+    {%- assign fq_key = 'faq_' | append: i | append: '_q' -%}
+    {%- assign fa_key = 'faq_' | append: i | append: '_a' -%}
+    {%- if section.settings[fq_key] != blank -%}
+      <div class="wlp1-faq-item">
+        <div class="wlp1-faq-q" data-faq-toggle>
+          {{ section.settings[fq_key] }}
+          <span class="wlp1-toggle">+</span>
+        </div>
+        <div class="wlp1-faq-a">{{ section.settings[fa_key] }}</div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} ─── DISCLAIMER ─── {%- endcomment -%}
+  <div class="wlp1-disclaimer">{{ section.settings.disclaimer }}</div>
+
+</div>
+
+{%- comment -%} ═══ STICKY BAR ═══ {%- endcomment -%}
+<div class="wlp1-sticky-bar">
+  <p>{{ section.settings.sticky_bar_text }}</p>
+  <a href="{{ section.settings.sticky_bar_url }}" class="wlp1-btn wlp1-btn--sticky">{{ section.settings.sticky_bar_button_text }}</a>
+</div>
+
+<script>
+  // Fade-in on scroll
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('wlp1-vis'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.wlp1-fi').forEach(el => obs.observe(el));
+  }
+
+  // FAQ toggles
+  document.querySelectorAll('[data-faq-toggle]').forEach(q => {
+    q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
+  });
+</script>
+
+</div>
+
+{% schema %}
+{
+  "name": "WLP-1 Advertorial",
+  "tag": "section",
+  "class": "wlp1-advertorial-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Top Banner"
+    },
+    {
+      "type": "html",
+      "id": "top_banner_text",
+      "label": "Banner text (HTML allowed)",
+      "default": "GLP-1 support for <span>$64/month</span> — not $1,000. No prescription. No needles. Free shipping."
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "pub_line",
+      "label": "Publication line",
+      "default": "Sponsored · The Absorption Company"
+    },
+    {
+      "type": "html",
+      "id": "headline",
+      "label": "Headline (HTML allowed)",
+      "default": "Why People Are Switching from GLP-1 Injections to This <em>$64 Pill</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "subhead",
+      "label": "Subheadline",
+      "default": "GLP-1 injections cost $1,000+ a month. This clinically studied oral formula delivers GLP-1 support, craving control, and increased calorie burn — for $64."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_text",
+      "label": "Hero CTA button text",
+      "default": "Get WLP-1™ for $64 →"
+    },
+    {
+      "type": "url",
+      "id": "hero_cta_url",
+      "label": "Hero CTA URL"
+    },
+    {
+      "type": "text",
+      "id": "hero_sub_text",
+      "label": "Sub-CTA text",
+      "default": "That's 94% less than GLP-1 injections · No prescription · Free shipping"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "header",
+      "content": "Trust Strip"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust badge 1",
+      "default": "Clinically studied"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust badge 2",
+      "default": "No stimulants"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Trust badge 3",
+      "default": "No needles"
+    },
+    {
+      "type": "text",
+      "id": "trust_4",
+      "label": "Trust badge 4",
+      "default": "3rd-party tested"
+    },
+    {
+      "type": "text",
+      "id": "trust_5",
+      "label": "Trust badge 5",
+      "default": "Made in USA"
+    },
+    {
+      "type": "header",
+      "content": "Problem Section"
+    },
+    {
+      "type": "textarea",
+      "id": "problem_intro_1",
+      "label": "Problem paragraph 1"
+    },
+    {
+      "type": "text",
+      "id": "problem_bold",
+      "label": "Problem bold statement"
+    },
+    {
+      "type": "text",
+      "id": "problem_intro_2",
+      "label": "Problem paragraph 2"
+    },
+    {
+      "type": "text",
+      "id": "problem_card_1_icon",
+      "label": "Problem card 1 emoji",
+      "default": "💊"
+    },
+    {
+      "type": "text",
+      "id": "problem_card_1_title",
+      "label": "Problem card 1 title"
+    },
+    {
+      "type": "textarea",
+      "id": "problem_card_1_text",
+      "label": "Problem card 1 text"
+    },
+    {
+      "type": "text",
+      "id": "problem_card_2_icon",
+      "label": "Problem card 2 emoji",
+      "default": "💉"
+    },
+    {
+      "type": "text",
+      "id": "problem_card_2_title",
+      "label": "Problem card 2 title"
+    },
+    {
+      "type": "textarea",
+      "id": "problem_card_2_text",
+      "label": "Problem card 2 text"
+    },
+    {
+      "type": "html",
+      "id": "bridge_text",
+      "label": "Bridge paragraph (HTML allowed)"
+    },
+    {
+      "type": "text",
+      "id": "bridge_bold",
+      "label": "Bridge bold statement"
+    },
+    {
+      "type": "header",
+      "content": "First CTA"
+    },
+    {
+      "type": "text",
+      "id": "first_cta_heading",
+      "label": "Heading",
+      "default": "Ready to stop guessing?"
+    },
+    {
+      "type": "text",
+      "id": "first_cta_text",
+      "label": "Subtext"
+    },
+    {
+      "type": "text",
+      "id": "first_cta_button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "first_cta_button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "first_cta_sub",
+      "label": "Sub-button text"
+    },
+    {
+      "type": "header",
+      "content": "What It Is"
+    },
+    {
+      "type": "text",
+      "id": "what_kicker",
+      "label": "Kicker",
+      "default": "What it is"
+    },
+    {
+      "type": "text",
+      "id": "what_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "what_image_1",
+      "label": "Image left"
+    },
+    {
+      "type": "image_picker",
+      "id": "what_image_2",
+      "label": "Image right"
+    },
+    {
+      "type": "html",
+      "id": "what_text",
+      "label": "Body text (HTML allowed)"
+    },
+    {
+      "type": "text",
+      "id": "benefit_1_icon",
+      "label": "Benefit 1 icon",
+      "default": "↑"
+    },
+    {
+      "type": "text",
+      "id": "benefit_1_text",
+      "label": "Benefit 1 text"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2_icon",
+      "label": "Benefit 2 icon",
+      "default": "↓"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2_text",
+      "label": "Benefit 2 text"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3_icon",
+      "label": "Benefit 3 icon",
+      "default": "🔥"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3_text",
+      "label": "Benefit 3 text"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4_icon",
+      "label": "Benefit 4 icon",
+      "default": "✓"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4_text",
+      "label": "Benefit 4 text"
+    },
+    {
+      "type": "text",
+      "id": "benefit_5_icon",
+      "label": "Benefit 5 icon",
+      "default": "✓"
+    },
+    {
+      "type": "text",
+      "id": "benefit_5_text",
+      "label": "Benefit 5 text"
+    },
+    {
+      "type": "text",
+      "id": "benefit_6_icon",
+      "label": "Benefit 6 icon",
+      "default": "✓"
+    },
+    {
+      "type": "text",
+      "id": "benefit_6_text",
+      "label": "Benefit 6 text"
+    },
+    {
+      "type": "header",
+      "content": "Clinical Proof"
+    },
+    {
+      "type": "text",
+      "id": "proof_kicker",
+      "label": "Kicker",
+      "default": "The proof"
+    },
+    {
+      "type": "text",
+      "id": "proof_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "proof_intro",
+      "label": "Intro paragraph"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_number",
+      "label": "Stat 1 number",
+      "default": "12%"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Stat 1 label"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_number",
+      "label": "Stat 2 number",
+      "default": "321%"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Stat 2 label"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_number",
+      "label": "Stat 3 number",
+      "default": "4 lbs"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Stat 3 label"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_number",
+      "label": "Stat 4 number",
+      "default": "22%"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_label",
+      "label": "Stat 4 label"
+    },
+    {
+      "type": "text",
+      "id": "callout_heading",
+      "label": "Callout heading"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_1_icon",
+      "label": "Callout bullet 1 icon"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_1",
+      "label": "Callout bullet 1 text"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_2_icon",
+      "label": "Callout bullet 2 icon"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_2",
+      "label": "Callout bullet 2 text"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_3_icon",
+      "label": "Callout bullet 3 icon"
+    },
+    {
+      "type": "text",
+      "id": "callout_bullet_3",
+      "label": "Callout bullet 3 text"
+    },
+    {
+      "type": "header",
+      "content": "Ingredients"
+    },
+    {
+      "type": "text",
+      "id": "ingredients_kicker",
+      "label": "Kicker",
+      "default": "What's inside"
+    },
+    {
+      "type": "text",
+      "id": "ingredients_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "ing_1_name",
+      "label": "Ingredient 1 name"
+    },
+    {
+      "type": "text",
+      "id": "ing_1_benefit",
+      "label": "Ingredient 1 benefit"
+    },
+    {
+      "type": "text",
+      "id": "ing_1_stat",
+      "label": "Ingredient 1 stat"
+    },
+    {
+      "type": "text",
+      "id": "ing_2_name",
+      "label": "Ingredient 2 name"
+    },
+    {
+      "type": "text",
+      "id": "ing_2_benefit",
+      "label": "Ingredient 2 benefit"
+    },
+    {
+      "type": "text",
+      "id": "ing_2_stat",
+      "label": "Ingredient 2 stat"
+    },
+    {
+      "type": "text",
+      "id": "ing_3_name",
+      "label": "Ingredient 3 name"
+    },
+    {
+      "type": "text",
+      "id": "ing_3_benefit",
+      "label": "Ingredient 3 benefit"
+    },
+    {
+      "type": "text",
+      "id": "ing_3_stat",
+      "label": "Ingredient 3 stat"
+    },
+    {
+      "type": "html",
+      "id": "delivery_text",
+      "label": "Delivery system text (HTML allowed)"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_1_icon",
+      "label": "Delivery bullet 1 icon"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_1",
+      "label": "Delivery bullet 1 text"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_2_icon",
+      "label": "Delivery bullet 2 icon"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_2",
+      "label": "Delivery bullet 2 text"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_3_icon",
+      "label": "Delivery bullet 3 icon"
+    },
+    {
+      "type": "text",
+      "id": "delivery_bullet_3",
+      "label": "Delivery bullet 3 text"
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "review_kicker",
+      "label": "Kicker",
+      "default": "Real people"
+    },
+    {
+      "type": "text",
+      "id": "review_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_text",
+      "label": "Review 1 text"
+    },
+    {
+      "type": "text",
+      "id": "review_1_name",
+      "label": "Review 1 name"
+    },
+    {
+      "type": "text",
+      "id": "review_1_detail",
+      "label": "Review 1 detail"
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_text",
+      "label": "Review 2 text"
+    },
+    {
+      "type": "text",
+      "id": "review_2_name",
+      "label": "Review 2 name"
+    },
+    {
+      "type": "text",
+      "id": "review_2_detail",
+      "label": "Review 2 detail"
+    },
+    {
+      "type": "textarea",
+      "id": "review_3_text",
+      "label": "Review 3 text"
+    },
+    {
+      "type": "text",
+      "id": "review_3_name",
+      "label": "Review 3 name"
+    },
+    {
+      "type": "text",
+      "id": "review_3_detail",
+      "label": "Review 3 detail"
+    },
+    {
+      "type": "header",
+      "content": "Quiz CTA"
+    },
+    {
+      "type": "text",
+      "id": "quiz_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "quiz_text",
+      "label": "Body text"
+    },
+    {
+      "type": "text",
+      "id": "quiz_button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "quiz_button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "quiz_sub",
+      "label": "Sub text"
+    },
+    {
+      "type": "header",
+      "content": "Timeline"
+    },
+    {
+      "type": "text",
+      "id": "timeline_kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "timeline_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "timeline_image",
+      "label": "Timeline section image"
+    },
+    {
+      "type": "text",
+      "id": "tl_1_when",
+      "label": "Timeline 1 period"
+    },
+    {
+      "type": "text",
+      "id": "tl_1_title",
+      "label": "Timeline 1 title"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_1_text",
+      "label": "Timeline 1 text"
+    },
+    {
+      "type": "text",
+      "id": "tl_2_when",
+      "label": "Timeline 2 period"
+    },
+    {
+      "type": "text",
+      "id": "tl_2_title",
+      "label": "Timeline 2 title"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_2_text",
+      "label": "Timeline 2 text"
+    },
+    {
+      "type": "text",
+      "id": "tl_3_when",
+      "label": "Timeline 3 period"
+    },
+    {
+      "type": "text",
+      "id": "tl_3_title",
+      "label": "Timeline 3 title"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_3_text",
+      "label": "Timeline 3 text"
+    },
+    {
+      "type": "text",
+      "id": "tl_4_when",
+      "label": "Timeline 4 period"
+    },
+    {
+      "type": "text",
+      "id": "tl_4_title",
+      "label": "Timeline 4 title"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_4_text",
+      "label": "Timeline 4 text"
+    },
+    {
+      "type": "header",
+      "content": "How It Works"
+    },
+    {
+      "type": "text",
+      "id": "steps_kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "steps_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "steps_image",
+      "label": "Steps section image"
+    },
+    {
+      "type": "text",
+      "id": "step_1_title",
+      "label": "Step 1 title"
+    },
+    {
+      "type": "text",
+      "id": "step_1_text",
+      "label": "Step 1 text"
+    },
+    {
+      "type": "text",
+      "id": "step_2_title",
+      "label": "Step 2 title"
+    },
+    {
+      "type": "text",
+      "id": "step_2_text",
+      "label": "Step 2 text"
+    },
+    {
+      "type": "text",
+      "id": "step_3_title",
+      "label": "Step 3 title"
+    },
+    {
+      "type": "text",
+      "id": "step_3_text",
+      "label": "Step 3 text"
+    },
+    {
+      "type": "header",
+      "content": "Final CTA"
+    },
+    {
+      "type": "text",
+      "id": "final_cta_kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "html",
+      "id": "final_cta_heading",
+      "label": "Heading (HTML allowed)"
+    },
+    {
+      "type": "html",
+      "id": "final_cta_guarantee",
+      "label": "Guarantee text (HTML allowed)"
+    },
+    {
+      "type": "text",
+      "id": "final_cta_button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "final_cta_button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "faq_1_q",
+      "label": "FAQ 1 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_1_a",
+      "label": "FAQ 1 answer"
+    },
+    {
+      "type": "text",
+      "id": "faq_2_q",
+      "label": "FAQ 2 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_2_a",
+      "label": "FAQ 2 answer"
+    },
+    {
+      "type": "text",
+      "id": "faq_3_q",
+      "label": "FAQ 3 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_3_a",
+      "label": "FAQ 3 answer"
+    },
+    {
+      "type": "text",
+      "id": "faq_4_q",
+      "label": "FAQ 4 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_4_a",
+      "label": "FAQ 4 answer"
+    },
+    {
+      "type": "text",
+      "id": "faq_5_q",
+      "label": "FAQ 5 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_5_a",
+      "label": "FAQ 5 answer"
+    },
+    {
+      "type": "text",
+      "id": "faq_6_q",
+      "label": "FAQ 6 question"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_6_a",
+      "label": "FAQ 6 answer"
+    },
+    {
+      "type": "header",
+      "content": "Disclaimer & Sticky Bar"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Disclaimer text"
+    },
+    {
+      "type": "html",
+      "id": "sticky_bar_text",
+      "label": "Sticky bar text (HTML allowed)"
+    },
+    {
+      "type": "text",
+      "id": "sticky_bar_button_text",
+      "label": "Sticky bar button text"
+    },
+    {
+      "type": "url",
+      "id": "sticky_bar_url",
+      "label": "Sticky bar button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "WLP-1 Advertorial"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,63 @@
+{% liquid
+  if page == blank
+    assign not_a_page_page = true
+
+    if request.design_mode
+      assign page = pages.all.pages[0]
+    endif
+  endif
+
+  if page == blank
+    break
+  endif
+%}
+
+{% capture page_data %}
+  {%- render '_json.page', page: page, meta_page: false -%}
+{% endcapture %}
+
+<script type="application/json"
+        data-page-data="{{ page.handle }}"
+        data-primary-page-data="{{ page.handle }}">{{ page_data }}</script>
+
+<script data-page-data-init="{{ page.handle }}" type="application/javascript">
+  (() => {
+    const page = JSON.parse(document.querySelector(`[data-primary-page-data="{{ page.handle }}"]`)?.innerText);
+    window._page_card_page = page;
+
+    const pageData = {
+      loaded: false,
+      handleHydration: async (page) => {
+        const dbKey = `_${window.Shopify.theme.id}-page--${page.handle}`;
+        _pages[page.handle] = {
+          ...(await idbKeyval.get(dbKey) || {}),
+          ...page,
+        };
+
+        idbKeyval.set(dbKey, _pages[page.handle]);
+      },
+    };
+
+    document.addEventListener('index-db-loaded', () => {
+      if (pageData.loaded) return;
+      pageData.loaded = true;
+      pageData.handleHydration(page);
+    });
+
+
+    if (typeof idbKeyval !== "undefined" && !pageData.loaded) {
+      pageData.loaded = true;
+      pageData.handleHydration(page);
+    }
+  })();
+</script>
+
+
+
+
+{% schema %}
+{
+  "name": "Page Data",
+  "class": "shopify_section__data_page_json"
+}
+{% endschema %}

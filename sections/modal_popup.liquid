@@ -1,0 +1,922 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_popup"
+  assign modal_handle = section.settings.modal_handle
+  assign desktop_animation = section.settings.desktop_animation
+  assign mobile_animation = section.settings.mobile_animation
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign transition_start = 'opacity-0'
+  assign transition_end = 'opacity-100'
+
+  if desktop_animation == 'slide_from_top'
+    assign transition_start = 'opacity-0 md:-translate-y-full'
+    assign transition_end = 'opacity-100 md:translate-y-0'
+  endif
+  if desktop_animation == 'slide_from_right'
+    assign transition_start = 'opacity-0 md:translate-x-full'
+    assign transition_end = 'opacity-100 md:translate-x-0'
+  endif
+  if desktop_animation == 'slide_from_bottom'
+    assign transition_start = 'opacity-0 md:translate-y-full'
+    assign transition_end = 'opacity-100 md:translate-y-0'
+  endif
+  if desktop_animation == 'slide_from_left'
+    assign transition_start = 'opacity-0 md:-translate-x-full'
+    assign transition_end = 'opacity-100 md:translate-x-0'
+  endif
+
+  if mobile_animation == 'slide_from_top'
+    assign transition_start = transition_start | append: ' max-md:-translate-y-full'
+    assign transition_end = transition_end | append: ' max-md:translate-y-0'
+  endif
+  if mobile_animation == 'slide_from_right'
+    assign transition_start = transition_start | append: ' max-md:translate-x-full'
+    assign transition_end = transition_end | append: ' max-md:translate-x-0'
+  endif
+  if mobile_animation == 'slide_from_bottom'
+    assign transition_start = transition_start | append: ' max-md:translate-y-full'
+    assign transition_end = transition_end | append: ' max-md:translate-y-0'
+  endif
+  if mobile_animation == 'slide_from_left'
+    assign transition_start = transition_start | append: ' max-md:-translate-x-full'
+    assign transition_end = transition_end | append: ' max-md:translate-x-0'
+  endif
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="popup--{{ modal_handle }}"
+     x-data="{ show: $modal.id === 'popup--{{ modal_handle }}'}"
+     x-effect="show = $editor?.select_section_id === '{{ section.id }}' || ($modal.id === 'popup--{{ modal_handle }}')"
+     x-cloak>
+  <div class="fixed pointer-events-auto inset-0 transition duration-150 ease-in-out bg-modal-backdrop z-40"
+       x-show="show"
+       x-cloak
+       @click="$modal.setId('')"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"></div>
+  <div class="fixed pointer-events-auto inset-0 transition-all duration-200 ease-in-out isolate scrollbar-none "
+       :class="clsx(show ? 'z-max' : 'z-50')"
+       x-show="show"
+       x-cloak
+       x-trap.noautofocus="show"
+       x-transition:enter-start="{{ transition_start }}"
+       x-transition:enter-end="{{ transition_end }}"
+       x-transition:leave-start="{{ transition_end }}"
+       x-transition:leave-end="{{ transition_start }}"
+       data-style-id="{{ section.id }}--{{ block.id }}">
+    <div class="{{ container_spacing }}">
+      {% content_for "blocks" %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "modal_handle",
+      "label": "Modal Handle",
+      "default": "product",
+      "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+    },
+    {
+      "type": "select",
+      "id": "desktop_animation",
+      "label": "Desktop animation",
+      "default": "opacity",
+      "options": [
+        {
+          "value": "opacity",
+          "label": "Opacity"
+        },
+        {
+          "value": "slide_from_top",
+          "label": "Slide in from top"
+        },
+        {
+          "value": "slide_from_right",
+          "label": "Slide in from right"
+        },
+        {
+          "value": "slide_from_bottom",
+          "label": "Slide in from bottom"
+        },
+        {
+          "value": "slide_from_left",
+          "label": "Slide in from left"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "mobile_animation",
+      "label": "Mobile animation",
+      "default": "slide_from_bottom",
+      "options": [
+        {
+          "value": "opacity",
+          "label": "Opacity"
+        },
+        {
+          "value": "slide_from_top",
+          "label": "Slide in from top"
+        },
+        {
+          "value": "slide_from_right",
+          "label": "Slide in from right"
+        },
+        {
+          "value": "slide_from_bottom",
+          "label": "Slide in from bottom"
+        },
+        {
+          "value": "slide_from_left",
+          "label": "Slide in from left"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "image_with_caption"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popup",
+      "settings": {
+        "modal_handle": "gifts",
+        "desktop_animation": "opacity",
+        "mobile_animation": "slide_from_bottom",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "#000000",
+        "background_color": "#f7f5f1",
+        "custom_css": "& {\n  border-radius: 8px;\n  border: 0;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  overflow: hidden;\n  width: 100%;\n  max-width: Min(720px, 100vw - 72px);\n  padding: 64px;\n}\n\n@media (max-width: 768px) {\n  & {\n    top: unset;\n    border-radius: 8px 8px 0 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    transform: none;\n    max-height: 75dvh;\n    max-width: unset;\n    overflow-y: auto;\n    padding: 24px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "modal_close",
+            "title": "[icon.x-mark.12px]",
+            "url": "",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  position: absolute;\n  z-index: 10;\n  top: 24px;\n  right: 24px;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n&:hover {\n  opacity: 0.7;\n}\n\n@media (max-width: 768px) {\n  & {\n     top: 12px;\n  right: 12px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h4><strong>Free Monthly Gifts with Your Subscription.</strong></h4>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  \n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<p>As a way to show our love to our subscribers, you will get 6 gifts throughout the year from us totally for free with your order!</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#6a6a6a",
+            "custom_css": "& {\n  margin-top: 8px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px 24px;\n  margin-top: 32px;\n}\n\n@media (max-width: 768px) {\n  & {\n      margin-top: 24px;\n     grid-template-columns: 1fr 1fr;\n     gap: 8px;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-2_ebcbf983-0db6-479c-a077-710f3ac14f56.jpg",
+                "caption": "<h6><strong>Month 1</strong></h6><h6><strong>Free Frother</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-2_ebcbf983-0db6-479c-a077-710f3ac14f56.jpg",
+                "caption": "<h6><strong>Month 4</strong></h6><h6><strong>Free Frother</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-1_a3b96522-01c6-4e2c-bb74-89947f5a591e.jpg",
+                "caption": "<h6><strong>Month 2</strong></h6><h6><strong>Free Bottle</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-1_a3b96522-01c6-4e2c-bb74-89947f5a591e.jpg",
+                "caption": "<h6><strong>Month 5</strong></h6><h6><strong>Free Bottle</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios_588d8f75-fa44-4679-b2fb-038210a244d5.jpg",
+                "caption": "<h6><strong>Month 3</strong></h6><h6><strong>Free Bag</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios_588d8f75-fa44-4679-b2fb-038210a244d5.jpg",
+                "caption": "<h6><strong>Month 6</strong></h6><h6><strong>Mistery Gift</strong></h6>",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h6>Disclaimer and Conditions*</h6>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#6a6a6a",
+            "custom_css": "& {\n  margin-top: 32px;\n}\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 24px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Custom"
+    },
+    {
+      "name": "Gifts Popup",
+      "settings": {
+        "modal_handle": "gifts",
+        "desktop_animation": "opacity",
+        "mobile_animation": "slide_from_bottom",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "#000000",
+        "background_color": "#f7f5f1",
+        "custom_css": "& {\n  border-radius: 8px;\n  border: 0;\n  //position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  overflow: hidden;\n  width: 100%;\n  max-width: Min(720px, 100vw - 72px);\n  padding: 64px;\n  height: fit-content;\n}\n\n@media (max-width: 768px) {\n  & {\n    top: unset;\n    border-radius: 8px 8px 0 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    transform: none;\n    max-height: 75dvh;\n    max-width: unset;\n    overflow-y: auto;\n    padding: 24px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "modal_close",
+            "title": "[icon.x-mark.12px]",
+            "url": "",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "side_effect": "",
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  position: absolute;\n  z-index: 10;\n  top: 24px;\n  right: 24px;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n&:hover {\n  opacity: 0.7;\n}\n\n@media (max-width: 768px) {\n  & {\n     top: 12px;\n  right: 12px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h4><strong>Free Monthly Gifts with Your Subscription.</strong></h4>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  \n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<p>Subscribers unlock 3 exclusive gifts to help you stay consistent and maximize your benefits.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#6a6a6a",
+            "custom_css": "& {\n  margin-top: 8px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "url": "",
+            "accessibility_label": "",
+            "open_in_new_tab": false,
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px 24px;\n  margin-top: 32px;\n}\n\n@media (max-width: 768px) {\n  & {\n      margin-top: 24px;\n     grid-template-columns: 1fr 1fr;\n     gap: 8px;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-2_ebcbf983-0db6-479c-a077-710f3ac14f56.jpg",
+                "caption": "<h6><strong>Month 1</strong></h6><h6><strong>Free 3-Speed Frother</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-2_ebcbf983-0db6-479c-a077-710f3ac14f56.jpg",
+                "caption": "<h6><strong>Month 4</strong></h6><h6><strong>Free Frother</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/IMG_2028_1868b0fe-a450-4364-bb0e-e316dcba5f4c.jpg",
+                "caption": "<h6><strong>Month 2</strong></h6><h6><strong>Free Stainless-Steel Bottle</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios-1_a3b96522-01c6-4e2c-bb74-89947f5a591e.jpg",
+                "caption": "<h6><strong>Month 5</strong></h6><h6><strong>Free Bottle</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/tac-tote-bag.jpg",
+                "caption": "<h6><strong>Month 3</strong></h6><h6><strong>Free Everyday Carry-All Tote</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            },
+            {
+              "type": "image_with_caption",
+              "name": "Image with Caption",
+              "settings": {
+                "image": "shopify://shop_images/image_ratios_588d8f75-fa44-4679-b2fb-038210a244d5.jpg",
+                "caption": "<h6><strong>Month 6</strong></h6><h6><strong>Mistery Gift</strong></h6>",
+                "description": "",
+                "metafield_namespace_key": "",
+                "metafield_image_key": "image",
+                "metafield_caption_key": "caption",
+                "text_alignment": "inherit",
+                "caption_class": "richtext-md",
+                "metafield_description_key": "description",
+                "description_class": "richtext-md",
+                "metafield_url_key": "url",
+                "url": "",
+                "dynamic_content_type": "default",
+                "show_overlay": false,
+                "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+                "preload": false,
+                "sizes": "120px",
+                "max_width": 120,
+                "text_color": "",
+                "background_color": "#f0ede7",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 24px;\n  border-radius: 8px;\n  border: 1px solid #fff;\n}\n& .image-wrapper {\n  width: 56px;\n  height: 56px;\n  border-radius: 8px 0 0 8px;\n  overflow: hidden;\n}\n\n& h6:first-of-type {\n  color: #6a6a6a;\n  margin-bottom: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    gap: 12px;\n  }\n}",
+                "hide_if_empty": "none",
+                "element_id": ""
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h6>Disclaimer and Conditions*</h6>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "#6a6a6a",
+            "custom_css": "& {\n  margin-top: 32px;\n}\n\n@media (max-width: 768px) {\n  & {\n    margin-top: 24px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Custom"
+    },
+    {
+      "name": "Ingredients Popup",
+      "settings": {
+        "modal_handle": "ingredients",
+        "desktop_animation": "opacity",
+        "mobile_animation": "slide_from_bottom",
+        "container_spacing": "px-container-fullwidth",
+        "text_color": "#000000",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n  width: 100%;\n  height: 100%;\n  \n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n\n@media (max-width: 768px) {\n  & {\n    top: unset;\n    transform: none;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "slideshow",
+          "name": "Slideshow",
+          "settings": {
+            "enable_mouse_dragging": false,
+            "slider_scroll_snap": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+            "slider_overflow_container": "",
+            "auto_rotate": 0,
+            "pause_on_hover": false,
+            "infinite_scroll": "all",
+            "scrollbar_class": "scrollbar-buttons-square",
+            "scroll_pagination_class": "",
+            "container_spacing": "px-container-md",
+            "custom_css": "& {\n  --grid-cols: 2;\n  --grid-gap: 24px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n\n& .scrollbar-buttons-square{\n  margin-top: 24px;\n}\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 1;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": [
+            {
+              "type": "cards_ingredient",
+              "name": "Cards ingredient",
+              "settings": {
+                "metaobjects": [
+                  "magnesium-glycinate",
+                  "vit-d-3-k-2",
+                  "coq-10"
+                ],
+                "metafield_image_key": "image",
+                "metafield_title_key": "name",
+                "metafield_description_key": "description",
+                "metafield_percentage_1_key": "absorption_percentage_industry_standard",
+                "percentage_1_label": "Industry Standard",
+                "metafield_percentage_2_key": "absorption_percentage_our_products",
+                "percentage_2_label": "Our Products",
+                "metafield_product_handle_key": "product_handle",
+                "custom_css": "& {\n  border-radius: 8px;\n  padding: 24px 32px;\n  border: 1px solid #fff;\n}\n& img {\n  height: 62px;\n}\n& img,\n& [data-ingredient-percentage-label] {\n  max-width: 96px;\n  border-radius: 8px;\n}\n\n& [data-ingredient-percentage-label] {\n  background: #f0ede7;\n  text-align: center;\n}\n& [data-ingredient-percentage-label] h6 {\n  color: #000;\n}\n\n& h6 {\n  color: #6a6a6a;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding: 16px;\n  }\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "modal_close",
+            "title": "[icon.x-mark.12px]",
+            "url": "",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  position: absolute;\n  z-index: 10;\n  top: 24px;\n  right: 24px;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n&:hover {\n  opacity: 0.7;\n}\n\n@media (max-width: 768px) {\n  & {\n     top: 12px;\n  right: 12px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Custom"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_popup"
+}
+{% endschema %}

@@ -1,0 +1,111 @@
+<div class="shopify_block__pre_order">
+  {% assign variant = product.selected_or_first_available_variant %}
+
+  <button
+    data-pre-order-button=""
+    button class="button button-primary" 
+    type="button" 
+    data-content="Pre-Order" 
+    data-class="button-primary" 
+    data-action="add_to_cart" 
+    data-variant-id="{{ variant.id }}"
+    {% if variant.selling_plan_allocations.size > 0 %} data-selling-plan-id="{{ variant.selling_plan_allocations.first.selling_plan.id }}"{% endif %} 
+    data-x-ignore=""
+  >
+    Reserve Yours · {{ variant.selling_plan_allocations.first.price | money }}
+  </button>
+</div>
+
+<script type="text/javascript">
+  (function() {
+    const choose_supply_variant_labels = document.querySelectorAll('ul.product-choose-supply-variants li label');
+
+    choose_supply_variant_labels.forEach(label => {
+      label.addEventListener('click', () => {
+        var radio = label.querySelector('input[type="radio"]');
+        if (!radio) return;
+
+        var variantId = radio.getAttribute('data-variant-id');
+        if (!variantId) return;
+
+        var btn = document.querySelector('button[data-action="add_to_cart"][data-variant-id]');
+        if (!btn) return;
+
+        btn.setAttribute('data-variant-id', variantId);
+        
+        if (radio.getAttribute('data-selling-plan-id')) btn.setAttribute('data-selling-plan-id', radio.getAttribute('data-selling-plan-id'));
+        if (!radio.getAttribute('data-selling-plan-id')) btn.removeAttribute('data-selling-plan-id');
+
+        var priceFormatted = radio.getAttribute('data-skio-price-formatted');
+        if (priceFormatted) btn.textContent = 'Reserve Yours · ' + priceFormatted;
+      });
+    });
+  })();
+
+  /**
+   * Add to Cart
+   */
+   (function() {
+    var wrap = document.querySelector('.shopify_block__pre_order');
+    if (!wrap) return;
+
+    wrap.parentElement.addEventListener('click', function(e) {
+      // Get the button element
+      var btn = e.target.closest('button[data-action="add_to_cart"][data-variant-id]');
+
+      // Check if the button is found
+      if (!btn) return;
+
+      // Prevent default and stop propagation
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Check if window._cart is defined
+      if (!window._cart) return;
+
+      // Get the variant ID and selling plan ID
+      var variantId = btn.getAttribute('data-variant-id');
+
+      // Check if the variant ID is defined
+      if (!variantId) return;
+
+      // Get the selling plan ID
+      var sellingPlanId = btn.getAttribute('data-selling-plan-id');
+
+      // Create the item object
+      var item = { id: parseInt(variantId, 10), quantity: 1 };
+
+      // Check if the selling plan ID is defined
+      if (sellingPlanId) item.selling_plan = parseInt(sellingPlanId, 10);
+
+      // Add loading class to the button
+      btn.classList.add('button-loading');
+
+      // Add the item to the cart
+      window._cart.add({ items: [item] }).then(function(data) {
+        // Check if the cart error is not present and window._stores and window._stores.modal are defined
+        if (!data.cart_error && window._stores && window._stores.modal) window._stores.modal.setId('modal--cart-drawer');
+
+        // Remove loading class from the button
+      }).finally(function() {
+        // Remove loading class from the button
+        btn.classList.remove('button-loading');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Pre-Order ATC Button",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Pre-Order ATC Button",
+      "category": "Custom"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__pre_order_add_to_cart_button"
+}
+{% endschema %}

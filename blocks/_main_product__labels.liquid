@@ -1,0 +1,482 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__labels"
+  assign section_type = "main_product"
+  assign content_source = block.settings.content_source
+  assign label_class__content = block.settings.label_class__content
+  assign label_type__discounts = block.settings.label_type__discounts
+  assign label_class__discount = block.settings.label_class__discount
+  assign label_type__low_inventory = block.settings.label_type__low_inventory
+  assign default_content__low_inventory = block.settings.default_content__low_inventory
+  assign label_class__low_inventory = block.settings.label_class__low_inventory
+  assign low_inventory_threshold = block.settings.low_inventory_threshold
+  assign label_type__out_of_stock = block.settings.label_type__out_of_stock
+  assign default_content__out_of_stock = block.settings.default_content__out_of_stock
+  assign label_class__out_of_stock = block.settings.label_class__out_of_stock
+  assign label_type__preorder = block.settings.label_type__preorder
+  assign default_content__preorder = block.settings.default_content__preorder
+  assign label_class__preorder = block.settings.label_class__preorder
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if label_type__low_inventory == "show" or label_type__discounts != '' or label_type__preorder == "show" or label_type__out_of_stock == "show"
+    assign product = section.settings.product | default: product
+
+    if section.settings.default_variant_metafield != blank
+      assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+      assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+      assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+    endif
+
+    assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+    assign inventory_threshold = low_inventory_threshold | default: 5 | times: 1
+    assign preorder_threshold = settings.data__product__variant__preorder_threshold | default: 1 | times: 1
+  endif
+
+  if content_source != blank
+    unless content_source contains '['
+      assign content_source = '[' | append: content_source | append: ']'
+    endunless
+  endif
+%}
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     data-quick-view-visibility="{{ quick_view_visibility }}"
+     x-ignore
+     x-show="$editor.select_block_id === `{{ block.id }}` || (false {% if content_source != blank %}|| getContentLabels('{{ content_source }}')?.length {% endif %}
+     {% if label_type__discounts != '' %}|| !!getDiscountLabel('{{ label_type__discounts }}'){% endif %}
+     {% if label_type__low_inventory == 'show' %}|| pdp.available_quantity < +`{{ inventory_threshold }}`{% endif %}
+     {% if label_type__preorder == "show" %}|| (pdp.selected_variant?.preorder && pdp.selected_variant?.inventory_quantity < +`{{ inventory_threshold__preorder | default: 1 }}`){% endif %}
+     {% if label_type__out_of_stock == "show" %}|| !pdp.product?.available{% endif %})">
+  {% if content_source != blank and content_source contains '[selected_' %}
+    <template x-for="value in getContentLabels('{{ content_source }}')">
+      <label data-loop-item class="{{ label_class__content }}" x-html="value"></label>
+    </template>
+  {% elsif content_source != blank %}
+    {% capture labels %}{% render '_input.dynamic_content', content: content_source, keys: 'product, selected_variant', product: product, selected_variant: variant %}{% endcapture %}
+    {% if labels contains '|~|SPLIT|~|' %}
+      {% assign labels = labels | split: '|~|SPLIT|~|' %}
+    {% endif %}
+    {% for label in labels %}
+      <label class="{{ label_class__content }}">
+        {{ label }}
+      </label>
+    {% endfor %}
+  {% endif %}
+
+  {% if label_type__discounts != '' %}
+    {% liquid
+      assign price = variant.price
+      assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+      if settings.data__product__enable_price_overrides
+        assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+        assign discount_value = variant.price | times: discount_percentage
+        assign variant_price = variant.price | minus: discount_value
+
+        assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+        assign compare_at_price = variant.compare_at_price | at_least: variant.price
+      endif
+    %}
+    <label
+        {% if compare_at_price > price %}
+          x-show="getDiscountLabel('{{ label_type__discounts }}')"
+        {% else %}
+          x-cloak
+          x-show="getDiscountLabel('{{ label_type__discounts }}')"
+        {% endif %}
+        class="{{ label_class__discount }}"
+        x-html="getDiscountLabel('{{ label_type__discounts }}') || $el.innerHTML">
+      {% case label_type__discounts %}
+        {% when 'sale' %}
+          Sale
+        {% when 'percentage' %}
+          {% assign discount = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round %}
+          {{ discount }}% Off
+        {% when 'value' %}
+          Save {{ compare_at_price | minus: price | money_without_currency }}
+      {% endcase %}
+    </label>
+  {% endif %}
+  {% if label_type__low_inventory == "show" %}
+    <label
+        class="{{ label_class__low_inventory }}"
+        {% if variant.inventory_quantity >= low_inventory_threshold %}
+          x-cloak
+        {% endif %}
+        x-show="$editor.select_block_id === `{{ block.id }}` || (pdp.available_quantity < +`{{ inventory_threshold }}`)">
+      {{ default_content__low_inventory }}
+    </label>
+  {% endif %}
+  {% if label_type__preorder == "show" and settings.data__product__variant__preorder != blank %}
+    {% liquid
+
+      assign preorder_namespace_key = settings.data__product__variant__preorder | replace: " ", '' | split: "."
+      assign preorder_date_namespace_key = settings.data__product__variant__preorder_date | replace: " ", '' | split: "."
+      assign preorder_quantity_namespace_key = settings.data__product__variant__preorder_quantity | replace: " ", '' | split: "."
+
+      assign preorder = variant.metafields[preorder_namespace_key.first][preorder_namespace_key.last].value
+      assign preorder_date = variant.metafields[preorder_date_namespace_key.first][preorder_date_namespace_key.last].value
+      assign preorder_quantity = variant.metafields[preorder_quantity_namespace_key.first][preorder_quantity_namespace_key.last].value
+
+      assign content_arr = default_content__preorder | split: '[date'
+      assign content = ''
+
+      if preorder and variant.inventory_quantity < preorder_threshold
+        assign variant_preorder = true
+      endif
+
+      if variant_preorder and preorder_date != blank
+        for split in content_arr
+          if forloop.first
+            assign content = split
+            continue
+          endif
+
+          assign split2 = split | replace_first: '.', '' | replace_first: ']', '|%SPLIT%|' | split: '|%SPLIT%|'
+          assign part2 = ''
+          if split2.size > 1
+            assign part2 = split2 | last
+          endif
+          assign dayjs_fmt = split2 | first | replace: 'YYYY', '%Y' | replace: 'YY', '%y' | replace: 'MMMM', '%B' | replace: 'MMM', '%b' | replace: 'MM', '%m' | replace: 'M', '%-m' | replace: 'DDDD', '%j' | replace: 'DDD', '%j' | replace: 'DD', '%d' | replace: 'D', '%-d' | replace: 'dddd', '%A' | replace: 'ddd', '%a' | replace: 'HH', '%H' | replace: 'H', '%-H' | replace: 'hh', '%I' | replace: 'h', '%-I' | replace: 'mm', '%M' | replace: 'm', '%-M' | replace: 'ss', '%S' | replace: 's', '%-S' | replace: 'SSS', '%L' | replace: 'SS', '%L' | replace: 'S', '%L' | replace: 'A', '%p' | replace: 'a', '%P' | replace: 'ZZ', '%z' | replace: 'Z', '%:z' | replace: 'X', '%s' | replace: 'x', '%s' | replace: '[', '' | replace: ']', ''
+          assign date_content = preorder_date | date: dayjs_fmt
+
+          assign content = content | append: date_content | append: part2
+        endfor
+      elsif variant_preorder
+        for split in content_arr
+          if forloop.first
+            assign content = split
+            continue
+          endif
+
+          assign split2 = split | replace_first: ']', '|%SPLIT%|' | split: '|%SPLIT%|'
+          assign part2 = ''
+          if split2.size > 1
+            assign part2 = split2 | last
+          endif
+
+          assign content = content | append: part2
+        endfor
+      endif
+    %}
+    <label
+        class="{{ label_class__preorder }}"
+        {% if variant_preorder != true %}
+          x-cloak
+        {% endif %}
+        data-content="{{ default_content__preorder }}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[date\.?([^\]]*)\]/gi, (_, match) =>  pdp.selected_variant?.preorder_date ? `${window.dayjs(pdp.selected_variant?.preorder_date)?.format(match || 'MMM')}` : '')"
+        x-show="$editor.select_block_id === `{{ block.id }}` || (pdp.selected_variant?.preorder && pdp.selected_variant?.inventory_quantity < +`{{ preorder_threshold }}`)">
+      {{ content }}
+    </label>
+  {% endif %}
+  {% if label_type__out_of_stock == "show" %}
+    <label class="{{ label_class__out_of_stock }}"
+        {% if variant.available != true %}
+          x-show="$editor.select_block_id === `{{ block_id }}` || !pdp?.product?.available"
+        {% else %}
+          x-cloak
+          x-show="$editor.select_block_id === `{{ block_id }}` || !pdp?.product?.available"
+        {% endif %} >
+      {{ default_content__out_of_stock }}
+    </label>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Labels",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Content"
+    },
+    {
+      "type": "text",
+      "id": "content_source",
+      "label": "Content source",
+      "default": "product.metafields.smart.labels",
+      "info": "Accepts `single_line_text_field` or `list.single_line_text_field` matching data. (i.e. product.tags, product.metafields.smart.labels) [Learn more](https://shopify.dev/docs/apps/custom-data/metafields/types)"
+    },
+    {
+      "type": "text",
+      "id": "label_class__content",
+      "label": "Label class",
+      "default": "label-primary",
+      "visible_if": "{{ block.settings.content_source != blank }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic - Discounts"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when a product has a higher compare at price than the price field."
+    },
+    {
+      "type": "select",
+      "id": "label_type__discounts",
+      "label": "Label type",
+      "default": "value",
+      "options": [
+        {
+          "value": "sale",
+          "label": "Sale"
+        },
+        {
+          "value": "percentage",
+          "label": "% off"
+        },
+        {
+          "value": "value",
+          "label": "Save $"
+        },
+        {
+          "value": "",
+          "label": "Hide"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "label_class__discount",
+      "label": "Label class",
+      "default": "label-sale",
+      "visible_if": "{{ block.settings.label_type__discounts != '' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic - Low Inventory"
+    },
+    {
+      "type": "select",
+      "id": "label_type__low_inventory",
+      "label": "Label type",
+      "default": "show",
+      "options": [
+        {
+          "value": "show",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when a product is low in Inventory",
+      "visible_if": "{{ block.settings.label_type__low_inventory == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "default_content__low_inventory",
+      "label": "Content",
+      "default": "Almost Gone",
+      "visible_if": "{{ block.settings.label_type__low_inventory == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "label_class__low_inventory",
+      "label": "Label class",
+      "default": "label-primary",
+      "visible_if": "{{ block.settings.label_type__low_inventory == 'show' }}"
+    },
+    {
+      "type": "number",
+      "id": "low_inventory_threshold",
+      "label": "Show label below Inventory",
+      "default": 10,
+      "visible_if": "{{ block.settings.label_type__low_inventory == 'show' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic - Out of stock"
+    },
+    {
+      "type": "select",
+      "id": "label_type__out_of_stock",
+      "label": "Label type",
+      "default": "show",
+      "options": [
+        {
+          "value": "show",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when a product is unavailable.",
+      "visible_if": "{{ block.settings.label_type__out_of_stock == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "default_content__out_of_stock",
+      "label": "Content",
+      "default": "Sold out",
+      "visible_if": "{{ block.settings.label_type__out_of_stock == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "label_class__out_of_stock",
+      "label": "Label class",
+      "default": "label-primary",
+      "visible_if": "{{ block.settings.label_type__out_of_stock == 'show' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic - Preorder"
+    },
+    {
+      "type": "select",
+      "id": "label_type__preorder",
+      "label": "Label type",
+      "default": "show",
+      "options": [
+        {
+          "value": "show",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when a product is on preorder. ",
+      "visible_if": "{{ block.settings.label_type__preorder == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "default_content__preorder",
+      "label": "Content",
+      "default": "Preorder",
+      "info": "Use [date] or [date.MMM] as a placeholder for the Date preorder metafield. The format after the '[date.' uses [dayjs](https://day.js.org/docs/en/display/format) format function under the hood",
+      "visible_if": "{{ block.settings.label_type__preorder == 'show' }}"
+    },
+    {
+      "type": "text",
+      "id": "label_class__preorder",
+      "label": "Label class",
+      "default": "label-primary",
+      "visible_if": "{{ block.settings.label_type__preorder == 'show' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  display: flex;\n  flex-wrap: wrap;\n\n  gap: 2px 3px;\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Labels",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__labels"
+}
+{% endschema %}

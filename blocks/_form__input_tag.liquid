@@ -1,0 +1,29 @@
+{% capture blocks_content %}{% content_for 'blocks' %}{% endcapture %}
+<input type="hidden" name="contact[tags]" value="{{ blocks_content | strip_newlines | strip | replace_first: ',' }}">
+
+{% schema %}
+{
+  "name": "Input: Hidden Tags",
+  "blocks": [
+    {
+      "type": "_form__input_tag_value"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Input: Hidden Tags",
+      "blocks": [
+        {
+          "type": "_form__input_tag_value",
+          "settings": {
+            "title": "newsletter"
+          }
+        }
+      ],
+      "category": "** Form **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___form__input_tag"
+}
+{% endschema %}

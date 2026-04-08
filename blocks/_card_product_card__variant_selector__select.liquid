@@ -1,0 +1,190 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__variant_selector__select"
+  assign section_type = "card_product_card"
+  assign legend_label = block.settings.legend_label
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign disabled_items = '[]'
+  assign values = 'p_card?.product?.variants?.map(v => v.id) || []'
+  assign titles = 'p_card?.product?.variants?.map(v => v.title) || []'
+  if sold_out_variants == 'disable'
+    assign disabled_items = 'p_card?.product?.variants?.filter(v => !v.available)?.map(v => v.id) || []'
+  endif
+  if sold_out_variants == 'hide'
+    assign values = 'p_card?.product?.variants?.filter(v => v.available)?.map(v => v.id) || []'
+    assign titles = 'p_card?.product?.variants?.filter(v => v.available)?.map(v => v.title) || []'
+  endif
+%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<fieldset
+    data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+    x-cloak
+    {% if sold_out_variants == 'hide' %}
+      x-show="p_card?.product?.variants?.filter(v => v.available)?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+    {% else %}
+      x-show="p_card?.product?.variants?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+    {% endif %}
+    x-defer="intersect">
+  <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', p_card?.selected_variant?.title)">
+  </legend>
+  {% render '_components.select',
+      dynamic: true,
+      values: 'p_card?.product?.variants?.map(v => v.id) || []',
+      titles: 'p_card?.product?.variants?.map(v => v.title) || []',
+      disabled_items: disabled_items,
+      select_class: select_class,
+      label: legend_label,
+      setState: "$data.setSelectedVariant(value);",
+      state: "p_card?.selected_variant?.id",
+      current_value: 'p_card?.selected_variant?.id',
+      current_title: 'p_card?.selected_variant?.title',
+      html_attributes: "x-ignore",
+      disabled_clickable: true
+  %}
+</fieldset>
+
+
+
+
+{% schema %}
+{
+  "name": "Variant: Select",
+  "settings": [
+    {
+      "type": "text",
+      "id": "legend_label",
+      "label": "Heading",
+      "default": "Variants"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]: [value]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "select",
+      "id": "sold_out_variants",
+      "label": "Sold Out Variants",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "disable",
+          "label": "Disable"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variant: Select",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__variant_selector__select"
+}
+{% endschema %}

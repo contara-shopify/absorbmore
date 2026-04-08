@@ -1,0 +1,135 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_collection__radio_button_override"
+  assign section_type = "main_collection"
+  assign _handle = block.settings.handle
+  assign open_by_default = block.settings.open_by_default
+  assign button_class = block.settings.button_class
+  assign filters_show_count = block.settings.filters_show_count
+  assign show_empty_entries = block.settings.show_empty_entries
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign _handle = _handle | downcase | strip
+  for filter in collection.filters
+    assign _label = filter.label | downcase | strip
+    if _label == _handle and filter.type == 'list' or filter.type == 'boolean'
+      assign _filter = filter
+      break
+    endif
+  endfor
+
+  if _filter == blank
+    break
+  endif
+
+  if show_empty_entries == false
+    assign filter_count_arr = _filter.values | where: 'count', 0
+
+    if filter_count_arr.size == _filter.values.size
+      break
+    endif
+  endif
+
+%}
+<filter-override>
+  <filter-handle>{{ _handle }}</filter-handle>
+  {%- if open_by_default -%}
+    <filter-open-by-default></filter-open-by-default>{%- endif -%}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <fieldset data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+            class="filter-radio-buttons flex gap-1.5 flex-wrap">
+    {% for value in _filter.values %}
+      {% assign label = value.label %}
+      {% if filters_show_count %}
+        {% assign label = value.label | append: ' (' | append: value.count | append: ')' %}
+      {% endif %}
+      {% if show_empty_entries == false and value.count <= 0 %}
+        {% continue %}
+      {% endif %}
+      <label x-data="{ checked: $el.firstElementChild.checked }"
+             class="shrink-0 !outline-none cursor-pointer {{ button_class }}"
+             :class="utils.clsx(checked ? 'active' : '', main_collection.state.loading && 'pointer-events-none')"
+             aria-label="{{ label }}">
+        <input type="checkbox"
+               class="sr-only"
+               @change="checked = $el.checked"
+               name="{{ value.param_name }}"
+               :disbaled="main_collection.state.loading"
+            {% if value.active %}
+              checked="checked"
+            {% endif %}
+               value="{{ value.value }}">
+        <span>{{ label }}</span>
+      </label>
+    {%- endfor -%}
+  </fieldset>
+</filter-override>
+
+{% schema %}
+{
+  "name": "Radio button override",
+  "settings": [
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "color",
+      "info": "Lowercase handle of the filter category to match."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button Class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "checkbox",
+      "id": "filters_show_count",
+      "label": "Filters show count",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty_entries",
+      "label": "Show empty entries"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Radio button override",
+      "category": "** Collection **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_collection__radio_button_override"
+}
+{% endschema %}

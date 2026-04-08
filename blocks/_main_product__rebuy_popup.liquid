@@ -1,0 +1,265 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__rebuy_popup"
+  assign section_type = "main_product"
+  assign rebuy_widget_id = block.settings.rebuy_widget_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% unless product.handle == 'magnesium-glycinate' %}
+<div data-rebuy-id="{{ rebuy_widget_id }}" data-rebuy-shopify-product-ids="{{ product.id }}"></div>
+<script id="rebuy-widget-{{ rebuy_widget_id }}" type="text/template"> 
+  <div class="rebuy-widget"
+  v-cloak
+  v-on:click="stopPropagation($event)"
+  v-bind:id="'rebuy-widget-' + id"
+  v-bind:class="['widget-type-' + config.type.replace('_','-'), 'widget-display-' + config.display_type, products.length > 0 ? 'is-visible' : 'is-hidden']">
+
+    <div
+        class="rebuy-widget-container"
+        v-cloak
+        v-bind:class="['widget-display-' + config.display_type, visible ? 'is-visible' : 'is-hidden' ]"
+        v-on:click.self="hide()">
+
+        <div class="rebuy-widget-content">
+            <div class="rebuy-modal-close" v-on:click="hide()">
+                <i class="fas fa-times"></i>
+            </div>
+
+            <div class="rebuy-timer" v-if="hasTimer()">
+                <h5 class="rebuy-timer-title" v-if="config.language.timer_title">
+                    <span v-html="config.language.timer_title"></span> <span class="rebuy-timer-minutes" v-html="config.timer.duration_minutes"></span>:<span class="rebuy-timer-seconds" v-html="config.timer.duration_seconds"></span>
+                </h5>
+            </div>
+
+            <h4 class="super-title">Get More with <span>Subscriptions</span></h4>
+
+            <h3 class="primary-title">Save up to 35% today + <span>get 3 gifts</span> ($70 value)* that elevate your routine to help you feel better, faster. Switch today and lock in:</h3>
+
+            <div class="description" v-if="config.language.description != ''" v-html="config.language.description"></div>
+
+            <div class="rebuy-product-grid" v-bind:class="layoutClasses">
+
+                <div class="rebuy-product-block" v-for="product in products" v-bind:class="[product.handle, 'product-id-' + product.id, cartHasProduct(product) ? 'cart-has-item' : '', productTagClasses(product)]">
+                    <div class="rebuy-subscription-benefits">
+                        <div class="rebuy-benefit-item">
+                            <svg class="rebuy-check-icon" viewBox="0 0 16 16">
+                            <path d="M2 8l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>3 FREE gifts with your<br/>subscription ($70 value)*</span>
+                        </div>
+
+                        <div class="rebuy-benefit-item">
+                            <svg class="rebuy-check-icon" viewBox="0 0 16 16">
+                            <path d="M2 8l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Free shipping on orders $50+ ($7 value)</span>
+                        </div>
+
+                        <div class="rebuy-benefit-item">
+                            <svg class="rebuy-check-icon" viewBox="0 0 16 16">
+                            <path d="M2 8l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>VIP exclusive<br/>discounts</span>
+                        </div>
+
+                        <div class="rebuy-benefit-item">
+                            <svg class="rebuy-check-icon" viewBox="0 0 16 16">
+                            <path d="M2 8l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Update, skip, or<br/>cancel anytime</span>
+                        </div>
+                    </div>
+
+                    <div class="rebuy-product-actions">
+
+                        <div class="subscription-checkbox" v-if="showSubscriptionOptions(product)">
+                            <label class="rebuy-checkbox-label">
+                                <input
+                                    class="checkbox-input rebuy-checkbox"
+                                    v-model="product.subscription"
+                                    v-on:change="toggleSubscription(product)"
+                                    type="checkbox" />
+                                <span class="checkbox-label" v-html="upgradeToSubscriptionLabel(product)"></span>
+                            </label>
+                        </div>
+
+                        <div class="subscription-frequency" v-if="showSubscriptionFrequency(product)">
+                            <select
+                                class="rebuy-select"
+                                v-model="product.subscription_frequency"
+                                v-on:change="updateSubscriptionFrequency(product)">
+                                <option v-for="frequency in product.subscription_frequencies" :value="frequency" v-text="frequencyLabel(frequency, product.subscription_interval)"></option>
+                            </select>
+                        </div>
+
+                        <button
+                            class="rebuy-button"
+                            v-bind:class="{ working: (product.status != 'ready' && product.status != 'selecting') }"
+                            v-bind:disabled="!(variantAvailable(product.selected_variant)) || (product.status != 'ready' && product.status != 'selecting')"
+                            v-bind:alt="'Add ' + product.title + ' to Cart'"
+                            v-on:click="addUpsellToCart(product)"
+                            type="button">
+                                <span v-html="buttonLabel(product)"></span>
+                        </button>
+
+                    </div>
+
+                    <div class="rebuy-footer-text">*Offer available on new subscriptions for 28+ servings of powdered solutions.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+  </div>
+</script>
+{% endunless %}
+
+<style>
+.rebuy-widget.widget-type-switch-to_subscription .rebuy-widget-content {
+  padding: 40px 40px 20px !important;
+}
+.rebuy-widget.widget-type-switch-to_subscription .splide__track,
+.rebuy-widget.widget-type-switch-to_subscription .rebuy-product-actions {
+  width: 100% !important;
+}
+.rebuy-widget.widget-type-switch-to_subscription .rebuy-product-grid.large-style-list .rebuy-product-block {
+  border-top: 1px solid #ccc;
+  display: block !important;
+  border-radius: 0px;
+}
+.rebuy-subscription-benefits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 30px;
+  max-width: 650px;
+  margin: 0px auto;
+  padding: 10px 0px 40px 40px;
+}
+.rebuy-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  margin-top: 10px;
+}
+.rebuy-check-icon {
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  flex-shrink: 0;
+  background: #4f5bff;
+  border-radius: 50%;
+  padding: 4px;
+}
+.rebuy-benefit-item span {
+  margin-top: 10px;
+}
+.rebuy-widget.widget-type-switch-to_subscription .subscription-frequency {
+  display: none;
+}
+.rebuy-widget.widget-type-switch-to_subscription .super-title {
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: none !important;
+  color: #000 !important;
+}
+.rebuy-widget.widget-type-switch-to_subscription .super-title span {
+  color: #4f5bff;
+}
+.rebuy-widget.widget-type-switch-to_subscription .primary-title {
+  font-weight: 500;
+  font-size: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 0 30px;
+  line-height: 1.5;
+}
+.rebuy-widget.widget-type-switch-to_subscription .primary-title span {
+  font-weight: 600;
+}
+.rebuy-widget.widget-type-switch-to_subscription .rebuy-product-actions {
+  padding-bottom: 30px !important;
+  display: flex !important;
+  justify-content: center !important;
+  float: none !important;
+}
+.rebuy-widget.widget-type-switch-to_subscription .rebuy-product-actions .rebuy-button {
+  max-width: 334px;
+  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 18px 24px 14px;
+  border-radius: 0 !important;
+  background: #4f5bff !important;
+}
+.rebuy-footer-text {
+  font-size: 14px;
+  color: #9b9b9b;
+  font-style: italic;
+}
+.rebuy-widget .rebuy-modal-close .fa-times {
+  font-size: 30px;
+  font-weight: 300;
+}
+@media only screen and (width <= 734px) {
+  .rebuy-widget.widget-type-switch-to_subscription .super-title {
+    font-size: 34px;
+  }
+  .rebuy-subscription-benefits {
+    padding: 10px 0 30px 20px;
+  }
+}
+@media only screen and (width <= 675px) {
+  .rebuy-subscription-benefits {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    padding: 10px 0 14px 20px;
+  }
+  .rebuy-widget.widget-type-switch-to_subscription .primary-title {
+    font-size: 16px;
+  }
+  .rebuy-benefit-item {
+    font-size: 18px;
+    margin-top: 0px;
+  }
+  .rebuy-widget.widget-type-switch-to_subscription .rebuy-product-actions .rebuy-button {
+    font-size: 18px;
+    max-width: 290px;
+    padding: 15px 18px 12px;
+  }
+}
+@media only screen and (width <= 435px) {
+  .rebuy-widget.widget-type-switch-to_subscription .rebuy-widget-content {
+    padding: 30px 30px 10px !important;
+  }
+}
+</style>
+{% schema %}
+{
+  "name": "Rebuy Popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "rebuy_widget_id",
+      "label": "Rebuy Widget ID"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rebuy Popup",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__rebuy_popup"
+}
+{% endschema %}

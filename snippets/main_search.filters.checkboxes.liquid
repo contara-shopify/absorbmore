@@ -1,0 +1,21 @@
+{% assign checkbox_class = checkbox_class | default: "input-checkbox" %}
+
+<fieldset class="filter-checkboxes flex flex-col gap-3">
+  {% for value in filter.values %}
+    {% assign label = value.label %}
+    {% if filters_show_count %}
+      {% assign label = value.label | append: ' (' | append: value.count | append: ')' %}
+    {% endif %}
+    {% if block.settings.show_empty_entries == false and value.count <= 0 %}
+      {% continue %}
+    {% endif %}
+    {% render '_components.checkbox',
+        class: checkbox_class,
+        label: label,
+        value: value.value,
+        name: value.param_name,
+        default_checked: value.active,
+        disabled: 'main_search.state.loading'
+    %}
+  {%- endfor -%}
+</fieldset>

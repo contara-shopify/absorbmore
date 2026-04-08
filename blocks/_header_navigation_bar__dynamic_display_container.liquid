@@ -1,0 +1,180 @@
+
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_header_navigation_bar__dynamic_display_container"
+  assign section_type = "header_navigation_bar"
+  assign match_paths = block.settings.match_paths
+  assign hide_if_set_paths = block.settings.hide_if_set_paths
+  assign required_paths = block.settings.required_paths
+  assign match_templates = block.settings.match_templates
+  assign hide_if_set_templates = block.settings.hide_if_set_templates
+  assign required_templates = block.settings.required_templates
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-cloak
+     data-settings="{{ block.settings | json | escape }}"
+     x-effect="showConditionally($el, utils.JSONParse($el.getAttribute('data-settings')))">
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Dynamic Display Container",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_header_navigation_bar__menu"
+    },
+    {
+      "type": "_main_cart__progress_bar"
+    },
+    {
+      "type": "_header_navigation_bar__container"
+    },
+    {
+      "type": "_header_navigation_bar__burger_menu_button"
+    },
+    {
+      "type": "_header_navigation_bar__megamenu_button"
+    },
+    {
+      "type": "_header_navigation_bar__search_button"
+    },
+    {
+      "type": "_header_navigation_bar__search_button_with_bar"
+    },
+    {
+      "type": "_header_navigation_bar__cart_button"
+    },
+    {
+      "type": "_header_navigation_bar__account_button"
+    },
+    {
+      "type": "_header_navigation_bar__dynamic_display_container"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:blocks.dynamic_display_container.settings.header__1.content"
+    },
+    {
+      "type": "paragraph",
+      "content": "A section with a condition active that does not have the require metafield data will be hidden. You can add multiple metafields to a richtext input to check if at least one is setup."
+    },
+    {
+      "type": "header",
+      "content": "Theme Editor Settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Match Path"
+    },
+    {
+      "type": "textarea",
+      "id": "match_paths",
+      "label": "Paths",
+      "info": "Comma separated list of paths"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_if_set_paths",
+      "label": "Hide if path IS NOT matched"
+    },
+    {
+      "type": "checkbox",
+      "id": "required_paths",
+      "label": "Hide if path IS matched"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Match templates"
+    },
+    {
+      "type": "textarea",
+      "id": "match_templates",
+      "label": "Templates",
+      "info": "Comma separated list of templates"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_if_set_templates",
+      "label": "Hide if template IS NOT matched"
+    },
+    {
+      "type": "checkbox",
+      "id": "required_templates",
+      "label": "Hide if template IS matched"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Display Container",
+      "category": "** Navigation Bar **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___header_navigation_bar__dynamic_display_container"
+}
+{% endschema %}

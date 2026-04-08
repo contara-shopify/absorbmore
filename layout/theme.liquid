@@ -1,0 +1,684 @@
+{% if request.path == '/collections' and current_page == 420420 or current_page == 133737 %}
+  {% comment %}
+    420420 - Render Modals & Cards in Theme
+    133737 - Render Modals in Theme Editor
+  {% endcomment %}
+  {% capture modals_prefetch_content %}
+    {% if current_page == 420420 or settings.development__block_card_sections %}
+      <div data-cards-section data-cards-styles-section class="!hidden">{% sections '0_card' %}</div>
+    {% endif %}
+    {% if current_page == 133737 and settings.development__block_design_system %}
+      <div data-globals-section class="!hidden">{% sections '0_global' %}</div>
+    {% endif %}
+    {% sections '0_modal' %}
+    <div x-data="{ show_megamenu_group: ($modal.id.includes('megamenu--') && $el.querySelector(`[data-megamenu='${$modal.id}']`)) }"
+         x-effect="show_megamenu_group = ($modal.id.includes('megamenu--') && $el.querySelector(`[data-megamenu='${$modal.id}']`)) || $el.querySelector(`[data-style-id*='${$editor.select_section_id}']`)"
+         x-cloak>
+      <div class="bg-modal-backdrop fixed inset-x-0 bottom-0 top-[--header-height-offset] z-20 transition duration-75 ease-in-out"
+           x-show="show_megamenu_group"
+           x-transition:enter-start="opacity-0"
+           x-transition:enter-end="opacity-100"
+           x-transition:leave-start="opacity-100"
+           x-transition:leave-end="opacity-0"
+           @click="$modal.setId('')"></div>
+      {% capture selector %}[data-style-id="section_group__megamenu"]{% endcapture %}
+      {% if settings.megamenu__text_color != blank or settings.megamenu__text_color.alpha != 0 or settings.megamenu__background_color != blank %}
+        {% capture megamenu__css %}
+          & {
+          {% if settings.megamenu__text_color != blank and settings.megamenu__text_color.alpha != 0 %}color: {{ settings.megamenu__text_color }};{% endif %}
+          {% if settings.megamenu__background_color != blank %}background-color: {{ settings.megamenu__background_color }};{% endif %}
+          }
+        {% endcapture %}
+      {% endif %}
+
+      <style>
+        {{ megamenu__css | append: settings.megamenu__custom_css | replace: '&', selector | strip_newlines }}
+      </style>
+      <section data-style-id="section_group__megamenu"
+               class="pointer-events-auto fixed inset-x-0 top-[--header-height-offset] z-30 transition-all duration-300 ease-in-out"
+               x-transition:enter-start="-translate-y-full"
+               x-transition:enter-end="translate-y-0"
+          {% comment %}x-transition:leave="delay-100"{% endcomment %}
+               x-transition:leave-start="translate-y-0"
+               x-transition:leave-end="-translate-y-full"
+               x-show="show_megamenu_group"
+               x-trap.noautofocus="show_megamenu_group">
+        <div class="relative">
+          {% sections '0_megamenu' %}
+        </div>
+      </section>
+    </div>
+  {% endcapture %}
+
+  {% capture modals_prefetch_pre_tab_content %}
+    <div data-modals-section>
+      {% capture content %}{{ modals_prefetch_content }}{% endcapture %}
+      {% render '_layout.merge_styles', input: content %}
+    </div>
+  {% endcapture %}
+
+  {% render '_layout.render_tabs', content: modals_prefetch_pre_tab_content %}
+  {% break %}
+{% endif %}
+
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible"
+        content="IE=edge">
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light only">
+
+  {% comment %} CUSTOM HEAD TAGS ADDED - START {% endcomment %}
+  {% render 'visually_io_sdk' %}
+
+  <meta name="google-site-verification" content="VVceGR_VGrWi0k9HXnv5aqqKuW1UV7p5HU5RErH4XYY" >
+
+  <!-- Begin: Northbeam metadata info -->
+  <script>
+    localStorage.setItem('nb__region_code', "{{ localization.country.iso_code }}");
+    localStorage.setItem('nb__currency_code', "{{ localization.country.currency.iso_code }}");
+  </script>
+  <!-- End: Northbeam metadata info -->
+  <!-- Begin: Northbeam pixel -->
+  <script>(function(){var e;(n=e=e||{}).A="identify",n.B="trackPageView",n.C="fireEmailCaptureEvent",n.D="fireCustomGoal",n.E="firePurchaseEvent",n.F="trackPageViewInitial",n.G="fireSlimPurchaseEvent",n.H="identifyCustomerId";var n="//j.northbeam.io/ota-sp/9665fa5d-f972-45d0-a694-3b37b9995793.js";function r(n){for(var t=[],e=1;e<arguments.length;e++)t[e-1]=arguments[e];i.push({fnName:n,args:t})}var t,i=[],a=((t={})[e.F]=function(n){r(e.F,n)},(a={_q:i})[e.A]=function(n,t){return r(e.A,n,t)},a[e.B]=function(){return r(e.B)},a[e.C]=function(n,t){return r(e.C,n,t)},a[e.D]=function(n,t){return r(e.D,n,t)},a[e.E]=function(n){return r(e.E,n)},a[e.G]=function(n){return r(e.G,n)},a[e.H]=function(n,t){return r(e.H,n,t)},Object.assign(function(n){for(var t=[],e=1;e<arguments.length;e++)t.push(arguments[e]);return r.apply(null,[n].concat(t))},a));window.Northbeam=a,(a=document.createElement("script")).async=!0,a.src=n,document.head.appendChild(a),t.trackPageViewInitial(window.location.href);})()</script>
+  <!-- End: Northbeam pixel -->
+
+  <script async src="https://app.lightlabs.com/assets/ll-pip-widget-v5.js"></script>
+
+  <meta name="google-site-verification" content="jjW_w4lZ2eHW-01RVgdQn1jYBBt5OjFJW8AbjZP3EFc" />
+
+  {% comment %} CUSTOM HEAD TAGS ADDED - END {% endcomment %}
+
+  <!-- avoiding chrome force dark mode -->
+  <script>
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (isDarkMode) {
+      let meta = document.querySelector('meta[name="color-scheme"]');
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', 'color-scheme');
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', 'dark only');
+    }
+    (() => {
+      const setCookie = (cookieName, cookieValue, cookieMinutes = 60 * 24) => {
+        if (typeof window === "undefined" || typeof document === "undefined") {
+          return false;
+        }
+        const d = new Date();
+        d.setTime(d.getTime() + cookieMinutes * 60 * 1000);
+        const expires = d.toUTCString();
+        document.cookie = `${cookieName}=${cookieValue};expires=${expires};path=/;SameSite=Strict;`;
+        return true;
+      };
+
+      const getCookie = (cookieName) => {
+        if (typeof window === "undefined" || typeof document === "undefined") {
+          return false;
+        }
+
+        const name = `${cookieName}=`;
+        const cookieArray = document.cookie.split(";");
+        for (let i = 0; i < cookieArray.length; i++) {
+          let cookie = cookieArray[i];
+          while (cookie.charAt(0) === " ") {
+            cookie = cookie.substring(1);
+          }
+          if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+          }
+        }
+        return false;
+      };
+
+      const checkCookie = (cookieName) => {
+        if (typeof window === "undefined" || typeof document === "undefined") {
+          return false;
+        }
+        return !!cookieName && document.cookie.includes(`${cookieName}=`);
+      };
+
+      const removeCookie = (cookieName) => {
+        setCookie(cookieName, "", -1);
+      };
+
+      const JSONParse = (object, origin = "") => {
+        if (object === undefined) {
+          return null;
+        }
+        try {
+          return JSON.parse(object);
+        } catch (err) {
+          return null;
+        }
+      };
+      window.utils = window.utils || {
+        setCookie,
+        getCookie,
+        checkCookie,
+        removeCookie,
+        JSONParse,
+      };
+    })();
+
+    if (!Array.prototype.at) {
+      Array.prototype.at = function (index) {
+        // Ensure integer
+        index = Math.trunc(index) || 0;
+        // Convert negative index
+        if (index < 0) index += this.length;
+        // Return undefined if out of bounds
+        if (index < 0 || index >= this.length) return undefined;
+        return this[index];
+      };
+    }
+
+    if (!String.prototype.at) {
+      String.prototype.at = function (index) {
+        index = Math.trunc(index) || 0;
+        if (index < 0) index += this.length;
+        if (index < 0 || index >= this.length) return "";
+        return this.charAt(index);
+      };
+    }
+
+    if (typeof structuredClone !== "function") {
+      // Initial: Fast sync clone for most JSON-safe values
+      globalThis.structuredClone = (value) => {
+        return JSON.parse(JSON.stringify(value));
+      };
+
+      // Then upgrade to true structured clone using MessageChannel
+      (async () => {
+        try {
+          const { port1, port2 } = new MessageChannel();
+          port2.onmessage = () => {
+            // Replace with proper async-compatible structured clone
+            globalThis.structuredClone = (value) =>
+              new Promise((resolve, reject) => {
+                const { port1, port2 } = new MessageChannel();
+                port2.onmessage = (e) => resolve(e.data);
+                port2.onerror = reject;
+                port1.postMessage(value);
+              });
+
+            // Force a test clone now to verify compatibility
+            port1.postMessage({});
+          };
+
+          port1.postMessage({});
+        } catch {
+          // Ignore if MessageChannel not supported (very old browsers)
+        }
+      })();
+    }
+
+    if (!Array.prototype.toSorted) {
+      Object.defineProperty(Array.prototype, "toSorted", {
+        value: function (compareFn) {
+          return [...this].sort(compareFn);
+        },
+        writable: true,
+        configurable: true,
+        enumerable: false,
+      });
+    }
+
+    if (!Array.prototype.findLastIndex) {
+      Object.defineProperty(Array.prototype, 'findLastIndex', {
+        value: function (predicate, thisArg) {
+          if (this == null) {
+            throw new TypeError('"this" is null or not defined');
+          }
+          if (typeof predicate !== 'function') {
+            throw new TypeError('predicate must be a function');
+          }
+
+          const list = Object(this);
+          const length = list.length >>> 0;
+
+          for (let i = length - 1; i >= 0; i--) {
+            if (predicate.call(thisArg, list[i], i, list)) {
+              return i;
+            }
+          }
+          return -1;
+        },
+        configurable: true,
+        writable: true,
+      });
+    }
+
+  </script>
+  <style>
+    :root {
+      color-scheme: light only;
+    }
+  </style>
+
+  {% if request.design_mode and settings.development__disable_animations %}
+    <style>
+      *, *:before, *:after {
+        animation: none !important;
+        transition: none !important;
+      }
+    </style>
+  {% endif %}
+
+  {% if settings.development__disable_shopify_preview_bar %}
+    <style>
+      div#PBarNextFrameWrapper {
+        display: none;
+      }
+    </style>
+  {% endif %}
+
+  {%- render '_layout.seo' -%}
+
+  {%- render '_layout.global_settings' -%}
+  {%- render '_layout.imports' -%}
+  {% comment %}addon atc{% endcomment %}{%- render '_layout.dynamic_imports' -%}
+  {%- render '_layout.library_imports' -%}
+  {%- render '_layout.translations' -%}
+  {%- render '_layout.global_layout' -%}
+  {%- render '_layout.global_colors' -%}
+
+  {% if theme.role == 'main' or request.path contains '/account' or request.visual_preview_mode %}
+    {{ content_for_header }}
+  {% elsif settings.development__block_content_for_header %}
+    <script>var Shopify = Shopify || {};
+      Shopify.shop = "{{ shop.permanent_domain }}";
+      Shopify.theme = {
+        "name": "{{ theme.name }}",
+        "id": {{ theme.id }},
+        "theme_store_id": null,
+        "role": "{{ theme.role }}",
+      };
+      Shopify.routes = Shopify.routes || {};
+      Shopify.routes.root = "/";</script>
+  {% elsif settings.development__block_app_scripts %}
+    {% capture _content_for_header %}{{ content_for_header }}{% endcapture %}
+    {{ _content_for_header | split: "<script>(function() {" | first }}
+    {% assign parts = _content_for_header | split: "<script>(function() {" | last | replace_first: "</script>", "|~|SPLIT|~|" | split: "|~|SPLIT|~|" %}
+    <script type="accelerate/blocked">(function() { {{ parts | first }}</script>
+    {{ parts | last }}
+  {% else %}
+    {{ content_for_header }}
+  {% endif %}
+
+  {% if theme.role != 'main' and request.design_mode != true and settings.development__enable_marker_io and settings.development__marker_io_id != blank and request.visual_preview_mode != true %}
+    <script>
+      if (!window.location.origin.includes("127.0.0.1")) {
+        window.markerConfig = {
+          project: '{{ settings.development__marker_io_id }}',
+          source: 'snippet',
+        };
+
+        !function (e, r, a) {
+          if (!e.__Marker) {
+            e.__Marker = {};
+            var t = [], n = { __cs: t };
+            ["show", "hide", "isVisible", "capture", "cancelCapture", "unload", "reload", "isExtensionInstalled", "setReporter", "setCustomData", "on", "off"].forEach(function (e) {
+              n[e] = function () {
+                var r = Array.prototype.slice.call(arguments);
+                r.unshift(e), t.push(r);
+              };
+            }), e.Marker = n;
+            var s = r.createElement("script");
+            s.async = 1, s.src = "https://edge.marker.io/latest/shim.js";
+            var i = r.getElementsByTagName("script")[0];
+            i.parentNode.insertBefore(s, i);
+          }
+        }(window, document);
+      }
+    </script>
+  {% endif %}
+
+  {%- if customer.has_account -%}
+    {%- case request.path -%}
+    {%- when "/account/register" -%}
+      <script>
+        window.location.href = `{{ request.origin }}{{ routes.account_url }}`;
+      </script>
+    {%- when "/account/register" -%}
+      <script>
+        window.location.href = `{{ request.origin }}{{ routes.account_url }}`;
+      </script>
+    {%- when "/account/login" -%}
+      <script>
+        window.location.href = `{{ request.origin }}{{ routes.account_url }}`;
+      </script>
+    {%- endcase -%}
+  {%- endif -%}
+  <script>
+    document.documentElement.style.setProperty(
+      "--scrollbar-width",
+      `${window.innerWidth - document.documentElement.clientWidth}px`,
+    );
+  </script>
+  {% render '_layout.scripts' %}
+
+  {% if request.design_mode != true or request.visual_preview_mode == true %}
+    {% capture head_sections %}{% sections '0_head' %}{% endcapture %}
+    {% assign cleaned_head_sections = head_sections | replace: '<!-- BEGIN sections: 0_head -->', '' | replace: '<!-- END sections: 0_head -->', '' | replace_first: '>', '|~|SPLIT|~|' | split: '|~|SPLIT|~|' | last | replace: '</div>', '' %}
+    {{ cleaned_head_sections }}
+  {% endif %}
+
+   {% render 'collection-schema' %}
+
+</head>
+
+<body id="shopify-override"
+      data-template="{{ template | handleize }}"
+      data-page-handle="{{ page.handle }}"
+      x-data="{ windowWidth: window.innerWidth, windowHeight: window.innerHeight }"
+      :class="$modal.id && 'modal-open'"
+      :data-active-modal="$modal.id"
+      @resize.window="$data.windowWidth = window.innerWidth, windowHeight = window.innerHeight"
+      class="relative flex min-h-screen flex-col overscroll-none{% if request.visual_preview_mode %} bg-white text-black{% endif %}"
+      @hashchange.window="$router.hash = window.location.hash;"
+      data-barba="wrapper">
+
+  <style type="text/css">
+    /* Preview bar */
+    #preview-bar-iframe,
+    #PBarNextFrameWrapper,
+    #PBarNextFrame {
+      display: block !important;
+    }
+  </style>
+
+  {% if request.design_mode == true and request.visual_preview_mode != true %}
+    {% sections '0_head' %}
+  {% endif %}
+
+  {% if request.design_mode != true or settings.development__block_design_system != true %}
+    <div data-globals-section>
+      {% capture content %}{% sections '0_global' %}{% endcapture %}
+      {% render '_layout.merge_styles', input: content %}
+    </div>
+  {% endif %}
+
+  {% if request.design_mode and settings.development__block_card_sections != true and request.visual_preview_mode != true %}
+    <div data-cards-section data-cards-styles-section>{% sections '0_card' %}</div>
+  {% elsif request.design_mode != true %}
+    <div data-cards-styles-section class="!hidden">
+      {% comment %} This need some real world performance testing. Using '0_card' could be faster if there are too many cards for backup themes and no cleanup.{% endcomment %}
+      {%- render 'card_product_card._styles' -%}
+      {%- render 'card_collection_card._styles' -%}
+      {%- render 'card_article_card._styles' -%}
+      {%- render 'card_blog_card._styles' -%}
+      {%- render 'card_page_card._styles' -%}
+      {%- render 'card_line_item_card._styles' -%}
+      {%- render 'card_comment_card._styles' -%}
+      {% comment %}Alternative approach:{% endcomment %}
+      {% comment %}{% sections '0_card' %}{% endcomment %}
+    </div>
+  {% elsif request.design_mode and settings.development__block_card_sections %}
+    <div data-cards-styles-section class="!hidden">
+      {%- render 'card_product_card._styles' -%}
+      {%- render 'card_collection_card._styles' -%}
+      {%- render 'card_article_card._styles' -%}
+      {%- render 'card_blog_card._styles' -%}
+      {%- render 'card_page_card._styles' -%}
+      {%- render 'card_line_item_card._styles' -%}
+      {%- render 'card_comment_card._styles' -%}
+    </div>
+  {% endif %}
+
+  {% if request.design_mode == false %}
+    {% section 'global_page_transitions' %}
+  {% endif %}
+
+  <a href="#main-content"
+     class="bg-white text-sm font-medium p-1 text-gray-700 left-1/2 absolute top-0 z-[101] -translate-y-full transition-all duration-300 -translate-x-1/2 focus-visible:translate-y-0">Skip to main content</a>
+
+  {% if request.design_mode != true or settings.development__block_modal_sections == true or request.visual_preview_mode == true %}
+    <div data-dynamic-modals></div>
+  {% endif %}
+
+  {% render "_layout.load_dynamic_modals" %}
+
+  {% if request.design_mode == true %}
+    {% render "_layout.load_visual_preview_styles" %}
+  {% endif %}
+
+  {% if request.design_mode == true and settings.development__block_modal_sections == false and request.visual_preview_mode != true %}
+    {% capture modals_theme_editor_content %}
+      {% capture modals %}
+        {% sections '0_modal' %}
+      {% endcapture %}
+      {% capture megamenu_group_content %}
+        <div x-data="{ show_megamenu_group: ($modal.id.includes('megamenu--') && $el.querySelector(`[data-megamenu='${$modal.id}']`)) }"
+             x-effect="show_megamenu_group = ($modal.id.includes('megamenu--') && $el.querySelector(`[data-megamenu='${$modal.id}']`)) || $el.querySelector(`[data-style-id*='${$editor.select_section_id}']`)"
+             x-cloak>
+          <div class="bg-modal-backdrop fixed inset-x-0 bottom-0 top-[--header-height-offset] z-20 transition duration-75 ease-in-out"
+               x-show="show_megamenu_group"
+               x-transition:enter-start="opacity-0"
+               x-transition:enter-end="opacity-100"
+               x-transition:leave-start="opacity-100"
+               x-transition:leave-end="opacity-0"
+               @click="$modal.setId('')"></div>
+          {% capture selector %}[data-style-id="section_group__megamenu"]{% endcapture %}
+          {% if settings.megamenu__text_color != blank or settings.megamenu__text_color.alpha != 0 or settings.megamenu__background_color != blank %}
+            {% capture megamenu__css %}
+              & {
+              {% if settings.megamenu__text_color != blank and settings.megamenu__text_color.alpha != 0 %}color: {{ settings.megamenu__text_color }};{% endif %}
+              {% if settings.megamenu__background_color != blank %}background-color: {{ settings.megamenu__background_color }};{% endif %}
+              }
+            {% endcapture %}
+          {% endif %}
+
+          <style>
+            {{ megamenu__css | append: settings.megamenu__custom_css | replace: '&', selector | strip_newlines }}
+          </style>
+          <section data-style-id="section_group__megamenu"
+                   class="pointer-events-auto fixed inset-x-0 top-[--header-height-offset] z-30 transition-all duration-300 ease-in-out"
+                   x-transition:enter-start="-translate-y-full"
+                   x-transition:enter-end="translate-y-0"
+              {% comment %}x-transition:leave="delay-100"{% endcomment %}
+                   x-transition:leave-start="translate-y-0"
+                   x-transition:leave-end="-translate-y-full"
+                   x-show="show_megamenu_group"
+                   x-trap.noautofocus="show_megamenu_group">
+            <div class="relative">
+              {% sections '0_megamenu' %}
+            </div>
+          </section>
+        </div>
+      {% endcapture %}
+      {% capture content %}
+        {{ modals }}
+        {{ megamenu_group_content }}
+      {% endcapture %}
+      {% liquid
+        assign content = content | replace: '<style></style>', '' | append: " "
+        assign content_array = content | split: "</style>"
+        assign styles_content = ''
+        assign content = ''
+        for split in content_array
+          if forloop.last
+            assign content = content | append: split
+            break
+          endif
+          assign splits = split | split: "<style"
+          assign content_split = splits | first
+          assign style_split = splits | last | replace_first: '>', ' |%SPLIT|>|%|' | split: '|%SPLIT|>|%|' | last
+          assign content = content | append: content_split
+          assign styles_content = styles_content | append: style_split
+        endfor
+      %}
+      <div data-dynamic-modals>
+        <style>{{ styles_content | strip_newlines }}</style>
+        {{ content }}
+      </div>
+    {% endcapture %}
+    {% render '_layout.render_tabs', content: modals_theme_editor_content %}
+  {% endif %}
+
+  {% if request.visual_preview_mode == true %}
+    {% capture modals_preview_content %}
+      {% sections '0_modal' %}
+      <div class="relative">
+        {% sections '0_megamenu' %}
+      </div>
+    {% endcapture %}
+    {% render '_layout.render_tabs', content: modals_preview_content %}
+  {% endif %}
+
+  {% capture core_content %}
+  {% if request.design_mode != true %}
+    <header data-header-section
+            class="header-sections-container transition-all duration-200 ease-in-out"
+            x-init="_sections.initLayoutEffects(document.body, $el)">
+      {% capture content %}{% sections '0_header' %}{% endcapture %}
+      {% render '_layout.merge_styles', input: content %}
+    </header>
+  {% endif %}
+
+  {% if request.design_mode and settings.development__block_header_sections != true %}
+    <header data-header-section
+            class="header-sections-container transition-all duration-200 ease-in-out"
+            x-init="_sections.initLayoutEffects(document.body, $el)">
+      {% sections '0_header' %}
+    </header>
+  {% endif %}
+
+    <main data-content-root
+          id="main-content"
+          data-barba="container"
+          data-barba-namespace="tmp"
+          data-template="{{ template | escape }}"
+          data-pathname="{{ request.path | escape }}"
+          :class="/^\/policies\//gi.test($router.pathname) ? 'richtext-md richtext-margins-lg' : ''"
+          class="relative mt-[--navigation-bar-transparent-height] flex flex-1 shrink-0 flex-col main-sections-container overflow-x-clip">
+      {% if request.design_mode != true or settings.development__block_template_sections != true %}
+        {% capture content %}{{ content_for_layout }}{% endcapture %}
+        {% render '_layout.merge_styles', input: content %}
+      {% endif %}
+      {% if request.design_mode == false %}
+        {% section "data_product_json" %}
+        {% section "data_collection_json" %}
+        {% section "data_article_json" %}
+        {% section "data_page_json" %}
+      {% endif %}
+      <div x-init="() => {
+          window.collection = { id: {{ collection.id | json }} };
+          window.article = { id: {{ article.id | json }} };
+          window.blog = { id: {{ blog.id | json }} };
+          window.page = { id: {{ page.id | json }} };
+          window.product = { id: {{ product.id | json }} };
+        }"></div>
+    </main>
+  {% if request.design_mode != true or settings.development__block_footer_sections != true %}
+    <footer data-footer-section>
+      {% capture content %}{% sections '0_footer' %}{% endcapture %}
+      {% render '_layout.merge_styles', input: content %}
+    </footer>
+  {% endif %}
+    {% render '_layout.toast' %}
+    <div data-tooltip-container
+         class="pointer-events-none fixed inset-0 z-max"
+         x-init="$watch('$router.pathname', () => { $el.innerHTML = ''; })"></div>
+
+    <script type="application/javascript">
+      document.documentElement.style.setProperty(
+        "--scrollbar-width",
+        `${window.innerWidth - document.documentElement.clientWidth}px`,
+      );
+    </script>
+    {% if request.design_mode == true %}
+      {% section "data_product_json" %}
+      {% section "data_collection_json" %}
+      {% section "data_article_json" %}
+      {% section "data_page_json" %}
+    {% endif %}
+  {% endcapture %}
+
+  {% render '_layout.render_tabs', content: core_content %}
+
+  {% if request.design_mode == true %}
+    {% section 'global_page_transitions' %}
+    <script>
+      (() => {
+        const script = document.querySelector('script#OnlineStoreEditorData');
+        if (!script) throw new Error('OnlineStoreEditorData script not found');
+
+        const data = JSON.parse(script.textContent || script.innerHTML || '{}');
+
+        window?.parent?.postMessage(
+          {
+            source: "shopify-theme",
+            type: "SHOPIFY:ACCELERATE:THEME_EDITOR_UPDATE",
+            data,
+          },
+          "*",
+        );
+
+        window?.top?.postMessage(
+          {
+            source: "shopify-theme",
+            type: "SHOPIFY:ACCELERATE:THEME_EDITOR_UPDATE",
+            data,
+          },
+          "*",
+        );
+        (async () => {
+          window.wait_for_cache_bust = true;
+          window.theme_settings;
+          await caches.delete("platter-modals--{{ settings.development__cache_version }}");
+          localStorage.clear();
+          sessionStorage.clear();
+
+          await idbKeyval.clear();
+
+          console.log(`await caches.delete("platter-modals--{{ settings.development__cache_version }}");`);
+          console.log(`localStorage.clear();`);
+          console.log(`sessionStorage.clear();`);
+          console.log(`await idbKeyval.clear();`);
+          console.log("Platter Theme Cache Cleared");
+          window.wait_for_cache_bust = false;
+          document.dispatchEvent(new CustomEvent('platter-cache-busted'));
+        })();
+      })();
+    </script>
+  {% endif %}
+
+  <script>
+    (async () => {
+      const oldCacheVersion = utils.getCookie('platter-cache-version');
+      if (oldCacheVersion && oldCacheVersion !== `{{ settings.development__cache_version | default: 1 }}`) {
+        window.wait_for_cache_bust = true;
+        await caches.delete("platter-modals--{{ settings.development__cache_version }}");
+        localStorage.clear();
+        sessionStorage.clear();
+        await idbKeyval.clear();
+        window.wait_for_cache_bust = false;
+        document.dispatchEvent(new CustomEvent('platter-cache-busted'));
+      }
+      utils.setCookie('platter-cache-version', `{{ settings.development__cache_version | default: 1 }}`, 60);
+    })();
+  </script>
+  {% capture no_render %}
+    <div class="!hidden
+            max-sm:!hidden sm:!hidden max-md:!hidden md:!hidden max-lg:!hidden lg:!hidden max-xl:!hidden xl:!hidden
+            max-md:-mx-container-xs max-md:-mx-container-sm max-md:-mx-container-md max-md:-mx-container-lg max-md:-mx-container-gutter md:-mx-container-xs md:-mx-container-sm md:-mx-container-md md:-mx-container-lg md:-mx-container-gutter -mx-container-xs -mx-container-sm -mx-container-md -mx-container-lg -mx-container-gutter
+            max-md:px-container-xs max-md:px-container-sm max-md:px-container-md max-md:px-container-lg max-md:px-container-gutter md:px-container-xs md:px-container-sm md:px-container-md md:px-container-lg md:px-container-gutter px-container-xs px-container-sm px-container-md px-container-lg px-container-gutter
+            max-md:scroll-px-container-xs max-md:scroll-px-container-sm max-md:scroll-px-container-md max-md:scroll-px-container-lg max-md:scroll-px-container-gutter md:scroll-px-container-xs md:scroll-px-container-sm md:scroll-px-container-md md:scroll-px-container-lg  md:scroll-px-container-gutter scroll-px-container-xs scroll-px-container-sm scroll-px-container-md scroll-px-container-lg scroll-px-container-gutter
+            [&_:where(p,h1,h2,h3,h4,h5,h6)]:items-center max-md:text-center !font-semibold [&_a]:link-effect !font-bold !w-full
+            pl-container-xs pl-container-sm pl-container-md pl-container-lg pl-container-gutter
+            pr-container-xs pr-container-sm pr-container-md pr-container-lg pr-container-gutter
+    "></div>
+  {% endcapture %}
+  <form method="post"
+        id="global_link_form"
+        class="!hidden"
+        @submit.prevent.stop="() => {}">
+  </form>
+</body>
+</html>

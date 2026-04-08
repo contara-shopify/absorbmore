@@ -1,0 +1,595 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__gallery"
+  assign section_type = "main_product"
+  assign filter_images = block.settings.filter_images
+  assign hide_image_alt = block.settings.hide_image_alt
+  assign scroll_to_selected_variant_image = block.settings.scroll_to_selected_variant_image
+  assign additional_view = block.settings.additional_view
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign preload_images = block.settings.preload_images
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+  {{- custom_css | replace: '&', selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+
+  {% if product.metafields.custom.featured_image_badge != blank %}
+    div[data-style-id*="main_product_gallery"]:after {
+      content: '{{ product.metafields.custom.featured_image_badge }}';
+      display: flex;
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background-color: {{ product.metafields.custom.featured_image_badge_color | default: '#4659ff' }};
+      border-radius: 100%;
+      font-size: 20px;
+      color: {{ product.metafields.custom.featured_image_badge_text_color | default: '#ffffff' }};
+      font-weight: 500;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      div[data-style-id*="main_product_gallery"]:after {
+        top: 10px;
+        right: auto;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+      }
+    }
+  {% endif %}
+</style>
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    class="relative"
+    x-ref="gallery"
+    x-data="{ ...utils.initContentSlider($el, $el.firstElementChild, undefined, `{{ infinite_scroll }}`) }"
+    x-defer="intersect"
+    {% if scroll_to_selected_variant_image %}
+      x-init="$watch('pdp.selected_variant', () => scrollToMediaById(pdp.selected_variant?.featured_media?.id, $el.firstElementChild))"
+    {% endif %}
+    data-settings="{{ block.settings | json | escape }}">
+  <div class="grid-container relative flex snap-mandatory overflow-x-auto scrollbar-none max-lg:order-first {{ slider_scroll_snap }} {{ slider_overflow }}"
+       data-main-product-images
+       x-ignore
+       @resize.window="content_slider.handleResize"
+       x-data="{ initVariants: () => { pdp.gallery_media = $data?.handleImageSelection(`{{ filter_images }}`, pdp.selected_variant); $nextTick(() =>{ $data.content_slider.handleResize() }); } }"
+       x-init="initVariants(); $watch('pdp.selected_variant', $data.initVariants); utils.hydrateImages(true, $el)"
+       @scroll="(e) => { content_slider.handleScroll(e); const mediaId = [...$el.querySelectorAll(':scope > div:not(.hidden):not(.\\!hidden)')].find(pic => pic?.classList?.contains('centered'))?.getAttribute('data-media-id'); if (mediaId && mediaId !== pdp.selected_media_id) { pdp.selected_media_id = mediaId }}"
+       @scrollend="content_slider.handleInfiniteScroll"
+       x-effect="() => {
+         if (pdp.selected_variant?.id && pdp.selected_variant?.id !== pdp.initial_variant_id && !pdp.images_cleaned) {
+           $el.querySelectorAll(':scope > div:not([\\:data-media-id])').forEach(el => el.remove())
+           pdp.images_cleaned = true
+         }
+       }"
+       x-ref="scrollContainer">
+    <template x-for="(value, i) in (pdp.images_cleaned ? (pdp.gallery_media?.slice(0, +{{ max_images | default: 'pdp.gallery_media?.length ?? 9999' }}) || []) : [])">
+      <div
+          :data-media-id="pdp.gallery_media[i].id"
+          {% if additional_view == 'media_gallery' %}
+            :class="'cursor-zoom-in'"
+            @click="showMediaGallery(+$el.getAttribute('data-media-id'))"
+            role="button"
+            aria-label="Show Fullscreen Media Gallery"
+          {% endif %}
+          tabindex="-1"
+          :style="`--order: ${i * 10};`"
+          class="image-wrapper snap-start w-full h-full relative flex shrink-0 overflow-hidden order-[--order]">
+        <template x-if="pdp.gallery_media[i]?.media_type === 'image'">
+          <img class="h-full w-full object-[inherit] transition-opacity duration-300 ease-in"
+               :class="i !== 0 ? '!opacity-0' : ''"
+               src=""
+               alt=""
+               onload="this.classList.remove('!opacity-0')"
+               :srcset="utils.getImageSrcSet(pdp.gallery_media[i]?.src ?? '', +`{{ max_width }}`)"
+               :src="pdp?.gallery_media[i]?.src"
+               :alt="pdp?.gallery_media[i]?.alt"
+               sizes="{{ sizes }}" />
+        </template>
+        <template x-if="pdp?.gallery_media[i]?.media_type === 'video'">
+          <video playsinline
+                 controls
+                 x-effect="() => { if (!$el.paused && ($mediaGallery.scrollIndex !== i || !$modal.id === 'media-gallery--vertical-gallery')) { $el.pause() } }"
+                 loop
+                 preload="none"
+                 class="h-full w-full object-[inherit]"
+                 :aria-label="pdp?.gallery_media[i]?.alt"
+                 :poster="pdp?.gallery_media[i]?.preview_image?.src">
+            <template x-for="(source, index) in [...(pdp?.gallery_media[i]?.sources || [])].sort((a, b) => a.width - b.width)">
+              <source data-loop-item
+                      src=""
+                      :src="source?.url"
+                      :type="source?.mime_type"
+                      :media="index === 0 ? 'all' : `(min-width: ${[...(pdp?.gallery_media[i]?.sources || [])].sort((a, b) => a.width - b.width)[index - 1].width + 1}px)`"
+                      type="video/mp4" />
+            </template>
+            <img x-show="pdp?.gallery_media[i]?.preview_image?.src"
+                 :src="pdp?.gallery_media[i]?.preview_image.src"
+                 :alt="pdp?.gallery_media[i]?.alt" />
+          </video>
+        </template>
+        <template x-if="pdp?.gallery_media[i]?.media_type === 'external_video'">
+          <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  class="relative h-full w-full object-contain js-youtube"
+                  loading="lazy"
+                  :src="pdp?.gallery_media[i].host === 'youtube'
+                           ? `https://www.youtube.com/embed/${pdp?.gallery_media[i].external_id}?autoplay=${$mediaGallery.scrollIndex === i ? '1' : '0'}&controls=1&muted=${$mediaGallery.scrollIndex === i ? '0' : '1'}&enablejsapi=1&loop=${1}&modestbranding=1&playsinline=1&rel=0`
+                           : `https://player.vimeo.com/video/${pdp?.gallery_media[i].external_id}`"
+                  :title="pdp?.gallery_media[i].alt"></iframe>
+        </template>
+        <template x-if="pdp?.gallery_media[i]?.media_type === 'model'">
+          <div class="relative aspect-1 h-full w-full">
+            <div x-html="`
+                    <model-viewer
+                      class='inset-0 h-full w-full object-contain md:absolute'
+                      style='--poster-color: transparent; position: absolute;'
+                      src='${pdp?.gallery_media[i]?.sources?.find((source) => source.format === 'glb')?.url}'
+                      camera-controls='true'
+                      data-shopify-feature='1.12'
+                      alt='${pdp?.gallery_media[i]?.alt}'
+                      poster='${pdp?.gallery_media[i]?.preview_image.src}'
+                      data-js-focus-visible='
+                      ar-status='not-presenting'
+                      ></model-viewer>
+                  `"></div>
+          </div>
+        </template>
+      </div>
+    </template>
+    {% liquid
+      assign variant_media_id = variant.featured_media.id | default: product.media.first.id
+      assign variant_media_ids = product.variants | map: "featured_media" | map: "id" | uniq
+      assign max_images = max_images | default: 9999 | at_least: 1
+      assign images_rendered = 0
+      assign start_index = 0
+      case filter_images
+        when "show_all"
+          assign media_array = product.media
+        when "selected_variant"
+          assign media_array = variant.featured_media | uniq
+        when "variant_images_by_order"
+          assign media_array = product.media
+          assign start_index = product.media | find_index: 'id', variant.featured_media.id
+        when "variant_images_by_metafield"
+          assign media_array = variant.featured_media | uniq
+          assign additional_media_array = variant.metafields.smart.images.value | uniq
+          assign media_array = media_array | concat: additional_media_array
+        when "variant_images_and_unassigned"
+          assign media_array = product.media
+        when "only_unassigned"
+          assign media_array = product.media
+        when "first_or_selected_image"
+          assign media_array = product.media | first | uniq
+      endcase
+
+      if media_array.size <= 0 and product.featured_media
+        assign media_array = product.featured_media | uniq
+      endif
+    %}
+
+    {% for i in (start_index..media_array.size) %}
+      {% assign media = media_array[i] %}
+      {% if media == blank %}{% continue %}{% endif %}
+      {% if filter_images == 'only_unassigned' and variant_media_ids contains media.id %}{% continue %}{% endif %}
+      {% if filter_images == 'variant_images_and_unassigned' and media.id != variant_media_id and variant_media_ids contains media.id %}{% continue %}{% endif %}
+      {% if filter_images == 'variant_images_by_order' and media.id != variant_media_id and variant_media_ids contains media.id %}{% break %}{% endif %}
+
+      {% if preload_images %}
+        {% assign preload = true %}
+      {% endif %}
+      {% if images_rendered > preload_images %}
+        {% assign preload = false %}
+      {% endif %}
+
+      <div
+          data-media-id="{{ media.id }}"
+          tabindex="-1"
+          {% if additional_view == 'media_gallery' %}
+            :class="'cursor-zoom-in'"
+            @click="showMediaGallery(+$el.getAttribute('data-media-id'))"
+            role="button"
+            aria-label="Show Fullscreen Media Gallery"
+          {% endif %}
+          style="--order: {{ images_rendered | times: 10 }};"
+          class="image-wrapper snap-start w-full h-full relative flex shrink-0 overflow-hidden order-[--order]">
+        {% render '_object.media',
+            media: media,
+            data_src: data_src,
+            class: "w-full h-full object-cover transition-opacity duration-300 ease-in",
+            sizes: sizes,
+            max_width: max_width,
+            preload: preload
+        %}
+      </div>
+      {% assign images_rendered = images_rendered | plus: 1 %}
+      {% if images_rendered >= max_images %}{% break %}{% endif %}
+    {% endfor %}
+  </div>
+  {% if scrollbar_class != blank %}
+    {% render '_components.scrollbar', class: scrollbar_class %}
+  {% endif %}
+  {% if scroll_pagination_class != blank %}
+    {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Dynamic Filters"
+    },
+    {
+      "type": "radio",
+      "id": "filter_images",
+      "label": "Filter images",
+      "default": "show_all",
+      "options": [
+        {
+          "value": "show_all",
+          "label": "Show all images"
+        },
+        {
+          "value": "selected_variant",
+          "label": "Selected Variant image only."
+        },
+        {
+          "value": "variant_images_by_order",
+          "label": "t:all.selected_variant_image_and_images_following_until_the_next_image_is_assigned_to_a_variant_or_there_are_no_more_images"
+        },
+        {
+          "value": "variant_images_by_metafield",
+          "label": "t:all.selected_variant_image_and_images_assigned_to_the_metafield_smart_images_on_the_variant_level_set_to_type_list_file_reference"
+        },
+        {
+          "value": "variant_images_and_unassigned",
+          "label": "t:all.selected_variant_image_and_images_that_are_not_assigned_to_any_other_variant"
+        },
+        {
+          "value": "only_unassigned",
+          "label": "Only images that are not assigned to any variant."
+        },
+        {
+          "value": "first_or_selected_image",
+          "label": "First or selected image only."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "hide_image_alt",
+      "label": "Hide images with ALT text:",
+      "default": "hide-image"
+    },
+    {
+      "type": "checkbox",
+      "id": "scroll_to_selected_variant_image",
+      "label": "Scroll to selected variant image",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "select",
+      "id": "additional_view",
+      "label": "Additional View / Zoom",
+      "default": "media_gallery",
+      "options": [
+        {
+          "value": "disabled",
+          "label": "None"
+        },
+        {
+          "value": "media_gallery",
+          "label": "Gallery Modal"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Slider Only"
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "range",
+      "id": "preload_images",
+      "label": "Preload images",
+      "default": 5,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "info": "Preloads first n number of images. Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 800
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__gallery"
+}
+{% endschema %}

@@ -1,0 +1,670 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_product"
+  assign primary_source = block.settings.primary_source
+  assign fallback_source = block.settings.fallback_source
+  assign fallback_products = block.settings.fallback_products
+  assign fallback_collection = block.settings.fallback_collection
+  assign order_offset = block.settings.order_offset
+  assign targeting_type = block.settings.targeting_type
+  assign target_product = block.settings.target_product
+  assign display_limit = block.settings.display_limit
+  assign product_card_class = block.settings.product_card_class
+  assign hide_out_of_stock = block.settings.hide_out_of_stock
+  assign addon_products = block.settings.addon_products
+  assign addon_auto_add = block.settings.addon_auto_add
+  assign addon_bundle_in_cart = block.settings.addon_bundle_in_cart
+  assign addon_default_subscription = block.settings.addon_default_subscription
+  assign hydrate_immediately = block.settings.hydrate_immediately
+  assign preload_images = block.settings.preload_images
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign target_product = target_product | default: product
+  assign _products = "" | split: "" | uniq
+  assign order_offset = order_offset | default: 1
+
+  if request.design_mode and target_product == blank
+    assign target_product = collections.all.products[0]
+  endif
+
+  assign complementary_products = target_product.metafields.shopify--discovery--product_recommendation.complementary_products.value
+  assign related_products = target_product.metafields.shopify--discovery--product_recommendation.related_products.value
+  assign _fallback_products = fallback_products | where: "id"
+  assign _fallback_colllection_products = fallback_collection.products | where: "id"
+  assign _fallback_products = _fallback_products | concat: _fallback_colllection_products
+
+
+  assign display_limit = display_limit | strip_newlines | replace: ' ', "" | split: '|'
+  assign display_limit = display_limit[0] | split: '/'
+
+  assign desktop_display_limit = display_limit.first | abs
+  assign mobile_display_limit = display_limit.last | abs
+
+  assign max_display_limit = desktop_display_limit | at_least: mobile_display_limit | default: 12
+
+  if request.visual_preview_mode
+    assign primary_source = 'manual'
+  endif
+
+  case primary_source
+    when 'complementary'
+      for _product in complementary_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign complementary_product = complementary_products | where: 'id', _product.id
+        if complementary_product.first.id == target_product.id
+          continue
+        endif
+        assign _products = _products | concat: complementary_product | uniq
+        assign index = index | plus: 1
+      endfor
+    when 'related'
+      for _product in related_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign related_product = related_products | where: 'id', _product.id
+        if related_product.first.id == target_product.id
+          continue
+        endif
+        assign _products = _products | concat: related_product | uniq
+        assign index = index | plus: 1
+      endfor
+    when 'manual'
+      for _product in _fallback_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign fallback_product = _fallback_products | where: 'id', _product.id
+        assign _products = _products | concat: fallback_product | uniq
+        assign index = index | plus: 1
+      endfor
+  endcase
+
+  case fallback_source
+    when 'complementary'
+      for _product in complementary_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign complementary_product = complementary_products | where: 'id', _product.id
+        if complementary_product.first.id == target_product.id
+          continue
+        endif
+        assign _products = _products | concat: complementary_product | uniq
+        assign index = index | plus: 1
+      endfor
+    when 'related'
+      for _product in related_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign related_product = related_products | where: 'id', _product.id
+        if related_product.first.id == target_product.id
+          continue
+        endif
+        assign _products = _products | concat: related_product | uniq
+        assign index = index | plus: 1
+      endfor
+    when 'manual'
+      for _product in _fallback_products
+        if hide_out_of_stock and _product.available != true
+          continue
+        endif
+        if _product.metafields.seo.hidden and _product.metafields.seo.hidden != 0 and _product.metafields.seo.hidden != false
+          continue
+        endif
+        if index >= max_display_limit
+          break
+        endif
+        assign fallback_product = _fallback_products | where: 'id', _product.id
+        assign _products = _products | concat: fallback_product | uniq
+        assign index = index | plus: 1
+      endfor
+  endcase
+
+
+  if request.visual_preview_mode and _fallback_products == blank or _fallback_products.size <= 0
+    assign _fallback_products = collections.all.products
+  endif
+
+  for _product in _fallback_products
+    if hide_out_of_stock and _product.available != true
+      continue
+    endif
+    if index >= max_display_limit
+      break
+    endif
+    assign fallback_product = _fallback_products | where: 'id', _product.id
+    if fallback_product.first.id == target_product.id and primary_source != 'manual' or fallback_source != 'manual'
+      continue
+    endif
+    assign _products = _products | concat: fallback_product | uniq
+    assign index = index | plus: 1
+  endfor
+
+  if request.visual_preview_mode and _products == blank or _products.size <= 0
+    assign _products = collections.all.products
+    assign primary_source = 'manual'
+  endif
+
+  assign index = 0
+
+%}
+
+{% liquid
+  if _products.size <= 0
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script' and primary_source != 'recently_viewed' and fallback_source != 'recently_viewed' and primary_source != 'related' and fallback_source != 'related'
+      echo hide_conditionally
+      break
+    endif
+    if request.design_mode
+      assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+    endif
+  endif
+%}
+
+{% if request.design_mode != true and is_empty and hide_if_empty == 'section' and primary_source == 'recently_viewed' or fallback_source == 'recently_viewed' or primary_source == 'related' or fallback_source == 'related' %}
+  {% capture style %}#shopify-section-{{ section.id }} { display: none; }{% endcapture %}
+  <style>{{ style }}</style>
+{% endif %}
+
+{% if _fallback_products.count < 1 and _products.size < 1 and target_product == blank and primary_source != 'recently_viewed' and fallback_source != 'recently_viewed' %}
+  {% break %}
+{% endif %}
+{% capture fallback_product_data %}
+  [{% for _product in _fallback_products limit: max_display_limit %}[{{ _product.handle | json }}, {{ _product.id }}]{% unless forloop.last %},{% endunless %}
+{% endfor %}]
+{% endcapture %}
+
+{% if primary_source == 'related' or fallback_source == 'related' or primary_source == 'recently_viewed' or fallback_source == 'recently_viewed' %}
+  <script x-init="_product.initDynamicProductCards($el, {
+      targeting_type: `{{ targeting_type }}`,
+      target_product_handle: `{{ target_product.handle }}`,
+      target_product_id: +`{{ target_product.id }}`,
+      addon_products: `{{ addon_products }}` === 'true',
+      addon_auto_add: `{{ addon_auto_add }}` === 'true',
+      addon_bundle_in_cart: `{{ addon_bundle_in_cart }}` === 'true',
+      addon_target_product: `{{ section.settings.product.handle | default: product.handle }}`,
+      primary_source: `{{ primary_source }}`,
+      fallback_source: `{{ fallback_source }}`,
+      product_class: `{{ product_card_class }}`,
+      desktop_display_limit: +`{{ desktop_display_limit | default: 12 }}`,
+      mobile_display_limit: +`{{ mobile_display_limit | default: 12 }}`,
+      hide_if_empty: `{{ hide_if_empty }}`,
+      handleResize: () => { $data?.content_slider?.handleResize() },
+      order_offset: +`{{ order_offset }}`,
+      hide_out_of_stock: `{{ hide_out_of_stock }}` === 'true',
+      section_id: `{{ section.id }}`,
+      block_id: `{{ block.id }}`
+    }); $nextTick(()=>{ $el.remove(); })" data-fallback-products="{{ fallback_product_data | escape }}">
+    (() => {
+      const script = document.currentScript;
+      document.addEventListener('theme:utils:loaded', () => {
+        if (!utils.isVisible(script.parentElement)) {
+          const removeXDeferFlags = (parent) => {
+
+            if (parent instanceof Element) {
+              if (parent.hasAttribute('x-defer')) {
+                parent.removeAttribute('x-defer');
+              }
+              removeXDeferFlags(parent?.parentElement);
+            }
+          };
+          removeXDeferFlags(script.parentElement);
+        }
+      }, { once: true });
+    })();
+  </script>
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% assign product_section = product_card_class.schema.value %}
+
+{% if section.settings.bundle_target_type != blank %}
+  {% assign is_bundle = true %}
+{% endif %}
+{% if section.settings.supports_addon_products > 0 %}
+  {% assign is_pdp = true %}
+{% endif %}
+
+{% for product in _products limit: max_display_limit %}
+  {% assign order_index = forloop.index0 | plus: order_offset %}
+  {% assign product_visibility = "" %}
+  {% if forloop.index > desktop_display_limit %}
+    {% assign product_visibility = "mobile-only" %}
+  {% endif %}
+  {% if forloop.index > mobile_display_limit %}
+    {% assign product_visibility = "desktop-tablet-only" %}
+  {% endif %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="shrink-0 max-w-full w-full order-[--order] {{ product_visibility }}" {{ hide_attribute }}
+       data-render-index="{{ block.id }}--{{ forloop.index0 }}"
+       data-hide-if-empty="{{ hide_if_empty }}"
+       data-product-handle="{{ product.handle }}"
+       {% if addon_products %}data-addons-default-subscription="{% if addon_default_subscription == true %}true{% else %}false{% endif %}"{% endif %}
+       style="--order: {{ order_index | times: 10 }}">
+    {% capture html_attributes %}
+      {% if addon_products %}
+        data-addon-product-target="{{ section.settings.product.handle | default: product.handle }}"
+        {% if addon_auto_add %}
+          data-addon-auto-add
+        {% endif %}
+        {% if addon_bundle_in_cart %}
+          data-addon-cart-bundle
+        {% endif %}
+      {% endif %}
+    {% endcapture %}
+    {% if product_section != blank %}
+      {% assign preload_images_boolean = true %}
+      {% if forloop.index0 >= preload_images %}
+        {% assign preload_images_boolean = false %}
+      {% endif %}
+
+      {% render "card_product_card._static",
+          product: product,
+          section: product_section,
+          is_bundle: is_bundle,
+          is_pdp: is_pdp,
+          preload_images: preload_images,
+          html_attributes: html_attributes,
+          preload_images: preload_images_boolean,
+          addon_default_subscription_override: addon_default_subscription
+      %}
+    {% else %}
+      <section
+          class="card-loading product-card--{{ product_card_class }}"
+          data-card-handle="{{ product_card_class }}"
+          data-product-handle="{{ product.handle }}"
+          data-product-id="{{ product.id }}"
+          {{ html_attributes }}
+          {% if request.visual_preview_mode or hydrate_immediately %}
+            data-intersected
+          {% endif %}
+          x-init="$nextTick(() => _sections.hydrateProductCard($el))"></section>
+    {% if load_async != true %}
+      <script type="application/json"
+              data-product-data="{{ product.handle }}">{%- render '_json.product', product: product, card: true, meta_product: true -%}</script>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endfor %}
+
+
+{% schema %}
+{
+  "name": "Product Cards",
+  "settings": [
+    {
+      "type": "select",
+      "id": "primary_source",
+      "label": "Primary source",
+      "default": "complementary",
+      "options": [
+        {
+          "value": "complementary",
+          "label": "Complementary"
+        },
+        {
+          "value": "related",
+          "label": "Related"
+        },
+        {
+          "value": "recently_viewed",
+          "label": "Last viewed"
+        },
+        {
+          "value": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "fallback_source",
+      "label": "Fallback source",
+      "default": "related",
+      "options": [
+        {
+          "value": "complementary",
+          "label": "Complementary"
+        },
+        {
+          "value": "related",
+          "label": "Related"
+        },
+        {
+          "value": "recently_viewed",
+          "label": "Last viewed"
+        },
+        {
+          "value": "manual",
+          "label": "Manual"
+        }
+      ]
+    },
+    {
+      "type": "product_list",
+      "id": "fallback_products",
+      "label": "Manual products"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Manual Collection"
+    },
+    {
+      "type": "number",
+      "id": "order_offset",
+      "label": "Order index offset",
+      "default": 1,
+      "info": "Use this when mixing multiple sources and order items. Defaults to 1."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Rendering"
+    },
+    {
+      "type": "paragraph",
+      "content": "Used for 'Related' and 'Complementary' Product Sources"
+    },
+    {
+      "type": "select",
+      "id": "targeting_type",
+      "label": "Targeting Algorithm",
+      "default": "product",
+      "options": [
+        {
+          "value": "product",
+          "label": "Target Product"
+        },
+        {
+          "group": "Recently viewed",
+          "value": "recently_viewed_ai",
+          "label": "AI"
+        },
+        {
+          "group": "Recently viewed",
+          "value": "recently_viewed_most_expensive",
+          "label": "Highest priced"
+        },
+        {
+          "group": "Recently viewed",
+          "value": "recently_viewed_least_expensive",
+          "label": "Lowest priced"
+        },
+        {
+          "group": "Cart Items",
+          "value": "cart_ai",
+          "label": "AI"
+        },
+        {
+          "group": "Cart Items",
+          "value": "cart_most_expensive",
+          "label": "Highest priced"
+        },
+        {
+          "group": "Cart Items",
+          "value": "cart_least_expensive",
+          "label": "Lowest priced"
+        },
+        {
+          "group": "Cart Items",
+          "value": "cart_recently_added",
+          "label": "Recently added"
+        }
+      ]
+    },
+    {
+      "type": "product",
+      "id": "target_product",
+      "label": "Target product"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "text",
+      "id": "display_limit",
+      "label": "Display limit",
+      "default": "12 / 4"
+    },
+    {
+      "type": "metaobject",
+      "id": "product_card_class",
+      "label": "Product card",
+      "metaobject_type": "product_cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_out_of_stock",
+      "label": "Hide out of stock",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Addon products",
+      "visible_if": "{{ section.settings.supports_addon_products > 0 }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "addon_products",
+      "label": "Enable",
+      "visible_if": "{{ section.settings.supports_addon_products > 0 }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "addon_auto_add",
+      "label": "Auto add items",
+      "visible_if": "{{ block.settings.addon_products == true and section.settings.supports_addon_products > 0 }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "addon_bundle_in_cart",
+      "label": "Collapse Line Items",
+      "visible_if": "{{ block.settings.addon_products == true and section.settings.supports_addon_products > 0 }}",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "addon_default_subscription",
+      "label": "Add addons as subscription when main product is subscription",
+      "visible_if": "{{ block.settings.addon_products == true and section.settings.supports_addon_products > 0 }}",
+      "default": false,
+      "info": "When enabled, addons use the main product's selected selling plan. When disabled, addons are always added as one-time purchase."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "hydrate_immediately",
+      "label": "Pre Hydrate"
+    },
+    {
+      "type": "range",
+      "id": "preload_images",
+      "label": "Preload first images",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Cards",
+      "category": "Cards"
+    },
+    {
+      "name": "Featured Product",
+      "settings": {
+        "primary_source": "manual",
+        "fallback_source": "manual",
+        "fallback_products": "{{ closest.article.metafields.smart.featured_product.value }}",
+        "fallback_collection": "",
+        "order_offset": 0,
+        "targeting_type": "product",
+        "target_product": "",
+        "display_limit": "1",
+        "product_card_class": "product-card-featured",
+        "hide_out_of_stock": false,
+        "addon_products": false,
+        "addon_auto_add": false,
+        "addon_bundle_in_cart": true,
+        "addon_default_subscription": false,
+        "hydrate_immediately": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n}",
+        "hide_if_empty": "block"
+      },
+      "blocks": [],
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_product"
+}
+{% endschema %}

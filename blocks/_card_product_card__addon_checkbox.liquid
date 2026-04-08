@@ -1,0 +1,90 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__addon_checkbox"
+  assign section_type = "card_product_card"
+  assign label = block.settings.label
+  assign checkbox_class = block.settings.checkbox_class
+  assign default_checked = block.settings.default_checked
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+{% if default_checked %}
+  {% capture html_attributes %}
+    x-init="setTimeout(() => toggleAddon(true),1000)"
+  {% endcapture %}
+{% endif %}
+
+<div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}>
+  {% render '_components.checkbox',
+      class: checkbox_class,
+      label: label,
+      name: 'name',
+      default_checked: default_checked,
+      html_attributes: html_attributes,
+      setState: 'toggleAddon($el.checked)'
+  %}
+</div>
+
+{% schema %}
+{
+  "name": "Addon checkbox",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "label",
+      "label": "Label"
+    },
+    {
+      "type": "text",
+      "id": "checkbox_class",
+      "label": "Checkbox class",
+      "default": "input-checkbox"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_checked",
+      "label": "Checked by default",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Addon checkbox",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__addon_checkbox"
+}
+{% endschema %}

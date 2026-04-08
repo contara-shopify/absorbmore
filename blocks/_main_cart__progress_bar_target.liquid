@@ -1,0 +1,88 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_cart__progress_bar_target"
+  assign section_type = "main_cart"
+  assign target = block.settings.target
+  assign success_message = block.settings.success_message
+  assign incentive_message = block.settings.incentive_message
+  assign content_class = block.settings.content_class
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-data="{ index: [...$el.parentNode.children].findIndex(child => child === $el) }"
+     data-progress-bar-target="{{ target }}"
+     data-progress-bar-pre-target-message="{% render '_input.inline_richtext', content: incentive_message, escape: true %}">
+  <div x-cloak
+       class="{{ content_class }}"
+       x-show="index === percentages?.findLastIndex(([p]) => p === 100)">{% render '_input.inline_richtext', content: success_message %}
+  </div>
+  <div x-cloak
+       x-show="index === currentIndex && percentages?.[0]?.[0] !== 100"
+       class="{{ content_class }}"
+       x-html="$el.getAttribute('data-content')?.replace('[difference]', settings.incentive_type === 'total_price' ? utils.formatMoney(targets[currentIndex] - current) : `${targets[currentIndex] - current}`)"
+       data-content="{% render '_input.inline_richtext', content: incentive_message, escape: true, skip_pluralization: true %}"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Incentive Target",
+  "settings": [
+    {
+      "type": "number",
+      "id": "target",
+      "label": "Target",
+      "default": 10000,
+      "info": "Use cents for target calculation based on amount (i.e. For a target of $39,40 set this to 3940)"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use [difference] as a placeholder for the calculated difference amount based on the current cart total and the target."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "<strong>You've unlocked Free Shipping</strong>",
+      "info": "This will only show for the last / highest target. [Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "incentive_message",
+      "label": "Incentive message",
+      "default": "You are [difference] from <strong>Free Shipping</strong>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Incentive Target",
+      "category": "** Cart **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_cart__progress_bar_target"
+}
+{% endschema %}

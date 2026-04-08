@@ -1,0 +1,278 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__option__select"
+  assign section_type = "card_product_card"
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign option_type = block.settings.option_type
+  assign match_option_titles = block.settings.match_option_titles
+  assign match_option_index = block.settings.match_option_index
+  assign match_exact_word = block.settings.match_exact_word
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign disabled_items = '[]'
+  assign values = 'index > -1 && p_card?.product?.options_with_values[index]?.values || []'
+  assign titles = 'index > -1 && p_card?.product?.options_with_values[index]?.values || []'
+  if sold_out_variants == 'disable'
+    assign disabled_items = 'index > -1 && p_card?.product?.options_with_values[index]?.values?.map(value => !hasAvailableVariant(index, value)) || []'
+  endif
+  if sold_out_variants == 'hide'
+    assign values = 'index > -1 && p_card?.product?.options_with_values[index]?.values?.filter(value => hasAvailableVariant(index, value)) || []'
+    assign titles = 'index > -1 && p_card?.product?.options_with_values[index]?.values?.filter(value => hasAvailableVariant(index, value)) || []'
+  endif
+%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+{% capture option_settings %}
+  {
+  "block_id": "{{ block.id }}__0",
+  "option_type": {{ option_type | json }},
+  "match_option_index": {{ match_option_index | minus: 1 | json }},
+  "match_option_titles": {{ match_option_titles | json }},
+  "match_exact_word": {{ match_exact_word | json }}
+  }
+{% endcapture %}
+
+
+
+{% for i in (0..2) %}
+  {% if option_type == 'fallback_options' %}
+    {% capture option_settings %}
+      {
+      "block_id": "{{ block.id }}__{{ i }}",
+      "option_type": {{ option_type | json }},
+      "match_option_index": {{ i | json }},
+      "match_option_titles": {{ match_option_titles | json }},
+      "match_exact_word": {{ match_exact_word | json }}
+      }
+    {% endcapture %}
+  {% endif %}
+  <fieldset
+      data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+      @click.stop="()=>{}"
+      data-options-block="{{ option_settings | escape }}"
+      x-data="{ index: getOptionIndex(`{{ block.id }}__{{ i }}`) }"
+      x-effect="() => { if (p_card?.product?.id) { index = getOptionIndex(`{{ block.id }}__{{ i }}`)}; }"
+      x-cloak
+      {% if sold_out_variants == 'hide' %}
+        x-show="p_card?.hydrated && index !== -1 && p_card?.product?.options_with_values?.[index]?.values?.some(value => hasAvailableVariant(index, value)) && p_card?.product?.variants?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && p_card?.selected_variant?.id && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% else %}
+        x-show="p_card?.hydrated && index !== -1 && p_card?.product?.variants?.length && p_card?.product?.variants?.[0]?.title !== 'Default Title' && p_card?.selected_variant?.id && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+      {% endif %}
+      x-defer="intersect">
+    <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+            data-legend="{% render '_input.inline_richtext', content: legend, escape: true %}"
+            x-effect="if (index > -1) $el.innerHTML = $el.getAttribute('data-legend').replace('[heading]',p_card?.product?.options[index]).replace('[value]', p_card?.selected_options[index])">
+    </legend>
+
+    {% render '_components.select',
+        dynamic: true,
+        values: values,
+        titles: titles,
+        disabled_items: disabled_items,
+        select_class: select_class,
+        label: legend_label,
+        setState: "$data.setProductOption({ index, value })",
+        state: "p_card?.selected_options[index]",
+        current_value: 'index > -1 && p_card?.selected_options[index]',
+        current_title: 'index > -1 && p_card?.selected_options[index]',
+        html_attributes: "x-ignore",
+        disabled_clickable: true
+    %}
+  </fieldset>
+  {% if option_type != 'fallback_options' %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Option: Select",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Option title"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the option title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "select",
+      "id": "sold_out_variants",
+      "label": "Sold Out Variants",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Show"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "disable",
+          "label": "Disable"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Match Option"
+    },
+    {
+      "type": "select",
+      "id": "option_type",
+      "label": "Match Option type",
+      "default": "by_name",
+      "options": [
+        {
+          "value": "by_name",
+          "label": "By Name"
+        },
+        {
+          "value": "by_index",
+          "label": "By Index"
+        },
+        {
+          "value": "fallback_options",
+          "label": "Fallback Options"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Priority By name, By Index, then Fallback Options."
+    },
+    {
+      "type": "text",
+      "id": "match_option_titles",
+      "label": "Match option titles",
+      "info": "Comma separated list of possible option titles.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "range",
+      "id": "match_option_index",
+      "label": "Match option index",
+      "default": 1,
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "visible_if": "{{ block.settings.option_type == 'by_index' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "match_exact_word",
+      "label": "Match exact word",
+      "default": false,
+      "info": "Enable this if you want to match the exact titles and make the 'Match option titles' case sensitive.",
+      "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Option: Select",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__option__select"
+}
+{% endschema %}

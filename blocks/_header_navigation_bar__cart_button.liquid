@@ -1,0 +1,85 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_header_navigation_bar__cart_button"
+  assign section_type = "header_navigation_bar"
+  assign icon = block.settings.icon
+  assign show_cart_quantity = block.settings.show_cart_quantity
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign url = url | default: '/#modal--cart-drawer'
+
+  assign item_count = 0
+  for item in cart.items
+    assign _item = item
+    if item.properties._p_id_link == blank and item.properties._p_hidden == blank
+      assign item_count = item_count | plus: item.quantity
+    endif
+  endfor
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+   class="shrink-0 relative"
+   href="{{ url }}"
+   title="Open Cart Drawer">
+  {% render '_components.icon', icon: icon, class: 'w-5 h-5' %}
+  {% if show_cart_quantity %}
+    <div x-data
+         class="cart-icon-count"
+         x-cloak
+         x-show="$cart.state.item_count > 0"
+         x-text="$cart.state.item_count">{{ item_count }}</div>
+  {% endif %}
+</a>
+
+{% schema %}
+{
+  "name": "Cart Button",
+  "settings": [
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon",
+      "default": "cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_quantity",
+      "label": "Show quantity",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Button",
+      "category": "** Navigation Bar **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___header_navigation_bar__cart_button"
+}
+{% endschema %}

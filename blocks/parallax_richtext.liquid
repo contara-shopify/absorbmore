@@ -1,0 +1,190 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "parallax_richtext"
+  assign content = block.settings.content
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign x_breakpoints = block.settings.x_breakpoints
+  assign y_breakpoints = block.settings.y_breakpoints
+  assign opacity_breakpoints = block.settings.opacity_breakpoints
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  assign content = content | default: ""
+  assign content_check = content | strip_html | strip
+
+  if content_check == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     x-data="{ ..._sections.initParallax($el) }"
+     :style="`transform: translateX(${calculateParallax(scrollProgress, '{{ x_breakpoints }}')}%) translateY(${calculateParallax(scrollProgress, '{{ y_breakpoints }}')}%); opacity: ${calculateParallax(scrollProgress, '{{ opacity_breakpoints }}')};`"
+     class="relative {{ text_alignment | prepend: 'text-' }}">
+  {% render '_input.richtext', content: content, class: content_class %}
+</div>
+
+{% schema %}
+{
+  "name": "Parallax Richtext",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Parallax Settings"
+    },
+    {
+      "type": "text",
+      "id": "x_breakpoints",
+      "label": "X-Axis Breakpoints",
+      "default": "0:0, 1:0",
+      "info": "Format: scroll:position(%), e.g., 0:-10, 0.5:0, 1:10"
+    },
+    {
+      "type": "text",
+      "id": "y_breakpoints",
+      "label": "Y-Axis Breakpoints",
+      "default": "0:20, 1:-20",
+      "info": "Format: scroll:position(%), e.g., 0:20, 0.5:0, 1:-20"
+    },
+    {
+      "type": "text",
+      "id": "opacity_breakpoints",
+      "label": "Opacity Breakpoints",
+      "default": "0:1, 1:1",
+      "info": "Format: scroll:opacity, e.g., 0:0, 0.5:1, 1:0"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parallax Richtext",
+      "category": "Custom"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__parallax_richtext"
+}
+{% endschema %}

@@ -1,0 +1,128 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_cart__dynamic_richtext"
+  assign section_type = "main_cart"
+  assign show_conditionally = block.settings.show_conditionally
+  assign content = block.settings.content
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="{{ text_alignment | prepend: 'text-' }}"
+     x-show="_cart.getDynamicTextWithFormattedPrice($el.getAttribute('data-content')) && (_cart.showConditionally(`{{ show_conditionally }}`) || $editor?.select_block_id === `{{ block.id }}`)"
+  {% if show_conditionally == 'cart_empty' and cart.item_count > 0 %}x-cloak{% endif %}
+  {% if show_conditionally == 'items_added' and cart.item_count <= 0 %}x-cloak{% endif %}
+     data-content="{% render '_input.richtext', content: content, class: content_class, escape: true %}"
+     x-html="_cart.getDynamicTextWithFormattedPrice($el.getAttribute('data-content'))">
+</div>
+
+{% schema %}
+{
+  "name": "Dynamic Richtext",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "cart_empty",
+          "label": "Cart Empty"
+        },
+        {
+          "value": "items_added",
+          "label": "Items Added"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Content accepts 'cart' object access via the bracket notation. i.e.'[cart.total_price]' "
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Richtext",
+      "category": "** Cart **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_cart__dynamic_richtext"
+}
+{% endschema %}

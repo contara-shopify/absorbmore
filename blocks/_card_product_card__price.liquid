@@ -1,0 +1,218 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__price"
+  assign section_type = "card_product_card"
+  assign css_class = block.settings.css_class
+  assign show_compare_as_price = block.settings.show_compare_as_price
+  assign show_subscription_price = block.settings.show_subscription_price
+  assign discount_css_class = block.settings.discount_css_class
+  assign price_calculation = block.settings.price_calculation
+  assign currency_display = block.settings.currency_display
+  assign text_alignment = block.settings.text_alignment
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+  {% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{-  css | append:custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+     x-ignore
+     x-show="$editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+     class="inline-flex gap-2 {{ text_alignment | prepend: 'text-' }}">
+  <span class="{{ css_class }}"
+        :class="(({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) || (p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)) ? 'discounted-price' : ''"
+      {% if price_calculation == 'normal' %}
+        x-html="utils.formatMoney(({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price, window.money_format.replace(/amount[^}]*/gi, `{{ currency_display }}`))"
+      {% endif %}
+      {% if price_calculation == 'quantity_multiplied' %}
+        x-html="utils.formatMoney((({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price) * (p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi, `{{ currency_display }}`))"
+      {% endif %}
+  ></span>
+  {% if show_compare_as_price %}
+    <span class="{{ discount_css_class }} line-through"
+          x-cloak
+          x-show="(p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)"
+          {% if price_calculation == 'quantity_multiplied' %}
+            x-html="utils.formatMoney((p_card?.selected_variant?.compare_at_price || 0) * (p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi, `{{ currency_display }}`))"
+          {% else %}
+            x-html="utils.formatMoney(p_card?.selected_variant?.compare_at_price || 0, window.money_format.replace(/amount[^}]*/gi, `{{ currency_display }}`))"
+          {% endif %}
+    ></span>
+  {% endif %}
+</div>
+{% schema %}
+{
+  "name": "Price",
+  "settings": [
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "CSS class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "header",
+      "content": "Discounts"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_as_price",
+      "label": "Show compare as price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subscription_price",
+      "label": "Show subscription price",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "discount_css_class",
+      "label": "Discount CSS class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "select",
+      "id": "price_calculation",
+      "label": "Price calculation",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "quantity_multiplied",
+          "label": "Quantity Multiplied"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "currency_display",
+      "label": "Currency display",
+      "default": "amount",
+      "options": [
+        {
+          "value": "store_default",
+          "label": "Store Default"
+        },
+        {
+          "value": "amount",
+          "label": "Full"
+        },
+        {
+          "value": "amount_no_decimals",
+          "label": "No Decimals"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Price",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__price"
+}
+{% endschema %}

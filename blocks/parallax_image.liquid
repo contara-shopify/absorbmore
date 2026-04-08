@@ -1,0 +1,219 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "parallax_image"
+  assign image = block.settings.image
+  assign url = block.settings.url
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign x_breakpoints = block.settings.x_breakpoints
+  assign y_breakpoints = block.settings.y_breakpoints
+  assign scale_breakpoints = block.settings.scale_breakpoints
+  assign rotate_breakpoints = block.settings.rotate_breakpoints
+  assign opacity_breakpoints = block.settings.opacity_breakpoints
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if image == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if url != blank %}
+  <a data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     x-data="{ ..._sections.initParallax($el), progress: $scrollProgress.progress.get($el.closest(`.shopify-section`)) }"
+     x-effect="progress = $scrollProgress.progress.get($el.closest(`.shopify-section`))"
+     :style="`transform: translateX(${calculateParallax(progress, '{{ x_breakpoints }}')}%) translateY(${calculateParallax(progress, '{{ y_breakpoints }}')}%) scale(${calculateParallax(progress, '{{ scale_breakpoints }}')}) rotate(${calculateParallax(progress, '{{ rotate_breakpoints }}')}deg); opacity: ${calculateParallax(progress, '{{ opacity_breakpoints }}')};`"
+     href="{{ url }}"
+      {% if url.type == 'home_link' %}
+        aria-label="{{ page_title }}"
+      {% elsif url.object.title != blank %}
+        aria-label="{{ url.object.title }}"
+      {% elsif url.title != blank %}
+        aria-label="{{ url.title }}"
+      {% elsif title != blank %}
+        aria-label="{{ title }}"
+      {% endif %}
+     class="relative shrink-0 transition-all ease-linear">
+    {% render '_object.image', image: image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+  </a>
+{% else %}
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       x-data="{ ..._sections.initParallax($el), progress: $scrollProgress.progress.get($el.closest(`.shopify-section`)) }"
+       x-effect="progress = $scrollProgress.progress.get($el.closest(`.shopify-section`))"
+       :style="`transform: translateX(${calculateParallax(progress, '{{ x_breakpoints }}')}%) translateY(${calculateParallax(progress, '{{ y_breakpoints }}')}%) scale(${calculateParallax(progress, '{{ scale_breakpoints }}')}) rotate(${calculateParallax(progress, '{{ rotate_breakpoints }}')}deg); opacity: ${calculateParallax(progress, '{{ opacity_breakpoints }}')};`"
+       class="image-wrapper relative shrink-0 transition-all ease-linear">
+    {% render '_object.image', image: image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Parallax Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 1200
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes)."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Parallax Settings"
+    },
+    {
+      "type": "text",
+      "id": "x_breakpoints",
+      "label": "Transform X-Axis Breakpoints",
+      "default": "0:0, 1:0",
+      "info": "Format: scroll:position(%), e.g., 0:-10, 0.5:0, 1:10"
+    },
+    {
+      "type": "text",
+      "id": "y_breakpoints",
+      "label": "Transform Y-Axis Breakpoints",
+      "default": "0:0, 1:0",
+      "info": "Format: scroll:position(%), e.g., 0:20, 0.5:0, 1:-20"
+    },
+    {
+      "type": "text",
+      "id": "scale_breakpoints",
+      "label": "Transform Scale Breakpoints",
+      "default": "0:1, 1:1",
+      "info": "Format: scroll:position(%), e.g., 0:1, 0.5:0.8, 1:1"
+    },
+    {
+      "type": "text",
+      "id": "rotate_breakpoints",
+      "label": "Transform Rotate Breakpoints",
+      "default": "0:0, 1:0",
+      "info": "Format: scroll:position(%), e.g., 0:0, 0.5:180, 1:360"
+    },
+    {
+      "type": "text",
+      "id": "opacity_breakpoints",
+      "label": "Opacity Breakpoints",
+      "default": "0:1, 1:1",
+      "info": "Format: scroll:opacity, e.g., 0:0, 0.5:1, 1:0"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parallax image",
+      "category": "Custom"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__parallax_image"
+}
+{% endschema %}

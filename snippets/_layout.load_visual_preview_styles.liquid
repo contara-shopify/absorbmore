@@ -1,0 +1,85 @@
+<script>
+  if (window.location.search.includes('source=visualPreview')) {
+    const dbKey = `_platter---cached-global-groups`;
+    const CACHE_NAME = "platter-global-groups";
+    const CACHE_TTL_MS = 5 * 60 * 1000;
+
+    if (!document.querySelector('.shopify-section-group-0_global')) {
+      window.stylesLoaded = false;
+
+      const readFromCache = async () => {
+        if (!("caches" in window)) return { sectionGroups: null, stale: false };
+        const cache = await caches.open(CACHE_NAME);
+        const [metaRes, res] = await Promise.all([
+          cache.match(`${dbKey}-meta`),
+          cache.match(dbKey),
+        ]);
+        if (!res) return { sectionGroups: null, stale: false };
+        let stale = true;
+        try {
+          const meta = metaRes ? await metaRes.json() : null;
+          stale = !meta || Date.now() - meta.ts > (meta.ttl ?? CACHE_TTL_MS);
+        } catch {
+          stale = true;
+        }
+        return { sectionGroups: JSON.parse(await res.text()), stale };
+      };
+
+      const writeToCache = async (sectionGroups) => {
+        if (!("caches" in window) || !sectionGroups) return;
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(
+          dbKey,
+          new Response(JSON.stringify(sectionGroups), {
+            headers: { "Content-Type": "application/json" },
+          }),
+        );
+        await cache.put(
+          `${dbKey}-meta`,
+          new Response(JSON.stringify({ ts: Date.now(), ttl: CACHE_TTL_MS }), {
+            headers: { "Content-Type": "application/json" },
+          }),
+        );
+      };
+
+      (async () => {
+        const res = await readFromCache();
+
+        if (res?.sectionGroups && !res.stale) {
+          res.sectionGroups.forEach(group => {
+            const sectionGroup = document.createElement('div');
+            sectionGroup.innerHTML = group;
+            document.body.prepend(sectionGroup.firstChild);
+          });
+          window.stylesLoaded = true;
+        }
+
+        if (!window.stylesLoaded) {
+          fetch("/")
+            .then((res) => res.text())
+            .then(async (res) => {
+              const div = document.createElement('div');
+              div.innerHTML = res;
+              const styleSectionGroups = [...div.querySelectorAll('.shopify-section-group-0_global, .shopify-section-group-0_card')].map(el => el.outerHTML);
+
+              styleSectionGroups.forEach(group => {
+                const sectionGroup = document.createElement('div');
+                sectionGroup.innerHTML = group;
+                document.body.prepend(sectionGroup.firstChild);
+              });
+
+              try {
+                await writeToCache(styleSectionGroups);
+              } catch {
+                const cache = await caches.open(CACHE_NAME);
+                await cache.delete(dbKey);
+                await writeToCache(styleSectionGroups);
+              }
+
+              window.stylesLoaded = true;
+            });
+        }
+      })();
+    }
+  }
+</script>

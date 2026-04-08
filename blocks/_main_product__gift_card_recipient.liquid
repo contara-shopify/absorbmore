@@ -1,0 +1,313 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__gift_card_recipient"
+  assign section_type = "main_product"
+  assign checkbox_label = block.settings.checkbox_label
+  assign checkbox_class = block.settings.checkbox_class
+  assign email_label = block.settings.email_label
+  assign email_placeholder = block.settings.email_placeholder
+  assign email_class = block.settings.email_class
+  assign enable_name = block.settings.enable_name
+  assign name_label = block.settings.name_label
+  assign name_placeholder = block.settings.name_placeholder
+  assign name_class = block.settings.name_class
+  assign enable_message = block.settings.enable_message
+  assign message_label = block.settings.message_label
+  assign message_placeholder = block.settings.message_placeholder
+  assign message_class = block.settings.message_class
+  assign enable_send_on = block.settings.enable_send_on
+  assign send_on_label = block.settings.send_on_label
+  assign send_on_class = block.settings.send_on_class
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if product.gift_card? != true and request.design_mode != true %}{% break %}{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="flex flex-col gap-4"
+     data-quick-view-visibility="{{ quick_view_visibility }}"
+     x-data="{ checkbox_checked: $el.querySelector(`input[type='checkbox']`)?.checked ?? false }">
+  {% render '_components.checkbox',
+      class: checkbox_class,
+      label: checkbox_label,
+      name: "properties[__shopify_send_gift_card_to_recipient]",
+      default_checked: false,
+      html_attributes: "",
+      setState: 'checkbox_checked = value'
+  %}
+
+  {% render '_components.input',
+      name: 'properties[Recipient email]',
+      type: 'email',
+      label: email_label,
+      placeholder: email_placeholder,
+      autocomplete: 'email',
+      required: true,
+      class: email_class,
+      html_attributes: ' x-show="checkbox_checked" ',
+      disabled: '!checkbox_checked'
+  %}
+
+  {% if enable_name %}
+    {% render '_components.input',
+        name: 'properties[Recipient name]',
+        type: 'text',
+        label: name_label,
+        placeholder: name_placeholder,
+        autocomplete: 'name',
+        class: name_class,
+        html_attributes: ' x-show="checkbox_checked" ',
+        disabled: '!checkbox_checked'
+    %}
+  {% endif %}
+
+  {% if enable_send_on %}
+    {% capture default_date %}{{ 'now' | date: "%Y-%m-%d" | date: "%s" | date: "%Y-%m-%d" }}{% endcapture %}
+    {% render '_components.input',
+        name: 'properties[Send on]',
+        type: 'date',
+        label: send_on_label,
+        placeholder: send_on_placeholder,
+        autocomplete: 'send_on',
+        default_value: default_date,
+        class: send_on_class,
+        pattern: "\d{4}-\d{2}-\d{2}",
+        html_attributes: ' x-show="checkbox_checked" ',
+        disabled: '!checkbox_checked'
+    %}
+  {% endif %}
+
+  {% if enable_message %}
+    {% render '_components.textarea',
+        class: message_class,
+        label: message_label,
+        placeholder: message_placeholder,
+        name: 'properties[Message]',
+        default_value: "",
+        maxlength: 200,
+        html_attributes: ' x-show="checkbox_checked" ',
+        disabled: '!checkbox_checked'
+    %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Gift card recipient",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Checkbox"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "checkbox_label",
+      "label": "Label",
+      "default": "Send as a Gift",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "checkbox_class",
+      "label": "Checkbox class",
+      "default": "input-checkbox"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Recipient Email Input"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Input label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "email_class",
+      "label": "Input class",
+      "default": "input-text"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Recipient Name Input"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_name",
+      "label": "Enable name",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Input label",
+      "default": "Name",
+      "visible_if": "{{ block.settings.enable_name }}"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your name",
+      "visible_if": "{{ block.settings.enable_name }}"
+    },
+    {
+      "type": "text",
+      "id": "name_class",
+      "label": "Input class",
+      "default": "input-text",
+      "visible_if": "{{ block.settings.enable_name }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Message Input"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_message",
+      "label": "Enable message",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Input label",
+      "default": "Message",
+      "visible_if": "{{ block.settings.enable_message }}"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your message",
+      "visible_if": "{{ block.settings.enable_message }}"
+    },
+    {
+      "type": "text",
+      "id": "message_class",
+      "label": "Input class",
+      "default": "input-textarea",
+      "visible_if": "{{ block.settings.enable_message }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Send On Input"
+    },
+    {
+      "type": "paragraph",
+      "content": "Optional. The date that's used to schedule sending a gift card. If no date is specified, then the gift card is sent immediately. Gift Cards can only be scheduled up to 90 days in the future."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_send_on",
+      "label": "Enable send on",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "send_on_label",
+      "label": "Input label",
+      "default": "Send on",
+      "visible_if": "{{ block.settings.enable_send_on }}"
+    },
+    {
+      "type": "text",
+      "id": "send_on_class",
+      "label": "Input class",
+      "default": "input-text",
+      "visible_if": "{{ block.settings.enable_send_on }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift card recipient",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__gift_card_recipient"
+}
+{% endschema %}

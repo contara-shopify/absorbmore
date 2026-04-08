@@ -1,0 +1,195 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__description"
+  assign section_type = "main_product"
+  assign style = block.settings.style
+  assign content_class = block.settings.content_class
+  assign accordion_class = block.settings.accordion_class
+  assign label = block.settings.label
+  assign open_accordions = block.settings.open_accordions
+  assign auto_close_siblings = block.settings.auto_close_siblings
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+
+  if open_accordions != blank
+    assign show = true
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     data-quick-view-visibility="{{ quick_view_visibility }}">
+  {% if product.description != blank %}
+    {% case style %}
+      {% when 'plain' %}
+        {% render '_input.richtext', content: product.description, class: content_class %}
+      {% when 'accordion_plain' %}
+        {% assign content = product.description %}
+        {% render '_components.collapsible', label: label, content: content, default_open: show, class: accordion_class, manual_richtext_class: content_class, auto_close_siblings: auto_close_siblings %}
+      {% when 'accordion_h1' %}
+        {% assign description = product.description | split: '<h1' %}
+        {% for headingBlock in description %}
+          {% if show and open_accordions != 'all' and forloop.index0 > 0 %}
+            {% assign show = false %}
+          {% endif %}
+          {% if headingBlock contains '</h1>' %}
+            {% assign accordionBlock = headingBlock | split: '</h1>' %}
+            {% assign label = "<h1" | append: accordionBlock[0] | append: "</h1>" | strip_html %}
+            {% assign content = accordionBlock[1] | strip_html %}
+            {% render '_components.collapsible', label: label, content: content, default_open: show, class: accordion_class, manual_richtext_class: content_class, auto_close_siblings: auto_close_siblings %}
+          {% else %}
+            {% assign content = headingBlock | strip_html %}
+            {% render '_components.collapsible', label: label, content: content, default_open: show, class: accordion_class, manual_richtext_class: content_class, auto_close_siblings: auto_close_siblings %}
+          {% endif %}
+        {% endfor %}
+    {% endcase %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Description",
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "default": "accordion_plain",
+      "options": [
+        {
+          "value": "plain",
+          "label": "Plain"
+        },
+        {
+          "value": "accordion_plain",
+          "label": "Accordion"
+        },
+        {
+          "value": "accordion_h1",
+          "label": "H1 Accordions"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Accordion Settings"
+    },
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Default Label",
+      "default": "Description",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "open_accordions",
+      "label": "Open Accordions",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "first",
+          "label": "First"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_close_siblings",
+      "label": "Auto close siblings"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Description",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__description"
+}
+{% endschema %}

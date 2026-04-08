@@ -1,0 +1,138 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_bundle__dynamic_richtext"
+  assign section_type = "bundle"
+  assign content = block.settings.content
+  assign text_alignment = block.settings.text_alignment
+  assign css_class = block.settings.css_class
+  assign show_conditionally = block.settings.show_conditionally
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-data="{ content: getDynamicText($el.getAttribute('data-content')) }"
+     class="{{ text_alignment | prepend: 'text-' }}"
+     data-content="{% render '_input.richtext', content: content, class: css_class, escape: true, skip_pluralization: true %}"
+     x-effect="() => { if (bundle?.total_price || bundle?.items_added || bundle?.item_count || bundle?.active_discount_wording) { content = getDynamicText($el.getAttribute('data-content')) } }"
+     x-show="!!content.trim() && showConditionally(`{{ show_conditionally }}`)"
+     x-cloak
+     x-html="content">
+</div>
+
+{% schema %}
+{
+  "name": "Dynamic Richtext",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<h3>[bundle.title]</h3>",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use bracket notation for data access: i.e.[item_count]. "
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "Type CSS class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "Available keys: total_price, discounted_price, current_wording, difference_wording, target_wording, final_price, before_discounts_price, target_discount_wording, active_target_discount_wording, discount_wording, active_discount_wording, item_count"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "target_not_reached",
+          "label": "Final target not reached"
+        },
+        {
+          "value": "target_reached",
+          "label": "Final target reached"
+        },
+        {
+          "value": "active_discount",
+          "label": "Has active discount"
+        },
+        {
+          "value": "no_active_discount",
+          "label": "No active discount"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Richtext",
+      "category": "** Bundle **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___bundle__dynamic_richtext"
+}
+{% endschema %}

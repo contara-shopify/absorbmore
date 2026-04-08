@@ -1,0 +1,202 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__option__radio"
+  assign section_type = "card_product_card"
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign radio_button_content = block.settings.radio_button_content
+  assign radio_button_class = block.settings.radio_button_class
+  assign select_on_hover = block.settings.select_on_hover
+  assign content_flow = block.settings.content_flow
+  assign truncate_text = block.settings.truncate_text
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign option_type = block.settings.option_type
+  assign match_option_titles = block.settings.match_option_titles
+  assign match_option_index = block.settings.match_option_index
+  assign match_exact_word = block.settings.match_exact_word
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+
+  if sold_out_variants == 'hide' and product.available != true
+    break
+  endif
+
+  assign match_options = match_option_titles | split: ","
+
+  if option_type == 'by_name'
+    for option in product.options
+      assign optionIndex = forloop.index0
+      for match_option in match_options
+        if match_exact_word
+          assign _match_option = match_option | strip
+          assign _option = option
+        else
+          assign _match_option = match_option | strip | downcase
+          assign _option = option | downcase
+        endif
+
+        if _option == _match_option
+          assign _optionIndex = optionIndex
+          break
+        endif
+      endfor
+      if _optionIndex != blank
+        break
+      endif
+    endfor
+
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  if option_type == 'by_index'
+    assign _optionIndex = match_option_index | minus: 1
+    assign option = product.options_with_values[_optionIndex]
+
+    if option == blank
+      break
+    endif
+  endif
+
+  case content_flow
+    when "show_all"
+      assign container_classes = 'flex-wrap'
+    when "truncate"
+      assign container_classes = 'overflow-hidden'
+    when "overflow"
+      assign container_classes = 'overflow-x-auto'
+  endcase
+%}
+
+
+{% for i in (0..2) %}
+  {% liquid
+    if option_type == 'fallback_options'
+      assign _optionIndex = i
+      assign option = product.options_with_values[_optionIndex]
+    endif
+
+    if option == blank
+      break
+    endif
+
+    assign current_value = variant.options[_optionIndex] | default: option.name
+    assign content_legend = legend | replace: "[heading]", option.name
+    assign current_legend = content_legend | replace: "[value]", current_value
+  %}
+
+  <product-option {{ _optionIndex }} {{ option_type }}>
+    <div
+        data-style-id="{{ style_id }}"
+        @click.stop="()=>{}"
+        {% if content_flow == 'overflow' %}
+          x-data="{ index: +`{{ _optionIndex }}`, offset: +`{{ option.values.size }}`, ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+          x-init="$refs.scrollContainer.scrollLeft = ([...$refs.scrollContainer.children]?.find(child=> child?.classList?.contains('active'))?.offsetLeft ?? 0) - 5;"
+        {% else %}
+          x-data="{ index: +`{{ _optionIndex }}`, offset: +`{{ option.values.size }}` }"
+        {% endif %}
+        x-defer="intersect">
+      <legend id="legend-{{ block_id }}--{{ forloop.index0 }}"
+              x-ignore
+              class="flex w-full max-w-full truncate gap-1 {{ legend_class }}"
+              data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+              x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', p_card?.selected_options?.[index])">
+        {% render '_input.inline_richtext', content: current_legend %}
+      </legend>
+      <fieldset
+          aria-labelledby="legend-{{ block_id }}--{{ forloop.index0 }}"
+          x-ignore
+          class="relative w-full flex scrollbar-none {{ container_classes }}"
+          {% if content_flow == 'overflow' %}
+            x-ref="scrollContainer"
+            @resize.window="content_slider.handleResize"
+            x-init="$nextTick(() => content_slider.handleResize())"
+            @scroll="content_slider.handleScroll"
+            @scrollend="content_slider.handleInfiniteScroll"
+          {% endif %} >
+        {% for value in option.values %}
+
+          <label
+              class="shrink-0 !outline-none {{ radio_button_class }} {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+              x-effect="$el.classList.toggle('active', p_card?.selected_options?.[index] === $el.getAttribute('aria-label'))"
+              {% if sold_out_variants == 'hide' %}
+                x-show="offset >= +`{{ forloop.index0 }}` && hasAvailableVariant(index, `{{ value }}`)"
+              {% else %}
+                x-show="offset >= +`{{ forloop.index0 }}`"
+              {% endif %}
+              {% if select_on_hover %}
+                @mouseenter="$data.setProductOption({ index, value: `{{ value }}` })"
+              {% endif %}
+              :class="$data.hasAvailableVariant(index, `{{ value }}`) ? '' : 'sold-out'"
+              aria-label="{{ value }}">
+            <input
+                type="radio"
+                class="sr-only"
+                {% if sold_out_variants == 'disable' %}
+                  :disabled="!hasAvailableVariant(index, $el.value)"
+                {% endif %}
+                name="{{ block_id }}--{{ forloop.index0 }}"
+                @change="$data.setProductOption({ index, value: $el.value })"
+                :checked="p_card?.selected_options?.[index] === $el.value"
+                value="{{ value }}">
+            <span>
+              {% assign value_content = radio_button_content | replace: "[value]", value %}
+              {% render '_input.inline_richtext', content: value_content %}
+            </span>
+          </label>
+        {% endfor %}
+        {% if content_flow == 'truncate' %}
+          <div class="flex shrink-0 items-center text-sm font-medium"
+               x-cloak
+               x-show="true"
+               :class="(offset + 1) < +`{{ option.values.size }}` ? '':'opacity-0 pointer-events-none'"
+               x-init="$nextTick(async ()=> { if (window.design_mode) { await utils.delay(20) } offset = utils.truncateChildren($el, $el.parentElement)})"
+               @resize.window.debounce.200ms="offset = +`{{ option.values.size }}`; await utils.delay(20); offset = utils.truncateChildren($el, $el.parentElement)"
+               x-html="utils.applyInlinePluralization(`{{ truncate_text }}`.replace('[count]', `${p_card?.product?.options_with_values?.[index]?.values?.length - (offset + 1)}`).replace('[option]', `${p_card?.product?.options?.[index]}`)) || ''">
+            {{ truncate_text | replace: '[count]', '1' | repalce: '[option]', option.name }}
+          </div>
+        {% endif %}
+      </fieldset>
+      {% if content_flow == 'overflow' %}
+        {% if scrollbar_class != blank %}
+          {% render '_components.scrollbar', class: scrollbar_class %}
+        {% endif %}
+        {% if scroll_pagination_class != blank %}
+          {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+        {% endif %}
+      {% endif %}
+    </div>
+  </product-option>
+
+  {% if option_type != 'fallback_options' %}
+    {% break %}
+  {% endif %}
+{% endfor %}

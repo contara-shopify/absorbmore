@@ -1,0 +1,61 @@
+{% if request.visual_preview_mode %}
+  <div class="relative min-h-screen w-full"
+       data-section-id="{{ section.id }}"
+       data-preview-container>
+    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-gray-100 py-8 px-container-md scrollbar-none md:pb-52"
+         style="background: {{ section.settings.override_preview_background }};">
+      <div class="w-full max-w-md p-4">
+        {{ render_card }}
+      </div>
+    </div>
+  </div>
+  {% break %}
+{% endif %}
+
+<div class="fixed inset-0 z-50 overflow-y-auto bg-gray-100 py-8 px-container-md scrollbar-none md:pb-52 @container"
+     style="background: {{ section.settings.override_preview_background }};"
+     data-section-id="{{ section.id }}"
+     data-preview-container
+     x-show="$editor?.select_section_id === `{{ section.id }}`"
+     x-cloak>
+  {% if request.design_mode != true %}
+    {{ render_card }}
+  {% endif %}
+  {% if request.design_mode %}
+    <div class="grid gap-6"
+         x-defer="intersect"
+         x-effect="()=> { if ($editor?.select_section_id === `{{ section.id }}`) { interval = setInterval(()=>{ desktop_ratio = desktop?.clientWidth / desktop?.clientHeight; mobile_ratio = mobile?.clientWidth / mobile?.clientHeight }, 2000) } else { clearInterval(interval); interval = null }}"
+         x-data="{ desktop: $el.querySelector('[x-data]'), desktop_ratio:0, mobile: $el.querySelector('.\\@container [x-data]'),  mobile_ratio: 0, interval : null }">
+      <div>Aspect Ratios</div>
+      <header class="grid grid-cols-2 gap-6 py-6">
+        <div class="font-mono text-2xl font-semibold" x-html="`Desktop Aspect Ratio ${utils.roundToIndex(desktop_ratio, -3)}`"></div>
+        <div class="font-mono text-2xl font-semibold" x-html="`Mobile Aspect Ratio ${utils.roundToIndex(mobile_ratio, -3)}`"></div>
+      </header>
+      <section class="mx-auto mt-8 flex min-h-[600px] w-full items-center justify-center">
+        <div class="w-full max-w-md p-4">
+          {{ render_card }}
+        </div>
+      </section>
+      <section class="scrollbar-none py-2 mt-8 relative grid md:auto-cols-[calc(100%/4)] auto-cols-[calc(100%/1.8)] justify-start items-center grid-flow-col gap-6 overflow-x-auto"
+               :class="desktop_ratio > 1.5 ? 'md:!auto-cols-[calc(100%/2.5)] !auto-cols-[calc(100%/1.2)]' : ''">
+        {{ render_card }}
+        {{ render_card }}
+        {{ render_card }}
+        {{ render_card }}
+      </section>
+      <section class="relative mx-auto mt-10 grid w-full max-w-4xl grid-cols-2 gap-10">
+        <section class="@container grid h-min mb-auto gap-3">
+          {{ render_card }}
+          {{ render_card }}
+          {{ render_card }}
+        </section>
+        <section class="@container grid grid-cols-2 gap-3 h-min mb-auto order-first" :class="mobile_ratio > 1.5 ? '!grid-cols-1' : ''">
+          {{ render_card }}
+          {{ render_card }}
+          {{ render_card }}
+          {{ render_card }}
+        </section>
+      </section>
+    </div>
+  {% endif %}
+</div>

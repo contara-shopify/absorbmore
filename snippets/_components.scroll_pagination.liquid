@@ -1,0 +1,30 @@
+{% comment %}
+    Scroll controls element
+
+    Accepts:
+    - class: {string}
+
+
+    Usage:
+    {% render '_components.scroll_pagination',  class: scroll_pagination_class %}
+{% endcomment %}
+
+<div class="{{ class }} pointer-events-none"
+     x-cloak
+     data-scroll-pagination
+     x-data="{ ..._scrollbar.initScrollPagination($el), count: 1 }"
+     x-effect="count = Math.round((content_slider.state?.infinite ? content_slider?.state?.slide_count / 2 : content_slider?.state?.slide_count) ?? 1)"
+     x-show="count > 1"
+     :class="content_slider?.state?.rotatePause ? 'slide-indicators paused' : 'slide-indicators'"
+     :style="`--indicator-duration: ${(content_slider?.state?.autoRotate || 0)}s`"
+>
+  <template x-for="index in [...new Array(count)].map((_,i) => i)">
+    <button type="button"
+            :aria-label="`Scroll to slide ${index + 1}`"
+            class="-m-2.5 p-2.5 hf:opacity-80 pointer-events-auto"
+            @click.prevent.stop="() => content_slider?.scrollToIndex(index)">
+      <span class="block slide-indicator"
+            :class="utils.clsx(content_slider?.state?.current_index === index && 'active', (content_slider?.state?.autoRotate || 0) > 0 && 'animate')"></span>
+    </button>
+  </template>
+</div>

@@ -1,0 +1,1355 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "main_search"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% assign current_sort = search.sort_by | default: search.default_sort_by %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  {% capture blocks_content %}{% content_for "blocks" %}{% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      x-data="{ ..._sections.initMainSearch($el, `{{ search.types | join: ',' }}`, `{{ current_sort }}`), show_sidebar: true}"
+      data-search-form
+      :data-show-sidebar="show_sidebar.toString()"
+      {% if blocks_content contains '<script type="filter-sidebar/show"></script>' %}
+        data-show-sidebar="true"
+      {% else %}
+        data-show-sidebar="false"
+      {% endif %}
+      @submit.prevent.stop="main_search.updateSortAndFilters()"
+      @input="(e)=> { if (e.target.closest(`[data-filters]`)) { main_search.debounceUpdates() }  }"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="{{ container_spacing }}">
+    <input type="hidden" name="q" value="{{ search.terms | escape }}" :value="$search.query" />
+    <input type="hidden" name="type" value="{{ search.types | join: ',' }}" :value="[...main_search.state.types].join(',')" />
+    {{ blocks_content | replace: '<script type="filter-sidebar/show"></script>', '' }}
+  </form>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Main Search",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "slider"
+    },
+    {
+      "type": "_filter_tags"
+    },
+    {
+      "type": "_main_search__product_count"
+    },
+    {
+      "type": "_main_search__dynamic_text"
+    },
+    {
+      "type": "_main_search__container"
+    },
+    {
+      "type": "_main_search__collapsible"
+    },
+    {
+      "type": "_main_search__filter_sidebar"
+    },
+    {
+      "type": "_main_search__applied_filters"
+    },
+    {
+      "type": "_main_search__filters"
+    },
+    {
+      "type": "_main_search__sort"
+    },
+    {
+      "type": "_main_search__filter_submit_button"
+    },
+    {
+      "type": "_main_search__filter_clear_button"
+    },
+    {
+      "type": "_main_search__filter_button"
+    },
+    {
+      "type": "_main_search__mixed_cards"
+    },
+    {
+      "type": "_main_search__empty_state"
+    },
+    {
+      "type": "_main_search__search_input"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Search Sidebar Filters",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 30px;\n  padding-bottom: 60px;\n  display: grid;\n  gap: 0;\n  grid-template-columns: 0px 1fr;\n}\n\n@media (min-width: 1440px) {\n  &[data-show-sidebar='true'] {\n    gap: 80px;\n  }\n}\n\n@media (min-width: 1024px) {\n  &[data-show-sidebar='true'] {\n    gap: 30px;\n    grid-template-columns: 342px 1fr;\n  }\n}\n@media (max-width: 1024px) {\n  & {\n   grid-template-columns: 1fr;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Main Search Sidebar Filters"
+      },
+      "blocks": [
+        {
+          "type": "_main_search__container",
+          "name": "Header",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  padding: 20px 0;\n}\n\n@media (min-width: 1024px) {\n  & {\n    grid-column: span 2;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Header"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__filter_button",
+              "name": "Filters Trigger Button",
+              "settings": {
+                "button_text": "Filters [gap.4][icon.filters]",
+                "button_class": "",
+                "custom_css": "&:where(:hover,:focus-visible) {\n  text-decoration: underline;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__sort",
+              "settings": {
+                "show_search_conditionally": "always",
+                "select_class": "input-select-plain",
+                "text_color": "#020202",
+                "background_color": "#ffffff",
+                "custom_css": "& {\n  pointer-events: auto;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_search__filter_sidebar",
+          "name": "Filter Sidebar",
+          "settings": {
+            "inline_at_screens_above": 1024,
+            "show_sidebar": true,
+            "sticky_sidebar": true,
+            "text_color": "",
+            "background_color": "#ffffff",
+            "custom_css": "@media (min-width: 1024px) {\n  & {\n    position: sticky;\n    top: calc(var(--header-height-offset) + 40px);\n  transition: top 200ms ease-in-out;\n    height: max-content;\n  }\n}\n\n@media (max-width: 1024px) {\n  & {\n    padding: 20px;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__container",
+              "name": "Filter Header",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 0 0 16px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Filter Header"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "name": "Filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion",
+                "dropdown_menu": false,
+                "default_state": "hide",
+                "auto_open_active_filters": true,
+                "auto_close_siblings": false,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__search_type_filter",
+                  "name": "Search Type Filter",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "label": "Search Type",
+                    "accordion_class": "accordion",
+                    "default_state": "hide",
+                    "style": "checkbox",
+                    "checkbox_class": "input-checkbox",
+                    "radio_button_class": "button-primary-sm",
+                    "show_product": true,
+                    "show_article": true,
+                    "show_page": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__checkbox_override",
+                  "name": "Checkbox override",
+                  "settings": {
+                    "handle": "brand",
+                    "open_by_default": true,
+                    "checkbox_class": "input-checkbox",
+                    "filters_show_count": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__color_override",
+                  "name": "Color override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_search__container",
+          "name": "Search Grid",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Grid"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__empty_state",
+              "settings": {
+                "show_search_conditionally": "search_empty",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 60px 0;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "custom_css": "& {\n\n  width: auto;\n  height: 140px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "settings": {
+                    "title": "<h2><strong>No Products Found</strong></h2>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-top: 24px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__applied_filters",
+              "name": "Applied Filters",
+              "settings": {
+                "content": "",
+                "content_class": "richtext-md h6",
+                "no_filter_content": "No filter applied",
+                "show_only_active": true,
+                "no_filter_content_class": "richtext-md p",
+                "button_class": "button-primary-sm",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__mixed_cards",
+              "settings": {
+                "pagination_size": 50,
+                "product_card_class": "product-card",
+                "collection_card_class": "collection-card",
+                "article_card_class": "article-card",
+                "page_card_class": "page-card",
+                "pagination_style": "auto",
+                "pagination_class": "pagination",
+                "results_count": "showing [count] of [total] results",
+                "results_count_class": "richtext-md p",
+                "load_more_button_text": "load more products",
+                "load_more_button_class": "button-primary",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "infinite_scroll": "off",
+                "scrollbar_class": "",
+                "scroll_pagination_class": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 16px;\n  --grid: 1fr 1fr 1fr 1fr;\n  --gap: 16px\n}\n\n& .grid-container {\n  display: grid;\n  grid-template-columns: var(--grid);\n  gap: var(--gap);\n}\n\n@media (min-width: 1280px) {\n  [data-show-sidebar='true'] & {\n    --grid: 1fr 1fr 1fr;\n  }\n}\n\n@media (max-width: 1024px) {\n  & {\n   --grid: 1fr 1fr 1fr \n  }\n}\n\n\n@media (max-width: 768px) {\n  & {\n    --gap: 16px 10px;\n    --grid: 1fr 1fr;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": ""
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Search"
+    },
+    {
+      "name": "Main Search Topbar Filters",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 30px;\n  padding-bottom: 60px;\n  display: grid;\n  gap: 0;\n  grid-template-columns: 0px 1fr;\n}\n\n@media (max-width: 1024px) {\n  & {\n   grid-template-columns: 1fr;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Main Search Topbar Filters"
+      },
+      "blocks": [
+        {
+          "type": "_main_search__container",
+          "name": "Filter Top Bar",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "rgba(0,0,0,0)",
+            "custom_css": "& {\n  grid-column: span 2;\n  display: flex;\n  gap: 12px;\n  align-items: center;\n  justify-content: space-between;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Filter Top Bar"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__filter_button",
+              "name": "Filters Trigger Button",
+              "settings": {
+                "button_text": "Filters [gap.4][icon.filters]",
+                "button_class": "",
+                "custom_css": "@media (min-width: 1024px) {\n  & {\n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  text-decoration: underline;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "name": "Filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion-no-border",
+                "dropdown_menu": true,
+                "default_state": "hide",
+                "auto_open_active_filters": false,
+                "auto_close_siblings": true,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  gap: 16px;\n}\n\n& details summary {\n  padding: 14px 0;\n}\n\n& details > div {\n  position: absolute;\n  z-index: 50;\n  background: white;\n  min-width: 340px;\n  padding: 20px;\n  max-height: 600px !important;\n  overflow-y: auto;\n  border: 1px solid #e3e3e3;\n  box-shadow: 4px 4px 4px rgba(0,0,0,0.035);\n}\n@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__color_override",
+                  "name": "Color override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__sort",
+              "name": "Sort",
+              "settings": {
+                "show_search_conditionally": "always",
+                "select_class": "input-select-plain",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_search__filter_sidebar",
+          "name": "Filter Sidebar",
+          "settings": {
+            "inline_at_screens_above": 1024,
+            "show_sidebar": true,
+            "sticky_sidebar": true,
+            "text_color": "",
+            "background_color": "#ffffff",
+            "custom_css": "@media (min-width: 1024px) {\n  & {\n    display: none;\n  }\n}\n\n@media (min-width: 1024px) {\n  & {\n    position: sticky;\n    top: calc(var(--header-height-offset) + 40px);\n  transition: top 200ms ease-in-out;\n    height: max-content;\n  }\n}\n\n@media (max-width: 1024px) {\n  & {\n    padding: 20px;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__container",
+              "name": "Filter Header",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 0 0 16px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Filter Header"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "name": "Filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion",
+                "dropdown_menu": false,
+                "default_state": "hide",
+                "auto_open_active_filters": true,
+                "auto_close_siblings": false,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__search_type_filter",
+                  "name": "Search Type Filter",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "label": "Search Type",
+                    "accordion_class": "accordion",
+                    "default_state": "hide",
+                    "style": "checkbox",
+                    "checkbox_class": "input-checkbox",
+                    "radio_button_class": "button-primary-sm",
+                    "show_product": true,
+                    "show_article": true,
+                    "show_page": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__checkbox_override",
+                  "name": "Checkbox override",
+                  "settings": {
+                    "handle": "brand",
+                    "open_by_default": true,
+                    "checkbox_class": "input-checkbox",
+                    "filters_show_count": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__color_override",
+                  "name": "Color override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_search__container",
+          "name": "Search Grid",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Grid"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__empty_state",
+              "settings": {
+                "show_search_conditionally": "search_empty",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 60px 0;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "custom_css": "& {\n\n  width: auto;\n  height: 140px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "settings": {
+                    "title": "<h2><strong>No Products Found</strong></h2>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-top: 24px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__applied_filters",
+              "name": "Applied Filters",
+              "settings": {
+                "content": "",
+                "content_class": "richtext-md h6",
+                "no_filter_content": "No filter applied",
+                "show_only_active": true,
+                "no_filter_content_class": "richtext-md p",
+                "button_class": "button-primary-sm",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__mixed_cards",
+              "settings": {
+                "pagination_size": 50,
+                "product_card_class": "product-card",
+                "collection_card_class": "collection-card",
+                "article_card_class": "article-card",
+                "page_card_class": "page-card",
+                "pagination_style": "auto",
+                "pagination_class": "pagination",
+                "results_count": "showing [count] of [total] results",
+                "results_count_class": "richtext-md p",
+                "load_more_button_text": "load more products",
+                "load_more_button_class": "button-primary",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "infinite_scroll": "off",
+                "scrollbar_class": "",
+                "scroll_pagination_class": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 16px;\n  --grid: 1fr 1fr 1fr 1fr;\n  --gap: 16px\n}\n\n& .grid-container {\n  display: grid;\n  grid-template-columns: var(--grid);\n  gap: var(--gap);\n}\n\n@media (max-width: 1024px) {\n  & {\n   --grid: 1fr 1fr 1fr \n  }\n}\n\n\n@media (max-width: 768px) {\n  & {\n    --gap: 16px 10px;\n    --grid: 1fr 1fr;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": ""
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Search"
+    },
+    {
+      "name": "Main Search Modal Filters",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 30px;\n  padding-bottom: 60px;\n  display: grid;\n  gap: 0;\n  grid-template-columns: 0px 1fr;\n}\n\n@media (max-width: 1024px) {\n  & {\n   grid-template-columns: 1fr;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Main Search Modal Filters"
+      },
+      "blocks": [
+        {
+          "type": "_main_search__container",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  padding: 20px 0;\n}\n\n@media (min-width: 1024px) {\n  & {\n    grid-column: span 2;\n  }\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Header"
+          },
+          "name": "Header",
+          "blocks": [
+            {
+              "type": "_main_search__filter_button",
+              "settings": {
+                "button_text": "Filters [gap.4][icon.filters]",
+                "button_class": "",
+                "custom_css": "&:where(:hover,:focus-visible) {\n  text-decoration: underline;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__sort",
+              "settings": {
+                "show_search_conditionally": "always",
+                "select_class": "input-select-plain",
+                "text_color": "#020202",
+                "background_color": "#ffffff",
+                "custom_css": "& {\n  pointer-events: auto;\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_search__filter_sidebar",
+          "settings": {
+            "inline_at_screens_above": 1536,
+            "show_sidebar": true,
+            "sticky_sidebar": true,
+            "text_color": "",
+            "background_color": "#ffffff",
+            "custom_css": "& {\n    padding: 20px;\n  }"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__container",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 0 0 16px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Filter Header"
+              },
+              "name": "Filter Header",
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion",
+                "dropdown_menu": false,
+                "default_state": "hide",
+                "auto_open_active_filters": true,
+                "auto_close_siblings": false,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "show_empty_entries": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__search_type_filter",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "label": "Search Type",
+                    "accordion_class": "accordion",
+                    "default_state": "hide",
+                    "style": "checkbox",
+                    "checkbox_class": "input-checkbox",
+                    "radio_button_class": "button-primary-sm",
+                    "show_product": true,
+                    "show_article": true,
+                    "show_page": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__checkbox_override",
+                  "settings": {
+                    "handle": "brand",
+                    "open_by_default": true,
+                    "checkbox_class": "input-checkbox",
+                    "filters_show_count": true,
+                    "show_empty_entries": false,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__color_override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "show_empty_entries": false,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within,.active) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_search__container",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Grid"
+          },
+          "name": "Search Grid",
+          "blocks": [
+            {
+              "type": "_main_search__empty_state",
+              "settings": {
+                "show_search_conditionally": "search_empty",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 60px 0;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n\n  width: auto;\n  height: 140px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "settings": {
+                    "title": "<h2><strong>No Products Found</strong></h2>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-top: 24px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__applied_filters",
+              "settings": {
+                "content": "",
+                "content_class": "richtext-md h6",
+                "no_filter_content": "No filter applied",
+                "show_only_active": true,
+                "no_filter_content_class": "richtext-md p",
+                "button_class": "button-primary-sm",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__mixed_cards",
+              "settings": {
+                "pagination_size": 50,
+                "product_card_class": "product-card",
+                "collection_card_class": "collection-card",
+                "article_card_class": "article-card",
+                "page_card_class": "page-card",
+                "pagination_style": "auto",
+                "pagination_class": "pagination",
+                "results_count": "showing [count] of [total] results",
+                "results_count_class": "richtext-md p",
+                "load_more_button_text": "load more products",
+                "load_more_button_class": "button-primary",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "infinite_scroll": "off",
+                "scrollbar_class": "",
+                "scroll_pagination_class": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 16px;\n  --grid: 1fr 1fr 1fr 1fr;\n  --gap: 16px\n}\n\n& .grid-container {\n  display: grid;\n  grid-template-columns: var(--grid);\n  gap: var(--gap);\n}\n\n@media (max-width: 1024px) {\n  & {\n   --grid: 1fr 1fr 1fr \n  }\n}\n\n\n@media (max-width: 768px) {\n  & {\n    --gap: 16px 10px;\n    --grid: 1fr 1fr;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": ""
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Search"
+    },
+    {
+      "name": "t:sections.main_search.presets.main_search_sidebar_filters.name",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "#ffffff",
+        "background_color": "",
+        "custom_css": "& {\n  position: relative;\n  min-height: 360px;\n  padding-top: 64px;\n  padding-bottom: 64px;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding-top: 40px;\n    padding-bottom: 40px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "t:sections.main_search.presets.main_search_sidebar_filters.name"
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/8714713047628_9_0781494a-c031-4480-8f4b-94444be21389.jpg",
+            "url": "",
+            "show_overlay": true,
+            "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "mobile_max_width": 1200,
+            "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_main_search__dynamic_text",
+          "settings": {
+            "show_search_conditionally": "always",
+            "content": "<h2><strong>Search results for \"[search.terms]\"</strong></h2>",
+            "text_alignment": "center",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  margin-bottom: 12px;\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_main_search__dynamic_text",
+          "settings": {
+            "show_search_conditionally": "always",
+            "content": "<h4>[search.results_count] item&lcub;s&rcub; found</h4>",
+            "text_alignment": "center",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  margin-bottom: 32px;\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_main_search__search_input",
+          "settings": {
+            "label": "Search",
+            "prefix": "",
+            "suffix": "[icon.search.20]",
+            "placeholder": "Search",
+            "input_class": "input-text",
+            "custom_css": "& {\n  width: max-content;\n}"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Search"
+    },
+    {
+      "name": "t:sections.main_search.presets.main_search_topbar_filters.name",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 30px;\n  padding-bottom: 60px;\n  display: grid;\n  gap: 0;\n  grid-template-columns: 0px 1fr;\n}\n\n@media (max-width: 1024px) {\n  & {\n   grid-template-columns: 1fr;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "t:sections.main_search.presets.main_search_topbar_filters.name"
+      },
+      "blocks": [
+        {
+          "type": "_main_search__container",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "rgba(0,0,0,0)",
+            "custom_css": "& {\n  grid-column: span 2;\n  display: flex;\n  gap: 12px;\n  align-items: center;\n  justify-content: space-between;\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Filter Top Bar"
+          },
+          "name": "Filter Top Bar",
+          "blocks": [
+            {
+              "type": "_main_search__filter_button",
+              "settings": {
+                "button_text": "Filters [gap.4][icon.filters]",
+                "button_class": "",
+                "custom_css": "@media (min-width: 1024px) {\n  & {\n    display: none;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  text-decoration: underline;\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion-no-border",
+                "dropdown_menu": true,
+                "default_state": "hide",
+                "auto_open_active_filters": false,
+                "auto_close_siblings": true,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "show_empty_entries": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  gap: 16px;\n}\n\n& details summary {\n  padding: 14px 0;\n}\n\n& details > div {\n  position: absolute;\n  z-index: 50;\n  background: white;\n  min-width: 340px;\n  padding: 20px;\n  max-height: 600px !important;\n  overflow-y: auto;\n  border: 1px solid #e3e3e3;\n  box-shadow: 4px 4px 4px rgba(0,0,0,0.035);\n}\n@media (max-width: 1024px) {\n  & {\n    display: none;\n  }\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__color_override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "show_empty_entries": false,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within,.active) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__sort",
+              "settings": {
+                "show_search_conditionally": "always",
+                "select_class": "input-select-plain",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "_main_search__filter_sidebar",
+          "settings": {
+            "inline_at_screens_above": 1024,
+            "show_sidebar": true,
+            "sticky_sidebar": true,
+            "text_color": "",
+            "background_color": "#ffffff",
+            "custom_css": "@media (min-width: 1024px) {\n  & {\n    display: none;\n  }\n}\n\n@media (min-width: 1024px) {\n  & {\n    position: sticky;\n    top: calc(var(--header-height-offset) + 40px);\n  transition: top 200ms ease-in-out;\n    height: max-content;\n  }\n}\n\n@media (max-width: 1024px) {\n  & {\n    padding: 20px;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_main_search__container",
+              "settings": {
+                "show_search_conditionally": "always",
+                "element_id": "",
+                "custom_effect": "off",
+                "scroll_reveal": "children",
+                "collapsible_handle": "",
+                "show": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 0 0 16px;\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": "Filter Header"
+              },
+              "name": "Filter Header",
+              "blocks": []
+            },
+            {
+              "type": "_main_search__filters",
+              "settings": {
+                "show_search_conditionally": "always",
+                "accordion_class": "accordion",
+                "dropdown_menu": false,
+                "default_state": "hide",
+                "auto_open_active_filters": true,
+                "auto_close_siblings": false,
+                "submit_button_class": "",
+                "checkbox_class": "input-checkbox",
+                "filters_show_count": true,
+                "show_empty_entries": false,
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "_main_search__search_type_filter",
+                  "settings": {
+                    "show_search_conditionally": "always",
+                    "label": "Search Type",
+                    "accordion_class": "accordion",
+                    "default_state": "hide",
+                    "style": "checkbox",
+                    "checkbox_class": "input-checkbox",
+                    "radio_button_class": "button-primary-sm",
+                    "show_product": true,
+                    "show_article": true,
+                    "show_page": true,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__checkbox_override",
+                  "settings": {
+                    "handle": "brand",
+                    "open_by_default": true,
+                    "checkbox_class": "input-checkbox",
+                    "filters_show_count": true,
+                    "show_empty_entries": false,
+                    "custom_css": "& {\n}"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "_main_search__color_override",
+                  "settings": {
+                    "handle": "color",
+                    "open_by_default": false,
+                    "show_tooltip": true,
+                    "show_empty_entries": false,
+                    "custom_css": "& label {\n  width: 34px;\n  height: 34px;\n  border-radius: 999px;\n  border: 1px solid #e3e3e3;\n}\n\n& label:where(:hover,:focus, :focus-within,.active) {\n  outline: 1px solid #000;\n}"
+                  },
+                  "blocks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "_main_search__container",
+          "settings": {
+            "show_search_conditionally": "always",
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n\n}",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": "Search Grid"
+          },
+          "name": "Search Grid",
+          "blocks": [
+            {
+              "type": "_main_search__empty_state",
+              "settings": {
+                "show_search_conditionally": "search_empty",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 60px 0;\n}"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "url": "",
+                    "show_overlay": false,
+                    "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+                    "preload": false,
+                    "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 48vw",
+                    "max_width": 1200,
+                    "mobile_max_width": 1200,
+                    "custom_css": "& {\n\n  width: auto;\n  height: 140px;\n  aspect-ratio: auto;\n  object-fit: contain;\n  border: none;\n  border-radius: 0;\n  overflow: hidden;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                },
+                {
+                  "type": "richtext",
+                  "settings": {
+                    "title": "<h2><strong>No Products Found</strong></h2>",
+                    "text_alignment": "center",
+                    "content_class": "richtext-md",
+                    "text_color": "",
+                    "custom_css": "& {\n  margin-top: 24px;\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": []
+                }
+              ]
+            },
+            {
+              "type": "_main_search__applied_filters",
+              "settings": {
+                "content": "",
+                "content_class": "richtext-md h6",
+                "no_filter_content": "No filter applied",
+                "show_only_active": true,
+                "no_filter_content_class": "richtext-md p",
+                "button_class": "button-primary-sm",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_main_search__mixed_cards",
+              "settings": {
+                "pagination_size": 50,
+                "product_card_class": "product-card",
+                "collection_card_class": "collection-card",
+                "article_card_class": "article-card",
+                "page_card_class": "page-card",
+                "pagination_style": "auto",
+                "pagination_class": "pagination",
+                "results_count": "showing [count] of [total] results",
+                "results_count_class": "richtext-md p",
+                "load_more_button_text": "load more products",
+                "load_more_button_class": "button-primary",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "",
+                "infinite_scroll": "off",
+                "scrollbar_class": "",
+                "scroll_pagination_class": "",
+                "text_color": "",
+                "background_color": "",
+                "custom_css": "& {\n  margin-top: 16px;\n  --grid: 1fr 1fr 1fr 1fr;\n  --gap: 16px\n}\n\n& .grid-container {\n  display: grid;\n  grid-template-columns: var(--grid);\n  gap: var(--gap);\n}\n\n@media (max-width: 1024px) {\n  & {\n   --grid: 1fr 1fr 1fr \n  }\n}\n\n\n@media (max-width: 768px) {\n  & {\n    --gap: 16px 10px;\n    --grid: 1fr 1fr;\n  }\n}",
+                "generate_block_presets": "never",
+                "category_name": "",
+                "hidden_name_backup": ""
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Search"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "search"
+    ]
+  },
+  "class": "shopify_section__main_search"
+}
+{% endschema %}

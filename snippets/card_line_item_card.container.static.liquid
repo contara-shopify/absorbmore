@@ -1,0 +1,57 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__container"
+  assign section_type = "card_line_item_card"
+  assign dynamic_text_color = block.settings.dynamic_text_color
+  assign dynamic_background_color = block.settings.dynamic_background_color
+  assign dynamic_border_color = block.settings.dynamic_border_color
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+  assign custom_liquid = block.settings.custom_liquid
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+<div
+    data-style-id="{{ style_id }}"
+    class="group"
+    {% if dynamic_text_color != blank or dynamic_background_color != blank or dynamic_border_color != blank %}
+      style="color: {% render '_input.dynamic_content', content: dynamic_text_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};
+          background: {% render '_input.dynamic_content', content: dynamic_background_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};
+          border-color: {% render '_input.dynamic_content', content: dynamic_border_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};"
+    {% endif %}
+    x-show="$data.showConditionally('{{ show_conditionally }}')"
+    {{ custom_liquid }}
+    :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`">
+  {% render "card_line_item_card._render_blocks",
+      line_item: line_item,
+      section: section,
+      blocks: block.blocks,
+      block_order: block.block_order,
+      has_addon_products: has_addon_products,
+      child_line_items: child_line_items,
+      preload_images: preload_images
+  %}
+</div>

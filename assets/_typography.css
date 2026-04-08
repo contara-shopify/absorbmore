@@ -1,0 +1,37 @@
+.richtext-margins :where(h1,h2,h3,h4,h5,h6,p,ul,ol):not(:first-child) {
+  margin-top: 0.9em;
+}
+
+.richtext-margins-lg :where(h1,h2,h3,h4):not(:first-child) {
+  margin-top: 2.4em;
+}
+
+.richtext-margins-lg :where(h5,h6,p,ul,ol):not(:first-child) {
+  margin-top: 1.1em;
+}
+
+.richtext-margins li > :where(h1,h2,h3,h4,h5,h6,p) {
+  display: inline;
+  margin: 0;
+}
+
+.accordion-content {
+  @apply [&>*]:max-w-full [&>*]:!min-w-0 [&_table]:overflow-x-auto;
+}
+
+.accordion-content table {
+  @apply scrollbar-none;
+}
+
+._input-richtext {
+  @apply [&_ol]:list-outside [&_ol]:list-decimal [&_ul]:list-outside [&_ul]:list-disc [&_ul]:pl-[1em] [&_ol]:pl-[1em];
+}
+
+._input-richtext :where(p,h1,h2,h3,h4,h5,h6,ul,ol):first-child:empty {
+  @apply hidden;
+}
+
+:not(body)._input-richtext > :where(:empty):not(:only-child),
+:not(body)._input-richtext .metafield-rich_text_field > :where(:empty):not(:only-child) {
+  margin-top: 1em
+}

@@ -1,0 +1,195 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__variant_selector__color"
+  assign section_type = "card_product_card"
+  assign legend_label = block.settings.legend_label
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign primary_source = block.settings.primary_source
+  assign fallback_source = block.settings.fallback_source
+  assign hover_border_color = block.settings.hover_border_color
+  assign hover_outline_color = block.settings.hover_outline_color
+  assign show_tooltip = block.settings.show_tooltip
+  assign select_on_hover = block.settings.select_on_hover
+  assign content_flow = block.settings.content_flow
+  assign truncate_text = block.settings.truncate_text
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+  assign filtered_variants = product.variants
+  if sold_out_variants == 'hide'
+    assign filtered_variants = product.variants | where: 'available'
+  endif
+
+  if product.variants.first.title == "Default Title" and product.variants.size == 1 or filtered_variants.size <= 0
+    break
+  endif
+
+
+  assign current_value = variant.id
+  assign current_title = variant.title
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign current_legend = content_legend | replace: "[value]", current_title | default: legend_label
+
+  assign variant_ids = product.variants | map: "id"
+  assign variant_titles = product.variants | map: "title"
+
+  case content_flow
+    when "show_all"
+      assign container_classes = 'flex-wrap'
+    when "truncate"
+      assign container_classes = 'overflow-hidden'
+    when "overflow"
+      assign container_classes = 'overflow-x-auto'
+  endcase
+%}
+
+<div
+    data-style-id="{{ style_id }}"
+    @click.stop="()=>{}"
+    {% if content_flow == 'overflow' %}
+      x-data="{ hoverValue: '', offset: +'{{ filtered_variants.size }}', ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+      x-init="$refs.scrollContainer.scrollLeft = ([...$refs.scrollContainer.children]?.find(child => child?.classList?.contains('active'))?.offsetLeft ?? 0) - 5"
+    {% else %}
+      x-data="{ hoverValue: '', offset: +'{{ filtered_variants.size }}' }"
+    {% endif %}
+    x-defer="intersect">
+  <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+          x-ignore
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', hoverValue || p_card?.selected_variant?.title)">
+    {% render '_input.inline_richtext', content: current_legend %}
+  </legend>
+  <fieldset
+      x-ignore
+      {% if content_flow == 'overflow' %}
+        x-ref="scrollContainer"
+        @resize.window="content_slider.handleResize"
+        x-init="$nextTick(() => content_slider.handleResize())"
+        @scroll="content_slider.handleScroll"
+        @scrollend="content_slider.handleInfiniteScroll"
+      {% endif %}
+      class="relative w-full flex scrollbar-none {{ container_classes }}">
+    {% for variant in filtered_variants %}
+      {% liquid
+        assign _value = variant.title | handleize
+        assign image = ''
+
+        case primary_source
+          when "title"
+            assign primary_swatch = "--primary-swatch: var(--swatch-" | append: _value | append: ")"
+          when "image"
+            assign image = variant.image | image_url: width: 180, height: 180, crop: 'center' | escape
+            assign primary_swatch = "--primary-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+          when "metafield"
+            if variant.metafields.smart.color_swatch.type == 'color'
+              assign primary_swatch = "--primary-swatch: " | append: variant.metafields.smart.color_swatch.value
+            endif
+            if variant.metafields.smart.color_swatch.type == 'file_reference'
+              assign image = variant.metafields.smart.color_swatch.value | image_url: width: 180, height: 180, crop: 'center' | escape
+              assign primary_swatch = "--primary-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+            endif
+        endcase
+
+        case fallback_source
+          when "title"
+            assign fallback_swatch = "--fallback-swatch: var(--swatch-" | append: _value | append: ")"
+          when "image"
+            assign image = variant.image | image_url: width: 180, height: 180, crop: 'center' | escape
+            assign fallback_swatch = "--fallback-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+          when "metafield"
+            if variant.metafields.smart.color_swatch.type == 'color'
+              assign fallback_swatch = "--fallback-swatch: " | append: variant.metafields.smart.color_swatch.value
+            endif
+            if variant.metafields.smart.color_swatch.type == 'file_reference'
+              assign image = variant.metafields.smart.color_swatch.value | image_url: width: 180, height: 180, crop: 'center' | escape
+              assign fallback_swatch = "--fallback-swatch: url(" | append: image | append: ") center center/cover no-repeat"
+            endif
+        endcase
+      %}
+
+      <label
+          class="shrink-0 flex border-gray-300 cursor-pointer relative !outline-none border-none ac:border-solid {% if variant.id == current_value %}active{% endif %}"
+          x-effect="$el.classList.toggle('active', p_card?.selected_variant?.id === +'{{ variant.id }}')"
+          x-show="offset >= +`{{ forloop.index0 }}`"
+          {% if select_on_hover and show_tooltip %}
+            @mouseenter="$tooltip.addTooltip($el, `{{ variant.title }}`); $data.setSelectedVariant(+`{{ variant.id }}`)"
+            @mouseleave="$tooltip.removeTooltip($el)"
+          {% elsif select_on_hover %}
+            @mouseenter="$data.setSelectedVariant(+`{{ variant.id }}`)"
+          {% elsif show_tooltip %}
+            @mouseenter="$tooltip.addTooltip($el, `{{ variant.title }}`)"
+            @mouseleave="$tooltip.removeTooltip($el)"
+          {% endif %}
+          @pointerenter="hoverValue = $el.getAttribute('aria-label')"
+          @pointerleave="hoverValue = ''"
+          aria-label="{{ variant.title }}"
+          style="{{ primary_swatch }}; {{ fallback_swatch }}; background: var(--primary-swatch, var(--fallback-swatch, {{ _value }}));">
+        <input
+            type="radio"
+            class="sr-only"
+            {% if sold_out_variants == 'disable' and variant.available != true %}
+              disabled="disabled"
+            {% endif %}
+            {% if show_tooltip %}
+              @focus="$tooltip.addTooltip($el.parentElement, $el.getAttribute('data-title'))"
+              @blur="$tooltip.removeTooltip($el.parentElement)"
+            {% endif %}
+            name="{{ block_id }}"
+            @change="$data.setSelectedVariant(+$el.value)"
+            data-title="{{ variant.title }}"
+            :checked="p_card?.selected_variant?.id === +$el.value"
+            {% if variant.id == current_value %}
+              checked="checked"
+            {% endif %}
+            value="{{ variant.id }}">
+      </label>
+    {% endfor %}
+    {% if content_flow == 'truncate' %}
+      <div class="flex shrink-0 items-center text-sm font-medium"
+           x-cloak
+           x-show="true"
+           :class="(offset + 1) < p_card?.product?.variants?.length ? '':'opacity-0 pointer-events-none'"
+           x-init="$nextTick(async ()=> { if (window.design_mode) { await utils.delay(20) } offset = utils.truncateChildren($el, $el.parentElement)})"
+           @resize.window.debounce.200ms="offset = p_card?.product?.variants?.length; await utils.delay(1); offset = utils.truncateChildren($el, $el.parentElement)"
+           x-html="utils.applyInlinePluralization(`{{ truncate_text }}`.replace('[count]', `${p_card?.product?.variants?.length - offset}`).replace('[option]', `{{ legend_label }}`))">
+        {{ truncate_text | replace: '[count]', '1' | repalce: '[option]', legend_label }}
+      </div>
+    {% endif %}
+  </fieldset>
+  {% if content_flow == 'overflow' %}
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+  {% endif %}
+</div>
+
+

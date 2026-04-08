@@ -1,0 +1,66 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__addon_items"
+  assign section_type = "card_line_item_card"
+  assign order_offset = block.settings.order_offset
+  assign line_item_card_class = block.settings.line_item_card_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% assign line_item_section = metaobjects.line_item_cards[line_item_card_class].schema.value %}
+
+{% for child_line_item in child_line_items %}
+  {% assign order_index = forloop.index0 | plus: order_offset %}
+  <div
+      data-style-id="{{ style_id }}"
+      class="shrink-0 max-w-full w-full order-[--order]" {{ hide_attribute }}
+      data-render-index="{{ block_id }}--{{ child_line_item.properties._p_id_link }}--{{ forloop.index0 }}"
+      data-hide-if-empty="{{ hide_if_empty }}"
+      data-line-item-id="{{ child_line_item.key }}"
+      style="--order: {{ order_index | times: 10 }}">
+    {% if line_item_section != blank %}
+      {% assign preload_images_boolean = true %}
+      {% if forloop.index0 >= preload_images %}
+        {% assign preload_images_boolean = false %}
+      {% endif %}
+      {% render "card_line_item_card._static",
+          line_item: child_line_item,
+          section: line_item_section,
+          has_addon_products: false,
+          preload_images: preload_images_boolean
+      %}
+    {% else %}
+      <section class="card-loading line-item-card--{{ line_item_card_class }}"
+               data-card-handle="{{ line_item_card_class }}"
+               data-line-item-id="{{ child_line_item.key }}"
+               data-intersected
+               x-init="$nextTick(() => _sections.hydrateLineItemCard($el))"></section>
+    {% endif %}
+  </div>
+{% endfor %}

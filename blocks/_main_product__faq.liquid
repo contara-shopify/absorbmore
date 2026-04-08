@@ -1,0 +1,350 @@
+{% style %}
+  [data-component-faq] {
+    margin-top: 15px;
+    grid-column: span 2;
+  }
+
+  .faq-accordion {
+    width: 100%;
+    font-family: "Inter", -apple-system, sans-serif;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #d0ccc3;
+  }
+
+  .faq-item:first-child {
+    border-top: 1px solid #d0ccc3;
+  }
+
+  .faq-trigger {
+    width: 100%;
+    min-height: 49px;
+    padding: 14px 0 15px;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    text-align: left;
+    color: #1a1a1a;
+    cursor: pointer;
+  }
+
+  .faq-label {
+    font-family: var(--typography-family-tertiary, "Suisse Intl");
+    font-size: var(--typography-richtext-md-p1, 16px);
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+  }
+
+  .faq-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: #1a1a1a;
+    border-radius: 1px;
+  }
+
+  .faq-icon::before {
+    top: 7px;
+    left: -1.5px;
+    width: 18px;
+    height: 1.5px;
+  }
+
+  .faq-icon::after {
+    top: -1.5px;
+    left: 7px;
+    width: 1.5px;
+    height: 18px;
+    opacity: 1;
+  }
+
+  .faq-item.is-open .faq-icon::after {
+    opacity: 0;
+  }
+
+  .faq-icon span {
+    display: none;
+  }
+
+  .faq-panel {
+    display: none;
+    padding: 0 0 14px;
+    font-family: "Suisse Intl", Sans-Serif;
+    font-size: var(--typography-richtext-md-p1, 16px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: -0.16px;
+    color: #6a6a6a;
+  }
+
+  .faq-item.is-open .faq-panel {
+    display: block;
+  }
+
+  .faq-panel p {
+    margin: 0;
+  }
+
+  .faq-panel p + p {
+    margin-top: 0;
+  }
+
+  .faq-panel strong {
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .faq-label {
+      font-size: 13px;
+    }
+
+    .faq-panel {
+      font-size: 11px;
+    }
+  }
+{% endstyle %}
+
+<div data-component-faq data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="component component--faq">
+    <div class="faq-accordion" data-faq-accordion>
+      {% for i in (1..8) %}
+        {% liquid
+          assign question_key = 'question_' | append: i
+          assign answer_key = 'answer_' | append: i
+          assign question_value = block.settings[question_key]
+          assign answer_value = block.settings[answer_key]
+        %}
+        {% if question_value != blank %}
+          {% assign panel_id = 'faq-panel-' | append: section.id | append: '-' | append: block.id | append: '-' | append: i %}
+          <div class="faq-item{% if i == 1 %} is-open{% endif %}" data-faq-item>
+            <button
+              class="faq-trigger"
+              type="button"
+              aria-controls="{{ panel_id }}"
+              aria-expanded="{% if i == 1 %}true{% else %}false{% endif %}"
+              data-faq-trigger
+            >
+              <span class="faq-label">{{ question_value | escape }}</span>
+              <i data-animated-icon="" class="faq-icon relative flex shrink-0 items-center justify-center h-2.5 w-2.5" aria-hidden="true">
+                <span class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-2.5 rotate-0" :class="collapsible.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-180'"></span>
+                <span class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-2.5 rotate-0" :class="collapsible.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-90'"></span>
+              </i>
+            </button>
+            {% if answer_value != blank %}
+              <div
+                id="{{ panel_id }}"
+                class="faq-panel"
+                role="region"
+                aria-label="{{ question_value | escape }}"
+                {% if i != 1 %}hidden{% endif %}
+                data-faq-panel
+              >
+                {{ answer_value }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-component-faq][data-style-id="{{ section.id }}--{{ block.id }}"]');
+    if (!root) return;
+
+    const triggers = root.querySelectorAll('[data-faq-trigger]');
+    if (!triggers.length) return;
+
+    const closeItem = (item) => {
+      if (!item) return;
+
+      item.classList.remove('is-open');
+
+      const trigger = item.querySelector('[data-faq-trigger]');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+
+      const panel = item.querySelector('[data-faq-panel]');
+      if (!panel) return;
+      panel.hidden = true;
+    };
+
+    const openItem = (item) => {
+      if (!item) return;
+
+      item.classList.add('is-open');
+
+      const trigger = item.querySelector('[data-faq-trigger]');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+      const panel = item.querySelector('[data-faq-panel]');
+      if (!panel) return;
+      panel.hidden = false;
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('[data-faq-item]');
+        if (!item) return;
+
+        if (item.classList.contains('is-open')) {
+          closeItem(item);
+          return;
+        }
+
+        root.querySelectorAll('[data-faq-item].is-open').forEach(closeItem);
+        openItem(item);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Items"
+    },
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1",
+      "default": "How to use"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_1",
+      "label": "Answer 1",
+      "default": "<p>Take <strong>2 capsules once daily</strong>, 20-30 minutes before your first meal. Best taken on an empty stomach. Consistent daily use for <strong>3+ months</strong> delivers optimal results.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2",
+      "default": "When will I see results?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_2",
+      "label": "Answer 2",
+      "default": "<p>Most users begin noticing appetite and routine consistency improvements within 2-4 weeks. Best outcomes are typically seen after 3+ months of consistent daily use.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_3",
+      "label": "Question 3",
+      "default": "Ingredients"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_3",
+      "label": "Answer 3",
+      "default": "<p>WLP-1 contains premium, research-backed ingredients selected to support satiety, metabolic function, and daily consistency. Refer to the product label for complete details.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question 4",
+      "default": "What is a GLP-1 biomimetic?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_4",
+      "label": "Answer 4",
+      "default": "<p>A GLP-1 biomimetic is a compound designed to mimic the signaling behavior of the natural GLP-1 pathway to support fullness and appetite control.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_5",
+      "label": "Question 5",
+      "default": "How does WLP-1™ compare to weight-loss injections?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_5",
+      "label": "Answer 5",
+      "default": "<p>WLP-1 is a non-injection daily supplement experience. Injections and supplements are different approaches; consult your provider for guidance based on your goals and health history.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_6",
+      "label": "Question 6",
+      "default": "Are there side effects?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_6",
+      "label": "Answer 6",
+      "default": "<p>Most users tolerate WLP-1 well. Individual responses vary. If you are pregnant, nursing, have a medical condition, or take medication, consult your healthcare provider before use.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_7",
+      "label": "Question 7",
+      "default": "Is WLP-1™ third-party tested?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_7",
+      "label": "Answer 7",
+      "default": "<p>Yes. Each batch is third-party tested for quality and safety standards.</p>"
+    },
+    {
+      "type": "text",
+      "id": "question_8",
+      "label": "Question 8",
+      "default": "Can I stack WLP-1™ with other supplements?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_8",
+      "label": "Answer 8",
+      "default": "<p>In many cases, yes. Review your current routine and consult your healthcare provider to avoid overlap and ensure compatibility.</p>"
+    }
+  ],
+  "class": "shopify_block___main_product__faq",
+  "presets": [
+    {
+      "name": "FAQ",
+      "category": "** Product **",
+      "settings": {
+        "question_1": "How to use",
+        "answer_1": "<p>Take <strong>2 capsules once daily</strong>, 20-30 minutes before your first meal. Best taken on an empty stomach. Consistent daily use for <strong>3+ months</strong> delivers optimal results.</p>",
+        "question_2": "When will I see results?",
+        "answer_2": "<p>Most users begin noticing appetite and routine consistency improvements within 2-4 weeks. Best outcomes are typically seen after 3+ months of consistent daily use.</p>",
+        "question_3": "Ingredients",
+        "answer_3": "<p>WLP-1 contains premium, research-backed ingredients selected to support satiety, metabolic function, and daily consistency. Refer to the product label for complete details.</p>",
+        "question_4": "What is a GLP-1 biomimetic?",
+        "answer_4": "<p>A GLP-1 biomimetic is a compound designed to mimic the signaling behavior of the natural GLP-1 pathway to support fullness and appetite control.</p>",
+        "question_5": "How does WLP-1™ compare to weight-loss injections?",
+        "answer_5": "<p>WLP-1 is a non-injection daily supplement experience. Injections and supplements are different approaches; consult your provider for guidance based on your goals and health history.</p>",
+        "question_6": "Are there side effects?",
+        "answer_6": "<p>Most users tolerate WLP-1 well. Individual responses vary. If you are pregnant, nursing, have a medical condition, or take medication, consult your healthcare provider before use.</p>",
+        "question_7": "Is WLP-1™ third-party tested?",
+        "answer_7": "<p>Yes. Each batch is third-party tested for quality and safety standards.</p>",
+        "question_8": "Can I stack WLP-1™ with other supplements?",
+        "answer_8": "<p>In many cases, yes. Review your current routine and consult your healthcare provider to avoid overlap and ensure compatibility.</p>"
+      }
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

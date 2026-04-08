@@ -1,0 +1,504 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_ugc_video"
+  assign video = block.settings.video
+  assign video_url = block.settings.video_url
+  assign preview_image = block.settings.preview_image
+  assign caption = block.settings.caption
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign metafield_video_key = block.settings.metafield_video_key
+  assign metafield_video_url_key = block.settings.metafield_video_url_key
+  assign metafield_preview_image_key = block.settings.metafield_preview_image_key
+  assign metafield_caption_key = block.settings.metafield_caption_key
+  assign text_alignment = block.settings.text_alignment
+  assign caption_class = block.settings.caption_class
+  assign autoplay = block.settings.autoplay
+  assign controls = block.settings.controls
+  assign muted = block.settings.muted
+  assign loop = block.settings.loop
+  assign play_icon = block.settings.play_icon
+  assign products = block.settings.products
+  assign metafield_products_key = block.settings.metafield_products_key
+  assign closest_product_fallback = block.settings.closest_product_fallback
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | remove: " " | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type != 'metafield'
+    assign video = video | default: video_url
+
+    assign preview_image = preview_image | default: video.preview_image
+
+    if video == blank or preview_image == blank
+      assign is_empty = true
+    endif
+
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if dynamic_content_type == 'metafield' %}
+  {% assign first = true %}
+  {% for item in metafield %}
+    {% liquid
+      assign video = item[metafield_video_key].value | default: item[metafield_video_url_key].value
+      assign preview_image = item[metafield_preview_image_key].value | default: video.preview_image
+
+      if video == blank or preview_image == blank
+        continue
+      endif
+    %}
+    <figure
+        role="button"
+        tabindex="0"
+        @click.prevent.stop="$mediaGallery.showVideoGallery($el, [...$el.parentElement.querySelectorAll(`:scope > [data-ugc-video]`)])"
+        @pointerover.once="utils.JSONParse($el.getAttribute('data-ugc-products') ?? '[]')?.forEach(([handle, id]) =>_product.getProductData(handle, id))"
+        data-ugc-video="{{ video | json | escape }}"
+        {% if item[metafield_products_key].value != blank %}
+          data-ugc-products='[{% for prod in item[metafield_products_key].value %}["{{ prod.handle }}", {{ prod.id }}]{% if forloop.last == false %},{% endif %}{% endfor %}]'
+        {% elsif closest_product_fallback and product != blank %}
+          data-ugc-products='[["{{ product.handle }}", {{ product.id }}]]'
+        {% endif %}
+        {% if autoplay %}
+          data-autoplay="true"
+        {% endif %}
+        {% if controls %}
+          data-controls="true"
+        {% endif %}
+        {% if muted %}
+          data-muted="true"
+        {% endif %}
+        {% if loop %}
+          data-loop="true"
+        {% endif %}
+        data-style-id="{{ section.id }}--{{ block.id }}" {% if first %}{{ block.shopify_attributes }} {{ hide_attribute }}{% assign first = false %}{% endif %}
+        class="{{ text_alignment | prepend: 'text-' }}">
+      <div class="image-wrapper relative">
+        {% render '_object.image', image: preview_image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+      </div>
+      <figcaption>
+        {% render '_input.richtext', content: item[metafield_caption_key], class: caption_class %}
+      </figcaption>
+    </figure>
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+<figure
+    role="button"
+    tabindex="0"
+    @click.prevent.stop="$mediaGallery.showVideoGallery($el, [...$el.parentElement.querySelectorAll(`:scope > [data-ugc-video]`)])"
+    @pointerover.once="utils.JSONParse($el.getAttribute('data-ugc-products') ?? '[]')?.forEach(([handle, id])=>_product.getProductData(handle, id))"
+    data-ugc-video="{{ video | json | escape }}"
+    {% if products != blank %}
+      data-ugc-products='[{% for prod in products %}["{{ prod.handle }}", {{ prod.id }}]{% if forloop.last == false %},{% endif %}{% endfor %}]'
+    {% elsif closest_product_fallback and product != blank %}
+      data-ugc-products='[["{{ product.handle }}", {{ product.id }}]]'
+    {% endif %}
+    {% if autoplay %}
+      data-autoplay="true"
+    {% endif %}
+    {% if controls %}
+      data-controls="true"
+    {% endif %}
+    {% if muted %}
+      data-muted="true"
+    {% endif %}
+    {% if loop %}
+      data-loop="true"
+    {% endif %}
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+    class="{{ text_alignment | prepend: 'text-' }}">
+  <div class="relative image-wrapper">
+    {% render '_object.image', image: preview_image, class: "w-full h-full transition-all object-[inherit]", preload: preload, sizes: sizes, max_width: max_width %}
+    {% if play_icon != blank %}
+      <div class="flex items-center justify-center p-1 rounded-full bg-black/30 absolute top-1/2 left-1/2 -translate-1/2 text-white">
+        {% render '_components.icon', icon: play_icon, class: 'h-4 w-4' %}
+      </div>
+    {% endif %}
+  </div>
+  <figcaption>
+    {% render '_input.richtext', content: caption, class: caption_class %}
+  </figcaption>
+</figure>
+
+{% schema %}
+{
+  "name": "UGC Video",
+  "settings": [
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video url",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "preview_image",
+      "label": "Preview image",
+      "info": "Optional, if source is set via Video",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "caption",
+      "label": "Caption",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Repeater",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "List of Metaobjects with the subfields of: 'video' (type: file_reference), 'video_url' (type: url), 'preview_image' (type: file_reference), 'caption' (type: text), and 'products' (type: list.product_reference)",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace_key",
+      "label": "Metaobject",
+      "placeholder": "product.smart.videos",
+      "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `product.smart.videos` or `metaobjects.videos`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_video_key",
+      "label": "Video Key",
+      "default": "video",
+      "info": "Metaobject key for the video value. I.e. `video`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_video_url_key",
+      "label": "Video Url Key",
+      "default": "video_url",
+      "info": "Metaobject key for the Video Url value. I.e. `video_url` (optional, used if video is not set)",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_preview_image_key",
+      "label": "Preview Image Key",
+      "default": "preview_image",
+      "info": "Metaobject key for the Preview Image value. I.e. `preview_image` (optional, if source is set via Video)",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_caption_key",
+      "label": "Caption Key",
+      "default": "author",
+      "info": "Metaobject key for the caption value. I.e. `content`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "caption_class",
+      "label": "Caption class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Automatically mutes the video."
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show controls",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop"
+    },
+    {
+      "type": "text",
+      "id": "play_icon",
+      "label": "Play icon",
+      "default": "play"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Product Modal"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products"
+    },
+    {
+      "type": "text",
+      "id": "metafield_products_key",
+      "label": "Products Key",
+      "default": "products",
+      "info": "Metaobject key for the products value. I.e. `products`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "closest_product_fallback",
+      "label": "Use closest product as fallback",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 256
+    },
+    {
+      "type": "paragraph",
+      "content": "Ready more about the [sizes](https://web.dev/learn/performance/image-performance#sizes) attribute and [Image optimization](https://www.shopify.com/za/blog/image-sizes)."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cards ugc video",
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_ugc_video"
+}
+{% endschema %}

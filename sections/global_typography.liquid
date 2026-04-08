@@ -1,0 +1,409 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "global_typography"
+  assign custom_css = section.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% assign selector = 'body' %}
+
+<style>
+  {{ custom_css | append: css | replace: '&', selector | strip_newlines }}
+  {% if request.design_mode %}
+  {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+  {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+  {% endif %}
+</style>
+
+{% for block in section.blocks %}
+  {% if block.type == 'font' %}
+    {% render 'global_typography.font', block: block %}
+  {% endif %}
+  {% if block.type == 'heading' %}
+    {% render 'global_typography.heading', block: block %}
+  {% endif %}
+  {% if block.type == 'richtext' %}
+    {% render 'global_typography.richtext', block: block %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Typography",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Root Typography"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "body {\n  font-family: sans-serif;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.4;\n  letter-spacing: normal;\n}\n\n@media (max-width: 768px) {\n  body {\n    font-size: 15px;\n  }\n}\n\nstrong {\n  font-weight: bolder;\n}\nem {\n  font-style: italic;\n}\n[style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Font",
+      "type": "font",
+      "settings": [
+        {
+          "type": "text",
+          "id": "font_name",
+          "label": "Font family name",
+          "default": "Inter"
+        },
+        {
+          "type": "font_picker",
+          "id": "family",
+          "label": "Font Family",
+          "default": "inter_n4",
+          "info": "If you want to use a Custom Font, set the Font Family to a SYSTEM FONT: sans-serif, serif or mono"
+        },
+        {
+          "type": "text",
+          "id": "weights",
+          "label": "Font Weights / Styles",
+          "default": "300, 400, 400i, 700, 700i, 800"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Custom Fonts Only"
+        },
+        {
+          "type": "liquid",
+          "id": "custom_src",
+          "label": "Custom font declaration",
+          "info": "Accepts HTML / Liquid"
+        },
+        {
+          "type": "text",
+          "id": "fallback_families",
+          "label": "Fallback Font Family",
+          "default": "-apple-system, BlinkMacSystemFont, \"San Francisco\", \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif"
+        },
+        {
+          "type": "paragraph",
+          "content": "Custom fonts can be uploaded to Shopify (Admin -> Content -> Files) or directly into the theme `assets` folder. For Font Setup instructions [read more](https://fonts.google.com/knowledge/using_type/using_web_fonts)"
+        }
+      ]
+    },
+    {
+      "name": "Type Set",
+      "type": "richtext",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "richtext-md",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.typography.blocks.type_set.settings.paragraph__1.content"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "info": "Applies directly to the provided class",
+          "default": "& {}"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Paragraph - `<p>`"
+        },
+        {
+          "type": "textarea",
+          "id": "p_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.4;\n  letter-spacing: normal;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 14px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 1 - `<h1>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h1_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 48px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.0;\n  letter-spacing: normal;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 36px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 2 - `<h2>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h2_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 36px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.1;\n  letter-spacing: normal;\n \n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 32px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 3 - `<h3>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h3_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 30px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n \n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 24px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 4 - `<h4>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h4_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 24px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n \n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 20px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 5 - `<h5>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h5_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 21px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n \n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 16px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Heading 6 - `<h6>`"
+        },
+        {
+          "type": "textarea",
+          "id": "h6_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.5;\n  letter-spacing: normal;\n \n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 13px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Ordered List - `<ol>`"
+        },
+        {
+          "type": "textarea",
+          "id": "ol_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  list-style-type: decimal;\n  list-style-position: inside;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 14px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Unordered List - `ul`"
+        },
+        {
+          "type": "textarea",
+          "id": "ul_custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  list-style-type: disc;\n  list-style-position: inside;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 14px;\n  }\n}\n\n& strong {\n  font-weight: bolder;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}\n"
+        }
+      ]
+    },
+    {
+      "name": "Type",
+      "type": "heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "text-16/14",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.typography.blocks.type.settings.paragraph__1.content"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  font-family: inherit;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.4;\n  letter-spacing: normal;\n}\n\n@media (max-width: 768px) {\n  & {\n    font-size: 15px;\n  }\n}\n"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Typography",
+      "settings": {
+        "custom_css": "body {\n  font-family: Geist, Sans-Serif;\n  font-size: 16px;\n  font-style: normal;\n  font-weight: 400;\n  line-height: 150%; /* 24px */\n}\n\nbody strong {\n  font-weight: bolder;\n}\nbody em {\n  font-style: italic;\n}\nbody [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}",
+        "category_name": ""
+      },
+      "blocks": [
+        {
+          "type": "font",
+          "name": "Font: Geist",
+          "settings": {
+            "font_name": "Geist",
+            "family": "sans-serif",
+            "weights": "200, 200i, 300, 300i, 400, 400i, 500, 500i, 600, 600i, 700, 700i, 800, 800i, 900, 900i",
+            "custom_src": "<link href=\"https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap\" rel=\"stylesheet\">",
+            "fallback_families": "-apple-system, BlinkMacSystemFont, \"San Francisco\", \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif"
+          }
+        },
+        {
+          "type": "richtext",
+          "name": "richtext-md",
+          "settings": {
+            "class": "richtext-md",
+            "custom_css": "& a {\n  text-decoration: underline;\n}",
+            "p_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.4;\n  letter-spacing: normal;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h1_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 48px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.0;\n  letter-spacing: normal;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 36px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h2_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 36px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.1;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 32px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h3_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 30px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 24px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h4_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 24px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 20px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h5_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 20px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 16px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h6_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.5;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 13px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "ol_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  list-style-type: decimal;\n  list-style-position: inside;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "ul_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  list-style-type: disc;\n  list-style-position: inside;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}"
+          }
+        }
+      ],
+      "category": "Design System"
+    },
+    {
+      "name": "undefined",
+      "settings": {
+        "custom_css": "body {\n  font-family: Geist, Sans-Serif;\n  font-size: 16px;\n  font-style: normal;\n  font-weight: 400;\n  line-height: 150%; /* 24px */\n}\n\nbody strong {\n  font-weight: bolder;\n}\nbody em {\n  font-style: italic;\n}\nbody [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "font",
+          "name": "Font: Geist",
+          "settings": {
+            "font_name": "Geist",
+            "family": "sans-serif",
+            "weights": "200, 200i, 300, 300i, 400, 400i, 500, 500i, 600, 600i, 700, 700i, 800, 800i, 900, 900i",
+            "custom_src": "<link href=\"https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap\" rel=\"stylesheet\">",
+            "fallback_families": "-apple-system, BlinkMacSystemFont, \"San Francisco\", \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif"
+          }
+        },
+        {
+          "type": "richtext",
+          "name": "richtext-md",
+          "settings": {
+            "class": "richtext-md",
+            "custom_css": "& a {\n  text-decoration: underline;\n}",
+            "p_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 16px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.4;\n  letter-spacing: normal;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h1_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 48px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.0;\n  letter-spacing: normal;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 36px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h2_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 36px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.1;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 32px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h3_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 30px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.2;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 24px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h4_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 24px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 20px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h5_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 20px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.3;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 16px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "h6_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  font-family: inherit;\n  font-size: 14px;\n  font-weight: 400;\n  font-style: normal;\n  line-height: 1.5;\n  letter-spacing: normal;\n    \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 13px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "ol_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  list-style-type: decimal;\n  list-style-position: inside;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}",
+            "ul_custom_css": "& {\n  /*Colors*/\n  \n  /*Typography*/\n  list-style-type: disc;\n  list-style-position: inside;\n  \n  /*Spacing*/\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n  }\n}\n\n& strong {\n  font-weight: 600;\n}\n& em {\n  font-style: italic;\n}\n& [style=\"text-decoration:underline\"] {\n  text-decoration: underline;\n}\n&:where(:hover,:focus-visible) {}\n&.active {}"
+          }
+        }
+      ],
+      "category": "Design System"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.global"
+    ]
+  },
+  "limit": 2,
+  "class": "shopify_section__global_typography"
+}
+{% endschema %}

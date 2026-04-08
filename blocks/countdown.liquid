@@ -1,0 +1,306 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "countdown"
+  assign type = block.settings.type
+  assign timezone = block.settings.timezone
+  assign end_date = block.settings.end_date
+  assign end_time = block.settings.end_time
+  assign duration_offset_hours = block.settings.duration_offset_hours
+  assign auto_refresh_hours = block.settings.auto_refresh_hours
+  assign content = block.settings.content
+  assign timer_expired_message = block.settings.timer_expired_message
+  assign content_class = block.settings.content_class
+  assign hide_if_expired = block.settings.hide_if_expired
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% capture block_settings %}
+  {
+  "type": {{ type | json }},
+  "timezone": {{ timezone | json }},
+  "end_date": {{ end_date | json }},
+  "end_time": {{ end_time | json }},
+  "duration_offset_hours": {{ duration_offset_hours | json }},
+  "auto_refresh_hours": {{ auto_refresh_hours | json }},
+  "content": "{% render '_input.inline_richtext', content: content, escape_quotes: true %}",
+  "timer_expired_message": "{% render '_input.inline_richtext', content: timer_expired_message, escape_quotes: true %}",
+  "hide_if_expired": {{ hide_if_expired | json }},
+  "block_id": {{ block.id | json }}
+  }
+{% endcapture %}
+
+<span data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      x-data="{ ...window._sections.initCountDownTimer($el, utils.JSONParse($el.getAttribute('data-settings'))) }"
+      data-settings='{{ block_settings | strip_newlines | escape }}'
+      x-html="countdown.content"
+      class="inline-block {{ block.settings.content_class }}">
+</span>
+
+{% schema %}
+{
+  "name": "Countdown",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "label": "Type",
+      "default": "date",
+      "options": [
+        {
+          "value": "date",
+          "label": "Date"
+        },
+        {
+          "value": "duration_offset",
+          "label": "Duration offset"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "timezone",
+      "label": "Timezone (UTC Offset)",
+      "options": [
+        {
+          "value": "user",
+          "label": "User Based Timezone"
+        },
+        {
+          "value": "-12",
+          "label": "(GMT-12:00) Baker Island"
+        },
+        {
+          "value": "-11",
+          "label": "(GMT-11:00) American Samoa"
+        },
+        {
+          "value": "-10",
+          "label": "(GMT-10:00) Hawaii"
+        },
+        {
+          "value": "-9",
+          "label": "(GMT-09:00) Alaska"
+        },
+        {
+          "value": "-8",
+          "label": "(GMT-08:00) Pacific Time (US & Canada)"
+        },
+        {
+          "value": "-7",
+          "label": "(GMT-07:00) Mountain Time (US & Canada)"
+        },
+        {
+          "value": "-6",
+          "label": "(GMT-06:00) Central Time (US & Canada)"
+        },
+        {
+          "value": "-5",
+          "label": "(GMT-05:00) Eastern Time (US & Canada)"
+        },
+        {
+          "value": "-4",
+          "label": "(GMT-04:00) Atlantic Time (Canada)"
+        },
+        {
+          "value": "-3",
+          "label": "(GMT-03:00) Buenos Aires"
+        },
+        {
+          "value": "-2",
+          "label": "(GMT-02:00) South Georgia"
+        },
+        {
+          "value": "-1",
+          "label": "(GMT-01:00) Azores"
+        },
+        {
+          "value": "0",
+          "label": "(GMT+00:00) UTC / London"
+        },
+        {
+          "value": "1",
+          "label": "(GMT+01:00) Central European Time"
+        },
+        {
+          "value": "2",
+          "label": "(GMT+02:00) Eastern European Time"
+        },
+        {
+          "value": "3",
+          "label": "(GMT+03:00) Moscow"
+        },
+        {
+          "value": "4",
+          "label": "(GMT+04:00) Dubai"
+        },
+        {
+          "value": "5",
+          "label": "(GMT+05:00) Pakistan"
+        },
+        {
+          "value": "5.5",
+          "label": "(GMT+05:30) India Standard Time"
+        },
+        {
+          "value": "6",
+          "label": "(GMT+06:00) Bangladesh"
+        },
+        {
+          "value": "7",
+          "label": "(GMT+07:00) Indochina Time"
+        },
+        {
+          "value": "8",
+          "label": "(GMT+08:00) China Standard Time"
+        },
+        {
+          "value": "9",
+          "label": "(GMT+09:00) Japan/Korea Standard Time"
+        },
+        {
+          "value": "10",
+          "label": "(GMT+10:00) Australian Eastern Time"
+        },
+        {
+          "value": "11",
+          "label": "(GMT+11:00) Solomon Islands"
+        },
+        {
+          "value": "12",
+          "label": "(GMT+12:00) New Zealand Standard Time"
+        }
+      ],
+      "default": "-5",
+      "visible_if": "{{ block.settings.type == 'date' }}"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End Date",
+      "default": "2025-12-31",
+      "info": "Use format: YYYY-MM-DD",
+      "visible_if": "{{ block.settings.type == 'date' }}"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "End Time",
+      "default": "23:59:59",
+      "info": "Use format: HH:MM:SS",
+      "visible_if": "{{ block.settings.type == 'date' }}"
+    },
+    {
+      "type": "range",
+      "id": "duration_offset_hours",
+      "label": "Duration (hours)",
+      "default": 48,
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "unit": "h",
+      "info": "Length of the countdown after a visitor first sees it.",
+      "visible_if": "{{ block.settings.type == 'duration_offset' }}"
+    },
+    {
+      "type": "range",
+      "id": "auto_refresh_hours",
+      "label": "Restart delay (hours)",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "h",
+      "info": "Wait time before the countdown restarts. Set to 0 to disable auto-restart."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "🚨 NEW SALE 🚨 Starting in [days]d [hours]h [minutes]m [seconds]s",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use placeholders [days], [hours], [minutes], [seconds] to display the countdown."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "timer_expired_message",
+      "label": "Countdown Expired Content",
+      "default": "Offer expired",
+      "visible_if": "{{ block.settings.hide_if_expired == 'none' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_expired",
+      "label": "If expired, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown",
+      "category": "Custom"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__countdown"
+}
+{% endschema %}

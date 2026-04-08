@@ -1,0 +1,173 @@
+{% comment %}
+Variables:
+- content
+- class
+- style
+- html_attributes
+{% endcomment %}
+{% comment %}
+    Shopify Input Type - Richtext
+    The input matches Icons via the `_utils.icon` snippet
+
+    Accepts:
+    - content: {string}
+    - class: {string}
+    - style: {string} Inline CSS style declaration
+    - html_attributes: {string} Stringified html attributes i.e. 'data-variable="id"'
+
+    Usage:
+    {% render '_input.richtext', content: content, class: class, style: style, html_attributes: 'data-variable="id"' %}
+{% endcomment %}
+{%- liquid
+
+  if content contains '[br]'
+    assign content = content | replace: '[br]', '<br>'
+  endif
+
+  for i in (1..15)
+    if content contains '[gap.'
+      assign split = content | replace_first: '[gap.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign first = split[0]
+      assign size = split_2[0] | strip | split: '.' | first | replace: 'px', ''
+      assign last = split_2[1]
+      if size == 'fill'
+        assign sizeSpan = '<span style="display: inline-block; flex: 1;"></span>'
+      else
+        assign sizeSpan = '<span style="display: inline-block; padding-left:' | append: size | append: 'px;"></span>'
+      endif
+      assign content = first | append: sizeSpan | append: last
+      continue
+    endif
+    break
+  endfor
+
+  for i in (1..15)
+    if content contains '[span.'
+      assign split = content | replace_first: '[span.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign first = split[0]
+      assign class_name = split_2[0] | strip | split: '.' | first | split: '||' | first
+      assign span_content = split_2[0] | strip | split: '||' | last
+      assign last = split_2[1]
+      assign span_item = '<span class="empty:hidden ' | append: class_name | append: '">' | append: span_content | append: '</span>'
+      assign content = first | append: span_item | append: last
+      continue
+    endif
+    break
+  endfor
+
+  for i in (1..15)
+    if content contains '[icon.'
+      assign split = content | replace_first: '[icon.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign prev_content = split[0]
+      assign next_content = split_2[1]
+      assign icon_array = split_2[0] | strip | split: '.'
+      assign icon = icon_array | first
+      assign height = icon_array[1] | replace: ",", "." | default: "1.25em"
+      if height contains 'em' or height contains '%'
+      else
+        assign height = height | replace: 'px', '' | append: 'px'
+      endif
+      assign color = icon_array[2] | default: "currentColor"
+      assign image = icon_array[3] | default: "not_an_image"
+      assign icon_style = "height: " | append: height | append: ";width: " | append: height | append: "; color:" | append: color | append: ";"
+      capture content
+        echo prev_content
+        if height == 'image' or color == 'image' or image == 'image' or height == 'imagepx'
+          if icon_array[1] == 'image'
+            assign height = icon_array[2] | replace: ",", "." | default: "1.25em"
+            unless height contains 'em' or height contains '%'
+              assign height = height | replace: 'px', '' | append: 'px'
+            endunless
+            assign color = icon_array[3] | default: "currentColor"
+            assign icon_style = "height: " | append: height | append: ";width: " | append: height | append: "; color:" | append: color | append: ";"
+          endif
+          if icon_array[2] == 'image'
+            assign height = icon_array[1] | replace: ",", "." | default: "1.25em"
+            assign color = icon_array[3] | default: "currentColor"
+            unless height contains 'em' or height contains '%'
+              assign height = height | replace: 'px', '' | append: 'px'
+            endunless
+            assign icon_style = "height: " | append: height | append: ";width: " | append: height | append: "; color:" | append: color | append: ";"
+          endif
+          render '_components.icon', icon: icon, class: "inline-flex items-center justify-center align-middle", style: icon_style, no_mask: true
+        else
+          render '_components.icon', icon: icon, class: "inline-flex items-center justify-center align-middle", style: icon_style
+        endif
+        echo next_content
+      endcapture
+      continue
+    endif
+    break
+  endfor
+
+  if skip_pluralization != true
+    if content contains '{'
+      assign pluarlizer_arr = '{s}__{y|ies}__{es}__{fe|ves}__{f|ves}' | split: '__'
+    elsif content contains '&lcub;'
+      assign pluarlizer_arr = '&lcub;s&rcub;__&lcub;y|ies&rcub;__&lcub;es&rcub;__&lcub;fe|ves&rcub;__&lcub;f|ves&rcub;' | split: '__'
+    endif
+    for pluarlizer in pluarlizer_arr
+      assign tester = pluarlizer | remove: '&lcub;' | remove: '&rcub;' | remove: '{' | remove: '}'
+      assign singular = ''
+      assign plural = tester | split: '|' | last
+      if tester contains '|'
+        assign singular = tester | split: '|' | first
+      endif
+      for i in (1..15)
+        if content contains pluarlizer
+          assign split = content | replace_first: pluarlizer, '|~|split|~|' | split: '|~|split|~|'
+          assign first = split[0]
+          assign last = split[1]
+          assign stripped_content = first | strip_html | split: ' ' | reverse
+          assign string_number = ''
+          for word in stripped_content
+            if word contains '0' or word contains '1' or word contains '2' or word contains '3' or word contains '4' or word contains '5' or word contains '6' or word contains '7' or word contains '8' or word contains '9'
+              assign chars = word | split: ''
+              assign started = false
+              for c in chars
+                if c == '0' or c == '1' or c == '2' or c == '3' or c == '4' or c == '5' or c == '6' or c == '7' or c == '8' or c == '9'
+                  assign string_number = string_number | append: c
+                  assign started = true
+                elsif started
+                  break
+                endif
+              endfor
+              break
+            endif
+          endfor
+          assign number = string_number | times: 1
+
+          if number == 1
+            assign content = first | append: singular | append: last
+          elsif string_number != ''
+            assign content = first | append: plural | append: last
+          else
+            assign content = first | append: last
+          endif
+          continue
+        endif
+        break
+      endfor
+    endfor
+  endif
+
+  assign escapedContent = content | strip_html | strip
+  assign containsHtml = false
+  if content contains "<svg" or content contains "<img" or content contains "<video" or content contains "<table" or content contains "<canvas" or content contains "<script" or content contains "<style" or content contains "<div"
+    assign containsHtml = true
+  endif
+  if content == blank or escapedContent == blank and containsHtml != true
+    break
+  endif
+  if add_newlines and containsHtml != true
+    assign content = content | newline_to_br
+  endif
+-%}
+
+{%- capture result -%}{{- content | replace: '®', "<sup style='font-size: 0.7em;'>®</sup>" | strip_newlines -}}{%- endcapture -%}
+{%- if escape -%}{{- content | replace: '®', "<sup style='font-size: 0.7em;'>®</sup>" | escape | strip_newlines -}}{%- break -%}{%- endif -%}
+{%- if escape_quotes -%}{{- content | replace: '®', "<sup style='font-size: 0.7em;'>®</sup>" | replace: '"', '\"' | strip_newlines -}}{%- break -%}{%- endif -%}
+{{- result -}}

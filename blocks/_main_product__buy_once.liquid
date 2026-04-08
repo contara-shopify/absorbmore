@@ -1,0 +1,205 @@
+{%- comment -%}
+  One-time add: briefly clear selling plan for handleAddToCart, then restore in finally so URL + UI stay on subscription.
+  Label uses variant.price only — not subscription-adjusted pdp.selected_price or Skio metafields.
+{%- endcomment -%}
+{%- liquid
+  assign quantity_price = block.settings.quantity_price
+  assign recommendation_text = block.settings.recommendation_text
+  assign sold_out_text = block.settings.sold_out_text
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  assign buy_once_variant = product.selected_or_first_available_variant | default: product.variants.first
+
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: '.' | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: '.' | last
+    assign buy_once_variant = product.metafields[variant_namespace][variant_key].value | default: buy_once_variant
+  endif
+
+  assign one_time_price = buy_once_variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = buy_once_variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = buy_once_variant.price | times: discount_percentage
+    assign variant_price_cap = buy_once_variant.price | minus: discount_value
+
+    assign one_time_price = buy_once_variant.metafields.smart.price_override.value | default: buy_once_variant.price | at_most: variant_price_cap
+  endif
+
+  assign qty_multiplier_js = '1'
+  if quantity_price
+    assign qty_multiplier_js = '(pdp.quantity ?? 1)'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% style %}
+  [data-component-buy-once] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #000000;
+    text-align: center;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Primary line: Figma — uppercase, underlined CTA + arrow */
+  [data-component-buy-once] .product-buy-once__cta {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: inherit;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  [data-component-buy-once] .product-buy-once__cta:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    text-decoration: none;
+  }
+
+  /* Secondary line: sentence case, no shadow (Figma subcopy) */
+  [data-component-buy-once] .product-buy-once__sub {
+    margin: 0;
+    max-width: 28em;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #000000;
+    text-transform: none;
+    text-shadow: none;
+  }
+
+  [data-component-buy-once] .product-buy-once__soldout-msg {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #000000;
+    text-transform: uppercase;
+    text-shadow: inherit;
+    opacity: 0.45;
+  }
+
+  @media (max-width: 768px) {
+    [data-component-buy-once] .product-buy-once__cta {
+      white-space: normal;
+    }
+  }
+{% endstyle %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+  data-component-buy-once
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  data-quick-view-visibility="{{ quick_view_visibility }}"
+  {{ block.shopify_attributes }}
+>
+  <button
+    type="button"
+    class="product-buy-once__cta"
+    x-show="!pdp.soldOut"
+    :disabled="pdp.isAdding"
+    :class="pdp.isAdding ? 'button-loading' : ''"
+    @click="void (async () => { const _sid = pdp.selected_selling_plan?.id ?? pdp.last_selected_selling_plan?.id; setSellingPlan(undefined); try { await handleAddToCart($event); } finally { if (_sid) setSellingPlan(_sid); } })()"
+    x-text="'BUY ONCE FOR ' + utils.formatMoney((pdp.selected_variant?.price ?? 0) * {{ qty_multiplier_js }}) + ' ➞'"
+  >
+    BUY ONCE FOR {{ one_time_price | money_without_trailing_zeros }} ➞
+  </button>
+
+  <p class="product-buy-once__soldout-msg" x-show="pdp.soldOut" x-cloak>
+    {{ sold_out_text | escape }}
+  </p>
+
+  {% if recommendation_text != blank %}
+    <p class="product-buy-once__sub">
+      {{ recommendation_text | escape }}
+    </p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Buy Once",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "quantity_price",
+      "label": "Quantity multiplied price",
+      "default": true,
+      "info": "When enabled, the shown one-time price is variant price × quantity (same idea as the Add to Cart block)."
+    },
+    {
+      "type": "textarea",
+      "id": "recommendation_text",
+      "label": "Recommendation line",
+      "default": "We recommend 3-6 months of consistent use for maximum results"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out message",
+      "default": "Out of stock"
+    },
+    {
+      "type": "header",
+      "content": "Quick View"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick view visibility",
+      "default": "default",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "hidden", "label": "Hidden" },
+        { "value": "mobile_header", "label": "Mobile header" },
+        { "value": "quick_view_only", "label": "Quick view only" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Block globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n",
+      "info": "Target this block with the default selector in the first line."
+    }
+  ],
+  "class": "shopify_block___main_product__buy_once",
+  "presets": [
+    {
+      "name": "Buy Once",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

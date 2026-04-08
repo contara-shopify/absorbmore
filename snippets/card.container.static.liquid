@@ -1,0 +1,29 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card__container"
+  assign section_type = "card"
+  assign dynamic_text_color = block.settings.dynamic_text_color
+  assign dynamic_background_color = block.settings.dynamic_background_color
+  assign dynamic_border_color = block.settings.dynamic_border_color
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+<div
+    data-style-id="{{ style_id }}"
+    class="group"
+    {% if dynamic_text_color != blank or dynamic_background_color != blank or dynamic_border_color != blank %}
+      style="color: {% render '_input.dynamic_content', content: dynamic_text_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};
+          background: {% render '_input.dynamic_content', content: dynamic_background_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};
+          border-color: {% render '_input.dynamic_content', content: dynamic_border_color, keys: 'article, page, collection, blog, comment', article: card_object, page: card_object, collection: card_object, blog: card_object, comment: card_object %};"
+    {% endif %} >
+  {% render "card._render_blocks",
+      card_object: card_object,
+      section: section,
+      blocks: block.blocks,
+      block_order: block.block_order,
+      preload_images: preload_images
+  %}
+</div>

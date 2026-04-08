@@ -1,0 +1,233 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "modal_country_selector"
+  assign show_flag = section.settings.show_flag
+  assign close_icon = section.settings.close_icon
+  assign text_class = section.settings.text_class
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if settings.layout__style == 'solid'
+    assign container_classes = 'border-r border-r-theme-border inset-0 top-3.5'
+  endif
+
+  if settings.layout__style == 'floating'
+    assign container_classes = 'inset-1.5 top-5 rounded-md'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div x-data="{ show:  $modal.id === 'country-selector' }"
+     x-effect="show = $editor?.select_section_id === '{{ section.id }}' || $modal.id === 'country-selector'"
+     x-cloak>
+  <div class="fixed inset-x-0 bottom-0 top-[--header-height-offset] z-40 transition duration-150 ease-in-out bg-modal-backdrop"
+       x-show="show"
+       x-cloak
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"></div>
+  <aside data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+         class="fixed bottom-0 right-0 top-[--header-height-offset] z-50 w-full max-w-sm transition-all duration-150 ease-in-out -mt-3.5 pt-3.5"
+         @click.stop.outside="$modal.setId('')"
+         x-show="show"
+         x-cloak
+         x-trap.noautofocus="show"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full">
+    <button type="button"
+            class="absolute -left-6 top-5 text-white max-md:hidden hf:text-theme-text/90"
+            @click="$modal.setId(show ? '' : 'country-selector')">
+      <span class="sr-only">Close Drawer</span>
+      {% render '_components.icon', icon: close_icon, class: "h-5 shrink-0" %}
+    </button>
+    <main class="bg-white absolute overflow-y-auto scrollbar-y-slim py-4 {{ container_classes }}">
+      {% form 'localization', class: "relative flex flex-col", return_to: routes.root_url %}
+        {% for country in localization.available_countries %}
+          <button class="text-left flex items-center py-2 gap-2 px-5 hf:bg-gray-100 {% if country.iso_code == localization.country.iso_code %}bg-gray-200{% endif %}"
+                  type="submit"
+                  name="country_code"
+                  @click="async () => { await idbKeyval.clear(); return true }"
+                  {% if country.iso_code == localization.country.iso_code %}aria-checked="true"{% endif %}
+                  value="{{ country.iso_code }}"
+                  aria-label="Country Selector">
+            {% render '_object.image', image: country, width: 18 %}
+            <span class="{{ text_class }}">{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</span>
+          </button>
+        {% endfor %}
+      {% endform %}
+    </main>
+  </aside>
+</div>
+
+{% schema %}
+{
+  "name": "Country Selector",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_flag",
+      "label": "Show flag"
+    },
+    {
+      "type": "text",
+      "id": "close_icon",
+      "label": "Close icon",
+      "default": "x-mark"
+    },
+    {
+      "type": "text",
+      "id": "text_class",
+      "label": "Text class",
+      "default": "nav-link"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "limit": 1,
+  "enabled_on": {
+    "groups": [
+      "custom.modal"
+    ]
+  },
+  "class": "shopify_section__modal_country_selector"
+}
+{% endschema %}

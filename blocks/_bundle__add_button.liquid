@@ -1,0 +1,204 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_bundle__add_button"
+  assign section_type = "bundle"
+  assign action = block.settings.action
+  assign allow_incomplete_bundles = block.settings.allow_incomplete_bundles
+  assign label = block.settings.label
+  assign button_class = block.settings.button_class
+  assign some_complete_label = block.settings.some_complete_label
+  assign some_complete_button_class = block.settings.some_complete_button_class
+  assign incomplete_label = block.settings.incomplete_label
+  assign incomplete_button_class = block.settings.incomplete_button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+{% liquid
+  assign _label = label | replace: '[difference]', '' | replace: '[price]', '' | replace: '[compare_at_price]', ''
+  assign _incomplete_label = incomplete_label | replace: '[difference]', '' | replace: '[price]', '' | replace: '[compare_at_price]', ''
+  assign _some_complete_label = some_complete_label | replace: '[difference]', '' | replace: '[price]', '' | replace: '[compare_at_price]', ''
+%}
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <button
+      type="button"
+      class="w-full {{ button_class }}"
+      {% if allow_incomplete_bundles %}
+        x-show="bundle.item_count || bundle.items_added_to_cart"
+      {% else %}
+        x-show="bundle.items_added_to_cart || (bundle.item_count && !bundle.target_difference)"
+      {% endif %}
+      @click="$data.handleAddToCart('{{ action }}')"
+      :class="bundle.isAdding ? 'button-loading' : ''"
+      :disabled="bundle.isAdding || bundle.items_added_to_cart"
+      x-html="
+      bundle.items_added_to_cart
+      ? 'Items added'
+      : $el.getAttribute('data-content')
+        .replace('[difference]', bundle.target_difference)
+        .replace('[price]', utils.formatMoney(bundle.final_price))
+        .replace('[compare_at_price]', bundle?.total_price > bundle.final_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(bundle?.total_price)}</span>` : '') ?? ''
+    "
+      data-content="{% render '_input.inline_richtext', content: label, escape: true, skip_pluralization: true %}"
+  >
+    {% render '_input.inline_richtext', content: _label, block: block, forloop: forloop %}
+  </button>
+  {% if allow_incomplete_bundles == false %}
+    <button
+        type="button"
+        class="w-full {{ some_complete_button_class }}"
+        x-show="!(bundle.items_added_to_cart || (bundle.item_count && !bundle.target_difference)) && !!bundle?.achieved_bundle_target && bundle.item_count === bundle?.achieved_bundle_target?.target"
+        @click="$data.handleAddToCart('{{ action }}')"
+        :class="bundle.isAdding ? 'button-loading' : ''"
+        :disabled="bundle.isAdding || bundle.items_added_to_cart"
+        x-html="
+          $el.getAttribute('data-content')
+          .replace('[difference]', bundle.target_difference)
+          .replace('[price]', utils.formatMoney(bundle.final_price))
+          .replace('[compare_at_price]',  bundle?.total_price > bundle.final_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(bundle?.total_price)}</span>` : '') ?? ''
+        "
+        data-content="{% render '_input.inline_richtext', content: some_complete_label, escape: true, skip_pluralization: true %}"
+    >
+      {% render '_input.inline_richtext', content: _some_complete_label, block: block, forloop: forloop %}
+    </button>
+  {% endif %}
+  <button
+      type="button"
+      class="w-full disabled:pointer-events-none {{ incomplete_button_class }}"
+      disabled="disabled"
+      x-cloak
+      {% if allow_incomplete_bundles %}
+        x-show="!bundle.item_count && !bundle.items_added_to_cart"
+      {% else %}
+        x-show="!(bundle.items_added_to_cart || (bundle.item_count && !bundle.target_difference)) && (!bundle?.achieved_bundle_target || bundle.item_count !== bundle?.achieved_bundle_target?.target)"
+      {% endif %}
+      x-html="
+      $el.getAttribute('data-content')
+      .replace('[difference]', bundle.target_difference)
+      .replace('[price]', utils.formatMoney(bundle.final_price))
+      .replace('[compare_at_price]',  bundle?.total_price > bundle.final_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(bundle?.total_price)}</span>` : '') ?? ''
+    "
+      data-content="{% render '_input.inline_richtext', content: incomplete_label, escape: true, skip_pluralization: true %}"
+  >
+    {% render '_input.inline_richtext', content: _incomplete_label, block: block, forloop: forloop %}
+  </button>
+</div>
+
+{% schema %}
+{
+  "name": "Add button",
+  "settings": [
+    {
+      "type": "select",
+      "id": "action",
+      "label": "Primary action",
+      "default": "add_to_cart",
+      "options": [
+        {
+          "value": "add_to_cart",
+          "label": "Add to Cart"
+        },
+        {
+          "value": "checkout",
+          "label": "Checkout"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Add state"
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_incomplete_bundles",
+      "label": "Allow incomplete bundles"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Add [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [price] or [compare_at_price] to get the total prices."
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Some Complete Bundle state"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "some_complete_label",
+      "label": "Label",
+      "default": "Add [difference] more items",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [difference] to get the missing difference to complete the bundle."
+    },
+    {
+      "type": "text",
+      "id": "some_complete_button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Incomplete Bundle state"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "incomplete_label",
+      "label": "Label",
+      "default": "Add [difference] more items",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [difference] to get the missing difference to complete the bundle."
+    },
+    {
+      "type": "text",
+      "id": "incomplete_button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n          }"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Add button",
+      "category": "Interactive"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___bundle__add_button"
+}
+{% endschema %}

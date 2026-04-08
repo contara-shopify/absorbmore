@@ -1,0 +1,28 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__addon_checkbox"
+  assign section_type = "card_product_card"
+  assign label = block.settings.label
+  assign checkbox_class = block.settings.checkbox_class
+  assign default_checked = block.settings.default_checked
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if default_checked %}
+  {% capture html_attributes %}
+    x-init="setTimeout(() => toggleAddon(true), 1000)"
+  {% endcapture %}
+{% endif %}
+
+<div data-style-id="{{ style_id }}">
+  {% render '_components.checkbox',
+      class: checkbox_class,
+      label: label,
+      name: 'name',
+      default_checked: default_checked,
+      html_attributes: html_attributes,
+      setState: 'toggleAddon($el.checked)'
+  %}
+</div>

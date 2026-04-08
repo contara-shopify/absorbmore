@@ -1,0 +1,79 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "card_line_item_card"
+  assign _handle = section.settings.handle
+  assign dynamic_text_color = section.settings.dynamic_text_color
+  assign dynamic_background_color = section.settings.dynamic_background_color
+  assign dynamic_border_color = section.settings.dynamic_border_color
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+  assign override_preview_background = section.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if line_item_card != blank
+    assign _handle = line_item_card | json | handleize
+  endif
+  assign card_class = _handle | handleize | prepend: "line-item-card--"
+%}
+
+{% if line_item.quantity <= 0 %}
+  {% break %}
+{% endif %}
+
+{% capture render_card %}
+  <article
+      data-line-item-id="{{ line_item.key }}"
+      x-data="{ ..._sections.initLineItemCard($el, $el.getAttribute('data-line-item-id')) }"
+      x-defer="intersect"
+      x-ignore
+      {% if link_to_object %}
+        :href="line_card?.line_item?.url"
+        href="{{ line_item.url }}"
+        {% if open_in_new_tab %}
+          target="_blank"
+        {% endif %}
+      {% endif %}
+      {% if request.design_mode and request.visual_preview_mode != true %}
+        x-effect="() => {
+          $el.parentElement.classList.toggle('!hidden', !$data?.line_card?.line_item?.quantity);
+          if ($data?.line_card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading');
+          if ($cart.state.item_count <= 0 && $editor.select_section_id === `{{ section.id }}` && !$cart.theme_editor_adding) {
+            $cart.theme_editor_adding = true;
+            _cart.add({ items: [{ id: Object.values(_products)?.find(p => p.available)?.variants?.find(v => v?.available)?.id, quantity: 1, properties: { test: 'Some random property' } }] })
+            setTimeout(() => { $cart.theme_editor_adding = false }, 5000)
+          }
+        }"
+      {% else %}
+        x-effect="() => { $el.parentElement.classList.toggle('!hidden', !$data?.line_card?.line_item?.quantity);  if ($data?.line_card?.hydrated && $el.classList.contains('card-loading')) $el.classList.remove('card-loading') }"
+      {% endif %}
+      x-init="utils.barbaPrefetchTargetPage($el, line_card?.line_item?.url)"
+      class="block {{ card_class }} {{ container_spacing }}"
+      {% if dynamic_text_color != blank or dynamic_background_color != blank or dynamic_border_color != blank %}
+        style="color: {% render '_input.dynamic_content', content: dynamic_text_color, keys: 'line_item', line_item: line_item %};
+            background: {% render '_input.dynamic_content', content: dynamic_background_color, keys: 'line_item', line_item: line_item %};
+            border-color: {% render '_input.dynamic_content', content: dynamic_border_color, keys: 'line_item', line_item: line_item %};"
+      {% endif %} >
+    {% render "card_line_item_card._render_blocks",
+        line_item: line_item,
+        section: line_item_section,
+        blocks: section.blocks,
+        block_order: section.block_order,
+        has_addon_products: has_addon_products,
+        child_line_items: child_line_items,
+        preload_images: preload_images
+    %}
+  </article>
+{% endcapture %}
+
+{% if link_to_object %}
+  {% assign render_card = render_card | replace: '<article', '<a' | replace: '</article', '</a' %}
+{% else %}
+  {% assign render_card = render_card | replace: '<article', '<div' | replace: '</article', '</div' %}
+{% endif %}
+
+{{ render_card }}

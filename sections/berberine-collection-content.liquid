@@ -1,0 +1,1355 @@
+{% comment %}
+  Berberine Collection — Enhanced PLP
+  Template: page.berberine-collection.liquid
+  To use: In Shopify Admin → Online Store → Pages → Create a new page
+  and assign the template "page.berberine-collection"
+{% endcomment %}
+
+<style>
+  /* Preview bar */
+  #preview-bar-iframe, #PBarNextFrameWrapper, #PBarNextFrame {
+    display: none !important;
+  }
+
+  /* Header */
+  [data-style-id*="t6V9FU"],
+  [data-style-id*="XcqypW"] {
+    display: none !important;
+  }
+
+  @media (min-width: 769px) {
+    header[data-style-id*="navigation-bar--"] {
+      padding-right: 60px;
+      padding-left: 60px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    [data-style-id*="77C8id"] {
+      display: none;
+    }
+    
+    [data-style-id*="nQb3cY"] {
+      margin-right: auto;
+    }
+  }
+
+  /* ── Scoped to this page only ── */
+  .bplp-wrap *, .bplp-wrap *::before, .bplp-wrap *::after { box-sizing: border-box; }
+  .bplp-wrap {
+    --cream:    #F5F0E8;
+    --cream-dk: #EDE8DC;
+    --black:    #0A0A0A;
+    --red:      #8B1A1A;
+    --gray:     #6B6B6B;
+    --gray-lt:  #9A9A9A;
+    --border:   #D8D2C6;
+    --white:    #FFFFFF;
+    --green:    #2D6A4F;
+    font-family: var(--font-body-family, 'Suisse Intl', sans-serif);
+    background: var(--cream);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Hero ── */
+  .bplp-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+    overflow: hidden;
+  }
+  .bplp-hero-text {
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--cream);
+  }
+  .bplp-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .bplp-hero-title {
+    font-family: var(--font-heading-family, 'Suisse Intl', sans-serif);
+    font-size: clamp(38px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--black);
+    margin-bottom: 20px;
+  }
+  .bplp-hero-subtitle {
+    font-size: 16px;
+    color: var(--gray);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .bplp-hero-stats {
+    display: flex;
+    gap: 32px;
+  }
+  .blp-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .blp-button {
+    width: max-content;
+  }
+  .bplp-stat-num {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1;
+  }
+  .bplp-stat-label {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .bplp-hero-image {
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+    min-height: 360px;
+  }
+  .bplp-hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+  }
+  .bplp-hero-badge {
+    position: absolute;
+    bottom: 28px;
+    left: 28px;
+    right: 28px;
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Trust Strip ── */
+  .bplp-trust {
+    background: var(--black);
+    padding: 14px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .bplp-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .bplp-trust-item svg { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
+
+  /* ── Filter Bar ── */
+  .bplp-filter {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .bplp-filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    white-space: nowrap;
+    padding-right: 20px;
+    border-right: 1px solid var(--border);
+    margin-right: 4px;
+  }
+  .bplp-filter-btn {
+    background: none;
+    border: none;
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  .bplp-filter-btn:hover { color: var(--black); }
+  .bplp-filter-btn.active {
+    color: var(--black);
+    font-weight: 700;
+    border-bottom-color: var(--red);
+  }
+
+  /* ── Section Header ── */
+  .bplp-section-header {
+    text-align: center;
+    padding: 56px 40px 36px;
+  }
+  .bplp-section-title {
+    font-family: var(--font-heading-family, 'Suisse Intl', sans-serif);
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--black);
+    max-width: 560px;
+    margin: 0 auto 14px;
+  }
+  .bplp-section-sub {
+    font-size: 15px;
+    color: var(--gray);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── Products Grid ── */
+  .bplp-products { padding: 0 40px 80px; }
+  .bplp-grid {
+    display: grid;
+    grid-template-columns: none;/*repeat(2, 1fr)*/
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Product Card ── */
+  .bplp-card {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .bplp-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    z-index: 2;
+  }
+  .bplp-card-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 280px;
+  }
+  .bplp-img-wrap {
+    background: var(--cream-dk);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bplp-img-wrap img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .bplp-card:first-child .bplp-img-wrap img { max-width: 100%; }
+  .bplp-card:hover .bplp-img-wrap img { transform: scale(1.04); }
+  .bplp-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .bplp-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+  .bplp-badge-cat { background: var(--black); color: #fff; }
+  .bplp-badge-stock { background: var(--red); color: #fff; }
+  .bplp-badge-value { background: #C8860A; color: #fff; }
+
+  .bplp-card-info {
+    padding: 24px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .bplp-card-name {
+    font-family: var(--font-heading-family, 'Suisse Intl', sans-serif);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: 5px;
+  }
+  .bplp-card-tagline {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .bplp-stars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .bplp-stars-icons { color: #C8860A; font-size: 13px; }
+  .bplp-stars-text { font-size: 12px; color: var(--gray); font-weight: 500; }
+  .bplp-absorption {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-bottom: 12px;
+  }
+  .bplp-abs-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--red);
+  }
+  .bplp-abs-label { font-size: 11px; color: var(--gray); line-height: 1.3; }
+  .bplp-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .bplp-price { font-size: 22px; font-weight: 700; color: var(--black); }
+  .bplp-price-orig { font-size: 14px; color: var(--gray-lt); text-decoration: line-through; }
+  .bplp-price-save {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(45,106,79,0.1);
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .bplp-price-note { font-size: 11px; color: var(--gray); margin-bottom: 14px; }
+  .bplp-btn-primary {
+    display: block;
+    width: 100%;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    padding: 13px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    border-radius: 2px;
+    font-family: inherit;
+  }
+  .bplp-btn-primary:hover { background: #2A2A2A; color: #fff; }
+  .bplp-btn-secondary {
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: var(--black);
+    border: 1.5px solid var(--black);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+    margin-top: 7px;
+    font-family: inherit;
+  }
+  .bplp-btn-secondary:hover { background: var(--black); color: #fff; }
+
+  /* Card expanded bottom */
+  .bplp-card-bottom {
+    border-top: 1px solid var(--border);
+    padding: 22px 24px;
+    background: var(--cream);
+  }
+  .bplp-card-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .bplp-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-bottom: 18px;
+  }
+  .bplp-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+  }
+  .bplp-benefit svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  .bplp-benefit-text { font-size: 12px; color: var(--black); font-weight: 500; line-height: 1.4; }
+  .bplp-inside { margin-bottom: 18px; }
+  .bplp-inside-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 7px;
+  }
+  .bplp-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .bplp-pill {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+  }
+  .bplp-timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+  }
+  .bplp-month {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 11px;
+    text-align: center;
+  }
+  .bplp-month-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 4px;
+  }
+  .bplp-month-text { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+  /* ── Quote Strip ── */
+  .bplp-quote {
+    background: var(--black);
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .bplp-quote blockquote {
+    font-size: clamp(17px, 2.2vw, 24px);
+    font-style: italic;
+    color: #fff;
+    max-width: 720px;
+    margin: 0 auto 14px;
+    line-height: 1.55;
+  }
+  .bplp-quote-attr {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Science Strip ── */
+  .bplp-science {
+    background: var(--cream-dk);
+    padding: 56px 40px;
+  }
+  .bplp-science-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .bplp-science-heading {
+    font-family: var(--font-heading-family, 'Suisse Intl', sans-serif);
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--black);
+  }
+  .bplp-science-heading em { font-style: normal; color: var(--red); }
+  .bplp-science-sub { font-size: 14px; color: var(--gray); margin-top: 14px; line-height: 1.7; }
+  .bplp-science-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .bplp-science-stat {
+    text-align: center;
+    padding: 22px 14px;
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .bplp-science-num {
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .bplp-science-stat-label { font-size: 12px; color: var(--gray); line-height: 1.4; }
+
+  /* ── Reviews ── */
+  .bplp-reviews { padding: 56px 40px; background: var(--white); }
+  .bplp-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 1100px;
+    margin: 36px auto 0;
+  }
+  .bplp-review-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px;
+  }
+  .bplp-review-stars { color: #C8860A; font-size: 13px; margin-bottom: 9px; }
+  .bplp-review-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .bplp-review-body { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 10px; }
+  .bplp-review-author { font-size: 12px; font-weight: 600; color: var(--black); }
+  .bplp-review-verified { font-size: 11px; color: var(--green); font-weight: 500; }
+
+  /* ── Expert ── */
+  .bplp-expert {
+    background: var(--cream-dk);
+    padding: 52px 40px;
+    text-align: center;
+  }
+  .bplp-expert-quote {
+    font-size: clamp(15px, 1.8vw, 20px);
+    font-style: italic;
+    color: var(--black);
+    max-width: 660px;
+    margin: 0 auto 14px;
+    line-height: 1.65;
+  }
+  .bplp-expert-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bplp-expert-title { font-size: 12px; color: var(--gray); margin-top: 3px; }
+  .bplp-expert-note { font-size: 12px; color: var(--gray); margin-top: 18px; font-style: italic; }
+
+  /* ── FAQ ── */
+  .bplp-faq { padding: 56px 40px; background: var(--white); }
+  .bplp-faq-inner { max-width: 740px; margin: 0 auto; }
+  .bplp-faq-item { border-bottom: 1px solid var(--border); }
+  .bplp-faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 18px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    font-family: inherit;
+  }
+  .bplp-faq-q:hover { color: var(--red); }
+  .bplp-faq-icon { font-size: 20px; font-weight: 300; flex-shrink: 0; transition: transform 0.2s ease; }
+  .bplp-faq-a { font-size: 14px; color: var(--gray); line-height: 1.7; padding-bottom: 18px; display: none; }
+  .bplp-faq-item.open .bplp-faq-a { display: block; }
+  .bplp-faq-item.open .bplp-faq-icon { transform: rotate(45deg); }
+
+  .bplp-divider {
+    margin: 36px 0;
+    text-align: center;
+  }
+
+  .bplp-divider .bplp-section-title {
+    margin: 0 15px;
+    max-width: none;
+    text-align: center;
+  }
+
+  .bplp-divider .bplp-card-name {
+    margin-top: 10px;
+  }
+
+  /* Choose Supply */
+  .bplp-choose-supply {
+    margin-bottom: 15px;
+  }
+
+  ul.product-choose-supply-variants,
+  ul.product-choose-supply-variants li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  ul.product-choose-supply-variants {
+    gap: 15px;
+    width: 100%;
+  }
+
+  ul.product-choose-supply-variants li {
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    width: calc(33.33% - 10px);
+    background-color: #ffffff;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  ul.product-choose-supply-variants li div:first-child {
+    justify-items: center;
+  }
+
+  ul.product-choose-supply-variants li label {
+    display: block !important;
+    padding: 15px;
+    height: 100%;
+    background-image: none !important;
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
+
+  ul.product-choose-supply-variants li img {
+    margin: 0 auto;
+  }
+
+  ul.product-choose-supply-variants li h3,
+  .richtext-md[data-content*="Subscribe & Save"] {
+    font-weight: 500;
+  }
+
+  ul.product-choose-supply-variants li p.subheading,
+  ul.product-choose-supply-variants li p.price-per-unit span.per-unit {
+    font-size: 80%;
+    color: #6a6a6a;
+  }
+
+  ul.product-choose-supply-variants li p.saved {
+    margin-top: 15px;
+  }
+
+  ul.product-choose-supply-variants li p.price-per-unit span.price {
+    font-weight: 500;
+  }
+
+  ul.product-choose-supply-variants li p.saved {
+    font-size: 120%;
+    color: #4659FF;
+    font-weight: 500;
+  }
+
+  ul.product-choose-supply-variants li span.label-secondary {
+    position: absolute;
+    top: -12px;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    max-width: 110px;
+    height: 24px;
+    background-color: #7d2b2d;
+    color: #ffffff;
+    text-transform: uppercase;
+    line-height: 24px;
+  }
+
+  ul.product-choose-supply-variants li.active label,
+  ul.product-choose-supply-variants li label:hover {
+    border-color: #000000;
+  }
+
+  div[data-style-id*="main_product_subscribe_toggle_card"] {
+    margin-top: 15px !important;
+  }
+
+  /* Choose Supploy Mobile */
+  @media (max-width: 768px) {
+    ul.product-choose-supply-variants li label {
+      padding: 10px;
+      width: 100%;
+    }
+
+    ul.product-choose-supply-variants li p.price-per-unit span.price,
+    ul.product-choose-supply-variants li p.price-per-unit span.per-unit {
+      font-size: 75%;
+    }
+
+    ul.product-choose-supply-variants li p.saved {
+      margin-top: 5px;
+      font-size: 100%;
+    }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .bplp-hero { grid-template-columns: 1fr; }
+    .bplp-hero-image { min-height: 260px; }
+    .bplp-grid { grid-template-columns: 1fr; }
+    .bplp-card-top { grid-template-columns: 1fr; }
+    .bplp-science-inner { grid-template-columns: 1fr; }
+    .bplp-science-stats { grid-template-columns: repeat(3, 1fr); }
+    .bplp-reviews-grid { grid-template-columns: 1fr; }
+    .bplp-hero-text { padding: 36px 20px; }
+    .bplp-trust { gap: 20px; padding: 12px 20px; }
+    .bplp-products { padding: 0 16px 60px; }
+    .bplp-section-header { padding: 40px 20px 28px; }
+    .bplp-filter { padding: 0 16px; }
+  }
+  @media (max-width: 600px) {
+    .bplp-benefits { grid-template-columns: 1fr; }
+    .bplp-timeline { grid-template-columns: 1fr; }
+    .bplp-science-stats { grid-template-columns: 1fr; }
+    .bplp-hero-stats { gap: 20px; }
+    .blp-button { width: 100%; }
+  }
+</style>
+
+<div class="bplp-wrap">
+
+  <!-- Hero -->
+  <section class="bplp-hero">
+    <div class="bplp-hero-text">
+      <p class="bplp-eyebrow">Berberine Collection</p>
+      <h1 class="bplp-hero-title">Blood Sugar.<br>Metabolism.<br>Longevity.</h1>
+      <p class="bplp-hero-subtitle">Science-backed berberine formulas with up to 10× better absorption than standard supplements — so your body actually uses what you take.</p>
+      <div class="bplp-hero-stats">
+        <div>
+          <div class="bplp-stat-num">6.2×</div>
+          <div class="bplp-stat-label">Better absorption<br>than standard berberine</div>
+        </div>
+        <div>
+          <div class="bplp-stat-num">580+</div>
+          <div class="bplp-stat-label">Clinicians sharing<br>our products</div>
+        </div>
+        <div>
+          <div class="bplp-stat-num">4.8★</div>
+          <div class="bplp-stat-label">Average rating<br>across collection</div>
+        </div>
+      </div>
+      <div class="blp-button-container">
+        <a class="blp-button w-full button-primary" href="/products/berberine?source=plp" title="Shop Berberine">Shop Berberine</a>
+      </div>
+    </div>
+    <div class="bplp-hero-image">
+      <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/berberine-collection-hero.jpg?v=1773003623" alt="Berberine – The Absorption Company" loading="eager" />
+      <div class="bplp-hero-badge">Capsoil® Nanotechnology · Third-Party Tested · Glyphosate-Free</div>
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <div class="bplp-trust">
+    <div class="bplp-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Third-Party Tested
+    </div>
+    <div class="bplp-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Capsoil® Enhanced Absorption
+    </div>
+    <div class="bplp-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Glyphosate Residue-Free
+    </div>
+    <div class="bplp-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      HSA/FSA Eligible
+    </div>
+    <div class="bplp-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      30-Day Money-Back Guarantee
+    </div>
+  </div>
+
+  <!-- Section Header -->
+  <div class="bplp-section-header">
+    <p class="bplp-eyebrow">Four Ways to Start</p>
+    <h2 class="bplp-section-title">Find the Right Berberine Formula for You</h2>
+    <p class="bplp-section-sub">Whether you're starting solo or going all-in with a stack, every formula is built around the same core promise: absorption that actually delivers results.</p>
+  </div>
+
+  <!-- Products -->
+  {%- liquid
+    assign bplp_p1 = all_products['berberine']
+    assign bplp_p1_choose_supply = all_products['berberine-6-2x-absorption']
+    assign bplp_p2 = all_products['hormone-metabolism']
+    assign bplp_p3 = all_products['longevity']
+    assign bplp_p4 = all_products['the-best-sellers-stack']
+  -%}
+  
+  <section class="bplp-products">
+    <div class="bplp-grid" id="bplp-grid">
+
+      <!-- PRODUCT 1: Berberine -->
+      <div class="bplp-card" data-tags="weight energy">
+        <div class="bplp-card-top">
+          <div class="bplp-img-wrap">
+            <div class="bplp-badges">
+              <span class="bplp-badge bplp-badge-cat">Metabolism &amp; Hormones</span>
+              <span class="bplp-badge bplp-badge-stock">Low Stock</span>
+            </div>
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Berberine.png?v=1768595489" alt="Berberine" loading="lazy" />
+          </div>
+          <div class="bplp-card-info">
+            <div>
+              <h3 class="bplp-card-name">Berberine</h3>
+              <p class="bplp-card-tagline">Weight Management, Energy &amp; Hormone Support</p>
+              <div class="bplp-stars">
+                <span class="bplp-stars-icons">★★★★★</span>
+                <span class="bplp-stars-text">4.79 (14 reviews)</span>
+              </div>
+              <div class="bplp-absorption">
+                <span class="bplp-abs-num">6.2×</span>
+                <span class="bplp-abs-label">Better<br>Absorption</span>
+              </div>
+
+              {% assign bplp_v1_init = bplp_p1_choose_supply.selected_or_first_available_variant %}
+              {% assign bplp_skio_init = bplp_v1_init.metafields.custom.choose_supply_variant_price.value %}
+              {% assign bplp_price_display_init = bplp_v1_init.price | money %}
+              {% assign bplp_save_pct_init = '' %}
+
+              {% if bplp_skio_init < bplp_v1_init.price %}
+                {% assign bplp_price_display_init = bplp_skio_init | money %}
+                {% assign bplp_save_pct_init = bplp_v1_init.price | minus: bplp_skio_init | times: 100 | divided_by: bplp_v1_init.price | round %}
+              {% endif %}
+
+              <div class="bplp-price-row">
+                <span class="bplp-price">{{ bplp_price_display_init }}</span>
+                <span class="bplp-price-orig">{{ bplp_v1_init.price | money }}</span>
+                <span class="bplp-price-save">{% if bplp_save_pct_init %}Save {{ bplp_save_pct_init }}%{% endif %}</span>
+              </div>
+              <p class="bplp-price-note">With subscription · Cancel anytime</p>
+            </div>
+            {% render 'berberine-choose-supply', product: bplp_p1_choose_supply, input_name: 'bplp-choose-supply-p1' %}
+            <div>
+              {% assign bplp_v1 = bplp_p1_choose_supply.selected_or_first_available_variant %}
+
+              {% if bplp_v1.id %}
+                <button class="bplp-btn-primary" type="button" data-content="Add To Cart" data-class="button-primary" data-action="add_to_cart" data-variant-id="{{ bplp_v1.id }}"{% if bplp_v1.selling_plan_allocations.size > 0 %} data-selling-plan-id="{{ bplp_v1.selling_plan_allocations.first.selling_plan.id }}"{% endif %} data-x-ignore="">Add To Cart — {{ bplp_price_display_init }}</button>
+              {% endif %}
+              <a href="/products/berberine" class="bplp-btn-secondary">View Full Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="bplp-card-bottom">
+          <p class="bplp-card-desc">Curbs appetite and sugar cravings, boosts metabolism, and supports healthy insulin function without spikes, crashes, or GI distress. Powered by FenuMat® technology for 6.2× more bioavailable berberine than standard capsules.</p>
+          <div class="bplp-benefits">
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Weight management without GI discomfort</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Balances post-meal blood sugar</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Curbs sugar cravings &amp; snacking</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">All-day energy stability</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Controls insulin sensitivity</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Supports carb metabolism</span></div>
+          </div>
+          <div class="bplp-inside">
+            <p class="bplp-inside-label">What's Inside</p>
+            <div class="bplp-pills">
+              <span class="bplp-pill">FenuMat® Berberine 625mg</span>
+              <span class="bplp-pill">Capsoil® Banaba Leaf</span>
+              <span class="bplp-pill">7 substances tested</span>
+            </div>
+          </div>
+          <p class="bplp-inside-label">How Berberine Transforms Your Health</p>
+          <div class="bplp-timeline">
+            <div class="bplp-month"><div class="bplp-month-label">Month 1</div><div class="bplp-month-text">Fewer cravings, steadier insulin response</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 2</div><div class="bplp-month-text">Better carb metabolism, consistent energy</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 3</div><div class="bplp-month-text">Sustained metabolic balance, healthier lipids</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bplp-divider">
+        <h2 class="bplp-section-title" title="Shop Stacks">Shop Stacks</h2>
+        <p class="bplp-card-name" title="Get 33% OFF Berberine stacks build for your goals">Get 33% OFF Berberine stacks build for your goals</p>
+      </div>
+
+      <!-- PRODUCT 2: Hormone + Metabolism Stack -->
+      <div class="bplp-card" data-tags="hormones weight energy">
+        <div class="bplp-card-top">
+          <div class="bplp-img-wrap">
+            <div class="bplp-badges">
+              <span class="bplp-badge bplp-badge-cat">Balance Energy &amp; Mood</span>
+              <span class="bplp-badge bplp-badge-stock">Low Stock</span>
+            </div>
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Hormone-Bundle.png?v=1768602380" alt="Hormone + Metabolism Stack" loading="lazy" />
+          </div>
+          <div class="bplp-card-info">
+            <div>
+              <h3 class="bplp-card-name">Hormone + Metabolism Stack</h3>
+              <p class="bplp-card-tagline">Less Cravings, Bloat &amp; More Energy</p>
+              <div class="bplp-stars">
+                <span class="bplp-stars-icons">★★★★★</span>
+                <span class="bplp-stars-text">4.78 (9 reviews)</span>
+              </div>
+              <div class="bplp-absorption">
+                <span class="bplp-abs-num">6.2×</span>
+                <span class="bplp-abs-label">Better<br>Absorption</span>
+              </div>
+              <div class="bplp-price-row">
+                <span class="bplp-price">$99.16</span>
+                <span class="bplp-price-orig">$148.00</span>
+                <span class="bplp-price-save">Save 33%</span>
+              </div>
+              <p class="bplp-price-note">With subscription · Cancel anytime</p>
+            </div>
+            <div>
+              {% if bplp_p2.selected_or_first_available_variant.id %}
+                {% assign bplp_v2 = bplp_p2.selected_or_first_available_variant %}
+
+                <button class="bplp-btn-primary" type="button" data-content="Add To Cart" data-class="button-primary" data-action="add_to_cart" data-variant-id="{{ bplp_v2.id }}"{% if bplp_v2.selling_plan_allocations.size > 0 %} data-selling-plan-id="{{ bplp_v2.selling_plan_allocations.first.selling_plan.id }}"{% endif %} data-x-ignore="">Add To Cart — $99.16</button>
+              {% endif %}
+              <a href="/collections/berberine/products/hormone-metabolism" class="bplp-btn-secondary">View Full Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="bplp-card-bottom">
+          <p class="bplp-card-desc">Berberine, Calm, and Vitamin D3+K2 work together to moderate blood sugar, increase metabolism, and balance hormones. Formulated for up to 6.2× better absorption — designed for women who want calmer, more predictable days.</p>
+          <div class="bplp-benefits">
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Calmer, clearer days without anxiety</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Fewer cravings &amp; late-night snacking</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Reduces bloat &amp; puffiness</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Supports hormone balance</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Steadier sleep-wake cycle</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Supports weight management</span></div>
+          </div>
+          <div class="bplp-inside">
+            <p class="bplp-inside-label">What's Inside (3 Products)</p>
+            <div class="bplp-pills">
+              <span class="bplp-pill">Berberine</span>
+              <span class="bplp-pill">Calm</span>
+              <span class="bplp-pill">Vitamin D3+K2</span>
+              <span class="bplp-pill">16 substances tested</span>
+            </div>
+          </div>
+          <p class="bplp-inside-label">How Berberine Transforms Your Health</p>
+          <div class="bplp-timeline">
+            <div class="bplp-month"><div class="bplp-month-label">Month 1</div><div class="bplp-month-text">Fewer crashes, stress feels quieter</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 2</div><div class="bplp-month-text">Cravings soften, bloat decreases</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 3</div><div class="bplp-month-text">Steadier cycle, stable energy</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 3: Longevity Stack -->
+      <div class="bplp-card" data-tags="longevity energy">
+        <div class="bplp-card-top">
+          <div class="bplp-img-wrap">
+            <div class="bplp-badges">
+              <span class="bplp-badge bplp-badge-cat">Vitality &amp; Repair</span>
+              <span class="bplp-badge bplp-badge-stock">Low Stock</span>
+            </div>
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Longevity-Bundle.png?v=1768598276" alt="Longevity Stack" loading="lazy" />
+          </div>
+          <div class="bplp-card-info">
+            <div>
+              <h3 class="bplp-card-name">Longevity Stack</h3>
+              <p class="bplp-card-tagline">Cellular Energy, Recovery &amp; Aging Biomarkers</p>
+              <div class="bplp-stars">
+                <span class="bplp-stars-icons">★★★★★</span>
+                <span class="bplp-stars-text">5.0 (2 reviews)</span>
+              </div>
+              <div class="bplp-absorption">
+                <span class="bplp-abs-num">6.2×</span>
+                <span class="bplp-abs-label">Better<br>Absorption</span>
+              </div>
+              <div class="bplp-price-row">
+                <span class="bplp-price">$110.55</span>
+                <span class="bplp-price-orig">$165.00</span>
+                <span class="bplp-price-save">Save 33%</span>
+              </div>
+              <p class="bplp-price-note">With subscription · Cancel anytime</p>
+            </div>
+            <div>
+              {% if bplp_p3.selected_or_first_available_variant.id %}
+                {% assign bplp_v3 = bplp_p3.selected_or_first_available_variant %}
+                
+                <button class="bplp-btn-primary" type="button" data-content="Add To Cart" data-class="button-primary" data-action="add_to_cart" data-variant-id="{{ bplp_v3.id }}"{% if bplp_v3.selling_plan_allocations.size > 0 %} data-selling-plan-id="{{ bplp_v3.selling_plan_allocations.first.selling_plan.id }}"{% endif %} data-x-ignore="">Add To Cart — $110.55</button>
+              {% endif %}
+              <a href="/collections/berberine/products/longevity" class="bplp-btn-secondary">View Full Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="bplp-card-bottom">
+          <p class="bplp-card-desc">Featuring Berberine + CoQ10 + Restore to support essential longevity biomarkers including metabolic balance, reducing inflammation, cellular detox, and more. Formulated for up to 10× better absorption — built for those playing the long game.</p>
+          <div class="bplp-benefits">
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Lowers oxidative stress &amp; inflammation</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Boosts mitochondrial ATP &amp; AMPK</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Faster recovery after exertion</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Reduces brain fog &amp; afternoon slumps</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Stronger stamina &amp; cellular energy</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Endocrine &amp; hormonal balance</span></div>
+          </div>
+          <div class="bplp-inside">
+            <p class="bplp-inside-label">What's Inside (3 Products)</p>
+            <div class="bplp-pills">
+              <span class="bplp-pill">Berberine</span>
+              <span class="bplp-pill">Capsoil® CoQ10</span>
+              <span class="bplp-pill">Restore</span>
+              <span class="bplp-pill">14 substances tested</span>
+            </div>
+          </div>
+          <p class="bplp-inside-label">How Berberine Transforms Your Health</p>
+          <div class="bplp-timeline">
+            <div class="bplp-month"><div class="bplp-month-label">Month 1</div><div class="bplp-month-text">Steadier energy, feel lighter &amp; less inflamed</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 2</div><div class="bplp-month-text">Faster recovery, less brain fog</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 3</div><div class="bplp-month-text">Measurable longevity biomarker improvements</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 4: Best Sellers Stack -->
+      <div class="bplp-card" data-tags="value weight energy">
+        <div class="bplp-card-top">
+          <div class="bplp-img-wrap">
+            <div class="bplp-badges">
+              <span class="bplp-badge bplp-badge-cat">Everyday Support</span>
+              <span class="bplp-badge bplp-badge-value">Best Value</span>
+            </div>
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Best-Sellers-Stack.png?v=1772833884" alt="The Best Sellers Stack" loading="lazy" />
+          </div>
+          <div class="bplp-card-info">
+            <div>
+              <h3 class="bplp-card-name">The Best Sellers Stack</h3>
+              <p class="bplp-card-tagline">Daily Hydration, Mood &amp; Metabolic Balance</p>
+              <div class="bplp-stars">
+                <span class="bplp-stars-icons">★★★★★</span>
+                <span class="bplp-stars-text">New — Be the first to review</span>
+              </div>
+              <div class="bplp-absorption">
+                <span class="bplp-abs-num">6.2×</span>
+                <span class="bplp-abs-label">Better<br>Absorption</span>
+              </div>
+              <div class="bplp-price-row">
+                <span class="bplp-price">$122.61</span>
+                <span class="bplp-price-orig">$183.00</span>
+                <span class="bplp-price-save">Save 33%</span>
+              </div>
+              <p class="bplp-price-note">With subscription · Cancel anytime</p>
+            </div>
+            <div>
+              {% if bplp_p4.selected_or_first_available_variant.id %}
+                {% assign bplp_v4 = bplp_p4.selected_or_first_available_variant %}
+                
+                <button class="bplp-btn-primary" type="button" data-content="Add To Cart" data-class="button-primary" data-action="add_to_cart" data-variant-id="{{ bplp_v4.id }}"{% if bplp_v4.selling_plan_allocations.size > 0 %} data-selling-plan-id="{{ bplp_v4.selling_plan_allocations.first.selling_plan.id }}"{% endif %} data-x-ignore="">Add To Cart — $122.61</button>
+              {% endif %}
+              <a href="/collections/berberine/products/the-best-sellers-stack" class="bplp-btn-secondary">View Full Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="bplp-card-bottom">
+          <p class="bplp-card-desc">Featuring Restore, Calm, and Berberine for all-day hydration &amp; detoxification, stress relief, and metabolic support. The most comprehensive daily routine — formulated for up to 6.2× better absorption for results you can actually feel.</p>
+          <div class="bplp-benefits">
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Rapid electrolyte rehydration</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Calm under pressure, no meltdowns</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Metabolic reset &amp; blood sugar balance</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Quicker workout recovery</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Clearer mornings, reduced fog</span></div>
+            <div class="bplp-benefit"><svg viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span class="bplp-benefit-text">Cuts late-night sugar urges</span></div>
+          </div>
+          <div class="bplp-inside">
+            <p class="bplp-inside-label">What's Inside (3 Products)</p>
+            <div class="bplp-pills">
+              <span class="bplp-pill">Restore</span>
+              <span class="bplp-pill">Calm</span>
+              <span class="bplp-pill">Berberine</span>
+              <span class="bplp-pill">16 substances tested</span>
+            </div>
+          </div>
+          <p class="bplp-inside-label">How Berberine Transforms Your Health</p>
+          <div class="bplp-timeline">
+            <div class="bplp-month"><div class="bplp-month-label">Month 1</div><div class="bplp-month-text">Clearer mornings, steadier afternoon energy</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 2</div><div class="bplp-month-text">Less stiffness, longer endurance</div></div>
+            <div class="bplp-month"><div class="bplp-month-label">Month 3</div><div class="bplp-month-text">Sharper decisions, no snooze button</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Quote Strip -->
+  <div class="bplp-quote">
+    <blockquote>"I've been taking berberine for a few years now and I could instantly feel the difference within a few days of starting this one compared to the old brand I was using."</blockquote>
+    <p class="bplp-quote-attr">— Angela T., Verified Buyer</p>
+  </div>
+
+  <!-- Science Strip -->
+  <section class="bplp-science">
+    <div class="bplp-science-inner">
+      <div>
+        <h2 class="bplp-science-heading">Absorption That <em>Actually</em> Delivers Results.</h2>
+        <p class="bplp-science-sub">Most supplements only deliver a fraction of what they promise. Our formulas are powered by Capsoil® nanotechnology, transforming each nutrient into nano-sized particles your body can actually use.</p>
+      </div>
+      <div class="bplp-science-stats">
+        <div class="bplp-science-stat">
+          <div class="bplp-science-num">6.2×</div>
+          <div class="bplp-science-stat-label">Increase in Berberine bioavailability (FenuMat® study, 2024)</div>
+        </div>
+        <div class="bplp-science-stat">
+          <div class="bplp-science-num">5×</div>
+          <div class="bplp-science-stat-label">Increase in Calm's absorption (Capsoil® lab study)</div>
+        </div>
+        <div class="bplp-science-stat">
+          <div class="bplp-science-num">10×</div>
+          <div class="bplp-science-stat-label">Increase in Longevity Stack bioavailability</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="bplp-reviews">
+    <div class="bplp-section-header" style="padding-top:0;">
+      <p class="bplp-eyebrow">Real Results</p>
+      <h2 class="bplp-section-title">What Customers Are Saying</h2>
+    </div>
+    <div class="bplp-reviews-grid">
+      <div class="bplp-review-card">
+        <div class="bplp-review-stars">★★★★★</div>
+        <div class="bplp-review-title">Feeling Fuller, Less Obsessed!</div>
+        <p class="bplp-review-body">"It must be working! I can feel myself obsessing less over food and I def feel full faster. I also am not craving food all day."</p>
+        <div class="bplp-review-author">Melissa</div>
+        <div class="bplp-review-verified">✓ Verified Buyer · Berberine</div>
+      </div>
+      <div class="bplp-review-card">
+        <div class="bplp-review-stars">★★★★★</div>
+        <div class="bplp-review-title">Love Love Love</div>
+        <p class="bplp-review-body">"The calm powder tastes amazing &amp; truly helps calm me down &amp; put me in a good mood. Have only been taking the berberine for about a week but I am not hungry all the time anymore."</p>
+        <div class="bplp-review-author">Madisyn</div>
+        <div class="bplp-review-verified">✓ Verified Buyer · Hormone + Metabolism Stack</div>
+      </div>
+      <div class="bplp-review-card">
+        <div class="bplp-review-stars">★★★★★</div>
+        <div class="bplp-review-title">Helps with Mono</div>
+        <p class="bplp-review-body">"Month five of battling a very long case of mono. But I can tell the difference of how I feel now that I'm taking the longevity stack."</p>
+        <div class="bplp-review-author">Megan M.</div>
+        <div class="bplp-review-verified">✓ Verified Buyer · Longevity Stack</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expert -->
+  <section class="bplp-expert">
+    <p class="bplp-eyebrow">Backed by Experts</p>
+    <blockquote class="bplp-expert-quote">"The lack of consistency in supplement absorption has been a huge issue in the industry. I am grateful to be part of a team that is dramatically improving the quality and absorption of supplements and botanicals."</blockquote>
+    <div class="bplp-expert-name">Dr. Matt Hand, DO</div>
+    <div class="bplp-expert-title">Chief of Pediatric Nephrology, Dartmouth Children's Hospital</div>
+    <p class="bplp-expert-note">900+ clinicians shared our products on FrontrowMD, with no compensation.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bplp-faq">
+    <div class="bplp-section-header" style="padding-top:0;">
+      <p class="bplp-eyebrow">Common Questions</p>
+      <h2 class="bplp-section-title">FAQs</h2>
+    </div>
+    <div class="bplp-faq-inner">
+      <div class="bplp-faq-item">
+        <button class="bplp-faq-q" onclick="bplpFaq(this)">How are your supplements made with up to 149× better absorption?<span class="bplp-faq-icon">+</span></button>
+        <div class="bplp-faq-a">We uniquely formulate each supplement using a combination of absorption-enhancing technologies, such as liposomes and advanced nano-delivery systems. We don't rely on a single method. Instead, we select and layer multiple techniques based on the specific ingredient and how the body best absorbs it. This allows us to create pharmaceutical-grade supplements with up to 149× better absorption.</div>
+      </div>
+      <div class="bplp-faq-item">
+        <button class="bplp-faq-q" onclick="bplpFaq(this)">What makes Berberine different from other brands?<span class="bplp-faq-icon">+</span></button>
+        <div class="bplp-faq-a">Our Berberine uses FenuMat® technology — a patented delivery system that creates a self-emulsifying hybrid-hydrogel form of berberine. This results in 6.2× more free berberine in your bloodstream compared to standard berberine HCl capsules. It's also gentler on digestion, making it suitable for those who've experienced GI discomfort with other brands.</div>
+      </div>
+      <div class="bplp-faq-item">
+        <button class="bplp-faq-q" onclick="bplpFaq(this)">Can I combine this with my current supplement routine?<span class="bplp-faq-icon">+</span></button>
+        <div class="bplp-faq-a">Yes — our formulas are designed to work synergistically. If you're already taking other supplements, our products are generally safe to stack. We recommend consulting with your healthcare provider if you're on prescription medications, particularly those that affect blood sugar or blood pressure.</div>
+      </div>
+      <div class="bplp-faq-item">
+        <button class="bplp-faq-q" onclick="bplpFaq(this)">Are your products safe and third-party tested?<span class="bplp-faq-icon">+</span></button>
+        <div class="bplp-faq-a">Yes. All products are third-party tested by Light Labs (most recently January 2026) and are certified glyphosate residue-free. We test for heavy metals, contaminants, and potency to ensure every batch meets pharmaceutical-grade standards. Our products are also HSA/FSA eligible.</div>
+      </div>
+      <div class="bplp-faq-item">
+        <button class="bplp-faq-q" onclick="bplpFaq(this)">Is this safe to take while breastfeeding or pregnant?<span class="bplp-faq-icon">+</span></button>
+        <div class="bplp-faq-a">We recommend consulting with your healthcare provider before taking any supplement during pregnancy or while breastfeeding. While our ingredients are high quality and rigorously tested, individual health circumstances vary and professional guidance is always best.</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /bplp-wrap -->
+
+<script>
+  function bplpFaq(btn) {
+    const item = btn.closest('.bplp-faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.bplp-faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  const bplpTags = {
+    'all': ['weight','energy','hormones','longevity','value'],
+    'weight': ['weight'],
+    'hormones': ['hormones'],
+    'energy': ['energy'],
+    'longevity': ['longevity'],
+    'value': ['value']
+  };
+
+  function bplpFilter(tag, btn) {
+    document.querySelectorAll('.bplp-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const allowed = bplpTags[tag];
+    document.querySelectorAll('#bplp-grid .bplp-card').forEach(card => {
+      const cardTags = card.dataset.tags.split(' ');
+      const match = tag === 'all' || cardTags.some(t => allowed.includes(t));
+      card.style.display = match ? '' : 'none';
+    });
+  }
+
+  /**
+   * Variant selector (Choose Supply)
+   */
+  (function() {
+    var wrap = document.querySelector('.bplp-wrap');
+    if (!wrap) return;
+
+    wrap.addEventListener('change', function(e) {
+      var radio = e.target;
+      if (radio.type !== 'radio' || !radio.name || radio.name.indexOf('bplp-choose-supply') !== 0) return;
+      if (!radio.checked) return;
+
+      var variantId = radio.getAttribute('data-variant-id');
+      if (!variantId) return;
+
+      var card = radio.closest('.bplp-card');
+      if (!card) return;
+
+      var list = card.querySelector('ul.product-choose-supply-variants');
+      if (list) {
+        var prev = list.querySelector('li.active');
+        if (prev) prev.classList.remove('active');
+        radio.closest('li').classList.add('active');
+      }
+
+      var btn = card.querySelector('button[data-action="add_to_cart"][data-variant-id]');
+      if (!btn) return;
+
+      btn.setAttribute('data-variant-id', variantId);
+      if (radio.getAttribute('data-selling-plan-id')) btn.setAttribute('data-selling-plan-id', radio.getAttribute('data-selling-plan-id'));
+      if (!radio.getAttribute('data-selling-plan-id')) btn.removeAttribute('data-selling-plan-id');
+
+      var priceFormatted = radio.getAttribute('data-price-formatted');
+      if (priceFormatted) btn.textContent = 'Add To Cart — ' + priceFormatted;
+
+      var priceRow = card.querySelector('.bplp-price-row');
+      if (priceRow) {
+        var priceDisplay = radio.getAttribute('data-price-display');
+        if (priceDisplay) priceRow.querySelector('.bplp-price').textContent = priceDisplay;
+        var priceOrig = radio.getAttribute('data-price-orig-formatted');
+        if (priceOrig) priceRow.querySelector('.bplp-price-orig').textContent = priceOrig;
+        var savePct = radio.getAttribute('data-save-pct');
+        var saveEl = priceRow.querySelector('.bplp-price-save');
+        if (saveEl) saveEl.textContent = savePct ? 'Save ' + savePct + '%' : '';
+      }
+    });
+  })();
+
+  /**
+   * Add to Cart
+   */
+  (function() {
+    var wrap = document.querySelector('.bplp-wrap');
+    if (!wrap) return;
+
+    wrap.addEventListener('click', function(e) {
+      // Get the button element
+      var btn = e.target.closest('button[data-action="add_to_cart"][data-variant-id]');
+
+      // Check if the button is found
+      if (!btn) return;
+
+      // Prevent default and stop propagation
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Check if window._cart is defined
+      if (!window._cart) return;
+
+      // Get the variant ID and selling plan ID
+      var variantId = btn.getAttribute('data-variant-id');
+
+      // Check if the variant ID is defined
+      if (!variantId) return;
+
+      // Get the selling plan ID
+      var sellingPlanId = btn.getAttribute('data-selling-plan-id');
+
+      // Create the item object
+      var item = { id: parseInt(variantId, 10), quantity: 1 };
+
+      // Check if the selling plan ID is defined
+      if (sellingPlanId) item.selling_plan = parseInt(sellingPlanId, 10);
+
+      // Add loading class to the button
+      btn.classList.add('button-loading');
+
+      // Add the item to the cart
+      window._cart.add({ items: [item] }).then(function(data) {
+        // Check if the cart error is not present and window._stores and window._stores.modal are defined
+        if (!data.cart_error && window._stores && window._stores.modal) window._stores.modal.setId('modal--cart-drawer');
+
+        // Remove loading class from the button
+      }).finally(function() {
+        // Remove loading class from the button
+        btn.classList.remove('button-loading');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Berberine Collection",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Berberine Collection"
+    }
+  ]
+}
+{% endschema %}

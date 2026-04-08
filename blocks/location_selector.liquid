@@ -1,0 +1,89 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "location_selector"
+  assign select_class = block.settings.select_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% comment %} TODO: Needs Refactoring - v4 - The Modal here isn't overflow safe {% endcomment %}
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-data="{ show: false }">
+  <div class="relative">
+    <button
+        type="button"
+        class="w-full {{ select_class }}"
+        @click="show = !show"
+    >
+      {{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }})
+    </button>
+    <div x-show="show"
+         @click.outside="show = false"
+         class="location-options z-max mt-1 max-h-60 absolute w-full justify-start overflow-auto rounded-md bg-white py-1 shadow-lg outline-none ring-1 ring-black/5 transition-opacity duration-75 focus:outline-none  bottom-[48px] md:bottom-[56px]"
+    >
+      {% form 'localization', x-ref: "localizationForm" %}
+        {% for country in localization.available_countries %}
+          <button
+              type="submit"
+              name="country_code"
+              @click="async () => { await idbKeyval.clear(); show = false; return true }"
+              value="{{ country.iso_code }}"
+              class="flex items-center w-full text-left relative select-none py-2 pl-3 text-gray-900 ac:bg-gray-100 hf:bg-gray-100 hf:text-gray-900"
+              aria-label="Country Selector"
+          >
+            <span class="flex-shrink-0 mr-2 text-theme-accent {% if country.iso_code == localization.country.iso_code %}opacity-100{% else %}opacity-0{% endif %}">
+              {% render '_components.icon', icon: 'check-mark', class: "size-5 opacity-60 bg-gray-900" %}
+            </span>
+            <span class="block truncate">
+              {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+            </span>
+          </button>
+        {% endfor %}
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Location selector",
+  "settings": [
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Location Selector",
+      "category": "Markets"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__location_selector"
+}
+{% endschema %}

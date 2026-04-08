@@ -1,0 +1,312 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "collapsible"
+  assign image = block.settings.image
+  assign label = block.settings.label
+  assign metafield_namespace_key = block.settings.metafield_namespace_key
+  assign metafield_image_key = block.settings.metafield_image_key
+  assign metafield_label_key = block.settings.metafield_label_key
+  assign accordion_class = block.settings.accordion_class
+  assign content = block.settings.content
+  assign show = block.settings.show
+  assign metafield_content_key = block.settings.metafield_content_key
+  assign metafield_default_state = block.settings.metafield_default_state
+  assign auto_close_siblings = block.settings.auto_close_siblings
+  assign dynamic_content_type = block.settings.dynamic_content_type
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if dynamic_content_type == 'metafield'
+    assign object_namespace_key = metafield_namespace_key | remove: " " | strip_newlines | split: '.'
+    if object_namespace_key[0] == 'metaobjects'
+      assign metafield = metaobjects[object_namespace_key[1]].values
+    else
+      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+    endif
+
+    if metafield == blank or metafield.count == 0 or metafield.size == 0
+      assign is_empty = true
+    endif
+  endif
+
+  if dynamic_content_type != 'metafield'
+    assign stripped_content = content | strip_html
+
+    capture blocks_content
+      content_for 'blocks'
+    endcapture
+
+    assign stripped_blocks_content = blocks_content | strip
+
+    if stripped_content == blank and stripped_blocks_content == blank or label == blank
+      assign is_empty = true
+    endif
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% if dynamic_content_type == 'metafield' %}
+  {% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}{% endcapture %}
+
+  {% for item in metafield %}
+    {% assign show = false %}
+    {% if forloop.index0 > 0 %}
+      {% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}"{% endcapture %}
+    {% endif %}
+    {% if metafield_default_state == 'open_first' and forloop.first %}
+      {% assign show = true %}
+    {% endif %}
+    {% if metafield_default_state == 'open_all' %}
+      {% assign show = true %}
+    {% endif %}
+
+    {% assign item_content = item[metafield_content_key].value %}
+    {%- if item[metafield_content_key].type == "rich_text_field" -%}
+      {% assign richtextStr = "" %}
+      {% assign richtext = item[metafield_content_key] | metafield_tag | replace: '<div class="metafield-rich_text_field">', "" | split: "</div>" %}
+      {% for htmlBlock in richtext %}
+        {% if forloop.last %}
+          {% assign richtextStr = richtextStr | append: htmlBlock %}
+          {% break %}
+        {% endif %}
+        {% assign richtextStr = richtextStr | append: htmlBlock | append: "</div>" %}
+      {% endfor %}
+      {% assign item_content = richtextStr %}
+    {% endif %}
+    {% render '_components.collapsible', image: item[metafield_image_key], label: item[metafield_label_key], content: item_content, default_open: show, class: accordion_class, html_attributes: html_attributes, auto_close_siblings: auto_close_siblings %}
+  {% endfor %}
+  {% break %}
+{% endif %}
+
+{% capture accordion_content %}{% render '_input.richtext', content: content %}{% endcapture %}
+{% if stripped_blocks_content != blank %}
+  {% assign accordion_content = blocks_content %}
+{% endif %}
+
+{% if accordion_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+{% capture html_attributes %}data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}{% endcapture %}
+
+
+{% render '_components.collapsible', image: image, label: label, content: accordion_content, default_open: show, class: accordion_class, html_attributes: html_attributes, auto_close_siblings: auto_close_siblings %}
+
+{% schema %}
+{
+  "name": "Collapsible",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Accordion Title",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Repeater",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "List of Metaobjects with the subfields of: 'title' (type: text) and 'content' (type: text, richtext).",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace_key",
+      "label": "Metaobject",
+      "placeholder": "product.smart.faqs",
+      "info": "Metafield 'object.namespace.key' or `metaobjects.key` to target global metaobjects. Targeting a `list.metaobject_reference` i.e `collection.smart.faqs` or `metaobjects.faqs`. Accessing list of Objects i.e. `list.product_reference`, or `list.collection_reference` is also possible.",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_image_key",
+      "label": "Image Key",
+      "default": "image",
+      "info": "Metaobject key for the image value. I.e. `question`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_label_key",
+      "label": "Label Key",
+      "default": "title",
+      "info": "Metaobject key for the label value. I.e. `question`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "Adding Blocks to the section will override the content field. [Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Open",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
+    },
+    {
+      "type": "text",
+      "id": "metafield_content_key",
+      "label": "content Key",
+      "default": "content",
+      "info": "Metaobject key for the content value. I.e. `answer`",
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "select",
+      "id": "metafield_default_state",
+      "label": "Default state",
+      "default": "closed",
+      "options": [
+        {
+          "value": "closed",
+          "label": "Closed"
+        },
+        {
+          "value": "open_first",
+          "label": "Open First"
+        },
+        {
+          "value": "open_all",
+          "label": "Open All"
+        }
+      ],
+      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_close_siblings",
+      "label": "Auto close siblings"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "select",
+      "id": "dynamic_content_type",
+      "label": "Content Type",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "metafield",
+          "label": "Metafield"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collapsible",
+      "category": "Layout"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__collapsible"
+}
+{% endschema %}

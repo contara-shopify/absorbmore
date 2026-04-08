@@ -1,0 +1,183 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__labels"
+  assign section_type = "card_product_card"
+  assign content_source = block.settings.content_source
+  assign label_class__content = block.settings.label_class__content
+  assign label_type__discounts = block.settings.label_type__discounts
+  assign show_subscription_price = block.settings.show_subscription_price
+  assign label_class__discount = block.settings.label_class__discount
+  assign label_type__low_inventory = block.settings.label_type__low_inventory
+  assign default_content__low_inventory = block.settings.default_content__low_inventory
+  assign label_class__low_inventory = block.settings.label_class__low_inventory
+  assign low_inventory_threshold = block.settings.low_inventory_threshold
+  assign label_type__out_of_stock = block.settings.label_type__out_of_stock
+  assign default_content__out_of_stock = block.settings.default_content__out_of_stock
+  assign label_class__out_of_stock = block.settings.label_class__out_of_stock
+  assign label_type__preorder = block.settings.label_type__preorder
+  assign default_content__preorder = block.settings.default_content__preorder
+  assign label_class__preorder = block.settings.label_class__preorder
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+  if content_source != blank
+    unless content_source contains '['
+      assign content_source = '[' | append: content_source | append: ']'
+    endunless
+  endif
+
+  assign inventory_threshold = low_inventory_threshold | default: 5 | times: 1
+  assign preorder_threshold = settings.data__product__variant__preorder_threshold | default: 1 | times: 1
+%}
+
+<div data-style-id="{{ style_id }}"
+     x-ignore
+     x-show="$editor.select_block_id === `{{ block_id }}` || ($data.showConditionally('{{ show_conditionally }}', $data?.bundle) &&
+     (false {% if content_source != blank %}|| getContentLabels('{{ content_source }}')?.length {% endif %}
+     {% if label_type__discounts != '' %}|| !!getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }}){% endif %}
+     {% if label_type__low_inventory == 'show' %}|| p_card?.available_quantity < +`{{ low_inventory_threshold | default: 5 }}`{% endif %}
+     {% if label_type__preorder == "show" %}|| (p_card?.selected_variant?.preorder && p_card?.selected_variant?.inventory_quantity < +`{{ inventory_threshold__preorder | default: 1 }}`){% endif %}
+     {% if label_type__out_of_stock == "show" %}|| !p_card?.product?.available{% endif %}))">
+  {% if content_source != blank and content_source contains '[selected_' %}
+    <template x-for="value in getContentLabels('{{ content_source }}')">
+      <label data-loop-item class="{{ label_class__content }}" x-html="value"></label>
+    </template>
+  {% elsif content_source != blank %}
+    {% capture labels %}{% render '_input.dynamic_content', content: content_source, keys: 'product, selected_variant', product: product, selected_variant: variant %}{% endcapture %}
+    {% if labels contains '|~|SPLIT|~|' %}
+      {% assign labels = labels | split: '|~|SPLIT|~|' %}
+    {% endif %}
+    {% for label in labels %}
+      <label class="{{ label_class__content }} {{ label | handleize }}">
+        {{ label }}
+      </label>
+    {% endfor %}
+  {% endif %}
+
+  {% if label_type__discounts != '' %}
+    <label
+        {% if compare_at_price > price %}
+          x-show="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})"
+        {% else %}
+          x-cloak
+          x-show="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})"
+        {% endif %}
+        class="{{ label_class__discount }}"
+        x-html="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }}) || $el.innerHTML">
+      {% case label_type__discounts %}
+        {% when 'sale' %}
+          Sale
+        {% when 'percentage' %}
+          {% liquid
+            if show_subscription_price
+              assign compare_at_price = price
+              assign price = variant.selling_plan_allocations[0].price | default: variant.price
+            endif
+          %}
+          {% assign discount = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round %}
+          {{ discount }}% off
+        {% when 'value' %}
+          Save {{ compare_at_price | minus: price | money_without_currency }}
+      {% endcase %}
+    </label>
+  {% endif %}
+  {% if label_type__low_inventory == "show" %}
+    <label
+        class="{{ label_class__low_inventory }}"
+        {% if variant.inventory_quantity >= low_inventory_threshold %}
+          x-cloak
+        {% endif %}
+        x-show="$editor.select_block_id === `{{ block_id }}` || (p_card?.available_quantity < +`{{ inventory_threshold }}`)">
+      {{ default_content__low_inventory }}
+    </label>
+  {% endif %}
+  {% if label_type__preorder == "show" and settings.data__product__variant__preorder != blank %}
+    {% liquid
+      assign content_arr = default_content__preorder | split: '[date'
+      assign content = ''
+
+      if preorder and variant.inventory_quantity < preorder_threshold
+        assign variant_preorder = true
+      endif
+
+      if variant_preorder and preorder_date != blank
+        for split in content_arr
+          if forloop.first
+            assign content = split
+            continue
+          endif
+
+          assign split2 = split | replace_first: ']', '|%SPLIT%|' | split: '|%SPLIT%|'
+          assign part2 = ''
+          if split2.size > 1
+            assign part2 = split2 | last
+          endif
+          assign dayjs_fmt = split2 | first | replace: 'YYYY', '%Y' | replace: 'YY', '%y' | replace: 'MMMM', '%B' | replace: 'MMM', '%b' | replace: 'MM', '%m' | replace: 'M', '%-m' | replace: 'DDDD', '%j' | replace: 'DDD', '%j' | replace: 'DD', '%d' | replace: 'D', '%-d' | replace: 'dddd', '%A' | replace: 'ddd', '%a' | replace: 'HH', '%H' | replace: 'H', '%-H' | replace: 'hh', '%I' | replace: 'h', '%-I' | replace: 'mm', '%M' | replace: 'm', '%-M' | replace: 'ss', '%S' | replace: 's', '%-S' | replace: 'SSS', '%L' | replace: 'SS', '%L' | replace: 'S', '%L' | replace: 'A', '%p' | replace: 'a', '%P' | replace: 'ZZ', '%z' | replace: 'Z', '%:z' | replace: 'X', '%s' | replace: 'x', '%s' | replace: '[', '' | replace: ']', ''
+          assign date_content = preorder_date | date: dayjs_fmt
+
+          assign content = content | append: date_content | append: part2
+        endfor
+      elsif variant_preorder
+        for split in content_arr
+          if forloop.first
+            assign content = split
+            continue
+          endif
+
+          assign split2 = split | replace_first: ']', '|%SPLIT%|' | split: '|%SPLIT%|'
+          assign part2 = ''
+          if split2.size > 1
+            assign part2 = split2 | last
+          endif
+
+          assign content = content | append: part2
+        endfor
+      endif
+    %}
+    <label
+        class="{{ label_class__preorder }}"
+        {% if variant_preorder != true %}
+          x-cloak
+        {% endif %}
+        data-content="{{ default_content__preorder }}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[date\.?([^\]]*)\]/gi, (_, match) =>  p_card?.selected_variant?.preorder_date ? `${window.dayjs(p_card?.selected_variant?.preorder_date)?.format(match || 'MMM')}` : '')"
+        x-show="$editor.select_block_id === `{{ block_id }}` || (p_card?.selected_variant?.preorder && p_card?.selected_variant?.inventory_quantity < +`{{ preorder_threshold }}`)">
+      {{ content }}
+    </label>
+  {% endif %}
+  {% if label_type__out_of_stock == "show" %}
+    <label class="{{ label_class__out_of_stock }}"
+        {% if variant.available != true %}
+          x-show="$editor.select_block_id === `{{ block_id }}` || !p_card?.product?.available"
+        {% else %}
+          x-cloak
+          x-show="$editor.select_block_id === `{{ block_id }}` || !p_card?.product?.available"
+        {% endif %} >
+      {{ default_content__out_of_stock }}
+    </label>
+  {% endif %}
+</div>

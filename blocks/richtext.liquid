@@ -1,0 +1,298 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "richtext"
+  assign title = block.settings.title
+  assign text_alignment = block.settings.text_alignment
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign content = title | default: ""
+  assign content_check = content | strip_html | strip
+
+  if content_check == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+     class="relative {{ text_alignment | prepend: 'text-' }}">
+  {% render '_input.richtext', content: content, class: content_class %}
+</div>
+
+{% schema %}
+{
+  "name": "Richtext",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Auto"
+        },
+        {
+          "value": "left",
+          "label": "←"
+        },
+        {
+          "value": "center",
+          "label": "↔"
+        },
+        {
+          "value": "right",
+          "label": "→"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Richtext",
+      "category": "Basic"
+    },
+    {
+      "name": "Label",
+      "settings": {
+        "title": "<p>{{ closest.article.metafields.smart.label.value }}</p>",
+        "text_alignment": "inherit",
+        "content_class": "label-primary",
+        "text_color": "",
+        "custom_css": "& {\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Title",
+      "settings": {
+        "title": "<h1><strong>{{ closest.article.title }}</strong></h1>",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md h2",
+        "text_color": "",
+        "custom_css": "",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Text 1",
+      "settings": {
+        "title": "{{ closest.article.metafields.smart.text_1 | metafield_tag }}",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& h1, & h2, & h3, & h4{\n  margin-bottom: var(--spacing);\n}\n\n& p{\n  color: #6a6a6a;\n}",
+        "hide_if_empty": "block"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Text 2",
+      "settings": {
+        "title": "{{ closest.article.metafields.smart.text_2 | metafield_tag }}",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& h1, & h2, & h3, & h4{\n  margin-bottom: var(--spacing);\n}\n\n& p{\n  color: #6a6a6a;\n}",
+        "hide_if_empty": "block"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Text 3",
+      "settings": {
+        "title": "{{ closest.article.metafields.smart.text_3 | metafield_tag }}",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& h1, & h2, & h3, & h4{\n  margin-bottom: var(--spacing);\n}\n\n& p{\n  color: #6a6a6a;\n}",
+        "hide_if_empty": "block"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Text 4",
+      "settings": {
+        "title": "{{ closest.article.metafields.smart.text_4 | metafield_tag }}",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& h1, & h2, & h3, & h4{\n  margin-bottom: var(--spacing);\n}\n\n& p{\n  color: #6a6a6a;\n}",
+        "hide_if_empty": "block"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Text 5",
+      "settings": {
+        "title": "{{ closest.article.metafields.smart.text_5 | metafield_tag }}",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& h1, & h2, & h3, & h4{\n  margin-bottom: var(--spacing);\n}\n\n& p{\n  color: #6a6a6a;\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Description",
+      "settings": {
+        "title": "<h4>{{ closest.collection.metafields.smart.description | metafield_tag }}</h4>",
+        "text_alignment": "left",
+        "content_class": "richtext-md",
+        "text_color": "#6a6a6a",
+        "custom_css": "&{\n  margin-top: 12px;\n}\n\n\n@media (max-width: 768px) {\n  & {\n    padding: 0 var(--gutter);\n  }\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Subtitle",
+      "settings": {
+        "title": "<h4>{{ closest.collection.metafields.smart.bundle_text | metafield_tag }}</h4>",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "& {\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Richtext Desktop",
+      "settings": {
+        "title": "<p>New Year Special:<br/>FREE Gifts with Subscription</p><h5>Gifts to elevate and complete your daily ritual. <a href=\"#popup--gifts\" title=\"Open Gifts Modal\">See gifts</a></h5>",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "&{\n  padding: 16px 0;\n}\n& h5 {\n  color: #6a6a6a;\n  margin-top: 6px;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    },
+    {
+      "name": "Richtext Mobile",
+      "settings": {
+        "title": "<p><strong>Exclusive Monthly Gifts for Subscribers.</strong></p>",
+        "text_alignment": "inherit",
+        "content_class": "richtext-md",
+        "text_color": "",
+        "custom_css": "@media (min-width: 769px) {\n  & {\n    display: none;\n  }\n}",
+        "hide_if_empty": "none"
+      },
+      "blocks": [],
+      "category": "Basic"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__richtext"
+}
+{% endschema %}

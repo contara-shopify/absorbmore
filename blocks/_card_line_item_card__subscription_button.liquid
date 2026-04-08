@@ -1,0 +1,134 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__subscription_button"
+  assign section_type = "card_line_item_card"
+  assign label = block.settings.label
+  assign select_class = block.settings.select_class
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.line_item_cards[section.settings.line_item_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{-  css | append:custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+{% capture html_attributes %}data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}" {% endcapture %}
+
+<button data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+        type="button"
+        class="{{ select_class }} text-center relative after:hidden before:hidden"
+        x-show="line_card?.variant?.selling_plan_allocations?.length && !line_card?.line_item?.selling_plan_allocation?.selling_plan?.id && $data.showConditionally('{{ show_conditionally }}')"
+        @click.prevent.stop="$data.setSubscription(line_card?.variant?.selling_plan_allocations?.[0]?.selling_plan?.id)"
+        :class="line_card?.subscriptionIsChanging ? 'button-loading' : ''">
+  <span data-content="{{ label | escape }}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, line_card?.selling_plan_discount_wording ?? '')"></span>
+  <div class="!absolute inset-0 pointer-events-none" :class="line_card?.subscriptionIsChanging ? 'button-loading' : ''">
+  </div>
+</button>
+
+{% render '_components.select',
+    dynamic: true,
+    values: 'line_card?.line_item?.selling_plan_allocation?.selling_plan?.id && line_card?.variant?.selling_plan_allocations?.length ? [...(line_card?.product?.requires_selling_plan ? [] : [`undefined`]), ...(line_card?.variant?.selling_plan_allocations?.map(({ selling_plan })=> selling_plan?.id) ?? [])] : []',
+    titles: "line_card?.variant?.selling_plan_allocations?.length ? [...(line_card?.product?.requires_selling_plan ? [] : ['One time purchase']), ...(line_card?.variant?.selling_plan_allocations?.map(({ selling_plan })=> selling_plan?.name) ?? [])] : []",
+    select_class: select_class,
+    label: 'Subscription Selector',
+    setState: "$data.setSubscription(+value)",
+    state: "line_card?.line_item?.selling_plan_allocation?.selling_plan?.id",
+    current_value: 'line_card?.line_item?.selling_plan_allocation?.selling_plan?.id',
+    current_title: "line_card?.line_item?.selling_plan_allocation?.selling_plan?.name",
+    loading: 'line_card?.subscriptionIsChanging',
+    disabled: '$cart?.isChanging || line_card?.subscriptionIsChanging',
+    html_attributes: html_attributes
+%}
+
+{% schema %}
+{
+  "name": "Subscription button",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Subscribe & Save [value]",
+      "info": "Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_addon_products",
+          "label": "Hide with Addon products"
+        },
+        {
+          "value": "addon_products",
+          "label": "Only with Addon Products"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription button",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_line_item_card__subscription_button"
+}
+{% endschema %}

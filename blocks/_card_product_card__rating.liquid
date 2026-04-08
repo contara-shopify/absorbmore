@@ -1,0 +1,243 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__rating"
+  assign section_type = "card_product_card"
+  assign reviews_heading = block.settings.reviews_heading
+  assign css_class = block.settings.css_class
+  assign icon = block.settings.icon
+  assign icon_active_color = block.settings.icon_active_color
+  assign icon_base_color = block.settings.icon_base_color
+  assign hide_zero_reviews = block.settings.hide_zero_reviews
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if icon_active_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars--hex:" | append: icon_active_color | append: ";"
+  endif
+
+  if icon_base_color.alpha > 0
+    assign styles = styles | append: "--color-review-stars-base--hex:" | append: icon_base_color | append: ";"
+  endif
+%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  {% capture meterStyling %}
+    & {
+    --star-size: 20px;
+    --star-gap: 3px;
+    }
+    & meter {
+    --star-size-with-gap: calc(var(--star-size) + var(--star-gap));
+
+    display: block;
+    position: relative;
+    width: calc(var(--star-size-with-gap) * 5 - var(--star-gap));
+    height: var(--star-size);
+    background: var(--color-review-stars-base--hex);
+    mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+    mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+    }
+
+    & meter:-moz-meter-optimum::-moz-meter-bar {
+    height: var(--star-size);
+    background: var(--color-review-stars--hex);
+    mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+    mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+    }
+
+    /* The gray background in Webkit browsers */
+
+    & meter::-webkit-meter-bar {
+    background: transparent;
+    border-radius: 0;
+    border: 0;
+    height: var(--star-size);
+    }
+
+    /* The bar in Webkit browsers */
+
+    & meter::-webkit-meter-optimum-value {
+    height: var(--star-size);
+    background: var(--color-review-stars--hex);
+    mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+    mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+    }
+
+  {% endcapture %}
+  <style>
+    {{- meterStyling | replace: '&', selector  | strip_newlines  -}}
+    {{ custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+{% liquid
+  assign product = section.settings.product | default: product
+
+  assign reviews_rating = settings.data__product__reviews_rating | replace: " ", '' | split: "."
+  assign reviews_rating = product.metafields[reviews_rating.first][reviews_rating.last].value
+  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 0 | times: 1.0
+
+  assign reviews_count = settings.data__product__reviews_count | replace: " ", '' | split: "."
+  assign reviews_count = product.metafields[reviews_count.first][reviews_count.last].value | default: 0 | times: 1
+
+  assign reviews_count_content = reviews_count
+  assign reviews_rating_content = reviews_rating
+
+  if reviews_rating <= 0
+    assign reviews_count_content = 'No Rating'
+    assign reviews_rating_content = ''
+  endif
+  assign reviews_content = reviews_heading | replace: "[count]", reviews_count_content | replace: "[rating]", reviews_rating_content
+%}
+
+<div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+     x-ignore
+     x-show="(p_card?.product?.reviews?.review_count > +`{{ hide_zero_reviews }}` || !'{{ hide_zero_reviews }}') && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
+     style="{{ styles }}">
+  <meter class="relative block appearance-none shrink-0"
+      value="{{ reviews_rating }}"
+      min="0"
+      max="5">
+    <span>
+    <span>{{ reviews_rating }}</span>/
+    <span>5</span>
+    </span>
+  </meter>
+  <label class="{{ css_class }}"
+         x-cloak
+         x-show="!!p_card?.product?.reviews"
+         data-content="{% render '_input.inline_richtext', content: reviews_heading, escape: true %}"
+         x-html="$el.getAttribute('data-content').replace('[count]', p_card?.product?.reviews?.review_count).replace('[rating]',p_card?.product?.reviews?.rating || 'No rating')">
+  </label>
+</div>
+
+{% schema %}
+{
+  "name": "Rating",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "reviews_heading",
+      "label": "Reviews heading",
+      "default": "[rating] - based on [count] reviews",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [count] as a placeholder for the number of reviews, and [rating] for the product rating."
+    },
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "CSS Class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "header",
+      "content": "Rating Icons"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon",
+      "default": "star"
+    },
+    {
+      "type": "header",
+      "content": "Fallback Colors"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "icon_active_color",
+      "label": "Icon active color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "icon_base_color",
+      "label": "Icon base color"
+    },
+    {
+      "type": "paragraph",
+      "content": "Leave the colors empty to use the Global Theme Setting colors."
+    },
+    {
+      "type": "header",
+      "content": "Hide Reviews"
+    },
+    {
+      "type": "number",
+      "id": "hide_zero_reviews",
+      "label": "Hide reviews if less than:"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\ndisplay: block;\nwidth: 100%;\nheight: auto;\naspect-ratio: unset;\nborder: unset;\nbackground: unset;\npadding: 0;\n}"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rating",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__rating"
+}
+{% endschema %}

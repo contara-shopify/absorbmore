@@ -1,0 +1,63 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_modal_quick_view__view_button"
+  assign section_type = "modal_quick_view"
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     class="px-6 lg:px-8">
+  <a class="text-black {{ content_class }}" @click="$quickView.show = false;" data-quick-view-show-more>{{ content }}</a>
+</div>
+
+{% schema %}
+{
+  "name": "View Button",
+  "settings": [
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content Class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "View Button",
+      "category": "** Quick View **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___modal_quick_view__view_button"
+}
+{% endschema %}

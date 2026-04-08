@@ -1,0 +1,361 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__gallery"
+  assign section_type = "card_product_card"
+  assign filter_images = block.settings.filter_images
+  assign max_images = block.settings.max_images
+  assign hide_image_alt = block.settings.hide_image_alt
+  assign scroll_to_selected_variant_image = block.settings.scroll_to_selected_variant_image
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  {% if show_overlay %}
+    {% capture css %}
+      & [data-media-id]:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: {{ overlay_color }};
+      pointer-events: none;
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+{% endif %}
+
+<div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+     data-quick-view-visibility="{{ quick_view_visibility }}"
+     class="relative"
+     data-product-card-gallery
+     x-data="{ ...utils.initContentSlider($el, $el.firstElementChild, undefined, `{{ infinite_scroll }}`), initVariants: () => {  p_card.gallery_media = $data?.handleImageSelection(`{{ filter_images }}`, p_card.selected_variant); $nextTick(() =>{ $data.content_slider.handleResize() }) } }"
+     x-defer="intersect"
+    {% if scroll_to_selected_variant_image %}
+      x-init="$watch('p_card.selected_variant', () => { scrollToMediaById(p_card.selected_variant?.featured_media?.id, $el.firstElementChild) })"
+    {% endif %}
+     data-settings="{{ block.settings | json | escape }}">
+  <div class="gallery-container flex snap-mandatory overflow-x-auto scrollbar-none max-lg:order-first {{ slider_scroll_snap }} {{ slider_overflow }}"
+       @resize.window="content_slider.handleResize"
+       x-init="initVariants(); $watch('p_card.selected_variant', initVariants);"
+       @scroll="(e) =>{ content_slider.handleScroll(e); const mediaId = [...$el.querySelectorAll(':scope > div:not(.hidden):not(.\\!hidden)')].find(pic=> pic?.classList?.contains('centered'))?.getAttribute('data-media-id'); if (mediaId) { p_card.selected_media_id = mediaId }}"
+       @scrollend="content_slider.handleInfiniteScroll"
+       x-ref="scrollContainer">
+    <template x-for="(value, i) in p_card?.gallery_media?.slice(0, +{{ max_images | default: 'p_card?.gallery_media?.length ?? 9999' }}) || []">
+      <div :data-media-id="p_card?.gallery_media[i].id" tabindex="-1" class="image-wrapper block relative">
+        <template x-if="p_card?.gallery_media[i]?.media_type === 'image'">
+          <img class="h-full w-full object-[inherit] !opacity-0 transition-opacity duration-300 ease-in"
+               src=""
+               alt=""
+               onload="this.classList.remove('!opacity-0')"
+               :srcset="utils.getImageSrcSet(p_card?.gallery_media[i]?.src ?? '', +`{{ max_width }}`)"
+               :src="p_card?.gallery_media[i]?.src"
+               :alt="p_card?.gallery_media[i]?.alt"
+               sizes="{{ sizes }}" />
+        </template>
+        <template x-if="p_card?.gallery_media[i]?.media_type === 'video'">
+          <video playsinline
+                 controls
+                 x-effect="() => { if (!$el.paused && ($mediaGallery.scrollIndex !== i || !$modal.id === 'media-gallery--vertical-gallery')) { $el.pause() } }"
+                 loop
+                 preload="none"
+                 class="h-full w-full object-[inherit]"
+                 :aria-label="p_card?.gallery_media[i]?.alt"
+                 :poster="p_card?.gallery_media[i]?.preview_image?.src">
+            <template x-for="(source, index) in [...(p_card?.gallery_media[i]?.sources || [])].sort((a, b) => a.width - b.width)">
+              <source data-loop-item
+                      src=""
+                      :src="source?.url"
+                      :type="source?.mime_type"
+                      :media="index === 0 ? 'all' : `(min-width: ${[...(p_card?.gallery_media[i]?.sources || [])].sort((a, b) => a.width - b.width)[index - 1].width + 1}px)`"
+                      type="video/mp4" />
+            </template>
+            <img x-show="p_card?.gallery_media[i]?.preview_image?.src"
+                 :src="p_card?.gallery_media[i]?.preview_image.src"
+                 :alt="p_card?.gallery_media[i]?.alt" />
+          </video>
+        </template>
+        <template x-if="p_card?.gallery_media[i]?.media_type === 'external_video'">
+          <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  class="relative h-full w-full object-contain js-youtube"
+                  loading="lazy"
+                  :src="p_card?.gallery_media[i].host === 'youtube'
+                           ? `https://www.youtube.com/embed/${p_card?.gallery_media[i].external_id}?autoplay=${$mediaGallery.scrollIndex === i ? '1' : '0'}&controls=1&muted=${$mediaGallery.scrollIndex === i ? '0' : '1'}&enablejsapi=1&loop=${1}&modestbranding=1&playsinline=1&rel=0`
+                           : `https://player.vimeo.com/video/${p_card?.gallery_media[i].external_id}`"
+                  :title="p_card?.gallery_media[i].alt"></iframe>
+        </template>
+        <template x-if="p_card?.gallery_media[i]?.media_type === 'model'">
+          <div class="relative aspect-1 h-full w-full">
+            <div x-html="`
+                    <model-viewer
+                      class='inset-0 h-full w-full object-contain md:absolute'
+                      style='--poster-color: transparent; position: absolute;'
+                      src='${p_card?.gallery_media[i]?.sources?.find((source) => source.format === 'glb')?.url}'
+                      camera-controls='true'
+                      data-shopify-feature='1.12'
+                      alt='${p_card?.gallery_media[i]?.alt}'
+                      poster='${p_card?.gallery_media[i]?.preview_image.src}'
+                      data-js-focus-visible='
+                      ar-status='not-presenting'
+                      ></model-viewer>
+                  `"></div>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+  {% if scrollbar_class != blank %}
+    {% render '_components.scrollbar', class: scrollbar_class %}
+  {% endif %}
+  {% if scroll_pagination_class != blank %}
+    {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Dynamic Filters"
+    },
+    {
+      "type": "radio",
+      "id": "filter_images",
+      "label": "Filter images",
+      "default": "show_all",
+      "options": [
+        {
+          "value": "show_all",
+          "label": "Show all images"
+        },
+        {
+          "value": "selected_variant",
+          "label": "Selected Variant image only."
+        },
+        {
+          "value": "variant_images_by_order",
+          "label": "t:all.selected_variant_image_and_images_following_until_the_next_image_is_assigned_to_a_variant_or_there_are_no_more_images"
+        },
+        {
+          "value": "variant_images_by_metafield",
+          "label": "t:all.selected_variant_image_and_images_assigned_to_the_metafield_smart_images_on_the_variant_level_set_to_type_list_file_reference"
+        },
+        {
+          "value": "variant_images_and_unassigned",
+          "label": "t:all.selected_variant_image_and_images_that_are_not_assigned_to_any_other_variant"
+        },
+        {
+          "value": "only_unassigned",
+          "label": "Only images that are not assigned to any variant."
+        },
+        {
+          "value": "first_or_selected_image",
+          "label": "First or selected image only."
+        }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "max_images",
+      "label": "Maximum images",
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "hide_image_alt",
+      "label": "Hide images with ALT text:",
+      "default": "hide-image"
+    },
+    {
+      "type": "checkbox",
+      "id": "scroll_to_selected_variant_image",
+      "label": "Scroll to selected variant image",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+      "visible_if": "{{ block.settings.show_overlay == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Image Performance Optimization"
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 540
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__gallery"
+}
+{% endschema %}

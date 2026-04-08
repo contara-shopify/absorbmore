@@ -1,0 +1,246 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "cards_testimonial"
+  assign image = block.settings.image
+  assign preload = block.settings.preload
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign icon = block.settings.icon
+  assign rating = block.settings.rating
+  assign label = block.settings.label
+  assign label_class = block.settings.label_class
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign button_text = block.settings.button_text
+  assign button_class = block.settings.button_class
+  assign button_url = block.settings.button_url
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture meterStyling %}
+  & {
+  --star-size: 20px;
+  --star-gap: 3px;
+  }
+  & meter {
+  --star-size-with-gap: calc(var(--star-size) + var(--star-gap));
+
+  display: block;
+  position: relative;
+  width: calc(var(--star-size-with-gap) * 5 - var(--star-gap));
+  height: var(--star-size);
+  background: var(--color-review-stars-base--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  & meter:-moz-meter-optimum::-moz-meter-bar {
+  height: var(--star-size);
+  background: var(--color-review-stars--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  /* The gray background in Webkit browsers */
+
+  & meter::-webkit-meter-bar {
+  background: transparent;
+  border-radius: 0;
+  border: 0;
+  height: var(--star-size);
+  }
+
+  /* The bar in Webkit browsers */
+
+  & meter::-webkit-meter-optimum-value {
+  height: var(--star-size);
+  background: var(--color-review-stars--hex);
+  mask: var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }}), var(--icon-{{ icon | handleize }});
+  mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+{% endcapture %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{- meterStyling | replace: '&', selector  | strip_newlines  -}}
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<figure
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    {% if request.design_mode %}
+      x-effect="if ($editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)) { utils.scrollToX(0, $el.offsetLeft, content_slider.container); }"
+    {% endif %}
+    class="relative overflow-hidden rounded-3xl">
+  {% render '_object.image', image: image, class: 'w-full', sizes: '(max-width: 768px) 90vw, (max-width: 1200px) 30vw, 25vw' %}
+  <figcaption class="p-6 flex flex-col gap-4">
+    <meter class="relative block appearance-none shrink-0"
+       value="{{ rating }}"
+       min="0"
+       max="5">
+  <span>
+    <span>{{ rating }}</span>/
+    <span>5</span>
+  </span>
+</meter>
+    <div class="{{ label_class }}">{{ label }}</div>
+    {% render '_input.richtext', content: content, class: content_class %}
+    <a class="w-full {{ button_class }}" href="{{ button_url }}">{{ button_text }}</a>
+  </figcaption>
+</figure>
+
+{% schema %}
+{
+  "name": "Card testimonial",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload",
+      "info": "Activate this for any image that should show immediately on page view (Above the fold content)."
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes",
+      "default": "(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 25vw"
+    },
+    {
+      "type": "number",
+      "id": "max_width",
+      "label": "Max Width",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Rating icon",
+      "default": "star"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Rating",
+      "default": 5,
+      "min": 1,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Title",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "label_class",
+      "label": "Title class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "shop now",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button url"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cards testimonial",
+      "category": "Cards"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__cards_testimonial"
+}
+{% endschema %}

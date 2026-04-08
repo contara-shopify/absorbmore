@@ -1,0 +1,272 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__cta_button"
+  assign section_type = "card_product_card"
+  assign default__action = block.settings.default__action
+  assign default__content = block.settings.default__content
+  assign default__class = block.settings.default__class
+  assign default__product_modal_handle = block.settings.default__product_modal_handle
+  assign variant__enable = block.settings.variant__enable
+  assign variant__action = block.settings.variant__action
+  assign variant__content = block.settings.variant__content
+  assign variant__class = block.settings.variant__class
+  assign variant__product_modal_handle = block.settings.variant__product_modal_handle
+  assign subscription__enable = block.settings.subscription__enable
+  assign subscription__action = block.settings.subscription__action
+  assign subscription__content = block.settings.subscription__content
+  assign subscription__class = block.settings.subscription__class
+  assign subscription__product_modal_handle = block.settings.subscription__product_modal_handle
+  assign bundle__enable = block.settings.bundle__enable
+  assign bundle__action = block.settings.bundle__action
+  assign bundle__content = block.settings.bundle__content
+  assign bundle__class = block.settings.bundle__class
+  assign quantity_content = block.settings.quantity_content
+  assign quantity_class = block.settings.quantity_class
+  assign bundle__product_modal_handle = block.settings.bundle__product_modal_handle
+  assign pdp__enable = block.settings.pdp__enable
+  assign pdp__action = block.settings.pdp__action
+  assign pdp__content = block.settings.pdp__content
+  assign pdp__content_item_added = block.settings.pdp__content_item_added
+  assign pdp__class = block.settings.pdp__class
+  assign pdp__allow_quantity = block.settings.pdp__allow_quantity
+  assign pdp__quantity_content = block.settings.pdp__quantity_content
+  assign pdp__quantity_class = block.settings.pdp__quantity_class
+  assign pdp__product_modal_handle = block.settings.pdp__product_modal_handle
+  assign preorder__enable = block.settings.preorder__enable
+  assign preorder__action = block.settings.preorder__action
+  assign preorder__content = block.settings.preorder__content
+  assign preorder__class = block.settings.preorder__class
+  assign preorder__product_modal_handle = block.settings.preorder__product_modal_handle
+  assign sold_out__enable = block.settings.sold_out__enable
+  assign sold_out__action = block.settings.sold_out__action
+  assign sold_out__content = block.settings.sold_out__content
+  assign sold_out__class = block.settings.sold_out__class
+  assign sold_out__product_modal_handle = block.settings.sold_out__product_modal_handle
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+  assign theme_editor_preview = block.settings.theme_editor_preview
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+<button
+    data-style-id="{{ style_id }}"
+    type="submit"
+    x-ignore
+    x-data="{ ...getCTAButtonProps($el, $el.closest('[data-preview-container]') && `{{ theme_editor_preview }}`) }"
+    x-init="$watch('p_card.selected_variant', () => { const update = getCTAButtonProps($el, $el.closest('[data-preview-container]') && `{{ theme_editor_preview }}`); action = update.action; content = update.content; added_content = update.added_content; product_modal_handle = update.product_modal_handle })"
+    x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle) && (action !== 'add_to_bundle' || !$data?.bundle?.items_added?.some(item => item.variant?.id === p_card?.selected_variant?.id)) && (action !== 'add_as_addon' || !$el.hasAttribute('data-pdp-allow-quantity') || !($data?.pdp?.upsell_items?.has(p_card?.product_handle) || ($el.closest('[data-preview-container]') && `{{ theme_editor_preview }}` === 'in_pdp_added')))"
+    :class="clsx(p_card?.isAdding && action === 'add_to_cart' && 'button-loading',(action === 'add_as_addon' && $data?.pdp?.upsell_items?.has(p_card?.product_handle)) || ($el.closest('[data-preview-container]') && `{{ theme_editor_preview }}` === 'in_pdp_added') && 'added')"
+    x-html="(action === 'add_as_addon' && $data?.pdp?.upsell_items?.has(p_card?.product_handle)) || ($el.closest('[data-preview-container]') && `{{ theme_editor_preview }}` === 'in_pdp_added') ? added_content : content"
+    @click.prevent.stop="action === 'add_to_cart' ? handleAddToCart($event)
+                       : action === 'product_modal' ? $modal.setId(`modal--product-${product_modal_handle}`, false, p_card?.product_handle, p_card?.product?.id, p_card?.selected_variant?.id, updateProductState)
+                       : action === 'quick_view' ? ($modal.setId(''),$quickView.renderQuickView(p_card?.product_handle, $data, $refs?.bundle_button, p_card?.selected_variant?.id))
+                       : action === 'link_to_product' ? barba.go(`${_stores.router?.pathname?.replace(/^.*?(\/collections\/[^/]*)?.*$/gi,'$1')?.replace(/^\/$/gi,'') ?? ''}/products/${p_card?.product_handle}?variant=${p_card?.selected_variant?.id}`)
+                       : action === 'add_to_bundle' ? $data?.bundle?.addToBundle({ variant: p_card?.selected_variant, product: p_card?.product })
+                       : action === 'add_as_addon' ? $data?.pdp?.upsell_items?.set(p_card?.product_handle, { id: p_card?.selected_variant?.id, quantity: 1, variant: p_card?.selected_variant, bundle: p_card?.addon_bundle_in_cart, auto_addon: p_card?.addon_auto_add, variable_quantity: $el.hasAttribute('data-pdp-allow-quantity') })
+                       : action === 'back_in_stock' ? handleBackInStockNotification($event) : null"
+    {% if pdp__enable %}
+      x-effect="if (action === 'add_as_addon') {
+        if (!p_card?.selected_variant?.available) {
+          $data?.pdp?.upsell_items?.delete(p_card?.product_handle)
+          return;
+        }
+        if (p_card?.addon_auto_add || $data?.pdp?.upsell_items?.has(p_card?.product_handle)) {
+          $data?.pdp?.upsell_items?.set(p_card?.product_handle, { id: p_card?.selected_variant?.id, quantity: Math.min(p_card?.available_quantity, $data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity) || 1, variant: p_card?.selected_variant, bundle: p_card?.addon_bundle_in_cart, auto_addon: p_card?.addon_auto_add, variable_quantity: $el.hasAttribute('data-pdp-allow-quantity') })
+        }
+      }"
+    {% endif %}
+    data-content="{% render '_input.inline_richtext', content: default__content, escape: true %}"
+    data-class="{{ default__class }}"
+    {% assign initial_class = default__class %}
+    {% capture parse_content %}{% render '_input.dynamic_content', content: default__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+    {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+    data-action="{{ default__action }}"
+    {% if default__action == 'product_modal' %}
+      data-product-modal-handle="{{ default__product_modal_handle }}"
+    {% endif %}
+    {% if variant__enable %}
+      data-variant-content="{% render '_input.inline_richtext', content: variant__content, escape: true %}"
+      data-variant-class="{{ variant__class }}"
+      {% if product.variants.size > 1 %}
+        {% assign initial_class = variant__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: variant__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-variant-action="{{ variant__action }}"
+      {% if variant__action == 'product_modal' %}
+        data-variant-product-modal-handle="{{ variant__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if subscription__enable %}
+      data-subscription-content="{% render '_input.inline_richtext', content: subscription__content, escape: true %}"
+      data-subscription-class="{{ subscription__class }}"
+      {% if product.selling_plan_groups.size > 0 %}
+        {% assign initial_class = subscription__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: subscription__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-subscription-action="{{ subscription__action }}"
+      {% if subscription__action == 'product_modal' %}
+        data-subscription-product-modal-handle="{{ subscription__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if bundle__enable %}
+      data-bundle-content="{% render '_input.inline_richtext', content: bundle__content, escape: true %}"
+      data-bundle-class="{{ bundle__class }}"
+      {% if is_bundle %}
+        {% assign initial_class = bundle__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: bundle__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-bundle-action="{{ bundle__action }}"
+      {% if bundle__action == 'product_modal' %}
+        data-bundle-product-modal-handle="{{ bundle__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if pdp__enable %}
+      data-pdp-content="{% render '_input.inline_richtext', content: pdp__content, escape: true %}"
+      data-pdp-added-content="{% render '_input.inline_richtext', content: pdp__content_item_added, escape: true %}"
+      data-pdp-class="{{ pdp__class }}"
+      {% if is_pdp %}
+        {% assign initial_class = pdp__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: pdp__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-pdp-action="{{ pdp__action }}"
+      {% if pdp__allow_quantity %}
+        data-pdp-allow-quantity="{{ pdp__allow_quantity }}"
+      {% endif %}
+      {% if pdp__action == 'product_modal' %}
+        data-pdp-product-modal-handle="{{ pdp__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if preorder__enable %}
+      data-preorder-content="{% render '_input.inline_richtext', content: preorder__content, escape: true %}"
+      data-preorder-class="{{ preorder__class }}"
+      {% assign preorder_threshold = settings.data__product__variant__preorder_threshold | default: 1 %}
+
+      {% if preorder and variant.available and variant.inventory_quantity < preorder_threshold %}
+        {% assign initial_class = preorder__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: preorder__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-preorder-action="{{ preorder__action }}"
+      {% if preorder__action == 'product_modal' %}
+        data-preorder-product-modal-handle="{{ preorder__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    {% if sold_out__enable %}
+      data-sold-out-content="{% render '_input.inline_richtext', content: sold_out__content, escape: true %}"
+      data-sold-out-class="{{ sold_out__class }}"
+      {% if product.available != true %}
+        {% assign initial_class = sold_out__class %}
+        {% capture parse_content %}{% render '_input.dynamic_content', content: sold_out__content, keys: 'product, selected_variant, price, compare_at_price', product: product, selected_variant: selected_variant, price: price, compare_at_price: compare_at_price %}{% endcapture %}
+        {% capture initial_content %}{% render '_input.inline_richtext', content: parse_content %}{% endcapture %}
+      {% endif %}
+      data-sold-out-action="{{ sold_out__action }}"
+      {% if sold_out__action == 'product_modal' %}
+        data-sold-out-product-modal-handle="{{ sold_out__product_modal_handle }}"
+      {% endif %}
+    {% endif %}
+    class="w-full {{ initial_class }}"
+    :disabled="action === 'disabled'">
+  {{ initial_content }}
+</button>
+
+{% if pdp__enable and pdp__action == 'add_as_addon' and pdp__allow_quantity %}
+  <div data-style-id="{{ style_id }}"
+       x-show="$data?.pdp?.upsell_items?.has(p_card?.product_handle)"
+       x-cloak
+       class="w-full !cursor-default {{ quantity_class }}"
+       :class="p_card?.isAdding ? 'button-loading':''">
+    <span class="flex w-full justify-between items-center gap-2"
+          @click.prevent.stop="()=>{}">
+      {% if quantity_content != blank %}
+        <span class="flex-1 text-left">{% render '_input.inline_richtext', content: quantity_content %}</span>
+      {% endif %}
+      <button type="button"
+              class="p-0.5"
+              aria-label="Decrease quantity"
+              :disabled="p_card?.addon_auto_add && $data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity <= 1"
+              @click="$data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity <= 1 ? $data?.pdp?.upsell_items?.delete(p_card?.product_handle) : $data?.pdp?.upsell_items?.set(p_card?.product_handle, { id: p_card?.selected_variant?.id, quantity: $data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity - 1, variant: p_card?.selected_variant, bundle: p_card?.addon_bundle_in_cart, auto_addon: p_card?.addon_auto_add, variable_quantity: true })">
+        {% render '_components.icon', icon: "minus", class: "size-[0.9em]" %}
+      </button>
+      <label aria-label="{{ label | default: 'Bundle Quantity' }}" class="flex items-center justify-center">
+        <input type="number"
+               value="1"
+               min="1"
+               name="value"
+               class="w-8 min-w-0 appearance-none bg-inherit text-center outline-none disabled:pointer-events-none disabled:select-none"
+               disabled="disabled"
+               :value="$data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity || 0">
+      </label>
+      <button type="button"
+              class="p-0.5"
+              aria-label="Increase quantity"
+              :disabled="(p_card?.selected_variant?.quantity - $data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity) < 1 && !p_card?.soldOut"
+              @click="$data?.pdp?.upsell_items?.set(p_card?.product_handle, { id: p_card?.selected_variant?.id, quantity: $data?.pdp?.upsell_items?.get(p_card?.product_handle)?.quantity + 1, variant: p_card?.selected_variant, bundle: p_card?.addon_bundle_in_cart, auto_addon: p_card?.addon_auto_add, variable_quantity: true })">
+        {% render '_components.icon', icon: "plus", class: "size-[0.9em]" %}
+      </button>
+    </span>
+  </div>
+{% endif %}
+
+{% if bundle__enable and bundle__action == 'add_to_bundle' %}
+  <div data-style-id="{{ style_id }}"
+       x-show="p_card?.selected_variant?.available && $data?.bundle?.items_added?.some(item => item.variant?.id === p_card?.selected_variant?.id)"
+       x-cloak
+       class="w-full !cursor-default {{ quantity_class }}"
+       :class="p_card?.isAdding ? 'button-loading':''">
+    <span class="flex w-full justify-between items-center gap-2"
+          @click.prevent.stop="()=>{}"
+          x-data="{ quantity_added: $data?.bundle?.items_added?.reduce((acc,item) => (item.variant?.id === p_card?.selected_variant?.id ? acc += 1 : acc), 0) }"
+          x-effect="quantity_added = $data?.bundle?.items_added?.reduce((acc,item) => (item.variant?.id === p_card?.selected_variant?.id ? acc += 1 : acc), 0) ">
+      {% if quantity_content != blank %}
+        <span class="flex-1 text-left">{% render '_input.inline_richtext', content: quantity_content %}</span>
+      {% endif %}
+      <button type="button"
+              class="p-0.5"
+              aria-label="Decrease quantity"
+              @click="$data?.bundle?.removeFromBundle({ variant: p_card?.selected_variant, product: p_card?.product })">
+        {% render '_components.icon', icon: "minus", class: "size-[0.9em]" %}
+      </button>
+      <label aria-label="{{ label | default: 'Bundle Quantity' }}" class="flex items-center justify-center">
+        <input type="number"
+               value="1"
+               min="1"
+               name="value"
+               class="w-8 min-w-0 appearance-none bg-inherit text-center outline-none disabled:pointer-events-none disabled:select-none"
+               disabled="disabled"
+               :value="quantity_added">
+      </label>
+      <button type="button"
+              class="p-0.5"
+              aria-label="Increase quantity"
+              :disabled="(p_card?.selected_variant?.quantity - quantity_added) < 1 && !p_card?.soldOut"
+              @click="$data?.bundle?.addToBundle({ variant: p_card?.selected_variant, product: p_card?.product })">
+        {% render '_components.icon', icon: "plus", class: "size-[0.9em]" %}
+      </button>
+    </span>
+  </div>
+{% endif %}

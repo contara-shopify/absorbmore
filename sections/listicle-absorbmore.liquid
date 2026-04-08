@@ -1,0 +1,1166 @@
+{% comment %}
+  ============================================
+  ABSORBMORE BERBERINE — 10-REASON LISTICLE
+  Shopify 2.0 Section File
+  ============================================
+  SETUP:
+  1. Upload this file to: sections/listicle-absorbmore.liquid
+  2. Upload templates/page.listicle.json to: templates/page.listicle.json
+  3. Create a new Page in Shopify Admin → assign "listicle" template
+  ============================================
+{% endcomment %}
+
+<style>
+/* ============================================
+   HOLLOWSOCKS-STYLE 10-REASON LISTICLE
+   Brand: The Absorption Company (AbsorbMore)
+   ============================================ */
+
+:root {
+  --brand-primary: #000000;
+  --brand-primary-hover: #222222;
+  --brand-dark: #18191b;
+  --brand-accent: #d32f2f;
+  --brand-light: #f5f0eb;
+  --brand-light-alt: #fdf5f0;
+  --brand-text: #333333;
+  --brand-heading: #000000;
+  --brand-muted: #888888;
+  --brand-border: #e0e0e0;
+  --brand-star: #f5a623;
+  --brand-white: #ffffff;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --max-width: 900px;
+  --section-padding: 60px 20px;
+  --reason-gap: 50px;
+}
+
+/* Reset only within our listicle scope */
+.hs-listicle-wrapper * { margin: 0; padding: 0; box-sizing: border-box; }
+.hs-listicle-wrapper {
+  font-family: var(--font-body);
+  color: var(--brand-text);
+  background: var(--brand-white);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+.hs-listicle-wrapper img { max-width: 100%; height: auto; }
+.hs-listicle-wrapper a { color: inherit; }
+
+/* Body */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide header and footer */
+header,
+footer {
+  display: none;
+}
+
+/* ========== ANNOUNCEMENT BAR ========== */
+.hs-announcement {
+  background: var(--brand-accent);
+  color: var(--brand-white);
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.hs-announcement span { font-weight: 400; }
+
+/* ========== SECONDARY BAR (Countdown) ========== */
+.hs-secondary-bar {
+  background: var(--brand-dark);
+  color: var(--brand-white);
+  text-align: center;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.hs-countdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--brand-accent);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.hs-countdown-sep { opacity: 0.7; }
+.hs-countdown-label { font-size: 9px; font-weight: 400; opacity: 0.8; margin-left: 1px; }
+
+/* ========== HERO SECTION ========== */
+.hs-hero {
+  padding: 45px 16px 40px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.hs-hero h1 {
+  font-family: var(--font-heading);
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1.12;
+  color: var(--brand-heading);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+/* Author byline */
+.hs-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.hs-author-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.hs-author-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--brand-heading);
+}
+.hs-author-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
+.hs-author-badge svg { width: 12px; height: 12px; }
+.hs-author-date {
+  font-size: 12px;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Callout quote */
+.hs-callout {
+  background: #fff0f0;
+  border-left: 4px solid var(--brand-accent);
+  padding: 16px 20px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--brand-heading);
+  margin-bottom: 40px;
+  border-radius: 0 6px 6px 0;
+}
+
+/* ========== COMPARISON TABLE ========== */
+.hs-comparison {
+  max-width: var(--max-width);
+  margin: 0 auto 20px;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.hs-comparison table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.hs-comparison thead th {
+  padding: 14px 16px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.hs-comparison thead th:first-child {
+  text-align: left;
+  width: 25%;
+}
+.hs-comparison thead th.hs-brand-col {
+  background: var(--brand-dark);
+  color: var(--brand-white);
+  border-radius: 8px 8px 0 0;
+}
+.hs-comparison tbody td {
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: 14px;
+}
+.hs-comparison tbody td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--brand-heading);
+}
+.hs-comparison tbody td.hs-brand-col {
+  background: var(--brand-dark);
+  color: #7dde86;
+  font-weight: 700;
+}
+.hs-comparison tbody tr:last-child td.hs-brand-col {
+  border-radius: 0 0 8px 8px;
+}
+.hs-comparison .hs-emoji-row td {
+  font-size: 28px;
+  border-bottom: none;
+}
+.hs-comparison .hs-cat-icon {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+/* ========== TLDR ========== */
+.hs-tldr {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brand-heading);
+}
+.hs-tldr strong { font-weight: 800; }
+
+/* ========== REASONS SECTION ========== */
+.hs-reasons {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--reason-gap);
+}
+
+.hs-reason {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.hs-reason-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+}
+
+.hs-reason-content h3 {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.25;
+  color: var(--brand-heading);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+}
+
+.hs-reason-content p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--brand-text);
+}
+
+/* ========== MID-PAGE CTA ========== */
+.hs-mid-cta {
+  text-align: center;
+  padding: 30px 16px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* ========== OFFER CARD ========== */
+.hs-offer {
+  background: var(--brand-light);
+  padding: 60px 16px;
+}
+.hs-offer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  background: var(--brand-white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+.hs-offer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hs-offer-content {
+  padding: 40px 40px 40px 0;
+}
+.hs-offer-label {
+  display: inline-block;
+  background: var(--brand-dark);
+  color: var(--brand-white);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border: 1px dashed rgba(255,255,255,0.4);
+}
+.hs-offer-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hs-offer-sub::before,
+.hs-offer-sub::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--brand-border);
+}
+.hs-offer-content h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--brand-heading);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.hs-offer-content p {
+  font-size: 15px;
+  color: var(--brand-text);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* CTA Button */
+.hs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--brand-primary);
+  color: white !important;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 32px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  text-align: center;
+}
+.hs-btn:hover { background: var(--brand-primary-hover); }
+.hs-btn svg { width: 18px; height: 18px; }
+
+/* Trust badges under CTA */
+.hs-trust-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--brand-muted);
+  font-weight: 500;
+}
+.hs-trust-badges span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hs-trust-badges svg { width: 16px; height: 16px; opacity: 0.6; }
+
+/* Stock alert badges */
+.hs-stock-badges {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.hs-stock-badge {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.hs-stock-badge .hs-stock-alert { color: var(--brand-accent); }
+
+/* ========== PHOTO STRIP ========== */
+.hs-photo-strip {
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  width: 100%;
+}
+.hs-photo-strip img {
+  flex: 1;
+  min-width: 0;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ========== REVIEWS SECTION ========== */
+.hs-reviews {
+  padding: var(--section-padding);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.hs-reviews-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.hs-reviews-header h2 {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--brand-heading);
+  margin-bottom: 8px;
+}
+.hs-reviews-header p {
+  font-size: 16px;
+  color: var(--brand-text);
+}
+.hs-reviews-header strong {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.hs-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hs-review-card {
+  background: var(--brand-light);
+  border-radius: 10px;
+  padding: 24px;
+}
+.hs-review-stars {
+  color: var(--brand-star);
+  font-size: 18px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+.hs-review-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-heading);
+  margin-bottom: 8px;
+}
+.hs-review-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--brand-text);
+  margin-bottom: 10px;
+}
+.hs-review-author {
+  font-size: 13px;
+  color: var(--brand-muted);
+  font-weight: 500;
+}
+
+/* ========== URGENCY SECTION ========== */
+.hs-urgency {
+  background: var(--brand-dark);
+  color: var(--brand-white);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.hs-urgency-content {
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hs-urgency-bar {
+  width: 100%;
+  max-width: 300px;
+  height: 28px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+}
+.hs-urgency-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-accent), #ff6b6b);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-white);
+}
+.hs-urgency h3 {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.hs-urgency-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hs-urgency .hs-btn {
+  max-width: 320px;
+}
+
+/* ========== FAQ SECTION ========== */
+.hs-faq {
+  padding: var(--section-padding);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.hs-faq h2 {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--brand-heading);
+  margin-bottom: 32px;
+}
+.hs-faq-item {
+  border-bottom: 1px solid var(--brand-border);
+  padding: 18px 0;
+  cursor: pointer;
+}
+.hs-faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brand-heading);
+}
+.hs-faq-question::after {
+  content: '+';
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--brand-muted);
+  transition: transform 0.2s;
+}
+.hs-faq-item.active .hs-faq-question::after {
+  content: '\2212';
+}
+.hs-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--brand-text);
+}
+.hs-faq-item.active .hs-faq-answer {
+  max-height: 200px;
+  padding-top: 12px;
+}
+
+/* ========== BOTTOM CTA ========== */
+.hs-bottom-cta {
+  text-align: center;
+  padding: 40px 16px 60px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.hs-bottom-cta .hs-social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-heading);
+  margin-bottom: 16px;
+}
+.hs-bottom-cta .hs-social-proof .hs-stars {
+  color: var(--brand-star);
+  letter-spacing: 2px;
+}
+
+/* ========== FOOTER ========== */
+.hs-footer {
+  background: var(--brand-dark);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 13px;
+}
+.hs-footer-logo {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--brand-white);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+.hs-footer a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  margin: 0 8px;
+}
+.hs-footer a:hover { color: var(--brand-white); }
+
+/* ========== STICKY BOTTOM BAR ========== */
+.hs-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--brand-dark);
+  padding: 12px 16px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 99;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+}
+.hs-sticky-bar.visible { display: flex; }
+.hs-sticky-bar .hs-btn {
+  width: auto;
+  padding: 12px 28px;
+  font-size: 14px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .hs-hero h1 { font-size: 32px; line-height: 1.15; }
+  .hs-reason { grid-template-columns: 1fr; gap: 20px; }
+  .hs-reason-img { aspect-ratio: 4/3; }
+  .hs-offer-inner { grid-template-columns: 1fr; }
+  .hs-offer-content { padding: 30px 24px; }
+  .hs-urgency { grid-template-columns: 1fr; }
+  .hs-urgency-content { padding: 30px 24px; }
+  .hs-urgency-img { height: 250px; }
+  .hs-comparison table { font-size: 12px; }
+  .hs-comparison thead th, .hs-comparison tbody td { padding: 10px 8px; }
+  .hs-photo-strip img { height: 120px; }
+  .hs-secondary-bar { font-size: 11px; gap: 10px; flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .hs-hero h1 { font-size: 28px; }
+  .hs-reason-content h3 { font-size: 18px; }
+  .hs-offer-content h2 { font-size: 24px; }
+  .hs-callout { font-size: 15px; }
+}
+</style>
+
+<div class="hs-listicle-wrapper">
+
+<!-- ==================== ANNOUNCEMENT BAR ==================== -->
+<div class="hs-announcement">
+  <span>SPRING WELLNESS SALE</span> | <strong>UP TO 35% OFF</strong>
+</div>
+
+<!-- ==================== SECONDARY BAR ==================== -->
+<div class="hs-secondary-bar">
+  <span>FREE SHIPPING ON ORDERS $50+ &bull; HSA/FSA ELIGIBLE</span>
+  <div class="hs-countdown">
+    <span id="hs-hours">05</span><span class="hs-countdown-label">HR</span>
+    <span class="hs-countdown-sep">:</span>
+    <span id="hs-minutes">33</span><span class="hs-countdown-label">MIN</span>
+    <span class="hs-countdown-sep">:</span>
+    <span id="hs-seconds">48</span><span class="hs-countdown-label">SEC</span>
+  </div>
+</div>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hs-hero">
+  <h1>10 Reasons Women Are Switching to This "6.2x Absorbed" Berberine That Doctors Are Calling "Nature's Ozempic"</h1>
+
+  <div class="hs-author">
+    <img class="hs-author-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_author-LYA44vzSxbz5NrJ7JAkas5.webp" alt="Sarah K." />
+    <div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="hs-author-name">Sarah K.</span>
+        <span class="hs-author-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Verified Buyer
+        </span>
+      </div>
+      <span class="hs-author-date">Updated March 24, 2026</span>
+    </div>
+  </div>
+
+  <div class="hs-callout">
+    "If you've tried berberine before and it didn't work — or it wrecked your stomach — read this before you give up."
+  </div>
+</section>
+
+<!-- ==================== COMPARISON TABLE ==================== -->
+<div class="hs-comparison">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th class="hs-brand-col"><strong>THE ABSORPTION COMPANY</strong></th>
+        <th>Standard Berberine</th>
+        <th>GLP-1 Drugs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="hs-cat-icon">&#x1F9EC;</span>Absorption</td>
+        <td class="hs-brand-col">6.2x More<br>Free Berberine</td>
+        <td>As low as 5%<br>absorption rate</td>
+        <td>N/A<br>(injection)</td>
+      </tr>
+      <tr>
+        <td><span class="hs-cat-icon">&#x1FAC4;</span>GI Comfort</td>
+        <td class="hs-brand-col">Gentle —<br>No GI Distress</td>
+        <td>Cramping, nausea,<br>diarrhea common</td>
+        <td>Severe nausea,<br>vomiting risk</td>
+      </tr>
+      <tr>
+        <td><span class="hs-cat-icon">&#x1F48A;</span>Convenience</td>
+        <td class="hs-brand-col">1 Capsule<br>Per Day</td>
+        <td>3-6 capsules<br>per day</td>
+        <td>Weekly injection<br>+ prescription</td>
+      </tr>
+      <tr class="hs-emoji-row">
+        <td><span class="hs-cat-icon">&#x1F4B0;</span>Value</td>
+        <td class="hs-brand-col">&#x1F60A;</td>
+        <td>&#x1F614;</td>
+        <td>&#x1F622;</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== TLDR ==================== -->
+<div class="hs-tldr">
+  TLDR: <strong>The Absorption Company Berberine</strong> uses patented <strong>FenuMat&reg; technology</strong> to deliver <strong>6.2x more free berberine</strong> — and these 10 reasons explain why women are making the switch.
+</div>
+
+<!-- ==================== 10 REASONS (1-5) ==================== -->
+<div class="hs-reasons">
+
+  <!-- REASON 1 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_absorption-YwgZpfyY6Pmd6upNZwDn47.webp" alt="6.2x absorption" />
+    <div class="hs-reason-content">
+      <h3>1. It's Not You — It's Your Old Berberine</h3>
+      <p>Most berberine supplements have an absorption rate as low as 5%. That means 95% of what you're swallowing is wasted. The Absorption Company uses patented FenuMat&reg; technology to deliver 6.2x more free berberine to your body. Same ingredient, completely different results.</p>
+    </div>
+  </div>
+
+  <!-- REASON 2 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_cravings-Huy9g65CshzYeDPNGRQ2gH.webp" alt="Curbs sugar cravings" />
+    <div class="hs-reason-content">
+      <h3>2. Curbs Sugar Cravings Without Willpower</h3>
+      <p>Berberine supports healthy insulin function, which means your body stops sending false hunger signals. No more fighting yourself at 9pm. "I used to want something sweet after dinner every night — that urge is gone." — Samantha B., Verified Buyer</p>
+    </div>
+  </div>
+
+  <!-- REASON 3 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_gentle-4xfAmJgZw92Yp4UU3qx9CN.webp" alt="Gentle on stomach" />
+    <div class="hs-reason-content">
+      <h3>3. Gentle on Your Stomach (Finally)</h3>
+      <p>Traditional berberine is notorious for causing cramping, nausea, and diarrhea. The Absorption Company uses Capsoil&reg; nanotechnology that breaks the formula into nano-sized particles — gentle on your gut while maximizing absorption. "No bloating or stomach distress." — Kristen W.</p>
+    </div>
+  </div>
+
+  <!-- REASON 4 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_doctors-FJtW9UQFvCDgKGWpzvK9Tq.webp" alt="Backed by 650+ clinicians" />
+    <div class="hs-reason-content">
+      <h3>4. Backed by 650+ Clinicians (Not Influencers)</h3>
+      <p>This isn't another Instagram supplement. Over 650 clinicians share The Absorption Company on FrontrowMD — without compensation. Endorsed by Dr. Matt Hand, Chief of Pediatric Nephrology at Dartmouth Children's Hospital. Third-party tested by Light Labs (January 2026).</p>
+    </div>
+  </div>
+
+  <!-- REASON 5 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_metabolism-kbcJ5gZk9qP6gmPt2mWCpg.webp" alt="Supports metabolism" />
+    <div class="hs-reason-content">
+      <h3>5. Supports Metabolism Without Stimulants</h3>
+      <p>No jitters. No caffeine. No crash. The Absorption Company Berberine activates AMPK — your body's metabolic master switch — to help regulate how your body processes carbs and fat. Clean, natural metabolic support you can feel.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== MID CTA ==================== -->
+<div class="hs-mid-cta">
+  <a href="https://www.absorbmore.com/products/berberine" class="hs-btn" style="max-width:400px;margin:0 auto">
+    TRY BERBERINE — UP TO 35% OFF
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+  <div class="hs-trust-badges">
+    <span>
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      30-Day Guarantee
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" fill="none"/></svg>
+      HSA/FSA Eligible
+    </span>
+  </div>
+</div>
+
+<!-- ==================== REASONS 6-10 ==================== -->
+<div class="hs-reasons">
+
+  <!-- REASON 6 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_ozempic-RoF5uNBeUjvaqHT2S82kVR.webp" alt="Nature's Ozempic" />
+    <div class="hs-reason-content">
+      <h3>6. Women Are Calling It "Nature's Ozempic"</h3>
+      <p>The results speak for themselves. "Nature's Ozempic was an accurate statement. I have tried a multitude of other natural supplements and nothing was moving the needle as far as weight management after menopause." — Christina S., Verified Buyer</p>
+    </div>
+  </div>
+
+  <!-- REASON 7 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_results-7f2ZiNFyybACEaMjQUx6pE.webp" alt="Results month by month" />
+    <div class="hs-reason-content">
+      <h3>7. Results You Can Actually Feel (Month by Month)</h3>
+      <p><strong>Month 1:</strong> Reduced sugar cravings, steadier post-meal energy, gentle on digestion. <strong>Month 2:</strong> Improved insulin sensitivity, more efficient carb metabolism. <strong>Month 3:</strong> Sustained metabolic balance, healthier lipid markers, long-term support.</p>
+    </div>
+  </div>
+
+  <!-- REASON 8 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_value-28FhdSE4GumNAptss6KFge.webp" alt="HSA/FSA eligible" />
+    <div class="hs-reason-content">
+      <h3>8. HSA/FSA Eligible — Your Benefits May Cover It</h3>
+      <p>One of the few supplements that qualifies for HSA/FSA spending. That means you may be able to use pre-tax health dollars to pay for it. Premium quality, made more accessible. Plus a 30-day money-back guarantee if you're not satisfied.</p>
+    </div>
+  </div>
+
+  <!-- REASON 9 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_hero-6chLckiBSepDiKtKyXCqw6.webp" alt="Save up to 35%" />
+    <div class="hs-reason-content">
+      <h3>9. Up to 35% Off + Free Shipping Right Now</h3>
+      <p><strong>1 Bottle:</strong> $36.75 (25% off). <strong>2 Bottles:</strong> $34.30/ea (30% off) — Most Popular. <strong>3 Bottles:</strong> $31.85/ea (35% off) — Best Value. Free shipping on orders over $50. This pricing won't last.</p>
+    </div>
+  </div>
+
+  <!-- REASON 10 -->
+  <div class="hs-reason">
+    <img class="hs-reason-img" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_community-CR9XAQadT8sDeaUA4Boa6V.webp" alt="4.84 stars from real people" />
+    <div class="hs-reason-content">
+      <h3>10. 4.84/5 Stars — Real Results From Real People</h3>
+      <p>"Instantly felt more full after eating, no crazy cravings and just felt better all around!" — Gabrielle K. "I am dropping weight and feeling great!" — Daniel M. Join thousands of women who've already made the switch.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== OFFER CARD ==================== -->
+<section class="hs-offer">
+  <div class="hs-offer-inner">
+    <img class="hs-offer-img" src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png?v=1768595489" alt="AbsorbMore Berberine" />
+    <div class="hs-offer-content">
+      <div class="hs-offer-label">SPRING WELLNESS SALE</div>
+      <div class="hs-offer-sub">LIMITED TIME PRICING</div>
+      <h2>Save Up to 35% Today</h2>
+      <p>Get the berberine that actually absorbs. Patented FenuMat&reg; technology, 6.2x more free berberine, gentle on your stomach.</p>
+      <a href="https://www.absorbmore.com/products/berberine" class="hs-btn">
+        SHOP NOW — UP TO 35% OFF
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <div class="hs-stock-badges">
+        <div class="hs-stock-badge">Stock Alert: <span class="hs-stock-alert">Running Low</span></div>
+        <div class="hs-stock-badge">Fast FREE Shipping</div>
+      </div>
+      <p style="text-align:center;margin-top:14px;font-size:13px;font-style:italic;color:#888">
+        Try risk-free with our <strong>30-Day Money Back Guarantee!</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PHOTO STRIP ==================== -->
+<div class="hs-photo-strip">
+  <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_cravings-Huy9g65CshzYeDPNGRQ2gH.webp" alt="Lifestyle 1" />
+  <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_metabolism-kbcJ5gZk9qP6gmPt2mWCpg.webp" alt="Lifestyle 2" />
+  <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/berberine-timeline1.jpg?v=1768850213" alt="Lifestyle 3" />
+  <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_gentle-4xfAmJgZw92Yp4UU3qx9CN.webp" alt="Lifestyle 4" />
+  <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663314260014/EfadXv8L9MEHmQLijWBuLd/absorb_community-CR9XAQadT8sDeaUA4Boa6V.webp" alt="Lifestyle 5" />
+</div>
+
+<!-- ==================== REVIEWS ==================== -->
+<section class="hs-reviews">
+  <div class="hs-reviews-header">
+    <h2>Customer Reviews</h2>
+    <p><strong>4.84/5.0</strong> (Based on 43+ verified reviews)</p>
+  </div>
+  <div class="hs-reviews-list">
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Nature's Ozempic was an accurate statement"</h4>
+      <p>Amazing product! I have tried a multitude of other natural supplements and nothing was moving the needle as far as weight management after menopause. This one actually works.</p>
+      <div class="hs-review-author">Christina S. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"No bloating or stomach distress"</h4>
+      <p>I highly recommend this product. It has aided my weightloss and I haven't had any bloating or stomach distress. Finally a berberine that doesn't wreck my gut.</p>
+      <div class="hs-review-author">Kristen W. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Helps curb your sugar cravings"</h4>
+      <p>Helps curb your sugar cravings and not want to eat SO much! I've noticed a real difference in how I feel after meals. Less bloated, more energy.</p>
+      <div class="hs-review-author">Madisyn G. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Dropping weight and feeling great!"</h4>
+      <p>I am dropping weight and feeling great! The energy is steady throughout the day and I don't get those afternoon crashes anymore.</p>
+      <div class="hs-review-author">Daniel M. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Instantly felt more full after eating"</h4>
+      <p>This is an awesome product, instantly felt more full after eating, no crazy cravings and just felt better all around! Highly recommend to anyone struggling with portion control.</p>
+      <div class="hs-review-author">Gabrielle K. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"The sweet cravings are gone"</h4>
+      <p>I am noticing a reduction in sugar cravings already. I used to want to reach for something sweet after dinner each night, and after starting these I have not had that urge. Game changer.</p>
+      <div class="hs-review-author">Samantha B. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Finally a supplement that works"</h4>
+      <p>I've been skeptical of supplements for years. This is the first one where I actually noticed a difference within the first two weeks. My energy is more consistent and I'm not snacking constantly.</p>
+      <div class="hs-review-author">Michelle T. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"My doctor recommended it"</h4>
+      <p>My doctor actually recommended this brand specifically because of the absorption technology. I trust it more knowing it's backed by real science, not just marketing.</p>
+      <div class="hs-review-author">Patricia L. | Verified Buyer</div>
+    </div>
+
+    <div class="hs-review-card">
+      <div class="hs-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <h4>"Worth every penny"</h4>
+      <p>Yes it's more expensive than the berberine at Costco, but it actually works. I wasted money on cheap berberine for months before finding this. The difference is night and day.</p>
+      <div class="hs-review-author">Jennifer R. | Verified Buyer</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== URGENCY SECTION ==================== -->
+<section class="hs-urgency">
+  <div class="hs-urgency-content">
+    <div class="hs-urgency-bar">
+      <div class="hs-urgency-fill" style="width:82%">82% Sold</div>
+    </div>
+    <h3>Due to High Demand and Limited Raw Material Supply, There Is a Very High Risk of Selling Out</h3>
+    <a href="https://www.absorbmore.com/products/berberine" class="hs-btn">
+      SHOP THE WELLNESS SALE
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <div class="hs-trust-badges" style="color:rgba(255,255,255,0.6);justify-content:flex-start">
+      <span>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        30-Day Guarantee
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" fill="none"/></svg>
+        Up to 35% Off
+      </span>
+    </div>
+  </div>
+  <img class="hs-urgency-img" src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png?v=1768595489" alt="AbsorbMore Berberine" />
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="hs-faq">
+  <h2>Frequently Asked Questions</h2>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">How is this different from regular berberine?</div>
+    <div class="hs-faq-answer">The Absorption Company uses patented FenuMat&reg; technology that delivers 6.2x more free berberine to your body. Standard berberine has an absorption rate as low as 5%, meaning most of what you take is wasted. Our formula also uses Capsoil&reg; nanotechnology for gentle digestion.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">How long until I see results?</div>
+    <div class="hs-faq-answer">Most customers notice reduced cravings and steadier energy within the first 2-4 weeks. By month 2, you'll typically see improved insulin sensitivity and more efficient metabolism. Month 3 brings sustained metabolic balance.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">Will it upset my stomach?</div>
+    <div class="hs-faq-answer">Unlike standard berberine which commonly causes GI distress, our Capsoil&reg; nanotechnology breaks the formula into nano-sized particles that are gentle on your digestive system. Most customers report zero stomach issues.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">Is it safe to take with my medications?</div>
+    <div class="hs-faq-answer">We always recommend consulting with your healthcare provider before starting any new supplement, especially if you're on medication for blood sugar or blood pressure. Over 650 clinicians recommend our products.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">What's the return policy?</div>
+    <div class="hs-faq-answer">We offer a 30-day money-back guarantee. If you're not completely satisfied with your results, contact us for a full refund — no questions asked.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">Is it HSA/FSA eligible?</div>
+    <div class="hs-faq-answer">Yes! The Absorption Company's Berberine qualifies for HSA/FSA spending, so you may be able to use pre-tax health dollars to purchase it.</div>
+  </div>
+
+  <div class="hs-faq-item" onclick="toggleFaq(this)">
+    <div class="hs-faq-question">How do I take it?</div>
+    <div class="hs-faq-answer">Just one capsule per day. That's it. No complicated dosing schedule, no taking 3-6 pills like with standard berberine.</div>
+  </div>
+</section>
+
+<!-- ==================== BOTTOM CTA ==================== -->
+<section class="hs-bottom-cta">
+  <div class="hs-social-proof">
+    <span class="hs-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    Trusted by Thousands of Women
+  </div>
+  <a href="https://www.absorbmore.com/products/berberine" class="hs-btn" style="max-width:400px;margin:0 auto">
+    SHOP THE WELLNESS SALE
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+  <div class="hs-trust-badges">
+    <span>
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      30-Day Guarantee
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" fill="none"/></svg>
+      Up to 35% Off
+    </span>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="hs-footer">
+  <div class="hs-footer-logo">THE ABSORPTION COMPANY</div>
+  <p>&copy; 2026 The Absorption Company. All Rights Reserved.</p>
+  <p style="margin-top:8px">
+    <a href="https://www.absorbmore.com/policies/privacy-policy">Privacy Policy</a> |
+    <a href="https://www.absorbmore.com/policies/terms-of-service">Terms &amp; Conditions</a> |
+    <a href="https://www.absorbmore.com/policies/refund-policy">Refund Policy</a>
+  </p>
+</footer>
+
+<!-- ==================== STICKY BOTTOM BAR ==================== -->
+<div class="hs-sticky-bar" id="hs-sticky-bar">
+  <a href="https://www.absorbmore.com/products/berberine" class="hs-btn">
+    SHOP THE WELLNESS SALE
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+</div><!-- end .hs-listicle-wrapper -->
+
+<script>
+// Countdown Timer
+(function() {
+  var totalSeconds = 5 * 3600 + 33 * 60 + 48;
+  var hoursEl = document.getElementById('hs-hours');
+  var minutesEl = document.getElementById('hs-minutes');
+  var secondsEl = document.getElementById('hs-seconds');
+
+  setInterval(function() {
+    if (totalSeconds <= 0) return;
+    totalSeconds--;
+    var h = Math.floor(totalSeconds / 3600);
+    var m = Math.floor((totalSeconds % 3600) / 60);
+    var s = totalSeconds % 60;
+    hoursEl.textContent = String(h).padStart(2, '0');
+    minutesEl.textContent = String(m).padStart(2, '0');
+    secondsEl.textContent = String(s).padStart(2, '0');
+  }, 1000);
+})();
+
+// Sticky Bottom Bar
+(function() {
+  var stickyBar = document.getElementById('hs-sticky-bar');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 800) {
+      stickyBar.classList.add('visible');
+    } else {
+      stickyBar.classList.remove('visible');
+    }
+  });
+})();
+
+// FAQ Accordion
+function toggleFaq(el) {
+  var items = document.querySelectorAll('.hs-faq-item');
+  items.forEach(function(item) {
+    if (item !== el) item.classList.remove('active');
+  });
+  el.classList.toggle('active');
+}
+</script>
+
+{% schema %}
+{
+  "name": "Listicle - AbsorbMore",
+  "tag": "section",
+  "class": "listicle-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Listicle - AbsorbMore"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,22 @@
+{% liquid
+  capture content
+    echo input
+  endcapture
+  assign content = content | replace: '<style></style>', '' | append: " "
+  assign content_array = content | split: "</style>"
+  assign styles_content = ''
+  assign content = ''
+  for split in content_array
+    if forloop.last
+      assign content = content | append: split
+      break
+    endif
+    assign splits = split | split: "<style"
+    assign content_split = splits | first
+    assign style_split = splits | last | replace_first: '>', ' |%SPLIT|>|%| ' | split: '|%SPLIT|>|%|' | last
+    assign content = content | append: content_split
+    assign styles_content = styles_content | append: style_split
+  endfor
+%}
+<style>{{ styles_content | strip_newlines }}</style>
+{{ content }}

@@ -1,0 +1,275 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "video_product_gallery"
+  assign section_type = "modal_media_gallery"
+  assign product_card_class = block.settings.product_card_class
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="media-gallery--video-product-gallery"
+     x-data="{ show: $modal.id === 'media-gallery--video-product-gallery', opened: false }"
+     x-effect="show = $modal.id === 'media-gallery--video-product-gallery'; if ($editor?.select_block_id === '{{ block.id }}') { $mediaGallery.showVideoGallery($el, [...document.querySelectorAll(`[data-ugc-video]`)]) }"
+     x-cloak>
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="fixed group pointer-events-auto inset-0 z-max flex bg-modal-backdrop transition duration-75 ease-in-out @container"
+       x-show="show"
+       x-cloak
+       x-trap="show"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0">
+    <template x-if="show">
+      <div @keydown.esc.document.prevent="$modal.id = ''"></div>
+    </template>
+    <template x-if="!show">
+      <div x-init="opened = false"></div>
+    </template>
+    <button
+        class="absolute left-5 top-5 z-10 flex size-10 items-center justify-center rounded-full bg-black/60 text-white transition-all duration-75 md:size-12 hf:bg-black/90"
+        type="button"
+        aria-label="Close Video Modal"
+        @click="$modal.id = ''">
+      {% render '_components.icon', icon: 'x-mark', class: "h-5 md:h-6 shrink-0" %}
+    </button>
+    <template x-if="show && $mediaGallery.videos?.length">
+      <div class="relative grid w-full flex-1"
+           x-effect="if (opened) { $nextTick(() => { content_slider.handleResize() }) }"
+           x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined, $mediaGallery.videos.length > 1), initialized: false, allVideosMuted: true }"
+           x-defer="intersect">
+        <div class="grid h-screen snap-mandatory grid-flow-row auto-rows-[100vh] overflow-y-auto scrollbar-none"
+             x-ref="scrollContainer"
+             @resize.window="content_slider.handleResize"
+             x-init="$nextTick(() => { content_slider.handleResize(); initialized = true })"
+             @scroll="content_slider.handleScroll"
+             @scrollend="content_slider.handleInfiniteScroll"
+             @click.stop="$modal.setId('')"
+             @keydown.document.up="content_slider.scrollToIndex($mediaGallery.scrollIndex - 1)"
+             @keydown.document.down="content_slider.scrollToIndex($mediaGallery.scrollIndex + 1)"
+             x-effect="$mediaGallery.scrollIndex = content_slider.state.current_index; if (show && !opened && $mediaGallery.index > -1) { $nextTick(()=>{ $el.scrollLeft = $el.children[$mediaGallery.index + 1]?.offsetLeft; $el.scrollTop = $el.children[$mediaGallery.index + 1]?.offsetTop; opened = true })}">
+          <template x-for="(value, index) in $mediaGallery.videos">
+            <div :data-index="index"
+                 x-init="$el.removeAttribute(':data-index');"
+                 class="relative h-screen w-full snap-center"
+                 @click.stop="$modal.setId('')"
+                 x-effect="$el.removeAttribute('inert'); active = initialized && $mediaGallery.scrollIndex === i && $el.classList.contains('scroll-active'); if (!active) { $el.setAttribute('inert', 'true') }"
+                 x-data="{ i: typeof index !=='undefined' ? index : +$el.getAttribute('data-index'), active: initialized && $el.classList.contains('scroll-active') }">
+              <template x-if="$mediaGallery.videos[i]?.video?.media_type === 'video' && $el.parentElement.children?.length <= 2">
+                <div class="relative group/video mx-auto h-full w-full"
+                     @click.stop="()=>{}"
+                     :style="`aspect-ratio: ${$mediaGallery.videos[i]?.video?.aspect_ratio};`"
+                     x-data="{ ..._sections.initVideoPlayer($el) }">
+                  <video class="mx-auto h-full w-auto object-contain relative"
+                         playsinline="playsinline"
+                         @play="videoPlayer.playing = true; videoPlayer.started = true"
+                         @pause="videoPlayer.playing = false"
+                         @ended="videoPlayer.playing = false; videoPlayer.ended = true"
+                         @timeupdate="videoPlayer.currentTime = $el.currentTime || 0"
+                         @loadedmetadata="videoPlayer.duration = isFinite($el.duration)  ? $el.duration : 0; updateBuffered()"
+                         @progress="updateBuffered()"
+                         @click.prevent.stop="!videoPlayer.playing ? $el.play() : $el.pause();"
+                         :controls="$mediaGallery.videos[i]?.controls ? 'controls' : false"
+                         :loop="$mediaGallery.videos[i]?.loop ? 'loop' : false"
+                         x-effect="async () => {
+                           try {
+                              if (!$modal.id === 'media-gallery--video-product-gallery') { await $el.pause(); return; }
+                              if (!active && !$el.paused) { await $el.pause() }
+                              if ($el.paused && active && $mediaGallery.videos[i]?.autoplay) { await $el.play(); $el.focus(); $el.muted = allVideosMuted }
+                            } catch {}
+                        }"
+                         preload="none"
+                         :aria-label="$mediaGallery.videos[i]?.video?.alt"
+                         :poster="$mediaGallery.videos[i]?.video?.preview_image?.src">
+                    <template x-for="(source, index) in [...($mediaGallery?.videos?.[i]?.video?.sources || [])].sort((a, b) => a?.width - b?.width) ?? []">
+                      <source data-loop-item
+                              x-init="$el.getAttributeNames().forEach(attr=> { if (/^:/gi.test(attr)) { $el.removeAttribute(attr) } })"
+                              src=""
+                              :src="source?.url"
+                              :type="source?.mime_type"
+                              :media="index === 0 ? 'all' : `(min-width: ${[...($mediaGallery?.videos?.[i]?.video?.sources || [])].sort((a, b) => a.width - b.width)[index - 1].width + 1}px)`"
+                              type="video/mp4" />
+                    </template>
+                    <img x-show="$mediaGallery.videos[i]?.video?.preview_image?.src"
+                         :srcset="utils.getImageSrcSet($mediaGallery.videos[i]?.video?.preview_image.src ?? '',1400)"
+                         :src="$mediaGallery.videos[i]?.video?.preview_image.src"
+                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 70vw"
+                         :alt="$mediaGallery.videos[i]?.video?.alt" />
+                  </video>
+                  <div class="absolute bottom-0 inset-x-0 h-8 bg-gray-900/70 text-white flex items-center justify-center gap-3 px-4 py-1 md:opacity-0 pointer-events-none group-hover/video:opacity-100 group-focus/video:opacity-100 group-hover/video:pointer-events-auto group-focus/video:pointer-events-auto hfw:!opacity-100  hfw:pointer-events-auto transition-opacity duration-200">
+                    <div class="shrink-0 flex items-center justify-center">
+                      <button class="p-1" type="button" aria-label="Play video" x-show="!videoPlayer.playing" @click.stop="playVideo()">
+                        {% render '_components.icon', icon: "play", class: "size-4" %}
+                      </button>
+                      <button class="p-1" type="button" aria-label="Pause video" x-show="!!videoPlayer.playing" @click.stop="pauseVideo()">
+                        {% render '_components.icon', icon: "pause", class: "size-4" %}
+                      </button>
+                    </div>
+                    <div
+                        class="group relative w-full py-2 cursor-pointer select-none"
+                        role="slider"
+                        tabindex="0"
+                        aria-label="Seek"
+                        :aria-valuemin="0"
+                        :aria-valuemax="Math.floor(videoPlayer.duration || 0)"
+                        :aria-valuenow="Math.floor(videoPlayer.currentTime || 0)"
+                        :aria-valuetext="`${formatTime(videoPlayer.currentTime)} of ${formatTime(videoPlayer.duration)}`"
+                        @pointerdown="startSeek($event)"
+                        @pointermove="videoPlayer.seeking && moveSeek($event)"
+                        @pointerup="endSeek($event)"
+                        @pointercancel="endSeek($event)"
+                        @keydown.left.prevent="nudge(-5)"
+                        @keydown.right.prevent="nudge(5)"
+                        @keydown.page-down.prevent="nudge(-10)"
+                        @keydown.page-up.prevent="nudge(10)"
+                        @keydown.home.prevent="seek(0)"
+                        @keydown.end.prevent="seek(videoPlayer.duration)"
+                        style="touch-action:none"
+                    >
+                      <!-- Track -->
+                      <div class="h-1 bg-white/30 rounded-full relative transition-transform origin-center group-hover:scale-y-125">
+                        <!-- Buffered -->
+                        <div class="absolute inset-y-0 left-0 bg-white/40"
+                             :style="`width:${videoPlayer.duration ? (videoPlayer.buffered / videoPlayer.duration) * 100 : 0}%;`"></div>
+                        <!-- Played -->
+                        <div class="absolute inset-y-0 left-0 bg-white"
+                             :style="`width:${videoPlayer.duration ? (videoPlayer.currentTime / videoPlayer.duration) * 100 : 0}%;`"></div>
+                      </div>
+                    </div>
+                    <div class="shrink-0 tabular-nums text-12 opacity-90 w-10 text-right"
+                         style="font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'lnum' 1;"
+                         x-text="formatTime(videoPlayer.currentTime)">
+                    </div>
+                    <div class="shrink-0 flex items-center justify-center">
+                      <button class="p-1"
+                              type="button"
+                              aria-label="Mute video"
+                              x-show="!!allVideosMuted"
+                              @click.stop="allVideosMuted = !allVideosMuted; videoEl.muted = allVideosMuted">
+                        {% render '_components.icon', icon: "mute", class: "size-4" %}
+                      </button>
+                      <button class="p-1"
+                              type="button"
+                              aria-label="Unmute video"
+                              x-show="!allVideosMuted"
+                              @click.stop="allVideosMuted = !allVideosMuted ;videoEl.muted = allVideosMuted">
+                        {% render '_components.icon', icon: "unmute", class: "size-4" %}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template x-if="$mediaGallery.videos[i]?.video?.media_type === 'external_video' && $el.parentElement.children?.length <= 2">
+                <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        class="mx-auto h-full w-full object-contain js-youtube max-w-screen"
+                        loading="lazy"
+                        :src="$mediaGallery.videos[i]?.video?.host === 'youtube'
+                           ? `https://www.youtube.com/embed/${$mediaGallery.videos[i]?.video?.external_id}?autoplay=${$mediaGallery.scrollIndex === i && $mediaGallery.videos[i]?.autoplay ? '1' : '0'}&controls=${$mediaGallery.videos[i]?.controls ? 1 : 0}&muted=${$mediaGallery.scrollIndex !== i || $mediaGallery.videos[i]?.muted ? '1' : '0'}&enablejsapi=1&loop=${$mediaGallery.videos[i]?.loop ? 1 : 0}&modestbranding=1&playsinline=1&rel=0`
+                           : `https://player.vimeo.com/video/${$mediaGallery.videos[i]?.video?.external_id}`"
+                        :title="$mediaGallery.videos[i]?.video?.alt"></iframe>
+              </template>
+            </div>
+          </template>
+        </div>
+        <div x-show="$mediaGallery.videos?.length > 1"
+             class="absolute right-5 md:right-8 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2.5 md:gap-5">
+          <button
+              class="flex size-10 items-center justify-center rounded-full bg-black/60 text-white transition-all duration-75 md:size-12 hf:bg-black/90"
+              type="button"
+              aria-label="Previous Video"
+              @click.prevent.stop="content_slider.scrollToIndex($mediaGallery.scrollIndex - 1)">
+            {% render '_components.icon', icon: 'chevron-up', class: "h-5 md:h-6 shrink-0" %}
+          </button>
+          <button
+              class="flex size-10 items-center justify-center rounded-full bg-black/60 text-white transition-all duration-75 md:size-12 hf:bg-black/90"
+              type="button"
+              aria-label="Next Video"
+              @click.prevent.stop="content_slider.scrollToIndex($mediaGallery.scrollIndex + 1)">
+            {% render '_components.icon', icon: 'chevron-down', class: "h-5 md:h-6 shrink-0" %}
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <aside class="max-lg:absolute max-lg:bottom-20 max-lg:inset-x-0 shrink-0 lg:h-screen lg:w-full lg:max-w-md lg:bg-white"
+           x-show="$mediaGallery.videos[$mediaGallery.scrollIndex]?.products?.length"
+    >
+      <button
+          class="lg:hidden ml-5 mb-4 flex size-10 items-center justify-center rounded-full bg-black/60 text-white transition-all duration-75 md:size-12 hf:bg-black/90 ac:rotate-180 ac:opacity-100 opacity-0 group-hover:opacity-100"
+          x-data="{ ...utils.initCollapsible($el, document.querySelector(`[data-collapsible-handle='media-gallery--video-products']`), document.querySelector(`[data-collapsible-handle='media-gallery--video-products']`)?.hasAttribute('data-default-open'))}"
+          id="product-slider-toggle--{{ block.id }}"
+          @click.prevent.stop="toggleOpen()"
+          :class="collapsible?.open_accordion ? 'active' : ''"
+          aria-label="Toggle Product Slider"
+          @click.prevent.stop="">
+        {% render '_components.icon', icon: 'chevron-up', class: "h-5 md:h-6 shrink-0" %}
+      </button>
+      <div class="transition-all overflow-hidden duration-200 ease-linear max-lg:px-5 max-lg:scroll-px-5 max-lg:grid max-lg:grid-flow-col max-lg:gap-4 max-lg:overflow-x-auto max-lg:snap-mandatory max-lg:snap-both lg:p-5 flex flex-col lg:gap-8 lg:overflow-y-auto scrollbar-none"
+           :class="$mediaGallery.videos[$mediaGallery.scrollIndex]?.products?.length > 1 ? `max-lg:auto-cols-[85%]` : `max-lg:auto-cols-[100%]`"
+           data-collapsible-handle="media-gallery--video-products"
+           data-default-open="true"
+           aria-expanded="true">
+        <template x-for="([handle, id], index) in ($mediaGallery.videos[$mediaGallery.scrollIndex]?.products ?? [])">
+          <div class="shrink-0 max-w-full w-full order-[--order] snap-center" {{ hide_attribute }}
+               :data-render-index="index"
+               :data-product-handle="handle"
+               :style="`--order: ${index * 10}`">
+            <section class="card-loading product-card--{{ product_card_class }}"
+                     :data-product-handle="handle"
+                     :data-product-id="id"
+                     data-card-handle="{{ product_card_class }}"
+                     data-intersected
+                     x-init="$nextTick(() => _sections.hydrateProductCard($el))"></section>
+          </div>
+        </template>
+      </div>
+    </aside>
+    {% comment %}<div class="container grid w-full max-w-none flex-1 shrink-0 gap-2 md:grid-cols-[100px_1fr_100px]">
+      <div class="flex h-full items-center justify-center max-md:hidden">
+        <button aria-label="Previous Media"
+                type="button"
+                :class="content_slider.state.current_index <= 0 ? `opacity-30 pointer-events-none` : ''"
+                :disabled="content_slider.state.current_index <= 0"
+                @click="$refs.scrollContainer.scrollTo({ left: $refs.scrollContainer.children[content_slider.state.current_index]?.offsetLeft ?? 0, behavior: 'instant' });"
+                class="rounded-full border border-white p-3 hf:bg-gray-900/70">
+          {% render '_components.icon', icon: 'chevron-left', class: "h-4 w-4 shrink-0" %}
+        </button>
+      </div>
+      <div class="relative flex flex-col h-screen max-h-[calc(100vh-88px-96px)] w-full justify-center items-center overflow-hidden">
+
+      </div>
+      {% render '_components.scrollbar',
+          class: 'scroll-buttons md:!hidden w-full',
+          scroll_container_ref: '$refs.scrollContainer'
+      %}
+      <div class="flex h-full items-center justify-center max-md:hidden">
+        <button aria-label="Next Media"
+                type="button"
+                :class="content_slider.state.current_index + 1 >= $mediaGallery.videos.length ? `opacity-30 pointer-events-none` : ''"
+                :disabled="content_slider.state.current_index + 1 >= $mediaGallery.videos.length"
+                @click="$refs.scrollContainer.scrollTo({ left: $refs.scrollContainer.children[content_slider.state.current_index + 2]?.offsetLeft ?? $refs.scrollContainer.scrollWidth, behavior: 'instant' });"
+                class="rounded-full border border-white p-3 hf:bg-gray-900/70">
+          {% render '_components.icon', icon: 'chevron-right', class: "h-4 w-4 shrink-0" %}
+        </button>
+      </div>
+    </div>{% endcomment %}
+
+  </div>
+</div>

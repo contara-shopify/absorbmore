@@ -1,0 +1,43 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__accent_line"
+  assign section_type = "card_product_card"
+  assign height = block.settings.height
+  assign border_color = block.settings.border_color
+  assign style = block.settings.style
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+<div
+    data-style-id="{{ style_id }}"
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    role="separator"
+    style="border-top: {{ height }}px {{ style }} {{ border_color }};">
+  <div></div>
+</div>

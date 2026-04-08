@@ -1,0 +1,146 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "vertical_gallery"
+  assign section_type = "modal_media_gallery"
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-modal-id="media-gallery--vertical-gallery"
+     x-data="{ show: $modal.id === 'media-gallery--vertical-gallery' }"
+     x-effect="show = $modal.id === 'media-gallery--vertical-gallery'"
+     x-cloak>
+  <div data-modal-id="media-gallery--vertical-gallery" {{ block.shopify_attributes }}
+       class="fixed inset-0 z-max flex max-h-full flex-col items-center bg-white text-black transition duration-75 ease-in-out"
+       x-show="show"
+       x-cloak
+       x-trap.noautofocus="show"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0">
+    <template x-if="show">
+      <div @keydown.esc.document.prevent="$modal.id = ''"
+           @keydown.up.document.prevent.capture="$refs.scrollContainer.scrollTo({ top: $refs.scrollContainer.children[$mediaGallery.scrollIndex]?.offsetTop ?? 0, behavior: 'smooth' })"
+           @keydown.left.document.prevent.capture="$refs.scrollContainer.scrollTo({ top: $refs.scrollContainer.children[$mediaGallery.scrollIndex]?.offsetTop ?? 0, behavior: 'smooth' })"
+           @keydown.down.document.prevent.capture="$refs.scrollContainer.scrollTo({ top: $refs.scrollContainer.children[$mediaGallery.scrollIndex + 2]?.offsetTop ?? 0, behavior: 'smooth' })"
+           @keydown.right.document.prevent.capture="$refs.scrollContainer.scrollTo({ top: $refs.scrollContainer.children[$mediaGallery.scrollIndex + 2]?.offsetTop ?? 0, behavior: 'smooth' })"></div>
+    </template>
+    <header class="container flex justify-end max-w-none gap-2 py-3 md:py-6 absolute z-10">
+      <button
+          class="inline-flex items-center gap-2 rounded-full p-4 outline-none bg-black text-white hf:outline-none hf:ring-0"
+          type="button"
+          aria-label="Close Drawer"
+          @click="$modal.id = ''">
+        {% render '_components.icon', icon: 'x-mark', class: "h-5 shrink-0" %}
+      </button>
+    </header>
+    <section class="grid w-full max-w-none flex-1 shrink-0 gap-2">
+      <div class="relative flex flex-col h-screen w-full justify-center items-center overflow-hidden">
+        <div class="scrollbar-none grid h-full w-full max-w-full snap-y snap-mandatory gap-4 overflow-y-auto md:absolute md:inset-0 auto-rows-[100%] grid-flow-row"
+             @scroll="$mediaGallery.scrollIndex = Math.round(($el.scrollHeight / $el.clientHeight) * ($el.scrollTop / $el.scrollHeight))"
+             x-ref="scrollContainer"
+             x-effect="if (show && $mediaGallery.index > -1) { $nextTick(()=>{ $el.scrollTo({ top: $el.children[$mediaGallery.index + 1]?.offsetTop ?? 0, behavior: 'instant' }) })}">
+          <template x-for="(value, i) in $mediaGallery.media">
+            <div class="relative h-full w-full snap-center">
+              <template x-if="$mediaGallery.media[i]?.media_type === 'image'">
+                <img class="inset-0 h-full w-full object-contain md:absolute !opacity-0"
+                     src=""
+                     alt=""
+                     onload="this.classList.remove('!opacity-0')"
+                     :src="$mediaGallery.media[i]?.preview_image.src ?? $mediaGallery.media[i]?.src"
+                     :alt="$mediaGallery.media[i]?.alt" />
+              </template>
+              <template x-if="$mediaGallery.media[i]?.media_type === 'video'">
+                <video playsinline
+                       controls
+                       x-effect="if ($mediaGallery.scrollIndex !== i || $modal.id !== 'media-gallery--vertical-gallery') { $el.pause() }"
+                       loop
+                       preload="none"
+                       class="absolute left-0 top-0 h-full w-full bg-inherit object-contain"
+                       :aria-label="$mediaGallery.media[i]?.alt"
+                       :poster="$mediaGallery.media[i]?.preview_image.src ?? $mediaGallery.media[i]?.src">
+                  <template x-for="(source, index) in [...($mediaGallery.media[i]?.sources || [])].sort((a, b) => a.width - b.width)">
+                    <source data-loop-item
+                            src=""
+                            :src="source?.url"
+                            :type="source?.mime_type"
+                            :media="index === 0 ? 'all' : `(min-width: ${[...($mediaGallery.media[i]?.sources || [])].sort((a, b) => a.width - b.width)[index - 1].width + 1}px)`"
+                            type="video/mp4" />
+                  </template>
+                  <img x-show="$mediaGallery.media[i]?.preview_image?.src"
+                       :src="$mediaGallery.media[i]?.preview_image.src"
+                       :alt="$mediaGallery.media[i]?.alt" />
+                </video>
+              </template>
+              <template x-if="$mediaGallery.media[i]?.media_type === 'external_video'">
+                <iframe allow="accelerometer; autoplay; encrypted-$mediaGallery.media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        class="inset-0 h-full w-full border-0 bg-inherit object-contain js-youtube md:absolute"
+                        loading="lazy"
+                        x-effect="() => {if ($mediaGallery.scrollIndex !== i) { $el.src = $mediaGallery.media[i].host === 'youtube' ? `https://www.youtube.com/embed/${$mediaGallery.media[i].external_id}?autoplay=0&controls=1&muted=1&enablejsapi=1&loop=${1}&modestbranding=1&playsinline=1&rel=0`
+                      : `https://player.vimeo.com/video/${$mediaGallery.media[i].external_id}`  } }"
+                        :src="$mediaGallery.media[i].host === 'youtube' ? `https://www.youtube.com/embed/${$mediaGallery.media[i].external_id}?autoplay=0&controls=1&muted=1&enablejsapi=1&loop=${1}&modestbranding=1&playsinline=1&rel=0`
+                      : `https://player.vimeo.com/video/${$mediaGallery.media[i].external_id}`"
+                        :title="$mediaGallery.media[i].alt"></iframe>
+              </template>
+              <template x-if="$mediaGallery.media[i]?.media_type === 'model'">
+                <div class="relative aspect-1 h-full w-full">
+                  <div x-html="`
+                    <model-viewer
+                      class='inset-0 h-full w-full object-contain md:absolute'
+                      style='--poster-color: transparent; position: absolute;'
+                      src='${$mediaGallery.media[i]?.sources?.find((source) => source.format === 'glb')?.url}'
+                      camera-controls='true'
+                      data-shopify-feature='1.12'
+                      alt='${$mediaGallery.media[i]?.alt}'
+                      poster='${$mediaGallery.media[i]?.preview_image.src ?? $mediaGallery.media[i]?.src}'
+                      data-js-focus-visible='
+                      ar-status='not-presenting'
+                      ></model-viewer>
+                  `"></div>
+                </div>
+              </template>
+              <template x-if="$mediaGallery.media[i] && $mediaGallery.media[i]?.alt && 1 == 2">
+                <figcaption x-html="$mediaGallery.media[i] ? $mediaGallery.media[i]?.alt : ''"
+                            class="absolute text-black bg-white/70 blur-[30px] rounded-md px-1.5 py-1 bottom-5 left-1/2 -translate-x-1/2"></figcaption>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div x-show="$mediaGallery.media?.length > 1" class="absolute left-[26px] bottom-[26px] md:bottom-10 md:left-10 flex md:w-[58px] justify-center items-center overflow-hidden">
+        <div class="scrollbar-none flex md:flex-col max-h-[calc(100vh-88px-96px)] h-full max-w-full snap-y snap-mandatory gap-1 md:gap-4 overflow-x-auto md:overflow-y-auto">
+          <template x-for="(value, i) in $mediaGallery.media">
+            <div class="relative snap-center p-1.5 w-[48px] h-[60px] border rounded-[6px] cursor-pointer"
+                 :class="$mediaGallery.scrollIndex === i ? 'border-black' : 'border-transparent'"
+                 @click="() => $nextTick(()=>{ $refs.scrollContainer.scrollTo({ top: $refs.scrollContainer.children[i + 1]?.offsetTop ?? 0, behavior: 'smooth' }) })">
+              <img class="h-full w-full object-contain !opacity-0 rounded-[6px]"
+                   src=""
+                   alt=""
+                   onload="this.classList.remove('!opacity-0')"
+                   :src="$mediaGallery.media[i]?.preview_image.src ?? $mediaGallery.media[i]?.src"
+                   :alt="$mediaGallery.media[i]?.alt" />
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

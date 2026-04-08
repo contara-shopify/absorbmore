@@ -1,0 +1,357 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "content_banner"
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="relative {{ container_spacing }}">
+    {% content_for "blocks" %}
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Content Banner",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "star_rating"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Content Banner",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 80px;\n  padding-bottom: 80px;\n}\n@media (max-width: 1024px) {\n & {\n    padding-top: 56px;\n    padding-bottom: 56px;\n  }\n}",
+        "section_id": ""
+      },
+      "blocks": [
+        {
+          "type": "star_rating",
+          "settings": {
+            "product": "",
+            "rating": 5,
+            "count": 1,
+            "reviews_heading": "OVER 50,000 HAPPY CUSTOMERS",
+            "css_class": "richtext-md h6",
+            "icon": "star",
+            "icon_active_color": "",
+            "icon_base_color": "",
+            "custom_css": "& {\n  --star-size: 24px;\n  --star-gap: 4px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: 100%;\n  height: auto;\n  aspect-ratio: unset;\n  border: unset;\n  background: unset;\n  padding: 0;\n}\n@media (max-width: 768px) {\n  & {\n    --star-size: 20px;\n    --star-gap: 0px;\n  }\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Text Block</strong></h2>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  margin-top: 24px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<p>We believe great design doesn’t just look good—it moves with purpose. It tells a story, sparks curiosity, and makes every moment feel intentional. This is more than just a layout—it’s a foundation for ideas to take shape, for experiences to come alive, and for users to feel truly at home.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  margin-top: 12px;\n  max-width: 620px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Banner"
+    },
+    {
+      "name": "Image Banner",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 80px;\n  padding-bottom: 80px;\n}\n@media (max-width: 1024px) {\n & {\n    padding-top: 56px;\n    padding-bottom: 56px;\n  }\n}",
+        "section_id": "Image Banner"
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "name": "Background Image",
+          "settings": {
+            "image": "shopify://shop_images/image_ratios.png",
+            "url": "",
+            "show_overlay": true,
+            "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+            "preload": true,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Banner"
+    },
+    {
+      "name": "Image Banner: Pages",
+      "settings": {
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  padding-top: 95px;\n  padding-bottom: 78px;\n}\n@media (max-width: 1024px) {\n & {\n    padding-top: 24px;\n    padding-bottom: 20px;\n  }\n}",
+        "section_id": "Image Banner"
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_with_text_2_c5004be0-8f21-4c6e-94f2-bcbbc45b1814.jpg",
+            "url": "",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+            "preload": true,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "custom_css": "& {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  width: 100%;\n  object-fit: contain;\n  z-index: -1;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Banner"
+    },
+    {
+      "name": "Page Content",
+      "settings": {
+        "container_spacing": "px-container-sm",
+        "text_color": "",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  padding-top: 95px;\n  padding-bottom: 78px;\n}\n@media (max-width: 1024px) {\n & {\n    padding-top: 24px;\n    padding-bottom: 20px;\n  }\n}",
+        "section_id": "Page Content"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h1>{{ closest.page.title }} </h1>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  padding-bottom: 20px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "{{ closest.page.content }}",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md richtext-margins",
+            "text_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image",
+          "settings": {
+            "url": "",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 100%)",
+            "preload": true,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "custom_css": "& {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  width: 100%;\n  object-fit: contain;\n  z-index: -1;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Banner"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card",
+      "custom.head",
+      "custom.megamenu"
+    ]
+  },
+  "class": "shopify_section__content_banner"
+}
+{% endschema %}

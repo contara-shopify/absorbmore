@@ -1,0 +1,1287 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "form"
+  assign type = block.settings.type
+  assign _article = block.settings.article
+  assign target_id = block.settings.target_id
+  assign target_visibility = block.settings.target_visibility
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if target_id == blank %}
+  {% capture target_id %}form__{{ type }}__{{ section.id }}--{{ block.id }}{% endcapture %}
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+{% capture blocks_content %}{% content_for 'blocks' %}{% endcapture %}
+
+{% if type == 'contact' %}
+  {% capture no_render %}
+    {% form 'contact' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully Submitted', content: 'Thank you for contacting us', timestamp: Date.now()}); utils?.replaceSearchParams({remove: ['contact_posted'] });">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit.prevent="if (utils.validateFormAndToast($el)) { submitting = true; $el.submit(); }"
+      method="post" action="/contact#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="contact">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'newsletter_signup' %}
+  {% capture no_render %}
+    {% form 'customer' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully Signed Up', content: 'Thank you for signing up', timestamp: Date.now()}); utils?.replaceSearchParams({remove: ['customer_posted'] });">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit.capture.stop.prevent="if (utils.validateFormAndToast($el)) { submitting = true; $el.submit(); }"
+      method="post" action="/contact#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="customer">
+    <input type="hidden" name="customer[accepts_marketing]" value="true" />
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+
+{% endif %}
+
+{% if type == 'new_comment' %}
+  {% assign article = _article | default: article %}
+  {% capture no_render %}
+    {% form 'new_comment', article: article %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Comment posted successfully', content: 'Thank you leaving a comment.', timestamp: Date.now()}); utils?.replaceSearchParams({remove: ['new_comment_posted'] });">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+
+  {% liquid
+    if article.blog.comments_enabled? != true
+      assign is_empty = true
+    endif
+
+    if is_empty and hide_if_empty != 'none'
+      capture hide_conditionally
+        if hide_if_empty == 'block'
+          echo '<script type="block/hide"></script>'
+          assign hide_attribute = 'data-hide-if-empty-block'
+        endif
+        if hide_if_empty == 'container'
+          echo '<script type="container/break"></script>'
+          assign hide_attribute = 'data-hide-if-empty-container'
+        endif
+        if hide_if_empty == 'section'
+          echo '<script type="section/break"></script>'
+          assign hide_attribute = 'data-hide-if-empty-section'
+        endif
+      endcapture
+
+      if request.design_mode != true and hide_conditionally contains '<script'
+        echo hide_conditionally
+        break
+      endif
+      assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+    endif
+  %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit.prevent="if (utils.validateFormAndToast($el)) { submitting = true; $el.submit(); }"
+      method="post" action="{{ article.url }}/comments#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="new_comment">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+
+{% endif %}
+
+{% if type == 'sign_up' %}
+  {% capture no_render %}
+    {% form 'create_customer' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully signed up', content: 'Thank you for Signing up', timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/account#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="create_customer">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'sign_in' %}
+  {% capture no_render %}
+    {% form 'customer_login' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully signed in', content: 'Thank you for Signing in', timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/account/login#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="customer_login">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'password_activate' %}
+  {% capture no_render %}
+    {% form 'activate_customer_password' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully Activated', content: 'Thank you activating your account', timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/account/activate#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="activate_customer_password">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="token" :value="window.location.pathname.split('/').at(-1)">
+    <input type="hidden" name="id" :value="window.location.pathname.split('/').at(-2)">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'password_recover' %}
+  {% capture no_render %}
+    {% form 'recover_customer_password' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully sent Recovery Link', content: 'Please check your email for the recovery link.', timestamp: Date.now()}); utils?.replaceSearchParams({remove: ['recover_customer_password'] });">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/account/recover#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="recover_customer_password">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'password_reset' %}
+  {% capture no_render %}
+    {% form 'reset_customer_password' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successful Password Reset', content: 'Your password has been updated.', timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      {% if target_id != blank %}
+        id="{{ target_id }}"
+      {% endif %}
+      {% if target_visibility == 'targeted' %}
+        x-show="$router.hash === '#{{ target_id }}' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      {% if target_visibility == 'no_target' %}
+        x-show="!$router.hash || $router.hash === '#' || $editor.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)"
+        x-cloak
+      {% endif %}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/account/reset#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="reset_customer_password">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="token" :value="window.location.pathname.split('/').at(-1)">
+    <input type="hidden" name="id" :value="window.location.pathname.split('/').at(-2)">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% if type == 'storefront_password' %}
+  {% capture no_render %}
+    {% form 'storefront_password' %}
+      {% capture notifications %}
+        {%- if form.errors -%}
+          <div class="!hidden"
+               data-error-content="{{ form.errors.translated_fields['email'] | capitalize | append: " " | append: form.errors.messages['email'] | escape }}"
+               x-init="_stores.toast.addToast({type: 'error', target: 'generic', title: 'We\'ve encountered a problem.',content: $el.getAttribute('data-error-content'), timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="!hidden"
+               x-init="_stores.toast.addToast({type: 'success', target: 'generic', title: 'Successfully Accessed', content: 'Thank you for Accessing our Store', timestamp: Date.now()})">
+          </div>
+        {%- endif -%}
+      {% endcapture %}
+    {% endform %}
+  {% endcapture %}
+
+  <form
+      data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+      x-data="{ submitting: false }"
+      @submit="submitting = true"
+      method="post" action="/password#{{ target_id }}" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="storefront_password">
+    <input type="hidden" name="utf8" value="✓">
+    {{ blocks_content }}
+    {{ notifications }}
+  </form>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "type",
+      "label": "Type",
+      "default": "contact",
+      "options": [
+        {
+          "group": "Generic",
+          "value": "contact",
+          "label": "Contact"
+        },
+        {
+          "group": "Generic",
+          "value": "newsletter_signup",
+          "label": "Newsletter"
+        },
+        {
+          "group": "Generic",
+          "value": "new_comment",
+          "label": "New Comment"
+        },
+        {
+          "group": "Accounts",
+          "value": "sign_up",
+          "label": "Sign Up"
+        },
+        {
+          "group": "Accounts",
+          "value": "sign_in",
+          "label": "Sign In"
+        },
+        {
+          "group": "Accounts",
+          "value": "password_activate",
+          "label": "Password activate"
+        },
+        {
+          "group": "Accounts",
+          "value": "password_recover",
+          "label": "Password recover"
+        },
+        {
+          "group": "Accounts",
+          "value": "password_reset",
+          "label": "Password reset"
+        },
+        {
+          "group": "Storefront",
+          "value": "storefront_password",
+          "label": "Storefront password"
+        }
+      ]
+    },
+    {
+      "type": "article",
+      "id": "article",
+      "label": "Article"
+    },
+    {
+      "type": "text",
+      "id": "target_id",
+      "label": "Target id"
+    },
+    {
+      "type": "select",
+      "id": "target_visibility",
+      "label": "Target visibility",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Always"
+        },
+        {
+          "value": "targeted",
+          "label": "Targeted"
+        },
+        {
+          "value": "no_target",
+          "label": "No target"
+        }
+      ],
+      "visible_if": "{{ block.settings.target_id != blank }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "block",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor.",
+      "visible_if": "{{ block.settings.type == 'new_comment' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "richtext"
+    },
+    {
+      "type": "_form__input_text"
+    },
+    {
+      "type": "_form__input_email"
+    },
+    {
+      "type": "_form__input_password"
+    },
+    {
+      "type": "_form__input_button"
+    },
+    {
+      "type": "_form__input_tag"
+    },
+    {
+      "type": "_form__input_textarea"
+    },
+    {
+      "type": "_form__input_select"
+    },
+    {
+      "type": "_form__container"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter Sign-up Form",
+      "settings": {
+        "type": "newsletter_signup",
+        "target_id": "",
+        "target_visibility": "",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n& .h-captcha {\n  display: none;\n}\n\n@media (max-width: 899px) {\n  & {\n    order: -1;\n    grid-column: span 2 / span 2;\n  }\n}",
+        "hide_if_empty": "block",
+        "category_name": "",
+        "hidden_name_backup": "Newsletter Sign-up Form"
+      },
+      "category": "Footer: Centered",
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<h4><strong>Stay Connected</strong></h4>",
+            "text_alignment": "center",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_email",
+          "name": "Input: Email",
+          "settings": {
+            "title": "Email",
+            "placeholder": "Email",
+            "input_class": "input-text-light",
+            "name": "contact[email]",
+            "type": "email",
+            "autocomplete": "username",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_button",
+          "name": "Input: Button",
+          "settings": {
+            "title": "Submit",
+            "button_type": "submit",
+            "name": "",
+            "default_value": "Sign In",
+            "button_class": "button-secondary",
+            "custom_css": "& {\n  white-space: nowrap;\n}\n@media (max-width: 899px) {\n  & {\n    width: 100%;\n  }\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_tag",
+          "settings": {},
+          "blocks": [
+            {
+              "type": "_form__input_tag_value",
+              "settings": {
+                "title": "newsletter"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "New Comment Form",
+      "settings": {
+        "type": "new_comment",
+        "target_id": "",
+        "target_visibility": "",
+        "text_color": "",
+        "background_color": "rgba(0,0,0,0)",
+        "custom_css": "& {\n  margin-top: 24px;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n  height: max-content;\n}\n@media (max-width: 1023px) {\n  & {\n    grid-template-columns: 1fr;\n  }\n}",
+        "hide_if_empty": "none",
+        "category_name": "",
+        "hidden_name_backup": "New Comment Form"
+      },
+      "blocks": [
+        {
+          "type": "_form__input_text",
+          "settings": {
+            "title": "Name",
+            "placeholder": "Name",
+            "input_class": "input-text",
+            "name": "comment[author]",
+            "type": "text",
+            "autocomplete": "name",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_email",
+          "settings": {
+            "title": "Email",
+            "placeholder": "Email",
+            "input_class": "input-text",
+            "name": "comment[email]",
+            "type": "email",
+            "autocomplete": "email",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_textarea",
+          "settings": {
+            "title": "Message",
+            "placeholder": "Message",
+            "textarea_class": "input-textarea",
+            "name": "comment[body]",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n  grid-column: span 2;\n  min-height: 100px;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<p>Please note, comments must be approved before they are published.</p><p>This site is protected by hCaptcha and the hCaptcha <a href=\"/policies/privacy-policy\" title=\"Privacy Policy\">Privacy Policy</a> and <a href=\"/policies/terms-of-service\" title=\"Terms of Service\">Terms of Service</a> apply.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  grid-column: span 2;\n  margin: 10px 0;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n    margin: 0;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_button",
+          "settings": {
+            "title": "Submit",
+            "button_type": "submit",
+            "name": "",
+            "default_value": "",
+            "button_class": "button-primary",
+            "custom_css": "& {\n  width: 100%;\n  grid-column: span 2;\n}\n\n@media (max-width: 1023px) {\n  & {\n    grid-column: unset;\n  }\n}"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Forms"
+    },
+    {
+      "name": "Form: Activate Password",
+      "settings": {
+        "type": "password_activate",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "hidden_name_backup": "Form: Activate Password"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Activate Account</strong></h2><p>Enter a password to create your account.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  padding-bottom: 12px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "",
+            "placeholder": "Password",
+            "input_class": "input-text",
+            "name": "customer[password]",
+            "autocomplete": "new-password",
+            "default_value": "",
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "Input: Confirm Password",
+            "placeholder": "Confirm Password",
+            "input_class": "input-text",
+            "name": "customer[password_confirmation]",
+            "autocomplete": "off",
+            "default_value": "",
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__container",
+          "settings": {
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 8px;\n}"
+          },
+          "blocks": [
+            {
+              "type": "_form__input_button",
+              "settings": {
+                "title": "Decline invitation",
+                "button_type": "submit",
+                "name": "decline",
+                "default_value": "Decline invitation",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_button",
+              "settings": {
+                "title": "Activate Account",
+                "button_type": "submit",
+                "name": "",
+                "default_value": "Activate account",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Forms"
+    },
+    {
+      "name": "Form: Sign-in",
+      "settings": {
+        "type": "sign_in",
+        "target_id": "",
+        "target_visibility": "no_target",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "hidden_name_backup": "Form: Sign-in"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Sign in to your account</strong></h2><p>Or create a <a href=\"/account/register\" title=\"/account/register\">New Account</a></p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  width: 100%;\n  padding-bottom: 12px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_email",
+          "settings": {
+            "title": "Email",
+            "placeholder": "Email",
+            "input_class": "input-text",
+            "name": "customer[email]",
+            "type": "email",
+            "autocomplete": "username",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "Password",
+            "placeholder": "Password",
+            "input_class": "input-text",
+            "name": "customer[password]",
+            "autocomplete": "current-password",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 8px;\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Container"
+          },
+          "blocks": [
+            {
+              "type": "_form__input_button",
+              "name": "Reset",
+              "settings": {
+                "title": "Reset",
+                "button_type": "reset",
+                "name": "",
+                "default_value": "Sign In",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_button",
+              "name": "Submit",
+              "settings": {
+                "title": "Sign-In",
+                "button_type": "submit",
+                "name": "",
+                "default_value": "Sign In",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<p><a href=\"#recover\" title=\"#recover\">Forgot your password?</a></p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  width: 100%;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Forms"
+    },
+    {
+      "name": "Form: Forgot Password",
+      "settings": {
+        "type": "password_recover",
+        "target_id": "recover",
+        "target_visibility": "targeted",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "hidden_name_backup": "Form: Forgot Password"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Recover your password</strong></h2><p>Remember your password? <a href=\"#\" title=\"#\"><span style=\"text-decoration:underline\">Sign in.</span></a></p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  padding-bottom: 12px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_email",
+          "settings": {
+            "title": "Email",
+            "placeholder": "Email",
+            "input_class": "input-text",
+            "name": "email",
+            "type": "email",
+            "autocomplete": "username",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_button",
+          "name": "Recover",
+          "settings": {
+            "title": "Recover Password",
+            "button_type": "submit",
+            "name": "",
+            "default_value": "Submit",
+            "button_class": "button-primary",
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Forms"
+    },
+    {
+      "name": "Form: Sign-up",
+      "settings": {
+        "type": "sign_up",
+        "target_id": "",
+        "target_visibility": "",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "hidden_name_backup": "Form: Sign-up"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Sign up</strong></h2><p>Already have an account? <a href=\"/account/login\" title=\"/account/login\">Sign in</a>.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  padding-bottom: 12px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_text",
+          "name": "Input: First Name",
+          "settings": {
+            "title": "First name",
+            "placeholder": "First name",
+            "input_class": "input-text",
+            "name": "customer[first_name]",
+            "type": "text",
+            "autocomplete": "given-name",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_text",
+          "name": "Input: Last Name",
+          "settings": {
+            "title": "Last name",
+            "placeholder": "Last name",
+            "input_class": "input-text",
+            "name": "customer[last_name]",
+            "type": "text",
+            "autocomplete": "family-name",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_email",
+          "settings": {
+            "title": "Email",
+            "placeholder": "Email",
+            "input_class": "input-text",
+            "name": "customer[email]",
+            "type": "email",
+            "autocomplete": "username",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "Password",
+            "placeholder": "Password",
+            "input_class": "input-text",
+            "name": "customer[password]",
+            "autocomplete": "new-password",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__container",
+          "name": "Container",
+          "settings": {
+            "element_id": "",
+            "custom_effect": "off",
+            "scroll_reveal": "children",
+            "collapsible_handle": "",
+            "show": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 8px;\n}",
+            "generate_block_presets": "never",
+            "hidden_name_backup": "Container"
+          },
+          "blocks": [
+            {
+              "type": "_form__input_button",
+              "name": "Reset",
+              "settings": {
+                "title": "Reset",
+                "button_type": "reset",
+                "name": "",
+                "default_value": "Sign In",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            },
+            {
+              "type": "_form__input_button",
+              "name": "Submit",
+              "settings": {
+                "title": "Sign Up",
+                "button_type": "submit",
+                "name": "",
+                "default_value": "Sign In",
+                "button_class": "button-primary",
+                "custom_css": "& {\n}"
+              },
+              "blocks": []
+            }
+          ]
+        }
+      ],
+      "category": "Forms"
+    },
+    {
+      "name": "Form: Reset Password",
+      "settings": {
+        "type": "password_reset",
+        "target_id": "",
+        "target_visibility": "",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}",
+        "hidden_name_backup": "Form: Reset Password"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "settings": {
+            "title": "<h2><strong>Enter account password</strong></h2><p>Enter a new password for your account.</p>",
+            "text_alignment": "inherit",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& {\n  padding-bottom: 12px;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "Password",
+            "placeholder": "Password",
+            "input_class": "input-text",
+            "name": "customer[password]",
+            "autocomplete": "new-password",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_password",
+          "settings": {
+            "title": "Confirm Password",
+            "placeholder": "Confirm Password",
+            "input_class": "input-text",
+            "name": "customer[password_confirmation]",
+            "autocomplete": "off",
+            "default_value": "",
+            "required": true,
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        },
+        {
+          "type": "_form__input_button",
+          "name": "Reset",
+          "settings": {
+            "title": "Reset password",
+            "button_type": "submit",
+            "name": "",
+            "default_value": "",
+            "button_class": "button-primary",
+            "custom_css": "& {\n}"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Forms"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__form"
+}
+{% endschema %}

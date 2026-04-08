@@ -1,0 +1,47 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__quantity_selector"
+  assign section_type = "card_line_item_card"
+  assign quantity_class = block.settings.quantity_class
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% capture html_attributes %}data-style-id="{{ style_id }}" x-show="!line_card?.line_item?.properties?._p_fixed_quantity && $data.showConditionally('{{ show_conditionally }}')"{% endcapture %}
+
+{% render '_components.quantity_stepper',
+    class: quantity_class,
+    setState: "_cart.updateLineItemQuantity(value, line_card?.line_item?.index)",
+    state: "line_card?.line_item?.quantity",
+    max: "line_card?.quantity_limit",
+    min: 'line_card?.line_item?.properties?._p_required ? 1 : 0',
+    disabled: "$cart.loading",
+    disabled_min: 'line_card?.line_item?.properties?._p_required && line_card?.line_item?.quantity <= 1 || $cart.loading',
+    disabled_max: 'line_card?.line_item?.quantity >= line_card?.quantity_limit || $cart.loading',
+    disabled_manual_input: true,
+    html_attributes: html_attributes,
+    default_value: line_item.quantity
+%}
+

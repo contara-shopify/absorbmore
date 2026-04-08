@@ -1,0 +1,76 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__variant_selector__select"
+  assign section_type = "card_product_card"
+  assign legend_label = block.settings.legend_label
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign sold_out_variants = block.settings.sold_out_variants
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% liquid
+  assign filtered_variants = product.variants
+  if sold_out_variants == 'hide'
+    assign filtered_variants = product.variants | where: 'available'
+  endif
+
+  if product.variants.first.title == "Default Title" and product.variants.size == 1 or filtered_variants.size <= 0
+    break
+  endif
+
+  assign current_value = product.selected_or_first_available_variant.id
+  assign current_title = product.selected_or_first_available_variant.title
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign current_legend = content_legend | replace: "[value]", current_title | default: legend_label
+
+  assign variant_ids = filtered_variants | map: "id"
+  assign variant_titles = filtered_variants | map: "title"
+%}
+<fieldset data-style-id="{{ style_id }}"
+          x-defer="intersect">
+  <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+          x-ignore
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', p_card?.selected_variant?.title)">
+    {% render '_input.inline_richtext', content: current_legend %}
+  </legend>
+  {% render '_components.select',
+      values: variant_ids,
+      titles: variant_titles,
+      select_class: select_class,
+      label: legend_label,
+      setState: "$data.setSelectedVariant(value);",
+      state: "p_card?.selected_variant?.id",
+      current_value: current_value,
+      current_title: current_title,
+      html_attributes: "x-ignore"
+  %}
+</fieldset>
+
+
+

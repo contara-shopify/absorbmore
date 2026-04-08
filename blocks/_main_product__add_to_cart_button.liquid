@@ -1,0 +1,255 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__add_to_cart_button"
+  assign section_type = "main_product"
+  assign add_to_cart_content = block.settings.add_to_cart_content
+  assign quantity_price = block.settings.quantity_price
+  assign add_to_cart_class = block.settings.add_to_cart_class
+  assign preorder_content = block.settings.preorder_content
+  assign preorder_class = block.settings.preorder_class
+  assign out_of_stock_content = block.settings.out_of_stock_content
+  assign out_of_stock_class = block.settings.out_of_stock_class
+  assign enable_back_in_stock_notifications = block.settings.enable_back_in_stock_notifications
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+
+  assign available_classes = "!hidden"
+
+  if variant.available
+    assign available_classes = ""
+    assign sold_out_classes = "!hidden"
+  endif
+
+  assign formatted_price = price | money
+  assign formatted_compare_at_price = ''
+
+  if compare_at_price > price
+    assign formatted_compare_at_price = compare_at_price | money | prepend: '<span style="text-decoration: line-through; opacity: 0.5;">' | append: '</span>'
+  endif
+  assign _add_to_cart_content = add_to_cart_content | replace: '[price]', formatted_price | replace: '[compare_at_price]', formatted_compare_at_price | replace: '[total]', formatted_price | replace: '[compare_at_total]', formatted_compare_at_price
+  assign _out_of_stock_content = out_of_stock_content | replace: '[price]', formatted_price | replace: '[compare_at_price]', formatted_compare_at_price | replace: '[total]', formatted_price | replace: '[compare_at_total]', formatted_compare_at_price
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<button
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    type="submit"
+    class="w-full disabled:opacity-70 disabled:pointer-events-none {{ add_to_cart_class }} {{ available_classes }}"
+    :class="pdp.isAdding ? 'button-loading':''"
+    :disabled="pdp.isAdding"
+    x-ignore
+    x-effect="$el.classList.toggle('!hidden', pdp.soldOut)"
+    {% if quantity_price %}
+      x-html="(pdp.preorder ? $el.getAttribute('data-preorder-content') : $el.getAttribute('data-content'))
+                .replace('[price]', utils.formatMoney(pdp.selected_price * pdp.quantity))
+                .replace('[compare_at_price]', pdp.selected_compare_at_price > pdp.selected_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price * pdp.quantity)}</span>` : '')
+                .replace('[total]', utils.formatMoney(pdp.selected_price * pdp.quantity + pdp.upsell_total))
+                .replace('[compare_at_total]', pdp.selected_compare_at_price + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price * pdp.quantity + pdp.upsell_compare_at_total)}</span>` : '')"
+    {% else %}
+      x-html="(pdp.preorder ? $el.getAttribute('data-preorder-content') : $el.getAttribute('data-content'))
+                .replace('[price]', utils.formatMoney(pdp.selected_price))
+                .replace('[compare_at_price]', pdp.selected_compare_at_price > pdp.selected_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price)}</span>` : '')
+                .replace('[total]', utils.formatMoney(pdp.selected_price + pdp.upsell_total))
+                .replace('[compare_at_total]', pdp.selected_compare_at_price + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price + pdp.upsell_compare_at_total)}</span>` : '')"
+    {% endif %}
+    @click="handleAddToCart($event);"
+    data-preorder-content="{% render '_input.inline_richtext', content: preorder_content, escape: true %}"
+    data-content="{% render '_input.inline_richtext', content: add_to_cart_content, escape: true %}">
+  {% render '_input.inline_richtext', content: _add_to_cart_content %}
+</button>
+
+<button
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    type="button"
+    x-ignore
+    {% if enable_back_in_stock_notifications %}
+      @click="handleBackInStockNotification($event)"
+    {% else %}
+      disabled="disabled"
+    {% endif %}
+    class="w-full {{ out_of_stock_class }} {{ sold_out_classes }}"
+    x-effect="$el.classList.toggle('!hidden', !pdp.soldOut)"
+    {% if quantity_price %}
+      x-html="$el.getAttribute('data-content')
+                .replace('[price]', utils.formatMoney(pdp.selected_price * pdp.quantity))
+                .replace('[compare_at_price]', pdp.selected_compare_at_price > pdp.selected_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price * pdp.quantity)}</span>` : '')
+                .replace('[total]', utils.formatMoney(pdp.selected_price * pdp.quantity + pdp.upsell_total))
+                .replace('[compare_at_total]', pdp.selected_compare_at_price + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price * pdp.quantity + pdp.upsell_compare_at_total)}</span>` : '')"
+    {% else %}
+      x-html="$el.getAttribute('data-content')
+                .replace('[price]', utils.formatMoney(pdp.selected_price))
+                .replace('[compare_at_price]', pdp.selected_compare_at_price > pdp.selected_price ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price)}</span>` : '')
+                .replace('[total]', utils.formatMoney(pdp.selected_price + pdp.upsell_total))
+                .replace('[compare_at_total]', pdp.selected_compare_at_price + pdp.upsell_compare_at_total > pdp.selected_price + pdp.upsell_total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(pdp.selected_compare_at_price + pdp.upsell_compare_at_total)}</span>` : '')"
+    {% endif %}
+    data-content="{% render '_input.inline_richtext', content: out_of_stock_content, escape: true %}">
+  {% render '_input.inline_richtext', content: _out_of_stock_content %}
+</button>
+
+
+{% schema %}
+{
+  "name": "Add to Cart Button",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Add to cart state"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "add_to_cart_content",
+      "label": "Button content",
+      "default": "[icon.lock] Add To Cart • [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholder [price] & [compare_at_price] to display the price of the selected variant or [total] and [compare_at_total] to display the total price."
+    },
+    {
+      "type": "checkbox",
+      "id": "quantity_price",
+      "label": "Quantity Multiplied Price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Preorder state"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "preorder_content",
+      "label": "Button content",
+      "default": "[icon.timer] Preorder• [price]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk). Use the placeholder [price]and [compare_at_price] to display the price of the selected variant."
+    },
+    {
+      "type": "text",
+      "id": "preorder_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Out of stock state"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "out_of_stock_content",
+      "label": "Button content",
+      "default": "Out of Stock",
+      "info": " [Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk). Use the placeholder [price]and [compare_at_price] to display the price of the selected variant."
+    },
+    {
+      "type": "text",
+      "id": "out_of_stock_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_back_in_stock_notifications",
+      "label": "Enable back in stock notifications"
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Add to Cart Button",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__add_to_cart_button"
+}
+{% endschema %}

@@ -1,0 +1,61 @@
+{% liquid
+
+  unless article
+    break
+  endunless
+
+  assign article_namespaces = settings.data__article__metafield | prepend: 'smart,' | split: ',' | uniq
+
+  assign blog_handle = article.handle | split: "/" | first
+%}
+
+{% comment %}{{ article | json }}{% endcomment %}
+{% comment %}{% break %}{% endcomment %}
+{% capture json %}
+  {
+  "author": {{ article.author | json }},
+  "blog_id": {{ blogs[blog_handle].id | json }},
+  "blog_handle": "{{ blog_handle }}",
+  "comments_count": {{ article.comments_count | json }},
+  "created_at": "{{ article.created_at | date: "%Y-%m-%dT%H:%M:%S%z" }}",
+  {% if article.excerpt != blank %}
+    "excerpt": {{ article.excerpt | json }},
+  {% else %}
+    "excerpt": {{ article.excerpt_or_content | strip_html | truncatewords: 32 | json }},
+  {% endif %}
+  "handle": "{{ article.handle }}",
+  "id": "{{ article.id }}",
+  {% if article.image.src %}
+    "image": {
+    "alt": {{ article.image.alt | json }},
+    "id": "{{ article.image.id }}",
+    "aspect_ratio": {{ article.image.aspect_ratio | json }},
+    "height": {{ article.image.height | json }},
+    "media_type": "image",
+    "src": "{{ article.image.src | image_url }}",
+    "width": {{ article.image.width | json }}
+    },
+  {% else %}
+    "image": null,
+  {% endif %}
+  "moderated": {{ article.moderated? | json }},
+  "published_at": "{{ article.published_at | date: "%Y-%m-%dT%H:%M:%S%z" }}",
+  "tags": {{ article.tags | join: ", " | json }},
+  "updated_at": "{{ article.updated_at | date: "%Y-%m-%dT%H:%M:%S%z" }}",
+  "url": "{{ article.url }}",
+  "title": {{ article.title | json }},
+  "user": {
+  "name": {{ article.user.name | json }},
+  "first_name": {{ article.user.first_name | json }},
+  "last_name": {{ article.user.last_name | json }},
+  "image": {{ article.user.image | json }},
+  "email": {{ article.user.email | json }}
+  },
+  "metafields": {
+  {%- for namespace in article_namespaces -%}
+    "{{- namespace -}}": {%- render '_json.metafield', namespace: article.metafields[namespace], with_product_data: settings.data__article__load_product_data -%}{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+  }
+  }
+{% endcapture %}
+{{- json | strip | strip_newlines -}}

@@ -1,0 +1,64 @@
+{% liquid
+  if collection == blank or product != blank
+    assign not_a_collection_page = true
+
+    if request.design_mode
+      assign collection = collections.all.collections[0]
+      assign product = null
+    endif
+  endif
+
+  if collection == blank or product != blank
+    break
+  endif
+%}
+
+{% capture collection_data %}
+  {%- render '_json.collection', collection: collection, meta_collection: false -%}
+{% endcapture %}
+
+<script type="application/json"
+        data-collection-data="{{ collection.handle }}"
+        data-primary-collection-data="{{ collection.handle }}">{{ collection_data }}</script>
+
+<script data-collection-data-init="{{ collection.handle }}" type="application/javascript">
+  (() => {
+    const collection = JSON.parse(document.querySelector(`[data-primary-collection-data="{{ collection.handle }}"]`)?.innerText);
+    window._collection_card_collection = collection;
+
+    const collectionData = {
+      loaded: false,
+      handleHydration: async (collection) => {
+        const dbKey = `_${window.Shopify.theme.id}-collection--${collection.handle}`;
+        _collections[collection.handle] = {
+          ...(await idbKeyval.get(dbKey) || {}),
+          ...collection,
+        };
+
+        idbKeyval.set(dbKey, _collections[collection.handle]);
+      },
+    };
+
+    document.addEventListener('index-db-loaded', () => {
+      if (collectionData.loaded) return;
+      collectionData.loaded = true;
+      collectionData.handleHydration(collection);
+    });
+
+
+    if (typeof idbKeyval !== "undefined" && !collectionData.loaded) {
+      collectionData.loaded = true;
+      collectionData.handleHydration(collection);
+    }
+  })();
+</script>
+
+
+
+
+{% schema %}
+{
+  "name": "Collection Data",
+  "class": "shopify_section__data_collection_json"
+}
+{% endschema %}

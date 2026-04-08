@@ -1,0 +1,35 @@
+import type { InitContentSlider } from "./_content-slider.js";
+import type { CardsProductBlock } from "./_blocks.js";
+import type { _Product_hydrated, _Variant_hydrated } from "./types.js";
+export type ProductFunctions = typeof _product;
+export declare const _product: {
+    getHtmlProduct: (handle: any) => _Product_hydrated;
+    getCachedProduct: (handle: any) => Promise<_Product_hydrated>;
+    getFetchProduct: (handle: string, productId: number, priority?: RequestPriority) => Promise<_Product_hydrated>;
+    saveProduct: (handle: any, dataOverride?: any) => _Product_hydrated;
+    getHydratedProductData: (handle: string, productId: number, priority?: RequestPriority) => Promise<_Product_hydrated>;
+    getProductData: (handle: string, productId: number, priority?: RequestPriority) => Promise<_Product_hydrated>;
+    initDynamicProductCards: ($el: HTMLElement, { targeting_type, target_product_handle, target_product_id, primary_source, fallback_source, product_class, desktop_display_limit, mobile_display_limit, addon_products, addon_auto_add, addon_bundle_in_cart, addon_target_product, hide_if_empty, handleResize, order_offset, section_id, filter_by_type, hide_out_of_stock, block_id, }: {
+        targeting_type: CardsProductBlock["settings"]["targeting_type"];
+        target_product_handle?: string;
+        target_product_id?: number;
+        primary_source: "complementary" | "related" | "recently_viewed" | "manual";
+        fallback_source: "complementary" | "related" | "recently_viewed" | "manual";
+        product_class: string;
+        filter_by_type: string;
+        desktop_display_limit?: number;
+        mobile_display_limit?: number;
+        order_offset?: number;
+        hide_out_of_stock?: boolean;
+        addon_products: boolean;
+        addon_auto_add: boolean;
+        addon_bundle_in_cart: boolean;
+        addon_target_product?: string;
+        hide_if_empty: "none" | "section" | "container" | "block";
+        section_id: string;
+        block_id: string;
+        handleResize: ReturnType<InitContentSlider>["content_slider"]["handleResize"];
+    }) => Promise<void>;
+    getSelectedVariant: (product: _Product_hydrated, variantId?: number) => _Variant_hydrated;
+    lastOptions: Record<string, string>;
+};

@@ -1,0 +1,127 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__discounts"
+  assign section_type = "card_line_item_card"
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if request.design_mode or metaobjects.line_item_cards[section.settings.line_item_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+  {% if text_color != blank or text_color.alpha != 0 %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    {% if request.design_mode %}
+    {% assign query_selector = '[data-section-id="'|append: section.id | append: '"][data-preview-container] ' | append: selector %}
+    {{- custom_css | replace: '&', query_selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
+    {% endif %}
+  </style>
+{% endif %}
+
+<ul data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
+
+    x-data="{ discounts: line_card?.line_item?.discounts }"
+    x-effect="discounts = line_card?.line_item?.discounts"
+    x-show="line_card?.line_item?.line_level_discount_allocations?.length && $data.showConditionally('{{ show_conditionally }}')"
+    data-content="{% render '_input.inline_richtext', content: content, skip_pluralization: true %}"
+    class="{{ content_class }}"
+    x-html="discounts?.map(({ title, amount })=>`<li>${$el.getAttribute('data-content')?.replace(/\[title\]/gi, title).replace(/\[amount\]/gi, utils.formatMoney(amount / line_card?.line_item?.quantity))}</li>`).join('')"></ul>
+
+{% schema %}
+{
+  "name": "Line Discounts",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "[title]: [amount]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use the placeholders [title] and [amount] to show each row."
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_addon_products",
+          "label": "Hide with Addon products"
+        },
+        {
+          "value": "addon_products",
+          "label": "Only with Addon Products"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Line Discounts",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_line_item_card__discounts"
+}
+{% endschema %}

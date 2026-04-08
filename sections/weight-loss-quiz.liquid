@@ -1,0 +1,1896 @@
+<!-- ══════════════════════════════════════════════
+     WLP-1™ Quiz — Section
+     The Absorption Company
+══════════════════════════════════════════════ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+.wlp1q-root, .wlp1q-root *, .wlp1q-root *::before, .wlp1q-root *::after{ box-sizing: border-box; margin: 0; padding: 0; }
+
+.wlp1q-root{
+  --bg:        #EAE6DC;
+  --bg-panel:  #E2DDD3;
+  --bg-dark:   #DEDAD0;
+  --white:     #FFFFFF;
+  --black:     #111111;
+  --dark:      #1A1A1A;
+  --mid:       #555555;
+  --light:     #888888;
+  --lighter:   #AAAAAA;
+  --border:    #D0CCC3;
+  --blue:      #5E91D5;
+  --blue-lt:   #EBF2FB;
+  --selected:  #F0EDE6;
+}
+
+.wlp1q-root, .wlp1q-root{
+  height: 100%;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--black);
+  font-size: 14px;
+  overflow-x: hidden;
+}
+
+/* ═══════════ LAYOUT ═══════════ */
+.wlp1q-root .quiz-shell{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.wlp1q-root .screen{
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 0 40px;
+  animation: fadeIn 0.3s ease forwards;
+}
+.wlp1q-root .screen.active{ display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════ PROGRESS ═══════════ */
+.wlp1q-root .progress-wrap{ padding: 16px 20px 0; display: flex; flex-direction: column; gap: 8px; }
+.wlp1q-root .progress-meta{ display: flex; justify-content: space-between; align-items: center; }
+.wlp1q-root .progress-label{ font-size: 11px; font-weight: 600; color: var(--lighter); letter-spacing: 0.08em; text-transform: uppercase; }
+.wlp1q-root .progress-step{ font-size: 11px; font-weight: 600; color: var(--lighter); }
+.wlp1q-root .progress-track{ height: 3px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.wlp1q-root .progress-fill{ height: 100%; background: var(--blue); border-radius: 100px; transition: width 0.4s ease; }
+
+/* Back button */
+.wlp1q-root .back-btn{
+  background: none; border: none; font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 600; color: var(--lighter); cursor: pointer;
+  padding: 14px 20px 0; display: flex; align-items: center; gap: 6px; width: fit-content;
+}
+.wlp1q-root .back-btn:hover{ color: var(--mid); }
+.wlp1q-root .back-btn svg{ width: 14px; height: 14px; }
+
+/* ═══════════ SHARED COMPONENTS ═══════════ */
+.wlp1q-root .q-wrap{ padding: 24px 20px 0; flex: 1; display: flex; flex-direction: column; }
+
+.wlp1q-root .eyebrow{ font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--lighter); margin-bottom: 10px; }
+.wlp1q-root .q-title{ font-size: 22px; font-weight: 800; color: var(--black); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 6px; }
+.wlp1q-root .q-sub{ font-size: 13px; color: var(--mid); line-height: 1.55; margin-bottom: 24px; }
+
+/* Option cards */
+.wlp1q-root .options{ display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; flex: 1; }
+
+.wlp1q-root .opt-card{
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: var(--white); border: 1.5px solid var(--border); border-radius: 10px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  text-align: left; width: 100%; font-family: 'Inter', sans-serif;
+}
+.wlp1q-root .opt-card:hover{ border-color: #AAA; }
+.wlp1q-root .opt-card.selected{ border-color: var(--blue); background: var(--blue-lt); }
+
+.wlp1q-root .opt-radio{
+  width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s; margin-left: auto;
+}
+.wlp1q-root .opt-card.selected .opt-radio{ border-color: var(--blue); background: var(--blue); }
+.wlp1q-root .opt-radio-dot{
+  width: 8px; height: 8px; background: var(--white); border-radius: 50%;
+  opacity: 0; transform: scale(0.3); transition: opacity 0.15s, transform 0.15s;
+}
+.wlp1q-root .opt-card.selected .opt-radio-dot{ opacity: 1; transform: scale(1); }
+
+.wlp1q-root .opt-content{ flex: 1; }
+.wlp1q-root .opt-label{ font-size: 14px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+.wlp1q-root .opt-desc{ font-size: 12px; color: var(--light); margin-top: 2px; line-height: 1.4; }
+
+/* Custom SVG icon slot */
+.wlp1q-root .opt-icon{ width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.wlp1q-root .opt-icon svg{ width: 28px; height: 28px; }
+
+/* 2-col gender */
+.wlp1q-root .options-2col{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.wlp1q-root .opt-card-big{
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 28px 16px; background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  font-family: 'Inter', sans-serif; text-align: center;
+}
+.wlp1q-root .opt-card-big:hover{ border-color: #AAA; }
+.wlp1q-root .opt-card-big.selected{ border-color: var(--blue); background: var(--blue-lt); }
+.wlp1q-root .opt-card-big .big-icon svg{ width: 40px; height: 40px; }
+.wlp1q-root .opt-card-big .big-label{ font-size: 15px; font-weight: 700; color: var(--dark); }
+
+/* Primary CTA */
+.wlp1q-root .btn-primary{
+  width: calc(100% - 40px); margin: 0 20px;
+  background: var(--black); color: var(--white); border: none; border-radius: 8px;
+  padding: 17px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.15s, opacity 0.15s; flex-shrink: 0;
+}
+.wlp1q-root .btn-primary:hover{ background: #2a2a2a; }
+.wlp1q-root .btn-primary:disabled{ opacity: 0.35; cursor: not-allowed; }
+
+/* Input fields */
+.wlp1q-root .input-row-pair{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.wlp1q-root .input-group{ display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.wlp1q-root .input-label-sm{ font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lighter); }
+.wlp1q-root .input-field-wrap{
+  display: flex; align-items: center; background: var(--white);
+  border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.15s;
+}
+.wlp1q-root .input-field-wrap:focus-within{ border-color: var(--blue); }
+.wlp1q-root .input-field{
+  flex: 1; border: none; outline: none; padding: 13px 14px;
+  font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600;
+  color: var(--dark); background: transparent; -moz-appearance: textfield;
+}
+.wlp1q-root .input-field::placeholder{ color: var(--lighter); font-weight: 400; }
+.wlp1q-root .input-field::-webkit-inner-spin-button, .wlp1q-root .input-field::-webkit-outer-spin-button{ -webkit-appearance: none; }
+.wlp1q-root .input-unit{ padding: 13px 14px 13px 0; font-size: 12px; font-weight: 500; color: var(--light); }
+
+/* Unit toggle */
+.wlp1q-root .unit-toggle{ display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; width: fit-content; margin-bottom: 16px; }
+.wlp1q-root .unit-btn{
+  padding: 7px 16px; font-size: 12px; font-weight: 600; color: var(--mid);
+  background: var(--white); border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: background 0.15s, color 0.15s;
+}
+.wlp1q-root .unit-btn.active{ background: var(--black); color: var(--white); }
+
+/* ═══════════ SPLASH PAGES ═══════════ */
+.wlp1q-root .screen.splash-screen{
+  background: var(--blue);
+  min-height: 100vh;
+}
+
+.wlp1q-root .splash{
+  flex: 1; display: flex; flex-direction: column; padding: 0; gap: 0;
+}
+
+/* Top bar with fact label + counter */
+.wlp1q-root .splash-topbar{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 0;
+}
+.wlp1q-root .splash-fact-label{
+  font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--blue); background: rgba(94,145,213,0.15);
+  padding: 5px 12px; border-radius: 100px;
+}
+.wlp1q-root .splash-counter{
+  font-size: 12px; font-weight: 800; color: rgba(255,255,255,0.9);
+  letter-spacing: 0.08em; background: rgba(255,255,255,0.15);
+  padding: 4px 12px; border-radius: 100px;
+}
+
+.wlp1q-root .splash-screen .back-btn, .wlp1q-root .splash-back-btn{ color: rgba(255,255,255,0.5); padding-top: 10px; font-size: 0; width: 32px; height: 32px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; }
+.wlp1q-root .splash-screen .back-btn svg, .wlp1q-root .splash-back-btn svg{ width: 18px; height: 18px; }
+.wlp1q-root .splash-screen .back-btn:hover, .wlp1q-root .splash-back-btn:hover{ color: rgba(255,255,255,0.9); }
+
+.wlp1q-root .splash-content{
+  flex: 1; display: flex; flex-direction: column; padding: 28px 24px 0;
+}
+
+.wlp1q-root .splash-kicker{
+  font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: white; margin-bottom: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+.wlp1q-root .splash-title{
+  font-size: 30px; font-weight: 900; color: var(--white);
+  line-height: 1.08; letter-spacing: -0.025em; margin-bottom: 16px;
+}
+.wlp1q-root .splash-title .accent{ color: var(--blue); }
+
+.wlp1q-root .splash-body{
+  font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 28px;
+}
+.wlp1q-root .splash-body strong{ color: var(--white); font-weight: 700; }
+
+/* Inline stat row — no boxes, just numbers separated by dividers */
+.wlp1q-root .splash-stats-row{
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 28px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 20px 0;
+}
+.wlp1q-root .splash-stat-item{
+  text-align: center; padding: 12px 8px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.wlp1q-root .splash-stat-item:nth-child(2n){ border-right: none; }
+.wlp1q-root .splash-stat-item:nth-last-child(-n+2){ border-bottom: none; }
+.wlp1q-root .splash-stat-num{ font-size: 24px; font-weight: 800; color: white; line-height: 1; letter-spacing: -0.02em; }
+.wlp1q-root .splash-stat-lbl{ font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 5px; line-height: 1.3; }
+
+/* Muted injectable item */
+.wlp1q-root .splash-info-item.muted .splash-info-bullet{ background: rgba(255,255,255,0.2); }
+.wlp1q-root .splash-info-item.muted .splash-info-title{ color: rgba(255,255,255,0.4); font-weight: 500; }
+.wlp1q-root .splash-info-item.muted .splash-info-desc{ color: rgba(255,255,255,0.25); }
+
+/* Highlighted WLP-1 item */
+.wlp1q-root .splash-info-item.highlighted{
+  border-left: 3px solid rgba(255,255,255,0.7);
+  padding-left: 14px;
+  margin-left: -17px;
+}
+.wlp1q-root .splash-info-item.highlighted .splash-info-bullet{ background: white; }
+.wlp1q-root .splash-info-item.highlighted .splash-info-title{ color: var(--white); font-weight: 800; }
+.wlp1q-root .splash-info-item.highlighted .splash-info-desc{ color: rgba(255,255,255,0.7); }
+  .wlp1q-root display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.splash-divider-line{ flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+.wlp1q-root .splash-divider-text{ font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+
+/* Text-only info rows — no boxes */
+.wlp1q-root .splash-info-list{ display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+.wlp1q-root .splash-info-item{ display: flex; align-items: flex-start; gap: 14px; }
+.wlp1q-root .splash-info-bullet{
+  width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
+  flex-shrink: 0; margin-top: 6px;
+}
+.wlp1q-root .splash-info-title{ font-size: 13.5px; font-weight: 700; color: var(--white); margin-bottom: 3px; line-height: 1.3; }
+.wlp1q-root .splash-info-desc{ font-size: 12.5px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+.wlp1q-root .splash-btn-wrap{ margin-top: auto; padding: 0 24px 32px; }
+.wlp1q-root .splash-btn-wrap .btn-primary{
+  width: 100%; margin: 0;
+  background: var(--blue);
+}
+.wlp1q-root .splash-btn-wrap .btn-primary:hover{ background: #4a7ec4; }
+
+/* ═══════════ LANDING HERO ═══════════ */
+.wlp1q-root .landing-hero{
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+
+/* Slim brand bar */
+.wlp1q-root .brand-bar{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+}
+.wlp1q-root .brand-bar-name{ font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+.wlp1q-root .brand-bar-badge{
+  background: var(--blue); color: var(--white);
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+}
+
+/* Quiz intro section */
+.wlp1q-root .hero-quiz-intro{ padding: 24px 20px 20px; }
+
+.wlp1q-root .hero-quiz-label{
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--blue-lt); color: var(--blue);
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px; margin-bottom: 14px;
+}
+
+.wlp1q-root .hero-title{
+  font-size: 28px; font-weight: 900; color: var(--black);
+  line-height: 1.07; letter-spacing: -0.025em; margin-bottom: 10px;
+}
+.wlp1q-root .hero-title .accent{ color: var(--blue); font-weight: 900; font-style: normal; }
+
+.wlp1q-root .hero-desc{ font-size: 13px; color: var(--mid); line-height: 1.6; margin-bottom: 18px; }
+
+/* Product pill */
+.wlp1q-root .product-pill{
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 18px;
+}
+.wlp1q-root .product-pill-dot{ width: 8px; height: 8px; background: var(--blue); border-radius: 50%; flex-shrink: 0; }
+.wlp1q-root .product-pill-text{ font-size: 12.5px; color: var(--dark); font-weight: 500; line-height: 1.4; }
+.wlp1q-root .product-pill-text strong{ font-weight: 800; color: var(--black); }
+
+.wlp1q-root .hero-stats{
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg);
+}
+.wlp1q-root .hero-stat{ padding: 12px 8px; text-align: center; border-right: 1px solid var(--border); }
+.wlp1q-root .hero-stat:last-child{ border-right: none; }
+.wlp1q-root .hero-stat-num{ font-size: 17px; font-weight: 800; color: var(--black); line-height: 1; }
+.wlp1q-root .hero-stat-lbl{ font-size: 9px; color: var(--mid); margin-top: 3px; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Q1 embedded below hero */
+.wlp1q-root .landing-q{ padding: 20px 20px 0; flex: 1; display: flex; flex-direction: column; }
+.wlp1q-root .landing-q .eyebrow{ font-size: 9.5px; color: var(--lighter); margin-bottom: 6px; }
+
+/* ═══════════ EMAIL ═══════════ */
+.wlp1q-root .email-wrap{ padding: 32px 20px 0; flex: 1; display: flex; flex-direction: column; }
+.wlp1q-root .email-title{ font-size: 24px; font-weight: 800; color: var(--black); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 8px; }
+.wlp1q-root .email-sub{ font-size: 13px; color: var(--mid); line-height: 1.55; margin-bottom: 24px; }
+.wlp1q-root .email-privacy{ display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--lighter); margin-top: 12px; justify-content: center; }
+.wlp1q-root .email-privacy svg{ width: 12px; height: 12px; }
+
+/* ═══════════ RESULTS ═══════════ */
+.wlp1q-root .results-wrap{ padding: 0; flex: 1; display: flex; flex-direction: column; }
+
+.wlp1q-root .results-hero{ background: var(--blue); padding: 24px 20px 20px; }
+.wlp1q-root .results-eyebrow{ font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.wlp1q-root .results-title{ font-size: 22px; font-weight: 800; color: var(--white); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
+
+.wlp1q-root .results-stat-row{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.wlp1q-root .r-stat{ background: rgba(255,255,255,0.15); border-radius: 10px; padding: 12px 10px; text-align: center; }
+.wlp1q-root .r-stat-num{ font-size: 20px; font-weight: 800; color: var(--white); line-height: 1; }
+.wlp1q-root .r-stat-num.blue{ color: var(--white); }
+.wlp1q-root .r-stat-lbl{ font-size: 9.5px; color: rgba(255,255,255,0.6); margin-top: 3px; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.wlp1q-root .results-body{ padding: 20px 20px 0; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.wlp1q-root .section-lbl{ font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--lighter); margin-bottom: 12px; }
+
+/* ── Goal slider ── */
+.wlp1q-root .goal-slider-wrap{ margin-bottom: 24px; }
+.wlp1q-root .goal-display{ margin-bottom: 16px; }
+.wlp1q-root .goal-lbs{ font-size: 36px; font-weight: 900; color: var(--blue); letter-spacing: -0.03em; line-height: 1; }
+.wlp1q-root .goal-pct{ font-size: 13px; font-weight: 600; color: var(--mid); margin-top: 3px; }
+.wlp1q-root .goal-desc{ font-size: 13px; color: var(--mid); line-height: 1.5; margin-top: 8px; min-height: 40px; padding: 10px 14px; background: var(--white); border: 1px solid var(--border); border-radius: 8px; }
+.wlp1q-root .goal-slider{ -webkit-appearance: none; width: 100%; height: 6px; border-radius: 100px; outline: none; cursor: pointer; margin-bottom: 8px; }
+.wlp1q-root .goal-slider::-webkit-slider-thumb{ -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--blue); border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--blue); cursor: pointer; }
+.wlp1q-root .goal-slider::-moz-range-thumb{ width: 24px; height: 24px; border-radius: 50%; background: var(--blue); border: 3px solid var(--white); cursor: pointer; }
+.wlp1q-root .goal-track-labels{ display: flex; justify-content: space-between; }
+.wlp1q-root .goal-track-lbl{ font-size: 10px; font-weight: 600; color: var(--lighter); }
+.wlp1q-root .timeline-card{
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+}
+.wlp1q-root .tl-row{
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 7px;
+}
+.wlp1q-root .tl-row:last-child{ border-bottom: none; }
+.wlp1q-root .tl-meta{ display: flex; justify-content: space-between; align-items: center; }
+.wlp1q-root .tl-name{ font-size: 12.5px; font-weight: 700; color: var(--dark); }
+.wlp1q-root .tl-time{ font-size: 13px; font-weight: 700; color: var(--dark); }
+.wlp1q-root .tl-time.blue{ color: var(--blue); }
+.wlp1q-root .tl-bar-track{ height: 9px; background: var(--bg-panel); border-radius: 100px; overflow: hidden; }
+.wlp1q-root .tl-bar-fill{ height: 100%; border-radius: 100px; transition: width 0.7s cubic-bezier(.16,1,.3,1); }
+.wlp1q-root .tl-bar-stack{ background: var(--blue); }
+.wlp1q-root .tl-bar-wlp{ background: var(--black); }
+.wlp1q-root .tl-bar-base{ background: var(--border); }
+
+/* Product cards */
+.wlp1q-root .product-cards{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wlp1q-root .product-card{
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 10px; overflow: hidden; display: flex; flex-direction: column;
+}
+.wlp1q-root .product-card.featured{ border-color: var(--blue); }
+.wlp1q-root .pc-header{ padding: 14px 14px 12px; border-bottom: 1px solid var(--border); background: var(--bg-panel); }
+.wlp1q-root .pc-header.featured{ background: var(--blue); }
+.wlp1q-root .pc-badge{
+  font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 100px; margin-bottom: 8px; display: inline-block;
+}
+.wlp1q-root .pc-badge.std{ background: var(--border); color: var(--mid); }
+.wlp1q-root .pc-badge.best{ background: rgba(255,255,255,0.25); color: var(--white); }
+.wlp1q-root .pc-name{ font-size: 14px; font-weight: 800; color: var(--dark); line-height: 1.2; }
+.wlp1q-root .pc-name.white{ color: var(--white); }
+.wlp1q-root .pc-sub{ font-size: 11px; color: var(--light); margin-top: 2px; }
+.wlp1q-root .pc-sub.white{ color: rgba(255,255,255,0.6); }
+.wlp1q-root .pc-body{ padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.wlp1q-root .pc-stat{ text-align: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.wlp1q-root .pc-stat-num{ font-size: 22px; font-weight: 800; color: var(--black); line-height: 1; }
+.wlp1q-root .pc-stat-num.blue{ color: var(--blue); }
+.wlp1q-root .pc-stat-lbl{ font-size: 9.5px; color: var(--light); margin-top: 2px; }
+.wlp1q-root .pc-features{ display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.wlp1q-root .pc-feat{ display: flex; align-items: flex-start; gap: 7px; font-size: 11.5px; color: var(--mid); line-height: 1.4; }
+.wlp1q-root .feat-dot{ width: 5px; height: 5px; background: var(--black); border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.wlp1q-root .feat-dot.blue{ background: var(--blue); }
+.wlp1q-root .pc-price{ padding: 12px 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+.wlp1q-root .pc-price-main{ font-size: 16px; font-weight: 800; color: var(--dark); line-height: 1.2; }
+.wlp1q-root .pc-price-aslow{ font-size: 10px; font-weight: 500; color: var(--light); display: block; margin-bottom: 1px; }
+.wlp1q-root .pc-price-mo{ font-size: 12px; font-weight: 500; color: var(--dark); }
+.wlp1q-root .pc-price-orig{ font-size: 11px; color: var(--lighter); text-decoration: line-through; }
+.wlp1q-root .pc-price-day{ font-size: 10px; color: var(--light); }
+.wlp1q-root .pc-cta{
+  margin: 0 14px 14px; background: var(--black); color: var(--white); border: none;
+  border-radius: 6px; padding: 13px; font-family: 'Inter', sans-serif; font-size: 11px;
+  font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; cursor: pointer;
+  width: calc(100% - 28px); transition: background 0.15s;
+}
+.wlp1q-root .pc-cta:hover{ background: #2a2a2a; }
+.wlp1q-root .pc-cta.blue-btn{ background: var(--blue); }
+.wlp1q-root .pc-cta.blue-btn:hover{ background: #4a7ec4; }
+
+.wlp1q-root .results-disclaimer{ font-size: 10px; color: var(--lighter); line-height: 1.5; padding-bottom: 20px; }
+
+/* ═══════════ LOADER ═══════════ */
+.wlp1q-root .loader-ring{
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.wlp1q-root .loader-check{
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--lighter);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.wlp1q-root .loader-check.done{ color: var(--dark); }
+.wlp1q-root .loader-check.done .loader-check-icon{ color: var(--blue); }
+.wlp1q-root .loader-check-icon{
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: var(--lighter);
+}
+
+/* Section wrapper: full-bleed reset so the quiz takes over the page */
+.wlp1q-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+</style>
+
+<div class="wlp1q-root" id="wlp1q-{{ section.id }}">
+<!-- ════════════════════════════════════
+     SVG ICON DEFS (referenced by use)
+════════════════════════════════════ -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M3 10h18"/><path d="M3 10l3 8h12l3-8"/><path d="M12 3v7"/>
+  </symbol>
+  <symbol id="icon-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </symbol>
+  <symbol id="icon-fork" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3v4a4 4 0 0 0 8 0V3"/><line x1="12" y1="7" x2="12" y2="21"/>
+  </symbol>
+  <symbol id="icon-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </symbol>
+  <symbol id="icon-male" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="15 5 19 5 19 9"/>
+  </symbol>
+  <symbol id="icon-female" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="5"/><line x1="12" y1="13" x2="12" y2="21"/><line x1="9" y1="18" x2="15" y2="18"/>
+  </symbol>
+  <symbol id="icon-sofa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"/><path d="M3 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2h2v-2h12v2h2v-2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z"/>
+  </symbol>
+  <symbol id="icon-walk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="4" r="1.5"/><path d="M9 10l-2 6"/><path d="M15.5 10l1.5 6"/><path d="M9 10l2 2 2-1 2.5-1"/>
+    <path d="M11 12l-1 4 3 2"/><path d="M13 12l1 3-2 2"/>
+  </symbol>
+  <symbol id="icon-run" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="13" cy="4" r="1.5"/><path d="M7 20l4-5 3 2 2-4"/><path d="M17 7l-3 3-3-1-3 3"/><path d="M3 12l4-1"/><path d="M17 20l2-5"/>
+  </symbol>
+  <symbol id="icon-lift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="10" x2="4" y2="14"/><line x1="20" y1="10" x2="20" y2="14"/>
+    <line x1="8" y1="9" x2="8" y2="15"/><line x1="16" y1="9" x2="16" y2="15"/><circle cx="12" cy="7" r="1.5"/>
+    <path d="M12 8.5v5"/>
+  </symbol>
+  <symbol id="icon-turtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="13" rx="6" ry="4"/><circle cx="12" cy="7" r="2"/><line x1="6" y1="15" x2="4" y2="18"/>
+    <line x1="18" y1="15" x2="20" y2="18"/><line x1="9" y1="17" x2="8" y2="20"/><line x1="15" y1="17" x2="16" y2="20"/>
+  </symbol>
+  <symbol id="icon-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+  </symbol>
+  <symbol id="icon-balance" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="3" x2="12" y2="21"/><path d="M5 7h14"/><path d="M5 7l-2 6h4l-2-6z"/><path d="M19 7l-2 6h4l-2-6z"/><line x1="8" y1="21" x2="16" y2="21"/>
+  </symbol>
+  <symbol id="icon-dna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/>
+    <path d="M2 9c6.667-6 13.333 0 20-6"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/>
+    <line x1="2" y1="12" x2="2" y2="12"/><line x1="22" y1="12" x2="22" y2="12"/>
+  </symbol>
+  <symbol id="icon-pill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/>
+  </symbol>
+  <symbol id="icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+    <line x1="2" y1="20" x2="22" y2="20"/>
+  </symbol>
+  <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </symbol>
+  <symbol id="icon-injection" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/>
+    <path d="m9 11 4 4"/><path d="m5 19-3 3"/><path d="m14 4 6 6"/>
+  </symbol>
+  <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </symbol>
+  <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </symbol>
+  <symbol id="icon-quiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </symbol>
+  <symbol id="icon-gain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </symbol>
+  <symbol id="icon-same" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/>
+  </symbol>
+  <symbol id="icon-loss" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+  </symbol>
+  <symbol id="icon-yoyo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2v20"/><path d="M6 6l6 4 6-4"/><path d="M6 18l6-4 6 4"/>
+  </symbol>
+  <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </symbol>
+  <symbol id="icon-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.657-1.343 3-3 3-.94 0-1.785-.436-2.326-1.114"/>
+    <path d="M12 22c-4.418 0-8-3.582-8-8 0-3.5 2.24-6.48 5.4-7.6C9 8 9.5 9.5 10 11c1.5-1.5 2-4 2-6 3 2 4.5 5 4.5 7.5 0 1.1-.268 2.136-.74 3.044"/>
+    <path d="M17.5 19.5c.83-.83.83-2.17 0-3"/>
+  </symbol>
+</svg>
+
+<div class="quiz-shell">
+
+<!-- ════════════════════════════════════
+     SCREEN 1: LANDING + Q1
+════════════════════════════════════ -->
+<div class="screen active" id="s1">
+
+  <div class="landing-hero">
+    <!-- Brand bar -->
+    <div class="brand-bar">
+      <span class="brand-bar-name">The Absorption Company</span>
+      <span class="brand-bar-badge">Just Launched</span>
+    </div>
+
+    <!-- Quiz intro -->
+    <div class="hero-quiz-intro">
+      <div class="hero-quiz-label">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Easy At-Home Weight Management
+      </div>
+
+      <div class="hero-title">{{ section.settings.hero_title }}</div>
+      <div class="hero-desc">{{ section.settings.hero_subtitle }}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--lighter);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">2-Minute Assessment</div>
+
+      <!-- Product intro pill -->
+      <div class="product-pill">
+        <div class="product-pill-dot"></div>
+        <div class="product-pill-text">Powered by <strong>WLP-1™</strong>, an oral GLP-1 biomimetic with ingredients shown to support up to 12% body weight reduction in 10 weeks.* BMI 25+</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">12%</div><div class="hero-stat-lbl">Body weight in 10 wks†</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">20x</div><div class="hero-stat-lbl">Better absorbed</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">22%</div><div class="hero-stat-lbl">Craving reduction*</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="landing-q">
+    <div class="eyebrow">Let's personalise your results — Question 1 of 9</div>
+    <div class="q-title">Which of these would make the biggest difference in your life?</div>
+    <div class="options" id="q1-opts">
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q1-opts', this, 's2')">
+        <div class="opt-icon"><svg><use href="#icon-scale"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Lose weight</div><div class="opt-desc">Reduce body fat and reach a healthier weight</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q1-opts', this, 's2')">
+        <div class="opt-icon"><svg><use href="#icon-bolt"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Improve my energy levels</div><div class="opt-desc">Feel more energised and less fatigued daily</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q1-opts', this, 's2')">
+        <div class="opt-icon"><svg><use href="#icon-fork"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Control my cravings</div><div class="opt-desc">Stop uncontrolled eating and emotional snacking</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q1-opts', this, 's2')">
+        <div class="opt-icon"><svg><use href="#icon-heart"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Improve metabolic health</div><div class="opt-desc">Better blood sugar, cholesterol and inflammation</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+    <div style="font-size:10px;color:var(--lighter);text-align:center;margin-top:18px;line-height:1.5;padding:0 10px;">
+      By continuing, you agree to our <a href="#" style="color:var(--mid);text-decoration:underline;">Terms of Service</a> and <a href="#" style="color:var(--mid);text-decoration:underline;">Privacy Policy</a>.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 2: GENDER
+════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Profile</span><span class="progress-step">2 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:18%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s1')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">About You</div>
+    <div class="q-title">What is your biological sex?</div>
+    <div class="q-sub">This helps personalise your weight loss projection.</div>
+    <div class="options-2col">
+      <button class="opt-card-big" onclick="window.WLP1Q.selectBig(this, 'splash1')">
+        <div class="big-icon"><svg width="40" height="40"><use href="#icon-male"/></svg></div>
+        <div class="big-label">Male</div>
+      </button>
+      <button class="opt-card-big" onclick="window.WLP1Q.selectBig(this, 'splash1')">
+        <div class="big-icon"><svg width="40" height="40"><use href="#icon-female"/></svg></div>
+        <div class="big-label">Female</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SPLASH 1: GLP-1 EDUCATION
+════════════════════════════════════ -->
+<div class="screen splash-screen" id="splash1">
+  <div class="splash">
+
+    <div class="splash-topbar">
+      <button class="splash-back-btn" onclick="window.WLP1Q.goTo('s2')">
+        <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="splash-counter">Fact 1 of 2</span>
+    </div>
+
+    <div class="splash-content">
+      <div class="splash-kicker">Did you know</div>
+
+      <div class="splash-title">Your body already makes a fat-loss hormone.</div>
+
+      <div class="splash-body">
+        GLP-1 is a naturally occurring hormone that signals fullness, reduces appetite, and activates fat-burning. In most adults carrying excess weight, <strong>this signal is blunted</strong> and your brain stops receiving it clearly.
+      </div>
+
+      <div class="splash-info-list">
+        <div class="splash-info-item highlighted" style="border-left-color:rgba(255,255,255,0.25)">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg viewBox="0 0 12 12" width="10" height="10" fill="none"><line x1="2" y1="2" x2="10" y2="10" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="2" x2="2" y2="10" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="splash-info-title" style="color:rgba(255,255,255,0.9);font-weight:600">Injectable GLP-1 drugs override your system</div>
+            <div class="splash-info-desc" style="color:rgba(255,255,255,0.65)">Pharmacological doses force the response, causing nausea, muscle loss, and weight rebound when stopped.</div>
+          </div>
+        </div>
+        <div class="splash-info-item highlighted">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg viewBox="0 0 12 12" width="10" height="10" fill="none"><polyline points="1.5,6 4.5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="splash-info-title">WLP-1™ restores it without drugs</div>
+            <div class="splash-info-desc">Four patented ingredients enhance your body's own GLP-1 activity, boost thermogenesis, and reduce appetite. No prescriptions. No injections. Just 2 capsules a day.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="splash-btn-wrap">
+      <button class="btn-primary" style="width:100%;margin:0;background:white;color:var(--blue)" onclick="window.WLP1Q.goTo('s3')">CONTINUE →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 3: KNOWLEDGE
+════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Background</span><span class="progress-step">3 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:30%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('splash1')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 3 of 9</div>
+    <div class="q-title">How much do you know about weight management solutions?</div>
+    <div class="q-sub">No right or wrong answer. Helps us explain the right things.</div>
+    <div class="options" id="q3-opts">
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q3-opts', this, 's4')">
+        <div class="opt-content"><div class="opt-label">Never heard of it</div><div class="opt-desc">This is all new to me</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q3-opts', this, 's4')">
+        <div class="opt-content"><div class="opt-label">I know a little</div><div class="opt-desc">I've heard of Ozempic or similar</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q3-opts', this, 's4')">
+        <div class="opt-content"><div class="opt-label">I'm fairly informed</div><div class="opt-desc">I understand GLP-1 and how it works</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q3-opts', this, 's4')">
+        <div class="opt-content"><div class="opt-label">I've tried it or researched extensively</div><div class="opt-desc">I've used or seriously considered injectable options</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 4: WEIGHT + HEIGHT
+════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Body</span><span class="progress-step">4 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:42%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s3')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 4 of 9</div>
+    <div class="q-title">What is your current weight and height?</div>
+    <div class="q-sub">Used to calculate your personalised weight loss timeline.</div>
+
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="u-imp" onclick="window.WLP1Q.setBodyUnit('imperial')">lbs / ft</button>
+      <button class="unit-btn" id="u-met" onclick="window.WLP1Q.setBodyUnit('metric')">kg / cm</button>
+    </div>
+
+    <div id="imperial-inputs">
+      <div class="input-group">
+        <div class="input-label-sm">Current Weight</div>
+        <div class="input-field-wrap">
+          <input class="input-field" id="weight-lbs" type="number" placeholder="180" min="80" max="500" oninput="window.WLP1Q.checkS4()">
+          <span class="input-unit">lbs</span>
+        </div>
+      </div>
+      <div class="input-row-pair">
+        <div class="input-group" style="margin-bottom:0">
+          <div class="input-label-sm">Height (ft)</div>
+          <div class="input-field-wrap">
+            <input class="input-field" id="height-ft" type="number" placeholder="5" min="3" max="7" oninput="window.WLP1Q.checkS4()">
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom:0">
+          <div class="input-label-sm">Height (in)</div>
+          <div class="input-field-wrap">
+            <input class="input-field" id="height-in" type="number" placeholder="8" min="0" max="11" oninput="window.WLP1Q.checkS4()">
+            <span class="input-unit">in</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="metric-inputs" style="display:none">
+      <div class="input-group">
+        <div class="input-label-sm">Current Weight</div>
+        <div class="input-field-wrap">
+          <input class="input-field" id="weight-kg" type="number" placeholder="82" min="36" max="225" oninput="window.WLP1Q.checkS4()">
+          <span class="input-unit">kg</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label-sm">Height</div>
+        <div class="input-field-wrap">
+          <input class="input-field" id="height-cm" type="number" placeholder="173" min="100" max="250" oninput="window.WLP1Q.checkS4()">
+          <span class="input-unit">cm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- No flex gap — button sits tight to inputs -->
+  <button class="btn-primary" id="s4-next" disabled onclick="window.WLP1Q.goTo('s5')">CONTINUE →</button>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 5: GOAL WEIGHT
+════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Goal</span><span class="progress-step">5 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:53%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s4')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 5 of 9</div>
+    <div class="q-title">How much weight would you like to lose?</div>
+    <div class="q-sub">Drag to set your goal. We'll show you exactly how long it could take.</div>
+
+    <div class="goal-slider-wrap">
+      <input type="range" class="goal-slider" id="goal-slider" min="5" max="25" step="1" value="10" oninput="window.WLP1Q.updateGoalSlider()">
+
+      <div class="goal-track-labels">
+        <span class="goal-track-lbl">5%</span>
+        <span class="goal-track-lbl">10%</span>
+        <span class="goal-track-lbl">15%</span>
+        <span class="goal-track-lbl">20%</span>
+        <span class="goal-track-lbl">25%</span>
+      </div>
+
+      <div class="goal-display" style="margin-top:18px;margin-bottom:0;text-align:center;">
+        <div class="goal-lbs" id="goal-lbs-display">18 lbs</div>
+        <div class="goal-pct" id="goal-pct-display">10% of your body weight</div>
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+    <button class="btn-primary" style="width:100%;margin:0" onclick="window.WLP1Q.goTo('splash2')">CONTINUE →</button>
+    <div style="height:24px"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SPLASH 2: CLINICAL RESULTS
+════════════════════════════════════ -->
+<div class="screen splash-screen" id="splash2">
+  <div class="splash">
+
+    <div class="splash-topbar">
+      <button class="splash-back-btn" onclick="window.WLP1Q.goTo('s5')">
+        <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="splash-counter">Fact 2 of 2</span>
+    </div>
+
+    <div class="splash-content">
+      <div class="splash-kicker">Did you know</div>
+
+      <div class="splash-title">The clinical data is compelling.</div>
+
+      <div class="splash-body">
+        In double-blind, placebo-controlled studies in adults with BMI 26+, participants using WLP-1™'s key ingredients saw <strong>significant, measurable results</strong> without drugs, injections, or stimulants.*
+      </div>
+
+      <div class="splash-stats-row">
+        <div class="splash-stat-item">
+          <div class="splash-stat-num">12%*</div>
+          <div class="splash-stat-lbl">body weight reduction in 10 weeks</div>
+        </div>
+        <div class="splash-stat-item">
+          <div class="splash-stat-num">4 lbs*</div>
+          <div class="splash-stat-lbl">in as little as 4 weeks</div>
+        </div>
+        <div class="splash-stat-item">
+          <div class="splash-stat-num">22%*</div>
+          <div class="splash-stat-lbl">less uncontrolled eating</div>
+        </div>
+        <div class="splash-stat-item">
+          <div class="splash-stat-num">31%*</div>
+          <div class="splash-stat-lbl">lower fasting blood glucose</div>
+        </div>
+      </div>
+
+      <div class="splash-info-list">
+        <div class="splash-info-item">
+          <div class="splash-info-bullet"></div>
+          <div>
+            <div class="splash-info-title">3 compounds with human clinical data</div>
+            <div class="splash-info-desc">IGOB131®, CQR300®, and Capsifen® have all been studied in human clinical trials.*</div>
+          </div>
+        </div>
+        <div class="splash-info-item">
+          <div class="splash-info-bullet"></div>
+          <div>
+            <div class="splash-info-title">20x better absorption</div>
+            <div class="splash-info-desc">Proprietary delivery technology means more active ingredient reaches your bloodstream where it works.*</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:9px;color:rgba(255,255,255,0.55);line-height:1.5;margin-top:18px;padding:0 4px;">
+        *Based on clinical studies of individual ingredients in adults with BMI 25+. WLP-1™ does not contain semaglutide and is not intended to diagnose, treat, cure, or prevent any disease. Individual results may vary.
+      </div>
+
+    </div>
+
+    <div class="splash-btn-wrap">
+      <button class="btn-primary" style="width:100%;margin:0;background:white;color:var(--blue)" onclick="window.WLP1Q.goTo('s6')">CONTINUE →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 6: LIFESTYLE
+════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Lifestyle</span><span class="progress-step">6 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:64%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('splash2')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 6 of 9</div>
+    <div class="q-title">How would you describe your current lifestyle?</div>
+    <div class="options" id="q6-opts">
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q6-opts', this, 's7')">
+        <div class="opt-icon"><svg><use href="#icon-sofa"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Mostly sedentary</div><div class="opt-desc">Desk job, minimal daily movement</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q6-opts', this, 's7')">
+        <div class="opt-icon"><svg><use href="#icon-walk"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Lightly active</div><div class="opt-desc">Short walks, occasional light activity</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q6-opts', this, 's7')">
+        <div class="opt-icon"><svg><use href="#icon-run"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Moderately active</div><div class="opt-desc">Regular exercise 3–4x per week</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q6-opts', this, 's7')">
+        <div class="opt-icon"><svg><use href="#icon-lift"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Very active</div><div class="opt-desc">Daily exercise or physically demanding job</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 7: LIFE IMPACT (multi-select)
+════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Experience</span><span class="progress-step">7 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s6')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 7 of 9</div>
+    <div class="q-title">Has your weight negatively affected your life?</div>
+    <div class="q-sub">Select all that apply.</div>
+    <div class="options" id="q7-opts" style="gap:8px">
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">Energy and daily function</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">Confidence and self-esteem</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">Physical health or mobility</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">Social life or relationships</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">Mental health or mood</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.toggleMulti(this)">
+        <div class="opt-content"><div class="opt-label">None of the above</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+    <div style="height:16px"></div>
+    <button class="btn-primary" style="width:100%;margin:0" onclick="window.WLP1Q.goTo('s8')">CONTINUE →</button>
+    <div style="height:24px"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 8: WEIGHT HISTORY
+════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your History</span><span class="progress-step">8 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:86%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s7')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 8 of 9</div>
+    <div class="q-title">How has your weight changed over the past year?</div>
+    <div class="options" id="q8-opts">
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q8-opts', this, 's9')">
+        <div class="opt-icon"><svg><use href="#icon-gain"/></svg></div>
+        <div class="opt-content"><div class="opt-label">I've gained weight</div><div class="opt-desc">More than a few pounds</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q8-opts', this, 's9')">
+        <div class="opt-icon"><svg><use href="#icon-same"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Stayed roughly the same</div><div class="opt-desc">Fluctuating but no clear direction</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q8-opts', this, 's9')">
+        <div class="opt-icon"><svg><use href="#icon-loss"/></svg></div>
+        <div class="opt-content"><div class="opt-label">I've lost some weight</div><div class="opt-desc">But I want to lose more or maintain it</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q8-opts', this, 's9')">
+        <div class="opt-icon"><svg><use href="#icon-yoyo"/></svg></div>
+        <div class="opt-content"><div class="opt-label">I keep gaining and losing</div><div class="opt-desc">Stuck in a cycle of yo-yo dieting</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 9: SPEED GOAL
+════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Your Timeline</span><span class="progress-step">9 of 9</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:97%"></div></div>
+  </div>
+  <button class="back-btn" onclick="window.WLP1Q.goTo('s8')">
+    <svg viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="q-wrap">
+    <div class="eyebrow">Question 9 of 9</div>
+    <div class="q-title">How quickly would you like to reach your goal?</div>
+    <div class="options" id="q9-opts">
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q9-opts', this, 'email')">
+        <div class="opt-icon"><svg><use href="#icon-turtle"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Slow and steady</div><div class="opt-desc">I prefer sustainable, gradual progress</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q9-opts', this, 'email')">
+        <div class="opt-icon"><svg><use href="#icon-rocket"/></svg></div>
+        <div class="opt-content"><div class="opt-label">As fast as possible</div><div class="opt-desc">I want to see results quickly</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+      <button class="opt-card" onclick="window.WLP1Q.selectOpt('q9-opts', this, 'email')">
+        <div class="opt-icon"><svg><use href="#icon-balance"/></svg></div>
+        <div class="opt-content"><div class="opt-label">Balanced approach</div><div class="opt-desc">Reasonably fast without cutting corners</div></div>
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     EMAIL CAPTURE
+════════════════════════════════════ -->
+<div class="screen" id="email">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span class="progress-label">Almost There</span><span class="progress-step"></span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+  </div>
+  <div class="email-wrap">
+    <div style="width:52px;height:52px;background:var(--blue-lt);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px">
+      <svg width="28" height="28" style="color:var(--blue)"><use href="#icon-target"/></svg>
+    </div>
+    <div class="email-title">Your personalised<br>results are ready.</div>
+    <div class="email-sub">Enter your email to unlock your WLP-1™ weight loss projection, timeline, and recommended plan. We'll also send you a 20% off launch discount.</div>
+
+    <div class="input-group">
+      <div class="input-label-sm">First Name</div>
+      <div class="input-field-wrap">
+        <input class="input-field" id="fname" type="text" placeholder="Jane" oninput="window.WLP1Q.checkEmail()">
+      </div>
+    </div>
+    <div class="input-group">
+      <div class="input-label-sm">Email Address</div>
+      <div class="input-field-wrap">
+        <input class="input-field" id="email-input" type="email" placeholder="jane@email.com" oninput="window.WLP1Q.checkEmail()">
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+    <button class="btn-primary" id="email-next" style="width:100%;margin:0" disabled onclick="window.WLP1Q.startAnalyzing()">SEE MY RESULTS →</button>
+    <div class="email-privacy">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>
+      We never share your data. Unsubscribe anytime.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LOADER: ANALYZING PROFILE
+════════════════════════════════════ -->
+<div class="screen" id="loader">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;min-height:100vh;">
+    <div class="loader-ring"></div>
+    <div style="font-size:20px;font-weight:800;color:var(--black);letter-spacing:-0.01em;margin-top:32px;">Analyzing your profile...</div>
+    <div id="loader-step" style="font-size:13px;color:var(--mid);margin-top:10px;line-height:1.5;max-width:300px;min-height:36px;">Reviewing your responses</div>
+    <div style="margin-top:28px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;">
+      <div class="loader-check" id="lc1"><span class="loader-check-icon">○</span><span>Reviewing your responses</span></div>
+      <div class="loader-check" id="lc2"><span class="loader-check-icon">○</span><span>Calculating your metabolic profile</span></div>
+      <div class="loader-check" id="lc3"><span class="loader-check-icon">○</span><span>Matching ingredients to your goals</span></div>
+      <div class="loader-check" id="lc4"><span class="loader-check-icon">○</span><span>Building your personalized plan</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     RESULTS PAGE — DIRECTION B
+════════════════════════════════════ -->
+<div class="screen" id="results">
+  <style>
+    /* Results-page-only styles (TAC blue scoped here) */
+    .r2-blue { color: #5e91d5; }
+    .r2-bg-blue { background: #5e91d5; }
+    .r2-bg-blue-lt { background: #EBF2FB; }
+    .r2-pill { background: #EBF2FB; color: #5e91d5; padding: 6px 11px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+    .r2-cta { background: #5e91d5; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.04em; cursor: pointer; width: 100%; transition: background 0.15s ease; }
+    .r2-cta:hover { background: #4a7dbe; }
+    .r2-section-lbl { font-size: 9px; font-weight: 800; color: var(--lighter); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+    .r2-eyebrow { font-size: 10px; font-weight: 800; color: #5e91d5; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+    .r2-hero-title { font-size: 22px; font-weight: 800; line-height: 1.2; color: var(--black); letter-spacing: -0.01em; }
+    .r2-card { background: var(--white); border-radius: 14px; border: 1px solid var(--border); padding: 18px 18px 20px; }
+    .r2-pathway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .r2-pathway { background: var(--bg-panel); border-radius: 10px; padding: 12px 11px 12px; }
+    .r2-pathway-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+    .r2-pathway-check { width: 18px; height: 18px; border-radius: 50%; background: #5e91d5; color: white; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .r2-pathway-name { font-size: 11.5px; font-weight: 800; color: var(--black); line-height: 1.15; }
+    .r2-pathway-desc { font-size: 10.5px; color: var(--mid); line-height: 1.35; }
+  </style>
+
+  <div style="padding: 28px 22px 14px;">
+    <div class="r2-eyebrow">Your projection</div>
+    <div class="r2-hero-title" id="r2-hero-title">Chrus, here's how the next 4 months could look.*</div>
+  </div>
+
+  <!-- GRAPH -->
+  <div style="padding: 8px 14px 4px;">
+    <svg id="r2-graph" viewBox="0 0 400 220" style="width: 100%; height: auto; display: block;">
+      <line x1="50" y1="30" x2="390" y2="30" stroke="#D0CCC3" stroke-width="0.5" stroke-dasharray="2 3"/>
+      <line x1="50" y1="80" x2="390" y2="80" stroke="#D0CCC3" stroke-width="0.5" stroke-dasharray="2 3"/>
+      <line x1="50" y1="130" x2="390" y2="130" stroke="#D0CCC3" stroke-width="0.5" stroke-dasharray="2 3"/>
+      <line x1="50" y1="180" x2="390" y2="180" stroke="#D0CCC3" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+      <text id="r2-y-top"   x="44" y="34"  text-anchor="end" font-size="9" fill="#888">180 lbs</text>
+      <text id="r2-y-mid1"  x="44" y="84"  text-anchor="end" font-size="9" fill="#888">170</text>
+      <text id="r2-y-mid2"  x="44" y="134" text-anchor="end" font-size="9" fill="#888">160</text>
+      <text id="r2-y-bot"   x="44" y="184" text-anchor="end" font-size="9" fill="#888">153</text>
+
+      <text id="r2-x-0" x="50"  y="208" font-size="9" fill="#888">Apr</text>
+      <text id="r2-x-1" x="135" y="208" font-size="9" fill="#888">May</text>
+      <text id="r2-x-2" x="220" y="208" font-size="9" fill="#888">Jun</text>
+      <text id="r2-x-3" x="305" y="208" font-size="9" fill="#888">Jul</text>
+      <text id="r2-x-4" x="380" y="208" text-anchor="end" font-size="9" fill="#888">Aug</text>
+
+      <path id="r2-area" d="M 50 32 Q 145 38 220 80 T 390 175 L 390 195 L 50 195 Z" fill="#5e91d5" opacity="0.10"/>
+      <path id="r2-line" d="M 50 32 Q 145 38 220 80 T 390 175" stroke="#5e91d5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <circle cx="50" cy="32" r="5" fill="white" stroke="#5e91d5" stroke-width="2.5"/>
+      <text id="r2-today-label" x="58" y="24" font-size="10" fill="#1A1A1A" font-weight="700">Today · 180 lbs</text>
+
+      <circle id="r2-goal-dot" cx="390" cy="175" r="6" fill="#5e91d5" stroke="white" stroke-width="2"/>
+      <rect id="r2-goal-bg" x="278" y="184" width="112" height="20" rx="10" fill="#1A1A1A"/>
+      <text id="r2-goal-label" x="334" y="197" text-anchor="middle" font-size="10" fill="white" font-weight="700">Goal · 153 lbs ✓</text>
+    </svg>
+  </div>
+
+  <!-- TRAITS -->
+  <div style="padding: 4px 22px 18px;">
+    <div class="r2-section-lbl">Based on your answers</div>
+    <div id="r2-traits" style="display:flex;flex-wrap:wrap;gap:6px;">
+      <div class="r2-pill">Lightly active</div>
+      <div class="r2-pill">Gained recently</div>
+      <div class="r2-pill">Wants energy back</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT CARD with pathway grid -->
+  <div style="padding: 0 14px;">
+    <div class="r2-card" style="padding:0;overflow:hidden;">
+      <!-- Header strip -->
+      <div class="r2-bg-blue" style="padding:14px 16px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:64px;height:64px;background:#EBF2FB;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+          <img src="{{ section.settings.stack_image | image_url: width: 200 }}" alt="The Stack" style="width:100%;height:100%;object-fit:contain;">
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:inline-block;background:white;color:#5e91d5;font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Your match</div>
+          <div style="font-size:15px;font-weight:800;color:white;line-height:1.2;">The Ultimate<br>Weight Management Stack</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;">Targets all 4 metabolic pathways</div>
+        </div>
+      </div>
+
+      <!-- Pathway grid (4-up) -->
+      <div style="padding:16px 14px 4px;">
+        <div class="r2-pathway-grid">
+          <div class="r2-pathway">
+            <div class="r2-pathway-head">
+              <div class="r2-pathway-check">✓</div>
+              <div class="r2-pathway-name">GLP-1 activity</div>
+            </div>
+            <div class="r2-pathway-desc">Tells your brain you're full, sooner</div>
+          </div>
+          <div class="r2-pathway">
+            <div class="r2-pathway-head">
+              <div class="r2-pathway-check">✓</div>
+              <div class="r2-pathway-name">Appetite signaling</div>
+            </div>
+            <div class="r2-pathway-desc">Quiets cravings between meals</div>
+          </div>
+          <div class="r2-pathway">
+            <div class="r2-pathway-head">
+              <div class="r2-pathway-check">✓</div>
+              <div class="r2-pathway-name">Thermogenesis</div>
+            </div>
+            <div class="r2-pathway-desc">Burns more calories at rest</div>
+          </div>
+          <div class="r2-pathway">
+            <div class="r2-pathway-head">
+              <div class="r2-pathway-check">✓</div>
+              <div class="r2-pathway-name">AMPK activation</div>
+            </div>
+            <div class="r2-pathway-desc">Helps your body use sugar instead of storing it</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price + CTA -->
+      <div style="padding:16px 18px 18px;">
+        <div style="display:flex;align-items:baseline;justify-content:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:11px;color:var(--mid);font-weight:600;">As low as</span>
+          <span style="font-size:24px;font-weight:900;color:var(--black);letter-spacing:-0.02em;">${{ section.settings.stack_price }}<span style="font-size:13px;color:var(--mid);font-weight:700;">/mo</span></span>
+          <span style="font-size:12px;color:var(--lighter);text-decoration:line-through;">${{ section.settings.stack_price_orig }}</span>
+        </div>
+        <button class="r2-cta" onclick="window.WLP1Q.trackCta('stack'); window.open('{{ section.settings.stack_url }}','_blank')">GET MY PLAN →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WLP-1 alone alt banner -->
+  <div style="padding: 14px 14px 4px;">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:13px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="window.WLP1Q.trackCta('wlp1'); window.open('{{ section.settings.wlp1_url }}','_blank')">
+      <div style="width:50px;height:50px;background:var(--bg-panel);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+        <img src="{{ section.settings.wlp1_image | image_url: width: 200 }}" alt="WLP-1" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:800;color:var(--black);line-height:1.2;">WLP-1™ alone</div>
+        <div style="font-size:11px;color:var(--mid);margin-top:2px;line-height:1.3;">Just the GLP-1 biomimetic. From <strong>${{ section.settings.wlp1_price }}/mo</strong></div>
+      </div>
+      <div style="font-size:11px;font-weight:800;color:#5e91d5;letter-spacing:0.04em;flex-shrink:0;">VIEW →</div>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div style="padding: 18px 22px 28px;font-size:10px;color:var(--lighter);line-height:1.5;">
+    {{ section.settings.disclaimer }}
+  </div>
+</div>
+
+</div><!-- end quiz-shell -->
+
+</div>
+
+<script>
+(function() {
+  var root = document.getElementById('wlp1q-{{ section.id }}');
+  if (!root) return;
+
+  // Patch DOMContentLoaded to fire immediately if already loaded
+  function _ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+let goalPct  = 10;
+let bodyUnit = 'imperial';
+// Store calculated weeks globally for chart
+let _stackWeeks = 8, _wlpWeeks = 10, _baseWeeks = 26;
+// Track if quiz_started event has been fired
+let _quizStartedFired = false;
+
+// ── ANALYTICS: Mixpanel ──
+// Uses Mixpanel's official snippet pattern so track() calls made before
+// the SDK finishes loading are queued and replayed automatically.
+(function() {
+  var token = '{{ section.settings.mixpanel_token }}';
+  if (!token) return;
+
+  // Mixpanel official snippet (verbatim from their docs, minified),
+  // with our token wired in. Creates window.mixpanel stub that queues calls.
+  (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+  for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+
+  // Initialize with our token
+  try {
+    window.mixpanel.init(token, {
+      debug: false,
+      track_pageview: false,
+      persistence: 'localStorage'
+    });
+  } catch (e) { /* silent */ }
+})();
+
+function trackEvent(eventName, properties) {
+  properties = properties || {};
+  properties.source = properties.source || 'WLP-1 Quiz';
+  try {
+    if (window.mixpanel && window.mixpanel.track) {
+      window.mixpanel.track(eventName, properties);
+    }
+  } catch (e) { /* silent */ }
+}
+
+function identifyUser(email, firstName) {
+  try {
+    if (!window.mixpanel || !window.mixpanel.identify) return;
+    window.mixpanel.identify(email);
+    window.mixpanel.people.set({
+      '$email':      email,
+      '$first_name': firstName || ''
+    });
+  } catch (e) { /* silent */ }
+}
+
+// ── NAVIGATION ──
+var _currentScreen = 's1';
+function goTo(id) {
+  var from = _currentScreen;
+
+  // Fire Quiz Fields Entered when leaving S4 (weight/height) or S5 (goal)
+  if (from === 's4' && id !== 's4') {
+    var weightLbs, heightIn;
+    if (bodyUnit === 'imperial') {
+      weightLbs = parseFloat(root.querySelector('#weight-lbs').value) || null;
+      var ft = parseFloat(root.querySelector('#height-ft').value) || 0;
+      var inch = parseFloat(root.querySelector('#height-in').value) || 0;
+      heightIn = ft * 12 + inch;
+    } else {
+      var wk = parseFloat(root.querySelector('#weight-kg').value) || null;
+      weightLbs = wk ? Math.round(wk * 2.20462) : null;
+      var cm = parseFloat(root.querySelector('#height-cm').value) || 0;
+      heightIn = cm ? Math.round(cm / 2.54) : null;
+    }
+    if (weightLbs || heightIn) {
+      trackEvent('WLP1 Quiz Fields Entered', {
+        field_group:  'weight_height',
+        weight_lbs:   weightLbs,
+        height_in:    heightIn,
+        unit_system:  bodyUnit
+      });
+    }
+  }
+  if (from === 's5' && id !== 's5') {
+    var weightForGoal = 180;
+    if (bodyUnit === 'imperial') {
+      var wl = parseFloat(root.querySelector('#weight-lbs').value);
+      if (wl) weightForGoal = wl;
+    } else {
+      var wkg = parseFloat(root.querySelector('#weight-kg').value);
+      if (wkg) weightForGoal = wkg * 2.20462;
+    }
+    trackEvent('WLP1 Quiz Fields Entered', {
+      field_group:    'goal_slider',
+      goal_loss_pct:  goalPct,
+      goal_loss_lbs:  Math.round(weightForGoal * (goalPct / 100))
+    });
+  }
+
+  root.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var target = root.querySelector('#' + id);
+  if (target) target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  _currentScreen = id;
+
+  // Fire Quiz Screen Viewed on every screen change — core of the drop-off funnel
+  trackEvent('WLP1 Quiz Screen Viewed', { screen: id });
+
+  // Fire Quiz Started once on first real interaction
+  if (!_quizStartedFired && id !== 's1') {
+    _quizStartedFired = true;
+    trackEvent('WLP1 Quiz Started', {});
+  }
+
+  // Fire Quiz Results Viewed when the results page actually loads
+  if (id === 'results') {
+    trackEvent('WLP1 Quiz Results Viewed', {
+      top_goal:       answers.q1 || '',
+      goal_loss_pct:  goalPct,
+      lifestyle:      answers.q6 || '',
+      weight_history: answers.q8 || '',
+      timeline:       answers.q9 || ''
+    });
+  }
+}
+
+// ── SINGLE SELECT (auto-advance after brief flash) ──
+// Global answer store
+const answers = { q1:'', q2:'', q3:'', q6:'', q7:[], q8:'', q9:'' };
+
+function selectOpt(groupId, btn, nextScreen) {
+  root.querySelector('#' + groupId).querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  // Store answer
+  const key = groupId.replace('-opts', '');
+  const lbl = btn.querySelector('.opt-label');
+  if (lbl && answers.hasOwnProperty(key)) answers[key] = lbl.textContent.trim();
+  trackEvent('WLP1 Quiz Question Answered', {
+    question_id: key,
+    answer: lbl ? lbl.textContent.trim() : ''
+  });
+  setTimeout(() => goTo(nextScreen), 260);
+}
+
+// ── 2-COL BIG SELECT ──
+function selectBig(btn, nextScreen) {
+  btn.closest('.options-2col').querySelectorAll('.opt-card-big').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  // Store gender (q2)
+  const lbl = btn.querySelector('.opt-label') || btn;
+  answers.q2 = (lbl.textContent || '').trim();
+  trackEvent('WLP1 Quiz Question Answered', {
+    question_id: 'q2',
+    answer: answers.q2
+  });
+  setTimeout(() => goTo(nextScreen), 260);
+}
+
+// ── MULTI SELECT ──
+function toggleMulti(btn) {
+  btn.classList.toggle('selected');
+  // Rebuild q7 array from currently selected
+  const group = btn.closest('.options');
+  if (group && group.id === 'q7-opts') {
+    answers.q7 = Array.from(group.querySelectorAll('.opt-card.selected'))
+      .map(c => (c.querySelector('.opt-label')?.textContent || '').trim())
+      .filter(Boolean);
+  }
+}
+
+// ── GOAL SLIDER ──
+function updateGoalSlider() {
+  const slider = root.querySelector('#goal-slider');
+  const pct = parseInt(slider.value);
+  goalPct = pct;
+
+  // Estimate lbs based on entered weight or default 180
+  let weightLbs = 180;
+  if (bodyUnit === 'imperial') {
+    const w = parseFloat(root.querySelector('#weight-lbs').value);
+    if (w) weightLbs = w;
+  } else {
+    const w = parseFloat(root.querySelector('#weight-kg').value);
+    if (w) weightLbs = w * 2.20462;
+  }
+  const lbs = Math.round(weightLbs * pct / 100);
+  const displayLbs = bodyUnit === 'metric' ? Math.round(lbs / 2.20462) + ' kg' : lbs + ' lbs';
+
+  root.querySelector('#goal-lbs-display').textContent = displayLbs;
+  root.querySelector('#goal-pct-display').textContent = pct + '% of your body weight';
+
+  // Update track fill (range is 5–25, so divisor is 20)
+  const fillPct = ((pct - 5) / 20) * 100;
+  slider.style.background = `linear-gradient(to right, #5E91D5 ${fillPct}%, #D0CCC3 ${fillPct}%)`;
+}
+
+// init slider on load
+document.addEventListener('DOMContentLoaded', updateGoalSlider);
+
+// ── UNIT TOGGLE ──
+function setBodyUnit(u) {
+  bodyUnit = u;
+  root.querySelector('#u-imp').classList.toggle('active', u === 'imperial');
+  root.querySelector('#u-met').classList.toggle('active', u === 'metric');
+  root.querySelector('#imperial-inputs').style.display = u === 'imperial' ? '' : 'none';
+  root.querySelector('#metric-inputs').style.display   = u === 'metric'   ? '' : 'none';
+  checkS4();
+}
+
+// ── VALIDATE S4 ──
+function checkS4() {
+  let valid = false;
+  if (bodyUnit === 'imperial') {
+    const w = root.querySelector('#weight-lbs').value;
+    const f = root.querySelector('#height-ft').value;
+    const i = root.querySelector('#height-in').value;
+    valid = w && f && i !== '';
+  } else {
+    const w = root.querySelector('#weight-kg').value;
+    const h = root.querySelector('#height-cm').value;
+    valid = w && h;
+  }
+  root.querySelector('#s4-next').disabled = !valid;
+}
+
+// ── VALIDATE EMAIL ──
+function checkEmail() {
+  const name  = root.querySelector('#fname').value.trim();
+  const email = root.querySelector('#email-input').value.trim();
+  const valid = name.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  root.querySelector('#email-next').disabled = !valid;
+}
+
+// ── ANALYZING LOADER → RESULTS ──
+function startAnalyzing() {
+  // Track email submission + identify the user in Mixpanel
+  var emailEl = root.querySelector('#email-input');
+  var fnameEl = root.querySelector('#fname');
+  var emailVal = emailEl ? emailEl.value.trim() : '';
+  var fnameVal = fnameEl ? fnameEl.value.trim().split(' ')[0] : '';
+
+  if (emailVal) {
+    identifyUser(emailVal, fnameVal);
+  }
+
+  trackEvent('WLP1 Quiz Email Submitted', {
+    first_name:     fnameVal,
+    top_goal:       answers.q1 || '',
+    goal_loss_pct:  goalPct,
+    lifestyle:      answers.q6 || '',
+    weight_history: answers.q8 || '',
+    timeline:       answers.q9 || ''
+  });
+
+  // Fire-and-forget Klaviyo subscription as soon as they hit "See my results"
+  submitToKlaviyo();
+
+  goTo('loader');
+  const steps = [
+    { id: 'lc1', text: 'Reviewing your responses' },
+    { id: 'lc2', text: 'Calculating your metabolic profile' },
+    { id: 'lc3', text: 'Matching ingredients to your goals' },
+    { id: 'lc4', text: 'Building your personalized plan' }
+  ];
+  const stepEl = root.querySelector('#loader-step');
+  let i = 0;
+  function tick() {
+    if (i < steps.length) {
+      stepEl.textContent = steps[i].text;
+      const el = root.querySelector('#' + steps[i].id);
+      if (el) {
+        el.classList.add('done');
+        el.querySelector('.loader-check-icon').textContent = '✓';
+      }
+      i++;
+      setTimeout(tick, 700);
+    } else {
+      buildResults();
+      setTimeout(() => goTo('results'), 350);
+    }
+  }
+  setTimeout(tick, 250);
+}
+
+// ── KLAVIYO SUBMISSION ──
+function submitToKlaviyo() {
+  var KLAVIYO_KEY  = '{{ section.settings.klaviyo_public_key }}';
+  var KLAVIYO_LIST = '{{ section.settings.klaviyo_list_id }}';
+  if (!KLAVIYO_KEY || !KLAVIYO_LIST) return;
+
+  // Pull the data we want to send
+  var emailEl = root.querySelector('#email-input');
+  var fnameEl = root.querySelector('#fname');
+  var email = emailEl ? emailEl.value.trim() : '';
+  var fname = fnameEl ? fnameEl.value.trim().split(' ')[0] : '';
+  if (!email) return;
+
+  // Calculate goal weight loss in lbs from current state
+  var weightLbs = 180;
+  if (bodyUnit === 'imperial') {
+    var w = parseFloat(root.querySelector('#weight-lbs').value);
+    if (w) weightLbs = w;
+  } else {
+    var wk = parseFloat(root.querySelector('#weight-kg').value);
+    if (wk) weightLbs = wk * 2.20462;
+  }
+  var goalLossLbs = Math.round(weightLbs * (goalPct / 100));
+
+  // Build the profile properties
+  var properties = {
+    'Quiz Top Goal':       answers.q1 || '',
+    'Quiz Goal Loss Pct':  goalPct,
+    'Quiz Goal Loss Lbs':  goalLossLbs,
+    'Quiz Source':         'WLP-1 Quiz',
+    'Quiz Completed At':   new Date().toISOString()
+  };
+
+  var payload = {
+    data: {
+      type: 'subscription',
+      attributes: {
+        custom_source: 'WLP-1 Quiz',
+        profile: {
+          data: {
+            type: 'profile',
+            attributes: {
+              email: email,
+              first_name: fname,
+              properties: properties
+            }
+          }
+        }
+      },
+      relationships: {
+        list: { data: { type: 'list', id: KLAVIYO_LIST } }
+      }
+    }
+  };
+
+  fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(KLAVIYO_KEY), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'revision': '2024-10-15'
+    },
+    body: JSON.stringify(payload)
+  }).catch(function(err) { console.warn('Klaviyo submission failed:', err); });
+}
+
+// ── BUILD RESULTS (Direction B — personalized) ──
+function buildResults() {
+  let weightLbs;
+  if (bodyUnit === 'imperial') {
+    weightLbs = parseFloat(root.querySelector('#weight-lbs').value) || 180;
+  } else {
+    weightLbs = (parseFloat(root.querySelector('#weight-kg').value) || 82) * 2.20462;
+  }
+
+  const lossLbs = weightLbs * (goalPct / 100);
+  const goalLbs = weightLbs - lossLbs;
+  const scale   = weightLbs / 180;
+  const stackRate = 1.55 * scale; // lbs/week, scaled to body weight
+  _stackWeeks = Math.max(4, Math.ceil(lossLbs / stackRate));
+  const months = Math.max(1, Math.round(_stackWeeks / 4.3));
+
+  const isMetric = bodyUnit === 'metric';
+  const fmtWt = lbs => isMetric ? `${Math.round(lbs / 2.20462)} kg` : `${Math.round(lbs)} lbs`;
+  const fmtWtNoUnit = lbs => isMetric ? `${Math.round(lbs / 2.20462)}` : `${Math.round(lbs)}`;
+  const unitLabel = isMetric ? 'kg' : 'lbs';
+
+  const fname = (root.querySelector('#fname')?.value || '').trim().split(' ')[0];
+
+  // Hero headline
+  const monthLabel = months === 1 ? '1 month' : `${months} months`;
+  root.querySelector('#r2-hero-title').textContent =
+    `${fname ? fname + ', here' : 'Here'}'s how the next ${monthLabel} could look.*`;
+
+  // ── GRAPH LABELS ──
+  // Y-axis: top = today's weight, bottom = goal weight, two interpolated mids
+  const yTop = weightLbs;
+  const yBot = goalLbs;
+  const yMid1 = yTop - (yTop - yBot) * (1/3);
+  const yMid2 = yTop - (yTop - yBot) * (2/3);
+  root.querySelector('#r2-y-top').textContent  = `${fmtWtNoUnit(yTop)} ${unitLabel}`;
+  root.querySelector('#r2-y-mid1').textContent = `${fmtWtNoUnit(yMid1)}`;
+  root.querySelector('#r2-y-mid2').textContent = `${fmtWtNoUnit(yMid2)}`;
+  root.querySelector('#r2-y-bot').textContent  = `${fmtWtNoUnit(yBot)}`;
+
+  // X-axis: 5 month labels starting from today
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now = new Date();
+  const startMo = now.getMonth();
+  // We have 5 tick positions; spread them across the months range
+  for (let i = 0; i < 5; i++) {
+    const monthsOut = Math.round((months) * (i / 4));
+    const label = monthNames[(startMo + monthsOut) % 12];
+    const el = document.getElementById('r2-x-' + i);
+    if (el) el.textContent = label;
+  }
+
+  // Today and goal labels on the curve
+  root.querySelector('#r2-today-label').textContent = `Today · ${fmtWt(yTop)}`;
+  root.querySelector('#r2-goal-label').textContent  = `Goal · ${fmtWt(yBot)} ✓`;
+
+  // ── TRAITS (pills) ──
+  const inactive = answers.q6 === 'Mostly sedentary' || answers.q6 === 'Lightly active';
+  const active   = answers.q6 === 'Moderately active' || answers.q6 === 'Very active';
+  const gained   = answers.q8 === "I've gained weight";
+  const yoyo     = answers.q8 === 'I keep gaining and losing';
+  const lost     = answers.q8 === "I've lost some weight";
+  const same     = answers.q8 === 'Stayed roughly the same';
+  const impacts  = Array.isArray(answers.q7) ? answers.q7.filter(x => x && x !== 'None of the above') : [];
+
+  const traits = [];
+  if (answers.q6) traits.push(answers.q6);
+  if (gained)  traits.push('Recent weight gain');
+  if (yoyo)    traits.push('Yo-yo cycle');
+  if (lost)    traits.push('Made some progress');
+  if (same)    traits.push('Stuck at the same weight');
+  // Pull a couple of impact traits if they exist
+  impacts.slice(0, 2).forEach(impact => {
+    const map = {
+      'Energy and daily function': 'Wants more energy',
+      'Confidence and self-esteem': 'Wants confidence back',
+      'Physical health or mobility': 'Wants better mobility',
+      'Social life or relationships': 'Affecting social life',
+      'Mental health or mood': 'Affecting mood'
+    };
+    if (map[impact]) traits.push(map[impact]);
+  });
+
+  // Goal magnitude trait
+  if (goalPct >= 18) traits.push('Ambitious goal');
+
+  const traitsEl = root.querySelector('#r2-traits');
+  if (traitsEl) {
+    traitsEl.innerHTML = traits.length
+      ? traits.map(t => `<div class="r2-pill">${t}</div>`).join('')
+      : '<div class="r2-pill">Personalized for you</div>';
+  }
+}
+
+  // Expose functions used by inline handlers
+  window.WLP1Q = window.WLP1Q || {};
+  window.WLP1Q.goTo = typeof goTo === "function" ? goTo : window.WLP1Q.goTo;
+  window.WLP1Q.selectBig = typeof selectBig === "function" ? selectBig : window.WLP1Q.selectBig;
+  window.WLP1Q.selectOpt = typeof selectOpt === "function" ? selectOpt : window.WLP1Q.selectOpt;
+  window.WLP1Q.setBodyUnit = typeof setBodyUnit === "function" ? setBodyUnit : window.WLP1Q.setBodyUnit;
+  window.WLP1Q.startAnalyzing = typeof startAnalyzing === "function" ? startAnalyzing : window.WLP1Q.startAnalyzing;
+  window.WLP1Q.toggleMulti = typeof toggleMulti === "function" ? toggleMulti : window.WLP1Q.toggleMulti;
+  window.WLP1Q.checkEmail = typeof checkEmail === "function" ? checkEmail : window.WLP1Q.checkEmail;
+  window.WLP1Q.checkS4 = typeof checkS4 === "function" ? checkS4 : window.WLP1Q.checkS4;
+  window.WLP1Q.updateGoalSlider = typeof updateGoalSlider === "function" ? updateGoalSlider : window.WLP1Q.updateGoalSlider;
+  window.WLP1Q.trackCta = function(which) {
+    trackEvent('WLP1 Quiz CTA Clicked', {
+      cta:            which,
+      top_goal:       answers.q1 || '',
+      goal_loss_pct:  goalPct,
+      lifestyle:      answers.q6 || ''
+    });
+  };
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 Quiz",
+  "tag": "section",
+  "class": "wlp1q-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "stack_image",
+      "label": "Stack product image",
+      "info": "Image for The Ultimate Weight Management Stack"
+    },
+    {
+      "type": "image_picker",
+      "id": "wlp1_image",
+      "label": "WLP-1 product image",
+      "info": "Image for WLP-1 alone"
+    },
+    {
+      "type": "header",
+      "content": "Product URLs"
+    },
+    {
+      "type": "url",
+      "id": "stack_url",
+      "label": "Stack product URL",
+      "info": "Where the 'Get my plan' button sends users"
+    },
+    {
+      "type": "url",
+      "id": "wlp1_url",
+      "label": "WLP-1 alone product URL"
+    },
+    {
+      "type": "header",
+      "content": "Pricing Display"
+    },
+    {
+      "type": "text",
+      "id": "stack_price",
+      "label": "Stack price (subscription)",
+      "default": "96"
+    },
+    {
+      "type": "text",
+      "id": "stack_price_orig",
+      "label": "Stack price (one-time, struck through)",
+      "default": "149"
+    },
+    {
+      "type": "text",
+      "id": "wlp1_price",
+      "label": "WLP-1 price (subscription)",
+      "default": "64"
+    },
+    {
+      "type": "header",
+      "content": "Hero Copy"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero headline",
+      "default": "Find Out What's Really Happening With Your Weight"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_subtitle",
+      "label": "Hero subtitle",
+      "default": "This 2-minute assessment analyzes your habits, goals, and metabolism to build your personalized plan."
+    },
+    {
+      "type": "header",
+      "content": "Klaviyo Integration",
+      "info": "Find both values in Klaviyo: Settings → Account → API Keys (public key) and Lists & Segments → your list URL (list ID)."
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_public_key",
+      "label": "Klaviyo public API key",
+      "info": "6-character public site ID, e.g. ABC123"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo list ID",
+      "info": "6-character list ID for quiz takers, e.g. XyZ789"
+    },
+    {
+      "type": "header",
+      "content": "Mixpanel Analytics",
+      "info": "Find your token in Mixpanel: Settings (gear icon) → Project Settings → Access Keys → Project Token"
+    },
+    {
+      "type": "text",
+      "id": "mixpanel_token",
+      "label": "Mixpanel project token",
+      "info": "32-character hex string. Leave blank to disable event tracking."
+    },
+    {
+      "type": "header",
+      "content": "Compliance"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Results page disclaimer",
+      "default": "*Projections are estimates based on clinical study data of the individual ingredients in WLP-1™ in adults with a BMI of 25+. WLP-1™ does not contain semaglutide and is not intended to diagnose, treat, cure, or prevent any disease. Individual results vary. These statements have not been evaluated by the FDA."
+    }
+  ],
+  "presets": [
+    {
+      "name": "WLP-1 Quiz",
+      "category": "Quiz"
+    }
+  ]
+}
+{% endschema %}

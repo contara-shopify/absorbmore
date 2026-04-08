@@ -1,0 +1,95 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__price"
+  assign section_type = "card_line_item_card"
+  assign css_class = block.settings.css_class
+  assign show_compare_as_price = block.settings.show_compare_as_price
+  assign discount_css_class = block.settings.discount_css_class
+  assign price_calculation = block.settings.price_calculation
+  assign price_display = block.settings.price_display
+  assign currency_display = block.settings.currency_display
+  assign text_alignment = block.settings.text_alignment
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% assign price = line_item.final_price %}
+{% assign compare_at_price = line_item.original_price | at_least: line_item.variant.compare_at_price | at_least: line_item.selling_plan_allocation.compare_at_price %}
+
+{% if price_display contains 'bundle_' %}
+  {% assign addon_item_prices = child_line_items | sum: 'final_price' %}
+  {% assign price = line_item.final_price | plus: addon_item_prices %}
+
+  {% assign addon_item_prices = 0 %}
+  {% for child_line_item in child_line_items %}
+    {% assign child_compare_at_price = child_line_item.original_price | at_least: child_line_item.variant.compare_at_price | at_least: child_line_item.selling_plan_allocation.compare_at_price %}
+    {% assign addon_item_prices = child_compare_at_price %}
+  {% endfor %}
+  {% assign compare_at_price = line_item.original_price | at_least: line_item.variant.compare_at_price | at_least: line_item.selling_plan_allocation.compare_at_price | plus: addon_item_prices %}
+{% endif %}
+
+{% if price_calculation == 'quantity_multiplied' %}
+  {% assign price = price | times: line_item.quantity %}
+  {% assign compare_at_price = compare_at_price | times: line_item.quantity %}
+{% endif %}
+
+<div data-style-id="{{ style_id }}"
+
+     class="inline-flex gap-2 flex-col {{ text_alignment | prepend: 'text-' }}">
+  <span
+      class="{{ css_class }} {% if compare_at_price > price %}discounted-price{% endif %}"
+      :class="line_card?.[`{{ price_display | append: 'compare_at_price' }}`] > line_card?.[`{{ price_display | append: 'price' }}`] ? 'discounted-price' : ''"
+      {% if price_calculation == 'quantity_multiplied' %}
+        x-html="utils.formatMoney(line_card?.[`{{ price_display | append: 'price' }}`] * (line_card?.line_item?.quantity || 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+      {% endif %} >
+    {% if currency_display == "store_default" or currency_display == "amount" %}
+      {{ price | money }}
+    {% endif %}
+    {% if currency_display == "amount_no_decimals" %}
+      {{ price | money_without_trailing_zeros }}
+    {% endif %}
+  </span>
+  {% if show_compare_as_price %}
+    <span
+        class="line-through {{ discount_css_class }}"
+        x-show="line_card?.[`{{ price_display | append: 'compare_at_price' }}`] > line_card?.[`{{ price_display | append: 'price' }}`]"
+        {% if compare_at_price <= price %}
+          x-cloak
+        {% endif %}
+        {% if price_calculation == 'quantity_multiplied' %}
+          x-html="utils.formatMoney(line_card?.[`{{ price_display | append: 'compare_at_price' }}`] * (line_card?.line_item?.quantity || 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+        {% endif %} >
+      {% if currency_display == "store_default" or currency_display == "amount" %}
+        {{ compare_at_price | money }}
+      {% endif %}
+      {% if currency_display == "amount_no_decimals" %}
+        {{ compare_at_price | money_without_trailing_zeros }}
+      {% endif %}
+    </span>
+  {% endif %}
+</div>
+
+

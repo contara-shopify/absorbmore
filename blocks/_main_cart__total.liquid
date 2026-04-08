@@ -1,0 +1,102 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_cart__total"
+  assign section_type = "main_cart"
+  assign show_conditionally = block.settings.show_conditionally
+  assign price_class = block.settings.price_class
+  assign compare_at_price_class = block.settings.compare_at_price_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank and text_color.alpha != 0 %}{% capture css %}& { color: {{ text_color }}; }{% endcapture %}{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+     x-show="_cart.showConditionally(`{{ show_conditionally }}`) || $editor?.select_block_id === `{{ block.id }}`"
+  {% if show_conditionally == 'cart_empty' and cart.item_count > 0 %}x-cloak{% endif %}
+  {% if show_conditionally == 'items_added' and cart.item_count <= 0 %}x-cloak{% endif %}
+     class="flex gap-2 items-center">
+  <span x-show="`{{ compare_at_price_class | strip }}` && $cart.state.original_pre_selling_plan_total_price > $cart.state.total_price"
+        x-html="utils.formatMoney($cart.state.original_pre_selling_plan_total_price)"
+        class="line-through {{ compare_at_price_class }}"></span>
+  <span x-html="utils.formatMoney($cart.state.total_price)" class="{{ price_class }}"></span>
+</div>
+
+{% schema %}
+{
+  "name": "Total",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "cart_empty",
+          "label": "Cart Empty"
+        },
+        {
+          "value": "items_added",
+          "label": "Items Added"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "price_class",
+      "label": "Price class",
+      "default": "richtext-md h4"
+    },
+    {
+      "type": "text",
+      "id": "compare_at_price_class",
+      "label": "Compare at price class",
+      "default": "richtext-md h4 !opacity-50",
+      "info": "Leave blank to hide compare as prices"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Total",
+      "category": "** Cart **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_cart__total"
+}
+{% endschema %}

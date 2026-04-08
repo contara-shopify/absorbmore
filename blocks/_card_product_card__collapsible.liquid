@@ -1,0 +1,255 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__collapsible"
+  assign section_type = "card_product_card"
+  assign label = block.settings.label
+  assign accordion_class = block.settings.accordion_class
+  assign content = block.settings.content
+  assign show = block.settings.show
+  assign auto_close_siblings = block.settings.auto_close_siblings
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign stripped_content = content | strip_html
+
+  capture blocks_content
+    content_for 'blocks'
+  endcapture
+
+  assign stripped_blocks_content = blocks_content | strip
+
+  if stripped_content == blank and stripped_blocks_content == blank or label == blank
+    assign is_empty = true
+  endif
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+%}
+
+{% capture accordion_content %}{% render '_input.richtext', content: content %}{% endcapture %}
+{% if stripped_blocks_content != blank %}
+  {% assign accordion_content = blocks_content %}
+{% endif %}
+
+{% if accordion_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+
+{% if request.design_mode or metaobjects.product_cards[section.settings.product_card] == blank %}
+  {% capture selector %}[data-style-id="{{ block.id | split: "__" | last }}"]{% endcapture %}
+
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+{% endif %}
+
+{% capture html_attributes %}data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }} {{ hide_attribute }}{% endcapture %}
+
+{% render '_components.collapsible', label: label, content: accordion_content, default_open: show, class: accordion_class, html_attributes: html_attributes, auto_close_siblings: auto_close_siblings %}
+
+{% schema %}
+{
+  "name": "Collapsible",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Accordion Title",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "accordion_class",
+      "label": "Accordion class",
+      "default": "accordion"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "Adding Blocks to the section will override the content field. [Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Open"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_close_siblings",
+      "label": "Auto close siblings"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "select",
+      "id": "show_conditionally",
+      "label": "Show conditionally",
+      "default": "always",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "with_subscriptions",
+          "label": "Subscription"
+        },
+        {
+          "value": "no_subscriptions",
+          "label": "One-time"
+        },
+        {
+          "value": "no_bundle",
+          "label": "Hide in Bundle"
+        },
+        {
+          "value": "bundle",
+          "label": "Only in Bundle"
+        },
+        {
+          "value": "with_variants",
+          "label": "With Variants"
+        },
+        {
+          "value": "no_variants",
+          "label": "No Variants"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "custom_liquid"
+    },
+    {
+      "type": "_card_product_card__container"
+    },
+    {
+      "type": "_card_product_card__collapsible"
+    },
+    {
+      "type": "_card_product_card__image"
+    },
+    {
+      "type": "_card_product_card__gallery"
+    },
+    {
+      "type": "_card_product_card__richtext"
+    },
+    {
+      "type": "_card_product_card__button"
+    },
+    {
+      "type": "_card_product_card__price"
+    },
+    {
+      "type": "_card_product_card__labels"
+    },
+    {
+      "type": "_card_product_card__rating"
+    },
+    {
+      "type": "_card_product_card__accent_line"
+    },
+    {
+      "type": "_card_product_card__cta_button"
+    },
+    {
+      "type": "_card_product_card__add_to_cart_toggle"
+    },
+    {
+      "type": "_card_product_card__variant_selector__select"
+    },
+    {
+      "type": "_card_product_card__variant_selector__radio"
+    },
+    {
+      "type": "_card_product_card__variant_selector__color"
+    },
+    {
+      "type": "_card_product_card__option__color"
+    },
+    {
+      "type": "_card_product_card__option__radio"
+    },
+    {
+      "type": "_card_product_card__option__select"
+    },
+    {
+      "type": "_card_product_card__addon_checkbox"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collapsible",
+      "category": "** Card **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___card_product_card__collapsible"
+}
+{% endschema %}

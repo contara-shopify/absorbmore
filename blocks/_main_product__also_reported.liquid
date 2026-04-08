@@ -1,0 +1,246 @@
+{% style %}
+  [data-component-also-reported] {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Also reported section */
+  .also-block{
+    width:100%;
+    background:#D6D0C4;
+    border:1px solid #C8C2B6;
+    border-radius:12px;
+    padding:32px 24px 28px;
+    position:relative;
+    overflow:hidden;
+    font-family:'Inter',-apple-system,sans-serif;
+  }
+  .also-block::before{
+    content:'';
+    position:absolute;top:0;left:0;right:0;bottom:0;
+    background:radial-gradient(ellipse at 30% 0%, rgba(255,255,255,.25) 0%, transparent 60%);
+    pointer-events:none;
+  }
+
+  .also-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:24px;
+    position:relative;
+  }
+  .also-tag{
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(0,0,0,.4);
+    white-space:nowrap;
+  }
+  .also-line{
+    flex:1;
+    height:1px;
+    background:rgba(0,0,0,.1);
+  }
+
+  .also-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    position:relative;
+  }
+
+  .also-item{
+    padding:14px 0;
+    border-top:1px solid rgba(0,0,0,.08);
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .also-item:nth-child(odd){padding-right:14px}
+  .also-item:nth-child(even){padding-left:14px;border-left:1px solid rgba(0,0,0,.08)}
+  .also-item:nth-child(1),
+  .also-item:nth-child(2){border-top:none;padding-top:0}
+
+  .also-check{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:rgba(0,0,0,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:1px;
+  }
+  .also-check svg{width:10px;height:10px;color:rgba(0,0,0,.4)}
+
+  .also-text{
+    font-size:13px;
+    font-weight:500;
+    color:rgba(0,0,0,.75);
+    line-height:1.4;
+  }
+  .also-text .dagger{
+    font-size:10px;
+    color:rgba(0,0,0,.3);
+    vertical-align:super;
+  }
+
+  .also-footnote{
+    font-size:10px;
+    color:rgba(0,0,0,.3);
+    line-height:1.5;
+    margin-top:20px;
+    position:relative;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .stat-section-header,
+    .stat-desc {
+      font-size: 10px;
+    }
+
+    .stat-number {
+      font-size: 24px;
+    }
+  }
+{% endstyle %}
+
+<div data-component-also-reported data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="component component--also-reported">
+    <div class="also-block">
+      <div class="also-header">
+        <div class="also-tag">{{ block.settings.heading | escape }}</div>
+        <div class="also-line"></div>
+      </div>
+      <div class="also-grid">
+        {% if block.settings.item_1_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_1_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+        {% if block.settings.item_2_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_2_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+        {% if block.settings.item_3_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_3_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+        {% if block.settings.item_4_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_4_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+        {% if block.settings.item_5_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_5_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+        {% if block.settings.item_6_text != blank %}
+          <div class="also-item">
+            <div class="also-check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 3.5,6.5 9,1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="also-text">{{ block.settings.item_6_text | escape | replace: '†', '<span class="dagger">†</span>' }}</div>
+          </div>
+        {% endif %}
+      </div>
+      <div class="also-footnote">{{ block.settings.footnote | escape }}</div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Also Reported",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Users also reported"
+    },
+    {
+      "type": "header",
+      "content": "Items"
+    },
+    {
+      "type": "text",
+      "id": "item_1_text",
+      "label": "Item 1",
+      "default": "Steadier energy throughout the day"
+    },
+    {
+      "type": "text",
+      "id": "item_2_text",
+      "label": "Item 2",
+      "default": "Reduced stress-related cravings"
+    },
+    {
+      "type": "text",
+      "id": "item_3_text",
+      "label": "Item 3",
+      "default": "Improved cholesterol levels†"
+    },
+    {
+      "type": "text",
+      "id": "item_4_text",
+      "label": "Item 4",
+      "default": "Less bloating after meals"
+    },
+    {
+      "type": "text",
+      "id": "item_5_text",
+      "label": "Item 5",
+      "default": "Better portion control"
+    },
+    {
+      "type": "text",
+      "id": "item_6_text",
+      "label": "Item 6",
+      "default": "Improved body composition†"
+    },
+    {
+      "type": "header",
+      "content": "Footnote"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Text",
+      "default": "*Self-reported by WLP-1™ users. Individual results may vary. †Observed in clinical research."
+    }
+  ],
+  "class": "shopify_block___main_product__also_reported",
+  "presets": [
+    {
+      "name": "Also Reported",
+      "category": "** Product **",
+      "settings": {
+        "heading": "Users also reported",
+        "item_1_text": "Steadier energy throughout the day",
+        "item_2_text": "Reduced stress-related cravings",
+        "item_3_text": "Improved cholesterol levels†",
+        "item_4_text": "Less bloating after meals",
+        "item_5_text": "Better portion control",
+        "item_6_text": "Improved body composition†",
+        "footnote": "*Self-reported by WLP-1™ users. Individual results may vary. †Observed in clinical research."
+      }
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

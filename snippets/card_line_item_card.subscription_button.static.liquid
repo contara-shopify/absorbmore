@@ -1,0 +1,95 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__subscription_button"
+  assign section_type = "card_line_item_card"
+  assign label = block.settings.label
+  assign select_class = block.settings.select_class
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if line_item.variant.selling_plan_allocations.size <= 0 %}
+  {% break %}
+{% endif %}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+{% capture html_attributes %}data-style-id="{{ style_id }}" x-show="line_card?.line_item?.selling_plan_allocation?.selling_plan?.id" {% endcapture %}
+
+{% if line_item.selling_plan_allocation.selling_plan.id == blank %}
+  {% assign html_attributes = html_attributes | append: ' x-cloak' %}
+{% endif %}
+
+{% liquid
+  assign selling_plan = line_item.variant.selling_plan_allocations[0].selling_plan
+
+  if selling_plan.price_adjustments[0].value_type == 'fixed_amount'
+    assign selling_plan_discount_wording = selling_plan.price_adjustments[0].value | times: line_item.quantity | money
+  endif
+
+  if selling_plan.price_adjustments[0].value_type == 'percentage'
+    assign selling_plan_discount_wording = selling_plan.price_adjustments[0].value | append: '%'
+  endif
+
+  assign current_title = line_item.selling_plan_allocation.selling_plan.name | default: 'One time purchase'
+
+  assign values = line_item.variant.selling_plan_allocations | map: 'selling_plan' | map: 'id' | join: '||%SPLIT%||' | split: '||%SPLIT%||'
+  assign titles = line_item.variant.selling_plan_allocations | map: 'selling_plan' | map: 'name'
+
+  if line_item.product.requires_selling_plan != true
+    assign values = 'undefined' | split: '|' | uniq | concat: values
+    assign titles = 'One time purchase' | split: '|' | uniq | concat: titles
+  endif
+%}
+
+<button
+    data-style-id="{{ style_id }}"
+    type="button"
+    class="{{ select_class }} text-center relative after:hidden before:hidden"
+    x-show="line_card?.variant?.selling_plan_allocations?.length && !line_card?.line_item?.selling_plan_allocation?.selling_plan?.id && $data.showConditionally('{{ show_conditionally }}')"
+    {% if line_item.selling_plan_allocation.selling_plan.id != blank %}
+      x-cloak
+    {% endif %}
+    @click.prevent.stop="$data.setSubscription(line_card?.variant?.selling_plan_allocations?.[0]?.selling_plan?.id)"
+    :class="line_card?.subscriptionIsChanging ? 'button-loading' : ''">
+  <span data-content="{{ label | escape }}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, line_card?.selling_plan_discount_wording ?? '')">
+    {{ label | replace: '[value]', selling_plan_discount_wording }}
+  </span>
+  <div class="!absolute inset-0 pointer-events-none" :class="line_card?.subscriptionIsChanging ? 'button-loading' : ''">
+  </div>
+</button>
+
+{% render '_components.select',
+    values: values,
+    titles: titles,
+    select_class: select_class,
+    label: 'Subscription Selector',
+    setState: "$data.setSubscription(+value)",
+    state: "`${line_card?.line_item?.selling_plan_allocation?.selling_plan?.id}`",
+    current_value: line_item.selling_plan_allocation.selling_plan.id,
+    current_title: line_item.selling_plan_allocation.selling_plan.name,
+    loading: 'line_card?.subscriptionIsChanging',
+    disabled: '$cart?.isChanging || line_card?.subscriptionIsChanging',
+    html_attributes: html_attributes
+%}

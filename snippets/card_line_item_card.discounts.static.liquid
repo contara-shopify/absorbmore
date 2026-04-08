@@ -1,0 +1,44 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_line_item_card__discounts"
+  assign section_type = "card_line_item_card"
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign text_color = block.settings.text_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'no_addon_products' and has_addon_products == true
+    break
+  endif
+  if show_conditionally == 'addon_products' and has_addon_products != true
+    break
+  endif
+  if show_conditionally == 'with_subscriptions' and line_item.product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and line_item.product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and line_item.product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and line_item.product.variants.size > 1
+    break
+  endif
+%}
+
+<ul data-style-id="{{ style_id }}" class="{{ content_class }}">
+  {% for discount in line_item.discounts %}
+    {% assign discount_value = discount.amount | divided_by: line_item.quantity | money %}
+    {% if discount.amount > 0 %}
+      {% assign discount_content = content | replace: '[title]', discount.title | replace: '[amount]', discount_value %}
+    {% else %}
+      {% assign discount_content = content | replace: '[title]', discount.title | replace: '[amount]', '' %}
+    {% endif %}
+    <li>{% render '_input.inline_richtext', content: discount_content %}</li>
+  {% endfor %}
+</ul>

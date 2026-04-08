@@ -1,0 +1,577 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "bundle_with_tabs"
+  assign heading = section.settings.heading
+  assign heading_class = section.settings.heading_class
+  assign parent_product = section.settings.parent_product
+  assign price_class = section.settings.price_class
+  assign content = section.settings.content
+  assign content_class = section.settings.content_class
+  assign placeholder_image = section.settings.placeholder_image
+  assign button_content = section.settings.button_content
+  assign button_content_items_added = section.settings.button_content_items_added
+  assign button_class = section.settings.button_class
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+{% capture tab_navigation_content %}
+  <button type="button"
+          @click="current_tab = `|%|TAB_LABEL|%|`"
+          class="shrink-0 text-left richtext-md h6 h-[70px] md:px-5 px-2.5 ac:bg-white border border-dashed border-[#D3D3D3] ac:border-solid ac:border-b-white |%|BUTTON_CLASS|%|"
+          x-show="$el.closest('.shopify-section')?.querySelector(`[data-tab-id='|%|TAB_LABEL|%|']`)"
+          x-init="if (!$el.closest('.shopify-section')?.querySelector(`[data-tab-id='|%|TAB_LABEL|%|']`)) { $el.remove(); }"
+          :class="current_tab === '|%|TAB_LABEL|%|' ? 'active' : ''">|%|LABEL_CONTENT|%|
+  </button>
+{% endcapture %}
+
+{% liquid
+  assign splitter = '|~|SPLIT|~|'
+  assign tab_blocks = ''
+
+  capture blocks_content
+    content_for "blocks"
+  endcapture
+
+  assign blocks_content_array = blocks_content | split: '<tab-content-label>'
+
+  assign blocks_content = blocks_content_array | first
+
+  for tab_item in blocks_content_array
+    if forloop.first
+      continue
+    endif
+    assign tab_label = tab_item | split: '</tab-content-label>' | first
+    assign tab_content_end = tab_item | split: '</tab-content-label>' | last
+
+    if forloop.index0 > 1
+      assign tab_content_end = tab_content_end | replace: 'data-tab-content-x-cloak-placeholder', 'x-cloak'
+    endif
+
+    assign blocks_content = blocks_content | append: tab_content_end
+    assign tab_blocks = tab_blocks | append: ',' | append: tab_label
+  endfor
+
+  assign tab_blocks = tab_blocks | replace_first: ',' | split: ','
+
+
+  for i in (1..100)
+    if blocks_content contains '<tab-navigation>'
+      assign blocks_array = blocks_content | replace_first: "<tab-navigation>", splitter | split: splitter
+      assign start = blocks_array | first
+      assign end = blocks_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | last
+
+      if tab_blocks.size < 1
+        assign blocks_content = start | append: end
+        continue
+      endif
+
+      assign tab_navigation = blocks_array | last | replace_first: "</tab-navigation>", splitter | split: splitter | first
+
+      assign tab_label = tab_navigation | split: '</tab-label>' | first | replace: '<tab-label>'
+      assign tab_navigation = tab_navigation | split: '</tab-label>' | last
+
+      assign tab_button_class = tab_navigation | split: '</tab-button-class>' | first | replace: '<tab-button-class>'
+      assign tab_navigation = tab_navigation | split: '</tab-button-class>' | last
+
+      assign tab_navigation_buttons_markup = ''
+
+      for tab in tab_blocks
+        assign tab_handle = tab | strip_html | handleize
+        assign tab_label_content = tab_label | replace: '[label]', tab
+
+        capture tab_label_richtext_content
+          render '_input.inline_richtext', content: tab_label_content
+        endcapture
+        assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab_handle
+        assign tab_navigation_buttons_markup = tab_navigation_buttons_markup | append: tab_button_markup
+      endfor
+
+      assign tab_navigation = tab_navigation | replace: '<tab-navigation-buttons-placeholder />', tab_navigation_buttons_markup
+
+      assign blocks_content = start | append: tab_navigation | append: end
+      continue
+    endif
+    break
+  endfor
+%}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+      data-style-id="{{ section.id }}--{{ block.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      x-data="{ bundle_items: [], loading: false }"
+      class="relative grid xl:grid-cols-2 2xl:grid-cols-[600px_1fr] xl:gap-8 2xl:gap-12 {{ container_spacing }}">
+    <header class="px-6 py-9 md:p-10 bg-white xl:border xl:border-[#D3D3D3] h-max mb-auto flex flex-col gap-5">
+      {% render '_input.richtext', content: heading, class: heading_class %}
+      {% if parent_product != blank %}
+        <div class="{{ price_class }} flex items-end gap-2">
+          <div>
+            <div>{{ parent_product.price | money }}</div>
+            {% if parent_product.price < parent_product.compare_at_price %}
+              <div class="line-through text-[#A6192E]">{{ parent_product.compare_at_price | money }}</div>
+            {% endif %}
+          </div>
+          {% if parent_product.price < parent_product.compare_at_price %}
+            <div>
+              (You save {{ parent_product.compare_at_price | minus: parent_product.price | money }})
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% render '_input.richtext', content: content, class: content_class %}
+      <div class="richtext-md h5">Choose Three Products:</div>
+      <footer class="max-md:fixed max-md:bottom-[55px] max-md:z-40 max-md:bg-white max-md:inset-x-0 max-md:px-6 max-md:py-4 max-md:shadow-invert">
+        <div class="flex gap-2 lg:gap-6">
+          {% for i in (1..3) %}
+            <figure class="block max-md:flex-1 max-md:shrink-0" x-data="{ index: +`{{ forloop.index0 }}` }">
+              <div class="image-wrapper aspect-1 md:size-[125px] relative border border-[#999999] border-dashed ac:border-[3px] ac:border-current ac:border-solid"
+                   :class="bundle_items[index] ? 'active': ''">
+                {% render '_object.image', image: placeholder_image, preload: true, sizes: '(max-width: 768px) 40vw, (max-width: 1024px) 20vw, 15vw', class: "w-full h-full object-contain" %}
+                <div x-show="bundle_items[index]?.image" x-cloak class="absolute inset-0 bg-white">
+                  <img :src="bundle_items[index]?.image" :alt="bundle_items[index]?.title" class="w-full h-full object-contain">
+                </div>
+                <button type="button"
+                        class="absolute top-2 right-2"
+                        x-cloak
+                        x-show="bundle_items[index]"
+                        @click.prevent.stop="bundle_items.splice(index, 1)">
+                  <span class="sr-only">Remove Item from Bundle</span>
+                  {% render '_components.icon', icon: 'x-mark-circle', class: 'size-6' %}
+                </button>
+              </div>
+              <figcaption class="text-[#999999] mt-2.5 md:max-w-[125px] text-sm"
+                          x-html="bundle_items[index]?.title || `Product ${index + 1}`">Product {{ forloop.index1 }}</figcaption>
+            </figure>
+          {% endfor %}
+        </div>
+        <button type="button"
+                class="mt-4 md:mt-11 w-full md:max-w-[280px] disabled:pointer-events-none disabled:opacity-50 {{ button_class }}"
+                disabled="disabled"
+                :class="loading ? 'button-loading' : ''"
+                :disabled="bundle_items.length < 3"
+                @click="const id = utils.shortUUID(); loading = true; _cart.add({ items: [...bundle_items.reduce((acc, item) => { acc.set(item.variant_id, { id: item.variant_id, quantity: (acc.get(item.variant_id)?.quantity ?? 0) + 1, properties: { _custom_bundle: id } }) ; return acc}, new Map()).values()] }).finally(() => { loading = false; $modal.setId('modal--cart-drawer') })"
+                x-html="bundle_items.length >= 3 ? $el.getAttribute('data-content-completed') : $el.getAttribute('data-content-emtpy')?.replace(/\[remaining\]/gi, 3 - bundle_items.length)"
+                data-content-emtpy="{% render '_input.inline_richtext', content: button_content, escape: true %}"
+                data-content-completed="{% render '_input.inline_richtext', content: button_content_items_added, escape: true %}">
+          {% assign final_button_content = button_content | replace: '[remaining]', '3' %}
+          {% render '_input.inline_richtext', content: button_content %}</button>
+      </footer>
+    </header>
+    <div class="relative"
+         data-tabs="{{ tab_blocks | json | escape }}"
+         x-data="{ ..._sections.initTabs($el) }">
+      {{ blocks_content }}
+    </div>
+
+  </section>
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Custom Bundle",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "heading_class",
+      "label": "Heading class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "product",
+      "id": "parent_product",
+      "label": "Parent product"
+    },
+    {
+      "type": "text",
+      "id": "price_class",
+      "label": "Price class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Content class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image",
+      "label": "Placeholder image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_content",
+      "label": "Button empty state",
+      "default": "Choose [remaining] Products",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [remaining] as a placeholder for the Items that need to be added."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_content_items_added",
+      "label": "Button completed state",
+      "default": "Add to Bucket",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab_navigation"
+    },
+    {
+      "type": "_bundle_with_tabs__tab_items"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Bundle",
+      "settings": {
+        "heading": "<h2>Your Custom Bundle</h2>",
+        "heading_class": "richtext-md",
+        "parent_product": "your-custom-bundle",
+        "price_class": "richtext-md h4",
+        "content_class": "richtext-md",
+        "placeholder_image": "shopify://shop_images/blank-bundle.webp",
+        "button_content": "Choose [remaining] Products",
+        "button_content_items_added": "Add to Bucket",
+        "button_class": "button-primary",
+        "container_spacing": "px-container-md",
+        "text_color": "#020202",
+        "background_color": "#efefef",
+        "custom_css": "& {\n  padding-top: 10px;\n  padding-bottom: 50px;\n}\n@media (max-width: 1280px) {\n  & {\n    padding: 0;\n  }\n}",
+        "section_id": ""
+      },
+      "blocks": [
+        {
+          "type": "_bundle_with_tabs__tab_items",
+          "settings": {},
+          "blocks": [
+            {
+              "type": "_bundle_with_tabs__bundle_tab",
+              "settings": {
+                "tab_name": "Hand Soap",
+                "content": "<h4>Liquid Hand Soap</h4><p></p><p>Hardworking, nondrying hand soap for busy hands.Made with essential oils, aloe vera, olive oil and otherthoughtfully chosen ingredients.</p>",
+                "content_class": "richtext-md",
+                "primary_product": "liquid-hand-soap-rain-water",
+                "image": "shopify://shop_images/hand.webp",
+                "quantity_class": "quantity-stepper-40",
+                "category_1_heading": "<h4>Seasonal Favorites</h4>",
+                "category_1_class": "richtext-md",
+                "category_1_products": [
+                  "liquid-hand-soap-daisy",
+                  "liquid-hand-soap-lilac",
+                  "liquid-hand-soap-mint",
+                  "liquid-hand-soap-rose",
+                  "liquid-hand-soap-acorn-spice",
+                  "liquid-hand-soap-apple-cider",
+                  "liquid-hand-soap-dandelion",
+                  "liquid-hand-soap-elderberry",
+                  "liquid-hand-soap-fall-leaves",
+                  "liquid-hand-soap-fresh-cut-grass",
+                  "liquid-hand-soap-gingerbread",
+                  "liquid-hand-soap-iowa-pine",
+                  "liquid-hand-soap-mum",
+                  "liquid-hand-soap-peppermint",
+                  "liquid-hand-soap-rain-water",
+                  "liquid-hand-soap-snowdrop",
+                  "liquid-hand-soap-tomato-vine"
+                ],
+                "category_2_heading": "<h4>Other Scents</h4>",
+                "category_2_class": "richtext-md",
+                "category_2_products": [
+                  "liquid-hand-soap-apple",
+                  "liquid-hand-soap-basil",
+                  "liquid-hand-soap-birchwood",
+                  "liquid-hand-soap-bluebell",
+                  "liquid-hand-soap-clementine",
+                  "liquid-hand-soap-compassion-flower",
+                  "liquid-hand-soap-cucumber",
+                  "liquid-hand-soap-eucalyptus",
+                  "liquid-hand-soap-geranium",
+                  "liquid-hand-soap-honeycomb",
+                  "liquid-hand-soap-honeysuckle",
+                  "liquid-hand-soap-lavender",
+                  "liquid-hand-soap-lemon-verbena",
+                  "lemonade-liquid-hand-soap",
+                  "liquid-hand-soap-oat-blossom",
+                  "liquid-hand-soap-pear-tree",
+                  "liquid-hand-soap-peony",
+                  "liquid-hand-soap-plum-berry",
+                  "liquid-hand-soap-rhubarb",
+                  "liquid-hand-soap-rosemary"
+                ],
+                "custom_css": "& {\n}"
+              }
+            },
+            {
+              "type": "_bundle_with_tabs__bundle_tab",
+              "settings": {
+                "tab_name": "Dish Soap",
+                "content": "<h4>Dish Soap</h4><p></p><p>Biodegradable Dish Soap contains plant-derived degreasers to make grease disappear.</p>",
+                "content_class": "richtext-md",
+                "primary_product": "rain-water-dish-soap",
+                "image": "shopify://shop_images/dish.webp",
+                "quantity_class": "quantity-stepper-40",
+                "category_1_heading": "<h4>Seasonal Favorites</h4>",
+                "category_1_class": "richtext-md",
+                "category_1_products": [
+                  "liquid-dish-soap-spiced-daisy",
+                  "liquid-dish-soap-lilac",
+                  "liquid-dish-soap-mint",
+                  "liquid-dish-soap-rose",
+                  "liquid-dish-soap-acorn-spice",
+                  "liquid-dish-soap-apple-cider",
+                  "liquid-dish-soap-dandelion",
+                  "liquid-dish-soap-elderberry",
+                  "liquid-dish-soap-fall-leaves",
+                  "liquid-dish-soap-fresh-cut-grass",
+                  "liquid-dish-soap-gingerbread",
+                  "liquid-dish-soap-iowa-pine",
+                  "liquid-dish-soap-mum",
+                  "liquid-dish-soap-peppermint",
+                  "liquid-dish-soap-snowdrop",
+                  "liquid-dish-soap-tomato-vine",
+                  "rain-water-dish-soap"
+                ],
+                "category_2_heading": "<h4>Other Scents</h4>",
+                "category_2_class": "richtext-md",
+                "category_2_products": [
+                  "liquid-dish-soap-basil",
+                  "liquid-dish-soap-bluebell",
+                  "liquid-dish-soap-compassion-flower",
+                  "liquid-dish-soap-eucalyptus",
+                  "liquid-dish-soap-geranium",
+                  "liquid-dish-soap-honeysuckle",
+                  "liquid-dish-soap-lavender",
+                  "liquid-dish-soap-lemon-verbena",
+                  "liquid-dish-soap-pear-tree",
+                  "liquid-dish-soap-peony",
+                  "liquid-dish-soap-radish"
+                ],
+                "custom_css": "& {\n}"
+              }
+            },
+            {
+              "type": "_bundle_with_tabs__bundle_tab",
+              "settings": {
+                "tab_name": "Multi-Surface Cleaner",
+                "content": "<h4>Multi-Surface Cleaner</h4><p></p><p>Quick and easy multi-surface spray removes stuck-on dirt from nonporous surfaces throughout the house and leaves a fresh, garden-inspired scent.</p>",
+                "content_class": "richtext-md",
+                "primary_product": "rain-water-multi-surface-everyday-cleaner",
+                "image": "shopify://shop_images/multi.webp",
+                "quantity_class": "quantity-stepper-40",
+                "category_1_heading": "<h4>Seasonal Favorites</h4>",
+                "category_1_class": "richtext-md",
+                "category_1_products": [
+                  "multi-surface-cleaner-daisy",
+                  "multi-surface-cleaner-lilac",
+                  "multi-surface-cleaner-mint",
+                  "multi-surface-cleaner-rose",
+                  "multi-surface-cleaner-acorn-spice",
+                  "multi-surface-cleaner-apple-cider",
+                  "multi-surface-cleaner-dandelion",
+                  "multi-surface-cleaner-elderberry",
+                  "multi-surface-cleaner-fall-leaves",
+                  "multi-surface-cleaner-fresh-cut-grass",
+                  "multi-surface-cleaner-gingerbread",
+                  "multi-surface-cleaner-iowa-pine",
+                  "multi-surface-cleaner-mum",
+                  "multi-surface-cleaner-peppermint",
+                  "rain-water-multi-surface-everyday-cleaner",
+                  "multi-surface-cleaner-snowdrop",
+                  "multi-surface-cleaner-tomato-vine"
+                ],
+                "category_2_heading": "<h4>Other Scents</h4>",
+                "category_2_class": "richtext-md",
+                "category_2_products": [
+                  "multi-surface-cleaner-basil",
+                  "multi-surface-cleaner-bluebell",
+                  "multi-surface-cleaner-compassion-flower",
+                  "multi-surface-cleaner-eucalyptus",
+                  "multi-surface-cleaner-geranium",
+                  "multi-surface-cleaner-honeysuckle",
+                  "multi-surface-cleaner-lavender",
+                  "multi-surface-cleaner-lemon-verbena",
+                  "multi-surface-cleaner-peony",
+                  "multi-surface-cleaner-rosemary"
+                ],
+                "custom_css": "& {\n}"
+              }
+            }
+          ]
+        }
+      ],
+      "category": "Bundle"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card",
+      "custom.head",
+      "custom.megamenu"
+    ]
+  },
+  "class": "shopify_section__bundle_with_tabs"
+}
+{% endschema %}

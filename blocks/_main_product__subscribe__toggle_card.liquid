@@ -1,0 +1,516 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__subscribe__toggle_card"
+  assign section_type = "main_product"
+  assign label = block.settings.label
+  assign label_class = block.settings.label_class
+  assign savings_label = block.settings.savings_label
+  assign savings_label_class = block.settings.savings_label_class
+  assign price_class = block.settings.price_class
+  assign compare_at_price_class = block.settings.compare_at_price_class
+  assign price_calculation = block.settings.price_calculation
+  assign currency_display = block.settings.currency_display
+  assign select_class = block.settings.select_class
+  assign highlights = block.settings.highlights
+  assign no_subscription_highlights = block.settings.no_subscription_highlights
+  assign fourteen_sticks_subscription_highlights = block.settings.fourteen_sticks_subscription_highlights
+  assign highlights_class = block.settings.highlights_class
+  assign gwp_image = block.settings.gwp_image
+  assign promotional_text = block.settings.promotional_text
+  assign default_selection = block.settings.default_selection
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: '.' | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: '.' | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  unless product.selling_plan_groups.size > 0
+    break
+  endunless
+
+  assign subscription_content = subscription_content | default: 'Choose an option'
+
+  capture subscription_content
+    render '_input.inline_richtext', content: subscription_content
+  endcapture
+
+  assign selling_plan_allocations = variant | map: 'selling_plan_allocations'
+  assign subscriptions = selling_plan_allocations | map: 'selling_plan'
+  assign subscription_titles = subscriptions | map: 'name'
+  assign subscription_ids = subscriptions | map: 'id'
+
+  assign selected_subscription = variant.selected_selling_plan_allocation.selling_plan | default: subscriptions[0]
+  assign selected_subscription_id = selected_subscription.id | default: subscriptions[0].id
+  assign selected_subscription_title = selected_subscription.name | default: subscriptions[0].name
+  assign lowest_percentage = selected_subscription | map: "price_adjustments" | where: "value_type", "percentage" | map: "value" | first
+  assign lowest_amount = selected_subscription | map: "price_adjustments" | where: "value_type", "fixed_amount" | map: "value" | first
+  assign lowest_fixed_price = selected_subscription | map: "price_adjustments" | where: "value_type", "price" | map: "value" | first
+
+  assign save_value = ''
+
+  if lowest_percentage
+    assign save_percentage = lowest_percentage | default: '10' | abs | divided_by: 100.00
+    assign save_amount = variant.price | times: save_percentage | round
+    if save_amount > 0
+      assign save_value = lowest_percentage | append: "%" | prepend: ''
+    endif
+  endif
+
+  if lowest_amount
+    assign save_amount = lowest_amount | abs
+    if save_amount > 0
+      assign save_value = lowest_amount | money
+    endif
+  endif
+
+  if lowest_fixed_price
+    assign save_amount = variant.price | minus: lowest_fixed_price | abs
+    if save_amount > 0
+      assign save_value = variant.price | minus: lowest_fixed_price | money
+    endif
+  endif
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+
+  assign discounted_price = price | minus: save_amount | at_least: 0
+  assign current_subscription_content = subscription_content | replace: "[value]", save_value | strip_newlines
+  assign subscription_dropdown_label = subscription_content | escape | replace: "[value]", ""
+
+  assign label_content = label | replace: '[value]', save_value
+  assign savings_label_content = savings_label | replace: '[value]', save_value
+  assign highlights_content = highlights | replace: '[value]', save_value
+  assign no_subscription_highlights_content = no_subscription_highlights | replace: '[value]', save_value
+  assign fourteen_sticks_subscription_highlights_content = fourteen_sticks_subscription_highlights | replace: '[value]', save_value
+
+  if product.metafields.smart.default_subscription != blank
+    if product.metafields.smart.default_subscription == true
+      assign default_selection = 'subscription'
+    else
+      assign default_selection = 'one_time'
+    endif
+  endif
+
+  if product.requires_selling_plan
+    assign default_selection = 'subscription'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {{ block.shopify_attributes }}
+  x-ignore
+  {% if default_selection == 'one_time' %}
+    x-init="$data.setSellingPlan(undefined)"
+  {% endif %}
+  {% if default_selection == 'subscription' %}
+    x-init="$data.setSellingPlan(+`{{ selected_subscription_id }}`)"
+  {% endif %}
+  role="switch"
+  aria-label="Toggle Subscription"
+  {% if product.requires_selling_plan != true %}
+    @click.prevent.stop="$data.setSellingPlan(pdp?.selected_selling_plan ? undefined : (pdp.last_selected_selling_plan?.id ?? pdp?.selected_variant?.selling_plan_allocations?.[0]?.selling_plan?.id))"
+  {% endif %}
+  data-quick-view-visibility="{{ quick_view_visibility }}"
+  x-show="pdp?.selected_variant?.selling_plan_allocations?.length">
+  {%- if gwp_variant_id != 0 -%}
+    <div
+      class="hidden"
+      data-gwp-variant-id="{{ gwp_variant_id }}"
+      data-gwp-threshold="28"
+    ></div>
+  {%- endif -%}
+  <header class="flex justify-between items-center gap-2">
+    {% if product.requires_selling_plan != true %}
+      <button
+        type="button"
+        class="block w-12 h-6 rounded-full transition-all duration-150 ease-in-out p-0.5"
+        :class="clsx(pdp?.selected_selling_plan ? 'bg-current' : 'bg-gray-300')"
+        aria-label="Toggle Subscription"
+      >
+        <span
+          class="flex w-5 h-5 rounded-full bg-white transition-all duration-150 ease-in-out will-change-transform items-center justify-center"
+          :class="clsx(pdp?.selected_selling_plan ? 'translate-x-6' : '')"
+        >
+          <span x-show="pdp?.selected_selling_plan">
+            {% render '_components.icon', icon: 'check-mark', class: 'h-2.5 w-2.5' %}
+          </span>
+        </span>
+      </button>
+    {% endif %}
+    <div class="flex-1 flex items-center gap-2 flex-wrap max-lg:gap-1">
+      <div
+        class="{{ label_class }}"
+        data-content="{% render '_input.inline_richtext', content: label, escape: true %}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+      >
+        {% render '_input.inline_richtext', content: label_content %}
+      </div>
+      <div
+        x-show="pdp.selected_selling_plan"
+        class="{{ savings_label_class }}"
+        data-content="{% render '_input.inline_richtext', content: savings_label, escape: true %}"
+        x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+      >
+        {% render '_input.inline_richtext', content: savings_label_content %}
+      </div>
+    </div>
+    <div class="shrink-0 ml-auto flex items-baseline gap-3 max-lg:flex-col-reverse max-lg:gap-1 max-lg:text-right max-lg:items-end">
+      <span
+          class="line-through opacity-50 {{ compare_at_price_class }}"
+          x-show="pdp.selected_price < pdp.selected_compare_at_price"
+          {% if compare_at_price <= price %}
+            x-cloak
+          {% endif %}
+          {% if price_calculation == 'normal' %}
+            x-html="utils.formatMoney(pdp.selected_compare_at_price, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+          {% endif %}
+          {% if price_calculation == 'quantity_multiplied' %}
+            x-html="utils.formatMoney(pdp.selected_compare_at_price * (pdp.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+          {% endif %} >{{ compare_at_price | money }}</span>
+      <span
+          class="{{ price_class }}"
+          :class="pdp.selected_price < pdp.selected_compare_at_price ? 'discounted-price' : ''"
+          {% if price_calculation == 'normal' %}
+            x-html="utils.formatMoney(pdp.selected_price, window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+          {% endif %}
+          {% if price_calculation == 'quantity_multiplied' %}
+            x-html="utils.formatMoney(pdp.selected_price * (pdp.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+          {% endif %} >{{ price | money }}</span>
+    </div>
+  </header>
+  <div x-show="pdp.selected_selling_plan" class="mt-4">
+    {% render '_components.select',
+        dynamic: true,
+        values: "pdp.selling_plan_allocations?.map((p,i)=> pdp.selected_selling_plan || (pdp.last_selected_selling_plan?.id ? pdp.last_selected_selling_plan?.id !== p.selling_plan?.id : i) ? p.selling_plan?.id : undefined) ?? []",
+        titles: "pdp.selling_plan_allocations?.map(p=> p.selling_plan?.name) ?? []",
+        select_class: select_class,
+        label: subscription_dropdown_label,
+        setState: "$data.setSellingPlan(+value ? +value : pdp.selling_plan_allocations[i ?? focusIndex]?.selling_plan?.id);",
+        state: "pdp.selected_selling_plan?.id",
+        current_value: '`pdp.selected_selling_plan?.id`',
+        current_title: "pdp.selected_selling_plan?.name",
+        server_rendered_title: selected_subscription_title
+    %}
+  </div>
+  <div class="flex max-md:flex-col gap-6 mt-4">
+    <div
+      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+      x-show="pdp.selected_selling_plan && !((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
+      data-content="{% render '_input.inline_richtext', content: highlights, escape: true %}"
+      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+      {% if default_selection != 'subcription' %}
+        x-cloak
+      {% endif %}
+    >
+      {% render '_input.inline_richtext', content: highlights_content %}
+    </div>
+    <div
+      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+      x-show="pdp.selected_selling_plan && ((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
+      data-content="{% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights, escape: true %}"
+      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+      {% if default_selection != 'subcription' %}
+        x-cloak
+      {% endif %}
+    >
+      {% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights_content %}
+    </div>
+    <div
+      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+      :class="pdp.selected_options?.[1]?.includes('Servings') && parseInt(pdp.selected_options[1].match(/^(\d+)/)?.[1] || '0', 10) >= 28 ? pdp.selected_selling_plan ? '' : 'line-through' : ''"
+      x-show="!pdp.selected_selling_plan"
+      data-content="{% render '_input.inline_richtext', content: no_subscription_highlights, escape: true %}"
+      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+      {% if default_selection == 'subcription' %}
+        x-cloak
+      {% endif %}
+    >
+      {% render '_input.inline_richtext', content: no_subscription_highlights_content %}
+    </div>
+    <div
+      class="shrink-0 flex items-center subscribe-gwp"
+      :class="pdp.selected_selling_plan ? 'active' : 'line-through'"
+      x-show="pdp.selected_options?.[1]?.includes('Servings') && parseInt(pdp.selected_options[1].match(/^(\d+)/)?.[1] || '0', 10) >= 28"
+    >
+      <div class="flex items-center gap-4 p-4 max-md:px-3 w-full bg-[#F7F5F1] rounded-[8px]" :class="!pdp.selected_selling_plan ? 'opacity-50' : ''">
+        <div class="w-[56px] h-[56px] flex items-center justify-center shadow-sm">
+          {% render '_object.image', image: gwp_image, class: "w-full h-full transition-all object-[inherit] rounded-[8px]", max_width: 112 %}
+        </div>
+        {% render '_input.richtext', content: promotional_text, class: "richtext-md [&>h5]:text-black" %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Subscription Toggle Card",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "info": "Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "text",
+      "id": "label_class",
+      "label": "Label class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "savings_label",
+      "label": "Savings label",
+      "info": "Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "text",
+      "id": "savings_label_class",
+      "label": "Savingss label class",
+      "default": "label-secondary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Price"
+    },
+    {
+      "type": "text",
+      "id": "price_class",
+      "label": "Price class",
+      "default": "richtext-md font-bold"
+    },
+    {
+      "type": "text",
+      "id": "compare_at_price_class",
+      "label": "Compare Price class",
+      "default": "richtext-md h6"
+    },
+    {
+      "type": "select",
+      "id": "price_calculation",
+      "label": "Price calculation",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "quantity_multiplied",
+          "label": "Quantity X"
+        },
+        {
+          "value": "no_discount",
+          "label": "No Discount"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "currency_display",
+      "label": "Currency display",
+      "default": "store_default",
+      "options": [
+        {
+          "value": "store_default",
+          "label": "Store Default"
+        },
+        {
+          "value": "amount",
+          "label": "Full"
+        },
+        {
+          "value": "amount_no_decimals",
+          "label": "No Decimals"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Select"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "header",
+      "content": "Highlights"
+    },
+    {
+      "type": "richtext",
+      "id": "highlights",
+      "label": "Highlights",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk). Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "richtext",
+      "id": "no_subscription_highlights",
+      "label": "No subscription Highlights",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk). Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "richtext",
+      "id": "fourteen_sticks_subscription_highlights",
+      "label": "14 Sticks subscription Highlights",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk). Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "text",
+      "id": "highlights_class",
+      "label": "Highlights class",
+      "default": "richtext-md"
+    },
+    {
+      "type": "header",
+      "content": "Gift with purchase"
+    },
+    {
+      "type": "image_picker",
+      "id": "gwp_image",
+      "label": "GWP Image"
+    },
+    {
+      "type": "richtext",
+      "id": "promotional_text",
+      "label": "Promotional text"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "select",
+      "id": "default_selection",
+      "label": "Default selection",
+      "default": "subscription",
+      "options": [
+        {
+          "value": "subscription",
+          "label": "Subscription"
+        },
+        {
+          "value": "one_time",
+          "label": "One-time"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription Toggle Card",
+      "category": "** Product Subscription **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__subscribe__toggle_card"
+}
+{% endschema %}

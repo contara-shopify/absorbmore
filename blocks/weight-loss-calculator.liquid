@@ -1,0 +1,263 @@
+{{ 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap' | stylesheet_tag }}
+
+<style>
+.wlp1-calc *,.wlp1-calc *::before,.wlp1-calc *::after{box-sizing:border-box;margin:0;padding:0}
+.wlp1-calc{
+  --card:#FFFFFF;--black:#111;--dark:#1A1A1A;--mid:#666;--light:#999;--lighter:#BBB;
+  --border:#E0DCD4;--border-light:#EDEBE6;--green:#2E9E5B;--green-lt:#EBF7F1;
+  --orange:#D4760A;--red:#C0392B;--chip-bg:#F5F3EF;--blue:#5E91D5;
+  font-family:'Inter',-apple-system,sans-serif;
+  width:100%;
+  max-width:100%;
+  margin:0 auto;
+  padding:40px 0;
+}
+.wlp1-calc .calc-wrap{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 32px rgba(0,0,0,.06)}
+.wlp1-calc .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:{{ block.settings.topbar_color | default: '#5E91D5' }};border-radius:12px 12px 0 0}
+.wlp1-calc .topbar-title{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:{{ block.settings.topbar_title_color | default: '#ffffff' }};}
+.wlp1-calc .unit-toggle{display:flex;background:var(--chip-bg);border-radius:8px;padding:3px;gap:2px}
+.wlp1-calc .unit-btn{font-family:inherit;font-size:12px;font-weight:600;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:var(--light);transition:.15s}
+.wlp1-calc .unit-btn.on{background:var(--black);color:#fff}
+.wlp1-calc .calc-body{display:grid;grid-template-columns:1fr 1fr}
+.wlp1-calc .inputs{padding:24px 28px;display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--border-light)}
+.wlp1-calc .slider-group{display:flex;flex-direction:column;gap:8px}
+.wlp1-calc .slider-top{display:flex;align-items:baseline;justify-content:space-between}
+.wlp1-calc .slider-label{font-size:14px;font-weight:500;color:var(--dark)}
+.wlp1-calc .slider-val{font-size:24px;font-weight:800;color:var(--black);letter-spacing:-.02em;line-height:1}
+.wlp1-calc .slider-unit{font-size:14px;font-weight:500;color:var(--mid);margin-left:3px}
+.wlp1-calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--border-light);border-radius:100px;outline:none;cursor:pointer}
+.wlp1-calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--black);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:grab}
+.wlp1-calc input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--black);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:grab}
+.wlp1-calc input[type=range]:active::-webkit-slider-thumb{cursor:grabbing}
+.wlp1-calc .range-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--lighter);margin-top:2px}
+.wlp1-calc .goal-context{font-size:12px;color:var(--light);margin-top:4px}
+.wlp1-calc .goal-context strong{color:var(--black);font-weight:700}
+.wlp1-calc .bmi-note{font-size:12px;padding:10px 12px;background:#FEF7E8;border-radius:8px;line-height:1.5;display:flex;align-items:flex-start;gap:8px}
+.wlp1-calc .bmi-note span{color:#6B4A0A}
+.wlp1-calc .bmi-note-icon{min-width:16px;height:16px;color:#BA7517;margin-top:1px;flex-shrink:0}
+.wlp1-calc .projection{padding:24px 28px;display:flex;flex-direction:column;gap:18px}
+.wlp1-calc .proj-header{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--light)}
+.wlp1-calc .proj-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;max-width:100%}
+.wlp1-calc .proj-main{flex:1;min-width:0}
+.wlp1-calc .proj-with{font-size:13px;font-weight:500;color:var(--mid);margin-bottom:4px}
+.wlp1-calc .proj-number{font-size:40px;font-weight:800;color:var(--black);letter-spacing:-.03em;line-height:1}
+.wlp1-calc .proj-number span{font-size:20px;font-weight:600;color:var(--mid);letter-spacing:0;margin-left:2px}
+.wlp1-calc .proj-timeframe{font-size:16px;font-weight:600;color:var(--mid);margin-top:4px}
+.wlp1-calc .proj-timeframe strong{color:var(--black)}
+.wlp1-calc .bmi-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:70px;max-width:70px;height:70px;border-radius:12px;border:2px solid var(--border);flex-shrink:0;flex-grow:0}
+.wlp1-calc .bmi-num{font-size:24px;font-weight:800;color:var(--black);line-height:1}
+.wlp1-calc .bmi-label{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--light);margin-top:2px;line-height:1;}
+.wlp1-calc .bmi-status{font-size:10px;font-weight:700;margin-top:1px;line-height:1;}
+.wlp1-calc .bmi-status.normal{color:var(--green)}
+.wlp1-calc .bmi-status.overweight{color:var(--orange)}
+.wlp1-calc .bmi-status.obese{color:var(--red)}
+.wlp1-calc .chart-wrap{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px 12px}
+.wlp1-calc .chart-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.wlp1-calc .chart-lab{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mid)}
+.wlp1-calc .chart-month{font-size:10px;color:var(--light)}
+.wlp1-calc .chart svg{width:100%;display:block}
+.wlp1-calc .chart-x{display:flex;justify-content:space-between;font-size:9px;color:var(--light);margin-top:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.wlp1-calc .disclaimer{padding:10px 28px 12px;font-size:10px;color:var(--lighter);line-height:1.5;border-top:1px solid var(--border-light)}
+@media(max-width:700px){
+  .wlp1-calc .calc-body{grid-template-columns:1fr}
+  .wlp1-calc .inputs{border-right:none;border-bottom:1px solid var(--border-light)}
+  .wlp1-calc .proj-number{font-size:38px}
+}
+
+@media (min-width: 1024px) {
+  .wlp1-calc .chart-wrap {
+    margin: 0 auto;
+    width: 75%;
+  }
+}
+</style>
+
+<div class="wlp1-calc">
+  <div class="calc-wrap">
+    <div class="topbar">
+      <span class="topbar-title">Reach Your Goal</span>
+      <div class="unit-toggle">
+        <button class="unit-btn on" id="btnImp" onclick="wlp1SetUnit('imperial')">lbs / ft</button>
+        <button class="unit-btn" id="btnMet" onclick="wlp1SetUnit('metric')">kg / cm</button>
+      </div>
+    </div>
+    <div class="calc-body">
+      <div class="inputs">
+        <div class="slider-group">
+          <div class="slider-top"><span class="slider-label">Current weight</span><div><span class="slider-val" id="wlp1DispW">180</span><span class="slider-unit" id="wlp1DispWU">lbs</span></div></div>
+          <input type="range" id="wlp1SlW" min="120" max="400" value="180" step="1" oninput="wlp1Calc()">
+          <div class="range-ends"><span id="wlp1WLo">120 lbs</span><span id="wlp1WHi">400 lbs</span></div>
+        </div>
+        <div class="slider-group" id="wlp1HImpGroup">
+          <div class="slider-top"><span class="slider-label">Height</span><div><span class="slider-val" id="wlp1DispH">5'8"</span></div></div>
+          <input type="range" id="wlp1SlH" min="48" max="84" value="68" step="1" oninput="wlp1Calc()">
+          <div class="range-ends"><span>4'0"</span><span>7'0"</span></div>
+        </div>
+        <div class="slider-group" id="wlp1HMetGroup" style="display:none">
+          <div class="slider-top"><span class="slider-label">Height</span><div><span class="slider-val" id="wlp1DispHcm">173</span><span class="slider-unit">cm</span></div></div>
+          <input type="range" id="wlp1SlHcm" min="120" max="215" value="173" step="1" oninput="wlp1Calc()">
+          <div class="range-ends"><span>120 cm</span><span>215 cm</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-top"><span class="slider-label">Goal weight</span><div><span class="slider-val" id="wlp1DispGW">162</span><span class="slider-unit" id="wlp1DispGWU">lbs</span></div></div>
+          <input type="range" id="wlp1SlGW" min="100" max="175" value="162" step="1" oninput="wlp1Calc()">
+          <div class="range-ends"><span id="wlp1GWLo">100 lbs</span><span id="wlp1GWHi">175 lbs</span></div>
+          <div class="goal-context">That's <strong id="wlp1GoalLoss">18</strong> lbs from your current weight</div>
+        </div>
+      </div>
+      <div class="projection">
+        <span class="proj-header">Your Projection</span>
+        <div class="proj-hero">
+          <div class="proj-main">
+            <div class="proj-with">WITH WLP-1™, YOUR GOAL IS WITHIN REACH</div>
+            <div class="proj-number" id="wlp1ProjLbs">18<span>lbs</span></div>
+            <div class="proj-timeframe">in <strong id="wlp1ProjTime">3 mo</strong></div>
+          </div>
+          <div class="bmi-badge">
+            <div class="bmi-num" id="wlp1BmiNum">27</div>
+            <div class="bmi-label">BMI</div>
+            <div class="bmi-status overweight" id="wlp1BmiStatus">Overweight</div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-top"><div class="chart-lab">3-Month Trajectory</div><div class="chart-month" id="wlp1ChartMax">180 → 162 lbs</div></div>
+          <div class="chart">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="wlp1G" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#5e91d5" stop-opacity=".28"/>
+                  <stop offset="100%" stop-color="#5e91d5" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="30" x2="300" y2="30" stroke="#1A1A18" stroke-opacity=".06" stroke-dasharray="2 3"/>
+              <line x1="0" y1="60" x2="300" y2="60" stroke="#1A1A18" stroke-opacity=".06" stroke-dasharray="2 3"/>
+              <line x1="0" y1="90" x2="300" y2="90" stroke="#1A1A18" stroke-opacity=".06" stroke-dasharray="2 3"/>
+              <path d="M12,30 Q87,42 162,62 T288,95 L288,115 L12,115 Z" fill="url(#wlp1G)"/>
+              <path d="M12,30 Q87,42 162,62 T288,95" fill="none" stroke="#5e91d5" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="12" cy="30" r="4" fill="#5e91d5"/>
+              <circle cx="288" cy="95" r="4" fill="#5e91d5"/>
+              <text x="20" y="22" font-size="10" fill="#1A1A18" font-weight="600" id="wlp1TxtStart">180 lbs</text>
+              <text x="280" y="112" font-size="10" fill="#5e91d5" font-weight="700" text-anchor="end" id="wlp1TxtEnd">162 lbs</text>
+            </svg>
+          </div>
+          <div class="chart-x"><span>Today</span><span>Month 1</span><span>Month 2</span><span>Month 3</span></div>
+        </div>
+        <div class="bmi-note" id="wlp1BmiNote" style="display:none">
+          <svg class="bmi-note-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1L1 14h14L8 1z" stroke="currentColor" stroke-width="1.2"/><path d="M8 6v4M8 11.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>Our clinical data is based on adults with BMI 25+. This projection may not reflect your experience.</span>
+        </div>
+      </div>
+    </div>
+    <div class="disclaimer">*Based on clinical data for WLP-1™ ingredients in adults with BMI 25+. Individual results vary. Not medical advice. Not evaluated by the FDA.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var unit='imperial';
+
+  function setUnit(u){
+    unit=u;
+    document.getElementById('btnImp').classList.toggle('on',u==='imperial');
+    document.getElementById('btnMet').classList.toggle('on',u==='metric');
+    document.getElementById('wlp1HImpGroup').style.display=u==='imperial'?'':'none';
+    document.getElementById('wlp1HMetGroup').style.display=u==='metric'?'':'none';
+    var slW=document.getElementById('wlp1SlW'),slGW=document.getElementById('wlp1SlGW');
+    if(u==='metric'){
+      var lbs=parseInt(slW.value),kg=Math.round(lbs/2.20462);
+      slW.min=54;slW.max=181;slW.value=kg;
+      document.getElementById('wlp1DispWU').textContent='kg';
+      document.getElementById('wlp1WLo').textContent='54 kg';document.getElementById('wlp1WHi').textContent='181 kg';
+      var gwLbs=parseInt(slGW.value),gwKg=Math.round(gwLbs/2.20462);
+      slGW.value=gwKg;document.getElementById('wlp1DispGWU').textContent='kg';
+    }else{
+      var kg2=parseInt(slW.value),lbs2=Math.round(kg2*2.20462);
+      slW.min=120;slW.max=400;slW.value=lbs2;
+      document.getElementById('wlp1DispWU').textContent='lbs';
+      document.getElementById('wlp1WLo').textContent='120 lbs';document.getElementById('wlp1WHi').textContent='400 lbs';
+      var gwKg2=parseInt(slGW.value),gwLbs2=Math.round(gwKg2*2.20462);
+      slGW.value=gwLbs2;document.getElementById('wlp1DispGWU').textContent='lbs';
+    }
+    calc();
+  }
+
+  function updateGoalRange(){
+    var slW=document.getElementById('wlp1SlW'),slGW=document.getElementById('wlp1SlGW');
+    var cur=parseInt(slW.value),minG=Math.round(cur*0.7),maxG=cur-5;
+    slGW.min=minG;slGW.max=maxG;
+    if(parseInt(slGW.value)>maxG)slGW.value=maxG;
+    if(parseInt(slGW.value)<minG)slGW.value=minG;
+    var ul=unit==='imperial'?'lbs':'kg';
+    document.getElementById('wlp1GWLo').textContent=minG+' '+ul;
+    document.getElementById('wlp1GWHi').textContent=maxG+' '+ul;
+  }
+
+  function calc(){
+    var raw=parseInt(document.getElementById('wlp1SlW').value);
+    var weightLbs,heightM;
+    if(unit==='imperial'){
+      weightLbs=raw;document.getElementById('wlp1DispW').textContent=raw;
+      var ti=parseInt(document.getElementById('wlp1SlH').value);
+      document.getElementById('wlp1DispH').textContent=Math.floor(ti/12)+"'"+ti%12+'"';
+      heightM=ti*0.0254;
+    }else{
+      weightLbs=raw*2.20462;document.getElementById('wlp1DispW').textContent=raw;
+      var cm=parseInt(document.getElementById('wlp1SlHcm').value);
+      document.getElementById('wlp1DispHcm').textContent=cm;heightM=cm/100;
+    }
+    updateGoalRange();
+    var goalRaw=parseInt(document.getElementById('wlp1SlGW').value);
+    document.getElementById('wlp1DispGW').textContent=goalRaw;
+    var lossLbs;
+    if(unit==='imperial'){lossLbs=raw-goalRaw;document.getElementById('wlp1GoalLoss').textContent=lossLbs;}
+    else{lossLbs=(raw-goalRaw)*2.20462;document.getElementById('wlp1GoalLoss').textContent=raw-goalRaw;}
+    var wkg=weightLbs/2.20462,bmi=Math.round(wkg/(heightM*heightM));
+    document.getElementById('wlp1BmiNum').textContent=bmi;
+    var s=document.getElementById('wlp1BmiStatus');
+    if(bmi<18.5){s.textContent='Underweight';s.className='bmi-status normal';}
+    else if(bmi<25){s.textContent='Normal';s.className='bmi-status normal';}
+    else if(bmi<30){s.textContent='Overweight';s.className='bmi-status overweight';}
+    else{s.textContent='Obese';s.className='bmi-status obese';}
+    document.getElementById('wlp1BmiNote').style.display=bmi<26?'':'none';
+    lossLbs=Math.max(1,lossLbs);
+    var sc=weightLbs/180,wlpWk=Math.max(1,Math.ceil(lossLbs/(1.2*sc)));
+    var wlpMo=Math.max(1,Math.round(wlpWk/4.33));
+    var dUnit=unit==='imperial'?'lbs':'kg';
+    var dLoss=Math.round(raw-goalRaw);
+    document.getElementById('wlp1ProjLbs').innerHTML=dLoss+'<span>'+dUnit+'</span>';
+    document.getElementById('wlp1ProjTime').textContent=wlpMo===1?'1 mo':wlpMo+' mo';
+    document.getElementById('wlp1ChartMax').textContent=raw+' → '+goalRaw+' '+dUnit;
+    document.getElementById('wlp1TxtStart').textContent=raw+' '+dUnit;
+    document.getElementById('wlp1TxtEnd').textContent=goalRaw+' '+dUnit;
+  }
+
+  window.wlp1SetUnit=setUnit;
+  window.wlp1Calc=calc;
+  calc();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 Calculator",
+  "settings": [
+    {
+      "type": "color",
+      "id": "topbar_color",
+      "label": "Top bar background",
+      "default": "#5e91d5"
+    },
+    {
+      "type": "color",
+      "id": "topbar_title_color",
+      "label": "Top bar title text",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "WLP-1 Calculator"
+    }
+  ]
+}
+{% endschema %}

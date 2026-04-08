@@ -1,0 +1,177 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_search__applied_filters"
+  assign section_type = "main_search"
+  assign content = block.settings.content
+  assign content_class = block.settings.content_class
+  assign no_filter_content = block.settings.no_filter_content
+  assign show_only_active = block.settings.show_only_active
+  assign no_filter_content_class = block.settings.no_filter_content_class
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign current_sort = search.sort_by | default: search.default_sort_by
+  assign current_sort = search.sort_options | where: 'value', current_sort | first
+%}
+
+{% capture active_filters %}
+  {% assign firstColorValue = null %}
+  {% assign url_to_remove_filters = false %}
+  {% for filter in search.filters %}
+    {% case filter.type %}
+      {% when 'price_range' %}
+        {% if filter.max_value.value < filter.range_max or filter.min_value.value > 0 %}
+          {% assign url_to_remove_filters = filter.url_to_remove | split: "?" | first %}
+          <button class="{{ button_class }}"
+                  type="button"
+                  x-data="{ clicked: false }"
+                  :class="clicked ? 'button-loading': ''"
+                  @click="async () => {
+                    const url = new URL(`${window.location.origin}{{ filter.url_to_remove }}`)
+                    url.searchParams.set('barba_prefetch', 'true')
+                    clicked = true
+                    await main_search.updateSortAndFilters(url)
+                    clicked = false
+                  }"
+                  :disabled="main_search?.state?.loading">
+            {{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}
+            {% render '_components.icon', icon: 'x-mark', class: 'size-[0.9em]' %}
+          </button>
+        {% endif %}
+      {% when 'boolean' or 'list' %}
+        {% for value in filter.active_values %}
+          {% assign url_to_remove_filters = filter.url_to_remove | split: "?" | first %}
+          {% assign downcaseLabel = filter.label | downcase %}
+          <button class="{{ button_class }}"
+                  type="button"
+                  x-data="{ clicked: false }"
+                  :class="clicked ? 'button-loading': ''"
+                  @click="async () => {
+                    const url = new URL(`${window.location.origin}{{ value.url_to_remove }}`)
+                    url.searchParams.set('barba_prefetch', 'true')
+                    clicked = true
+                    await main_search.updateSortAndFilters(url)
+                    clicked = false
+                  }"
+                  :disabled="main_search?.state?.loading">
+            {{ value.label }}
+            {% render '_components.icon', icon: 'x-mark', class: 'size-[0.9em]' %}
+          </button>
+        {% endfor %}
+    {% endcase %}
+  {% endfor %}
+
+  {% if url_to_remove_filters %}
+    {% if search.terms %}
+      {% capture search_query_params %}q={{ search.terms }}&type={{ search.types | join: "," }}&{% endcapture %}
+    {% endif %}
+    <button type="button"
+            x-data="{ clicked: false }"
+            :class="clicked ? 'button-loading': ''"
+            @click="async () => {
+              const url = new URL(`${window.location.origin}{{ url_to_remove_filters }}?{{ search_query_params }}sort_by={{ current_sort.value }}`)
+                url.searchParams.set('barba_prefetch', 'true')
+                clicked = true
+                await main_search.updateSortAndFilters(url)
+                clicked = false
+            }"
+            :disabled="main_search?.state?.loading"
+            class="{{ button_class }}">
+      Clear All {% render '_components.icon', icon: 'x-mark', class: 'size-[0.9em]' %}
+    </button>
+  {% endif %}
+{% endcapture %}
+
+{% if url_to_remove_filters == blank and show_only_active %}
+  {% break %}
+{% endif %}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} class="pb-4"
+  {% if show_search_conditionally == 'search_empty' and search.results_count > 0 %}x-cloak{% endif %}
+  {% if show_search_conditionally == 'items_found' and search.results_count <= 0 %}x-cloak{% endif %}
+     x-show="main_search.showConditionally(`{{ show_search_conditionally }}`)">
+  <div class="{{ content_class }}">{{ content }}</div>
+  {% if url_to_remove_filters %}
+    <div class="flex flex-wrap gap-2">
+      {{ active_filters }}
+    </div>
+  {% else %}
+    <div class="{{ no_filter_content_class }}">{{ no_filter_content }}</div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Applied Filters",
+  "settings": [
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "content_class",
+      "label": "Title class",
+      "default": "richtext-md h6"
+    },
+    {
+      "type": "text",
+      "id": "no_filter_content",
+      "label": "No filter content",
+      "default": "No filter applied"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_only_active",
+      "label": "Show only when filters are active",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "no_filter_content_class",
+      "label": "No filter content class",
+      "default": "richtext-md p"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary-sm"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Applied Filters",
+      "category": "** Search **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_search__applied_filters"
+}
+{% endschema %}

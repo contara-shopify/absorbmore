@@ -1,0 +1,128 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__image"
+  assign section_type = "card_product_card"
+  assign primary_image = block.settings.primary_image
+  assign show_secondary_image = block.settings.show_secondary_image
+  assign secondary_image = block.settings.secondary_image
+  assign link_to_object = block.settings.link_to_object
+  assign show_overlay = block.settings.show_overlay
+  assign overlay_color = block.settings.overlay_color
+  assign sizes = block.settings.sizes
+  assign max_width = block.settings.max_width
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+{% assign max_width = max_width | default: 600 %}
+{% assign primary_image_sources = primary_image | remove: " " | split: ',' %}
+{% for source in primary_image_sources %}
+  {% capture primary %}{% render '_input.dynamic_content', content: source, keys: 'product, selected_variant', product: product, selected_variant: variant, max_width: max_width %}{% endcapture %}
+  {% assign primary = primary | remove: " " %}
+  {% if primary contains '|%SPLIT%|' %}
+    {% assign primary_image_url = primary | split: "|%SPLIT%|" | first %}
+    {% assign primary_image_aspect_ratio = primary | split: "|%SPLIT%|" | last | times: 1.0 %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if show_secondary_image %}
+  {% assign secondary_image_sources = secondary_image | remove: " " | split: ',' %}
+  {% for source in secondary_image_sources %}
+    {% capture secondary %}{% render '_input.dynamic_content', content: source, keys: 'product, selected_variant', product: product, selected_variant: variant, max_width: max_width %}{% endcapture %}
+    {% assign secondary = secondary | remove: " " %}
+    {% if secondary contains '|%SPLIT%|' %}
+      {% assign secondary_image_url = secondary | split: "|%SPLIT%|" | first %}
+      {% assign secondary_image_aspect_ratio = secondary | split: "|%SPLIT%|" | last | times: 1.0 %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div
+    data-style-id="{{ style_id }}"
+    x-ignore
+    x-data="{ primary_image: getDynamicValueWithFallbacks(`{{ primary_image }}`), secondary_image: getDynamicValueWithFallbacks(`{{ secondary_image }}`)}"
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    {% if link_to_object %}
+      aria-label="{{ product.title }}"
+      role="link"
+      tabindex="0"
+      x-init="utils.simulateAnchorTag($el); $watch('p_card.selected_variant', () => { primary_image = getDynamicValueWithFallbacks(`{{ primary_image }}`); secondary_image = getDynamicValueWithFallbacks(`{{ secondary_image }}`) })"
+      :data-href="`${_stores.router?.pathname?.replace(/^.*?(\/collections\/[^/]*)?.*$/gi,'$1')?.replace(/^\/$/gi,'') ?? ''}/products/${p_card?.product_handle}?variant=${p_card?.selected_variant?.id}${$el.closest('data-product-handle')?.hasAttribute('data-recommendation-params') ? `&${$el.closest('data-product-handle')?.getAttribute('data-recommendation-params')}` : ''}`"
+      data-href="{{ product.url | within: collection }}"
+    {% else %}
+      x-init="$watch('p_card.selected_variant', () => { primary_image = getDynamicValueWithFallbacks(`{{ primary_image }}`); secondary_image = getDynamicValueWithFallbacks(`{{ secondary_image }}`) })"
+    {% endif %}
+    class="relative block shrink-0 overflow-hidden group">
+  {% capture html_attributes %}
+    :src="(primary_image?.src ? primary_image?.src : primary_image) || $el.src"
+    :alt="primary_image?.alt ?? p_card?.product?.title ?? $el.alt"
+    :srcset="(primary_image?.src || primary_image ? utils.getImageSrcSet(primary_image?.src ?? primary_image ?? '', +`{{ max_width }}`) : primary_image) || $el.srcset"
+    :loading="utils.isInViewport($el) ? 'eager' : 'lazy'"
+    {% if show_secondary_image %}
+      x-effect="$el.classList.toggle('group-hf:opacity-0', secondary_image?.src || secondary_image)"
+    {% endif %}
+    {% if primary_image_url == blank %}
+      x-cloak
+      x-show="!!((primary_image?.src ? primary_image?.src : primary_image) || $el.src?.replace(window.location.href,''))"
+    {% endif %}
+  {% endcapture %}
+  {% assign classes = 'pointer-events-none relative h-full w-full select-none overflow-hidden object-[inherit] transition-opacity duration-100 ease-in' %}
+  {% if secondary_image_url %}
+    {% assign classes = classes | append: ' group-hf:opacity-0' %}
+  {% endif %}
+  {% render '_object.image_from_url',
+      image_url: primary_image_url,
+      aspect_ratio: primary_image_aspect_ratio,
+      alt: product.title,
+      max_width: max_width,
+      sizes: sizes,
+      class: classes,
+      preload: preload_images,
+      html_attributes: html_attributes %}
+  {% if show_secondary_image %}
+    {% capture html_attributes %}
+      :src="secondary_image?.src || secondary_image || $el.src"
+      :alt="secondary_image?.alt ?? p_card?.product?.title ?? $el.alt"
+      :srcset="utils.getImageSrcSet(secondary_image?.src ?? secondary_image ?? '', +`{{ max_width }}`) || $el.srcset"
+      :loading="utils.isInViewport($el) ? 'eager' : 'lazy'"
+      x-cloak
+      x-show="!!(secondary_image?.src || secondary_image || $el.src?.replace(window.location.href,''))"
+    {% endcapture %}
+    {% assign classes = 'absolute inset-0 h-full w-full select-none overflow-hidden object-[inherit] group-hf:opacity-100 bg-inherit opacity-0 transition-opacity duration-100 ease-in' %}
+    {% render '_object.image_from_url',
+        image_url: secondary_image_url,
+        aspect_ratio: secondary_image_aspect_ratio,
+        alt: product.title,
+        max_width: max_width,
+        sizes: sizes,
+        class: classes,
+        html_attributes: html_attributes %}
+  {% endif %}
+</div>

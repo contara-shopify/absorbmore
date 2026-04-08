@@ -1,0 +1,329 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__subscribe__button_select"
+  assign section_type = "main_product"
+  assign legend_label = block.settings.legend_label
+  assign legend_class = block.settings.legend_class
+  assign one_time_content = block.settings.one_time_content
+  assign subscription_content = block.settings.subscription_content
+  assign button_class = block.settings.button_class
+  assign select_class = block.settings.select_class
+  assign default_selection = block.settings.default_selection
+  assign layout_order = block.settings.layout_order
+  assign quick_view_visibility = block.settings.quick_view_visibility
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  unless product.selling_plan_groups.size > 0
+    break
+  endunless
+
+  capture subscription_content
+    render '_input.inline_richtext', content: subscription_content
+  endcapture
+
+  assign selling_plan_allocations = variant | map: "selling_plan_allocations"
+  assign subscriptions = selling_plan_allocations | map: "selling_plan"
+  assign subscription_titles = subscriptions | map: "name"
+  assign subscription_ids = subscriptions | map: "id"
+
+  assign selected_subscription = variant.selected_selling_plan_allocation.selling_plan | default: subscriptions
+  assign selected_subscription_id = selected_subscription.id | default: subscriptions[0].id
+  assign selected_subscription_title = selected_subscription.name | default: subscriptions[0].name
+  assign lowest_percentage = selected_subscription | map: "price_adjustments" | where: "value_type", "percentage" | map: "value" | first
+  assign lowest_amount = selected_subscription | map: "price_adjustments" | where: "value_type", "fixed_amount" | map: "value" | first
+  assign lowest_fixed_price = selected_subscription | map: "price_adjustments" | where: "value_type", "price" | map: "value" | first
+
+  assign save_value = ''
+
+  if lowest_percentage
+    assign save_percentage = lowest_percentage | default: '10' | abs | divided_by: 100.00
+    assign save_amount = variant.price | times: save_percentage | round
+    if save_amount > 0
+      assign save_value = lowest_percentage | append: "%" | prepend: 'save '
+    endif
+  endif
+
+  if lowest_amount
+    assign save_amount = lowest_amount | abs
+    if save_amount > 0
+      assign save_value = lowest_amount | money
+    endif
+  endif
+
+  if lowest_fixed_price
+    assign save_amount = variant.price | minus: lowest_fixed_price | abs
+    if save_amount > 0
+      assign save_value = variant.price | minus: lowest_fixed_price | money
+    endif
+  endif
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+
+  assign discounted_price = price | minus: save_amount | at_least: 0
+  assign current_subscription_content = subscription_content | replace: "[value]", save_value | strip_newlines
+  assign subscription_dropdown_label = subscription_content | escape | replace: "[value]", ""
+
+  if product.metafields.smart.default_subscription != blank
+    if product.metafields.smart.default_subscription == true
+      assign default_selection = 'subscription'
+    else
+      assign default_selection = 'one_time'
+    endif
+  endif
+
+  if product.requires_selling_plan
+    assign default_selection = 'subscription'
+  endif
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    data-quick-view-visibility="{{ quick_view_visibility }}"
+    x-ignore
+    x-show="pdp.selling_plan_allocations?.length">
+  <legend id="legend-{{ block.id }}"
+          class="flex w-full max-w-full truncate {{ legend_class }}">
+    {% render '_input.inline_richtext', content: legend_label %}
+  </legend>
+  <fieldset aria-labelledby="legend-{{ block.id }}"
+            class="grid {% if product.requires_selling_plan != true %}grid-cols-2{% endif %} gap-[inherit]">
+    {% if product.requires_selling_plan != true %}
+      <label class="w-full {{ button_class }}"
+             :class="pdp.selected_selling_plan ? '' : 'active'"
+             aria-label="{{ value }}">
+        <input type="radio"
+               class="sr-only"
+               @change="$data.setSellingPlan(undefined)"
+               name="{{ block.id }}"
+               value="{{ value }}">
+        {% render '_input.inline_richtext', content: one_time_content %}
+      </label>
+    {% endif %}
+    <label class="w-full {{ layout_order }} {{ button_class }}"
+           :class="pdp.selected_selling_plan ? 'active' : ''"
+           aria-label="{{ value }}">
+      <input type="radio"
+             class="sr-only"
+             @change="$data.setSellingPlan(pdp.selected_selling_plan?.id ?? pdp.last_selected_selling_plan?.id ?? pdp.selling_plan_allocations?.[0]?.selling_plan?.id ?? +$el.value)"
+             name="{{ block.id }}"
+             value="{{ selected_subscription_id }}">
+      <span data-content="{{ subscription_content | escape }}"
+            x-html="$el.getAttribute('data-content').replace('[value]', pdp.selling_plan_discount_wording)">
+        {{ current_subscription_content }}
+      </span>
+    </label>
+  </fieldset>
+  <div x-show="pdp.selected_selling_plan" x-cloak>
+    {% render '_components.select',
+        dynamic: true,
+        values: "pdp.selling_plan_allocations?.map((p,i)=> pdp.selected_selling_plan || (pdp.last_selected_selling_plan?.id ? pdp.last_selected_selling_plan?.id !== p.selling_plan?.id : i) ? p.selling_plan?.id : undefined) ?? []",
+        titles: "pdp.selling_plan_allocations?.map(p=> p.selling_plan?.name) ?? []",
+        select_class: select_class,
+        label: subscription_dropdown_label,
+        setState: "$data.setSellingPlan(+value ? +value : pdp.selling_plan_allocations[i ?? focusIndex]?.selling_plan?.id);",
+        state: "pdp.selected_selling_plan?.id",
+        current_value: '`pdp.selected_selling_plan?.id`',
+        current_title: "pdp.selected_selling_plan?.name",
+        server_rendered_title: selected_subscription_title
+    %}
+  </div>
+</div>
+
+
+
+{% schema %}
+{
+  "name": "t:blocks.subscription_button_selector.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend_label",
+      "label": "Heading",
+      "default": "Frequency"
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "one_time_content",
+      "label": "One-time text",
+      "default": "One-time Purchase"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subscription_content",
+      "label": "Subscription text",
+      "default": "Subscribe & Save [value]",
+      "info": "Accepts [value] as placeholders to show potential savings based on a set percentage or a fixed amount as set your Subscription App settings."
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "select",
+      "id": "default_selection",
+      "label": "Default selection",
+      "default": "subscription",
+      "options": [
+        {
+          "value": "one_time",
+          "label": "One-time"
+        },
+        {
+          "value": "subscription",
+          "label": "Subscription"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Inline Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_order",
+      "label": "Layout",
+      "default": "order-1",
+      "options": [
+        {
+          "value": "order-1",
+          "label": "One-time first"
+        },
+        {
+          "value": "-order-1",
+          "label": "Subscription first"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Quick View Settings"
+    },
+    {
+      "type": "select",
+      "id": "quick_view_visibility",
+      "label": "Quick View Visibility",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "hidden",
+          "label": "hidden"
+        },
+        {
+          "value": "mobile_header",
+          "label": "Mobile Header"
+        },
+        {
+          "value": "quick_view_only",
+          "label": "Quick view only"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "You can additionally style elements using the Custom CSS, by targeting: '.quick-view & {}'"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription Button Selector",
+      "category": "** Product Subscription **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__subscribe__button_select"
+}
+{% endschema %}

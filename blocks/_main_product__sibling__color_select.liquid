@@ -1,0 +1,245 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_product__sibling__color_select"
+  assign section_type = "main_product"
+  assign legend_label = block.settings.legend_label
+  assign metafield = block.settings.metafield
+  assign legend = block.settings.legend
+  assign legend_class = block.settings.legend_class
+  assign select_class = block.settings.select_class
+  assign dangerously_check_markets = block.settings.dangerously_check_markets
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+
+  assign namespace_key = metafield | remove: " " | strip_newlines | split: '.'
+  assign metafield = product.metafields[namespace_key[0]][namespace_key[1]].value
+
+  unless metafield.count > 0
+    break
+  endunless
+
+  assign sibling_products = "" | split: "" | uniq
+  assign sibling_handles = "" | split: "" | uniq
+  assign sibling_titles = "" | split: "" | uniq
+  assign sibling_colors = "" | split: "" | uniq
+  assign sibling_images = "" | split: "" | uniq
+  assign sibling_swatch_titles = "" | split: "" | uniq
+  assign sibling_swatch_colors = "" | split: "" | uniq
+  assign sibling_swatch_images = "" | split: "" | uniq
+
+  for object in metafield
+    if object.product.value.handle == blank
+      continue
+    endif
+
+    if dangerously_check_markets
+      assign item = all_products[object.product.value.handle]
+      if item == blank
+        continue
+      endif
+    endif
+
+    assign _sibling_product = object.product.value | uniq
+    assign _sibling_handle = object.product.value.handle | uniq
+    assign _sibling_title = object.title.value | uniq
+    assign _sibling_color = object.color.value | uniq
+    assign _sibling_image = object.image.value | uniq
+    assign _sibling_swatch_title = object.swatch.value.title.value | uniq
+    assign _sibling_swatch_color = object.swatch.value.color.value | uniq
+    assign _sibling_swatch_image = object.swatch.value.image.value | uniq
+
+    assign sibling_products = sibling_products | concat: _sibling_product
+    assign sibling_handles = sibling_handles | concat: _sibling_handle
+    assign sibling_titles = sibling_titles | concat: _sibling_title
+    assign sibling_colors = sibling_colors | concat: _sibling_color
+    assign sibling_images = sibling_images | concat: _sibling_image
+    assign sibling_swatch_titles = sibling_swatch_titles | concat: _sibling_swatch_title
+    assign sibling_swatch_colors = sibling_swatch_colors | concat: _sibling_swatch_color
+    assign sibling_swatch_images = sibling_swatch_images | concat: _sibling_swatch_image
+
+    if object.product.value.handle == product.handle
+      assign current_handle = product.handle
+      assign current_title = object.title.value
+    endif
+  endfor
+
+  assign sibling_colors = sibling_colors | json
+  assign sibling_swatch_colors = sibling_swatch_colors | json
+
+  unless metafield.count > 0
+    assign is_empty = true
+  endunless
+  if current_handle == blank
+    assign is_empty = true
+  endif
+
+  if is_empty and hide_if_empty != 'none'
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+    assign hide_attribute = hide_attribute | append: ' data-block-type="' | append: block_type | append: '"' | append: ' data-block-id="' | append: block.id | append: '"'
+  endif
+
+  if is_empty
+    break
+  endif
+
+  assign content_legend = legend | replace: "[heading]", legend_label
+  assign current_legend = content_legend | replace: "[value]", current_title | default: legend_label
+%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<fieldset data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+          data-quick-view-visibility="{{ quick_view_visibility }}"
+          x-data="{ current_sibling: `{{ current_handle }}`, sibling_handles: utils.JSONParse($el.getAttribute('data-values'))?.filter(Boolean) ?? [] }"
+          x-init="sibling_handles?.forEach(handle =>{ barba.prefetch(utils.getSiblingUrl(handle)) })"
+          data-values="{{ sibling_handles | json | escape }}"
+          x-defer="intersect">
+  <legend class="flex w-full max-w-full truncate {{ legend_class }}"
+          x-ignore
+          data-legend="{% render '_input.inline_richtext', content: content_legend, escape: true %}"
+          data-current-title="{{ current_title | escape }}"
+          x-effect="$el.innerHTML = $el.getAttribute('data-legend').replace('[value]', $el.getAttribute('data-current-title'))">
+    {% render '_input.inline_richtext', content: current_legend %}
+  </legend>
+  {% render '_components.select_with_colors',
+      values: sibling_handles,
+      titles: sibling_titles,
+      colors: sibling_colors,
+      swatch_colors: sibling_swatch_colors,
+      select_class: select_class,
+      label: legend_label,
+      setState: "$data.setSiblingProduct(value, $el.closest('[data-quick-view-container]')); current_sibling = value",
+      state: "current_sibling",
+      current_value: current_handle,
+      current_title: current_title,
+      html_attributes: 'x-ignore',
+      disabled_clickable: true
+  %}
+</fieldset>
+
+{% schema %}
+{
+  "name": "Sibling: Color Select",
+  "settings": [
+    {
+      "type": "text",
+      "id": "legend_label",
+      "label": "Heading",
+      "default": "Models"
+    },
+    {
+      "type": "header",
+      "content": "Data Source"
+    },
+    {
+      "type": "text",
+      "id": "metafield",
+      "label": "Metaobject",
+      "default": "smart.sibling_products",
+      "info": "List of Metaobjects with the subfields of: 'product' (type: product_reference), 'title' (type: text) and 'color' (type: color) or 'image' (type: file_reference)."
+    },
+    {
+      "type": "paragraph",
+      "content": "It is possible to setup multiple sibling sets, using the same metaobject model on altering product metafield namespace.key settings."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "legend",
+      "label": "Heading",
+      "default": "[heading]: [value]",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk) Use [heading] as a placeholder for the title, and [value] as a placeholder for the current / hover value."
+    },
+    {
+      "type": "text",
+      "id": "legend_class",
+      "label": "Heading class",
+      "default": "richtext-md h5"
+    },
+    {
+      "type": "text",
+      "id": "select_class",
+      "label": "Select class",
+      "default": "input-select"
+    },
+    {
+      "type": "header",
+      "content": "Inline Layout"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Markets"
+    },
+    {
+      "type": "checkbox",
+      "id": "dangerously_check_markets",
+      "label": "Dangerously check markets",
+      "info": "Market availability checks are limited to 20 products per entire page (all sections combined). [read more](https://shopify.dev/docs/api/liquid/objects/all_products)",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n\n}\n& legend {\n  margin-bottom: 6px;\n}\n@media (max-width: 1024px) {\n  & {\n    \n  }\n}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sibling: Color Select",
+      "category": "** Product Siblings **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_product__sibling__color_select"
+}
+{% endschema %}

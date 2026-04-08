@@ -1,0 +1,185 @@
+{% comment %}
+
+Variables:
+ image_url: image_url
+ aspect_ratio: number
+ mobile_image_url: image_url (optional)
+ max_width: number (optional)
+ mobile_image: Optional Mobile Image Drop
+ mobile_max_width: number (optional)
+ default_alt: string
+ class: string
+ placeholder:
+      Outlines:
+    | image
+    | collection-1
+    | collection-2
+    | collection-3
+    | collection-4
+    | collection-5
+    | collection-6
+    | lifestyle-1
+    | lifestyle-2
+    | product-1
+    | product-2
+    | product-3
+    | product-4
+    | product-5
+    | product-6
+
+      Illustrations:
+    | product-apparel-1
+    | product-apparel-2
+    | product-apparel-3
+    | product-apparel-4
+    | collection-apparel-1
+    | collection-apparel-2
+    | collection-apparel-3
+    | collection-apparel-4
+    | hero-apparel-1
+    | hero-apparel-2
+    | hero-apparel-3
+    | blog-apparel-1
+    | blog-apparel-2
+    | blog-apparel-3
+    | detailed-apparel-1
+
+{% endcomment %}
+{% assign class = class | append: " select-none" %}
+{% assign breakpoint = breakpoint | default: '768px' %}
+
+
+{% liquid
+  assign max_width = max_width | default: 3840
+  assign defaultSizes = ''
+  assign sizes = sizes | default: defaultSizes
+
+  assign desiredSizes = '3840,1920,1440,1200,960,640,460,384,256,180,96' | split: ',' | uniq
+
+  assign original_image_url = image_url
+  assign version = image_url | split: 'v=' | last | replace_first: '&', '|%SPLIT%|' | split: '|%SPLIT%|' | first | append: '&'
+
+  assign image_base_url = image_url | split: '?' | first | append: '?v=' | append: version
+  assign image_url = image_base_url | append: 'width=' | append: max_width
+
+  assign index = 1
+
+  for size in desiredSizes
+    if index >= 5
+      break
+    endif
+    assign next_size = desiredSizes[forloop.index] | plus: 0
+    if next_size > max_width
+      continue
+    endif
+    assign current_size = size | plus: 0
+    if current_size > max_width
+      assign index = 1
+      assign defaultSrcset = image_base_url | append: 'width=' | append: size | append: " " | append: size | append: 'w'
+      continue
+    endif
+    assign index = index | plus: 1
+    assign defaultSrcset = defaultSrcset | append: ',' | append: image_base_url | append: 'width=' | append: size | append: " " | append: size | append: 'w'
+  endfor
+
+  assign srcset = srcset | default: defaultSrcset | default: ''
+
+  assign loading = 'lazy'
+  if preload
+    assign loading = 'eager'
+  endif
+  unless alt or role
+    assign role = 'presentation'
+  endunless
+%}
+
+{% if mobile_image_url != blank %}
+  {% liquid
+    assign version = mobile_image_url | split: 'v=' | last | replace_first: '&', '|%SPLIT%|' | split: '|%SPLIT%|' | first | append: '&'
+
+    assign mobile_image_base_url = mobile_image_url | split: '?' | first | append: '?v=' | append: version
+
+    assign mobile_max_width = mobile_max_width | default: 768
+    assign index = 1
+    for size in desiredSizes
+      if index >= 5
+        break
+      endif
+      assign next_size = desiredSizes[forloop.index] | plus: 0
+      if next_size > max_width
+        continue
+      endif
+      assign current_size = size | plus: 0
+      if current_size > mobile_max_width
+        assign index = 1
+        assign mobile_defaultSrcset = mobile_image_base_url | append: 'width=' | append: size | append: " " | append: size | append: 'w'
+        continue
+      endif
+      assign index = index | plus: 1
+      assign mobile_defaultSrcset = mobile_defaultSrcset | append: ',' | append: mobile_image_base_url | append: 'width=' | append: size | append: " " | append: size | append: 'w'
+    endfor
+
+    assign mobile_srcset = mobile_defaultSrcset | replace_first: ','
+  %}
+  <picture>
+    <source
+        media="(max-width: {{ breakpoint }})"
+        {% if data_src != true %}
+          srcset="{{ mobile_srcset }}"
+        {% else %}
+          data-srcset="{{ mobile_srcset }}"
+        {% endif %}
+        sizes="{{ sizes }}"
+    />
+    <img
+        {% if data_src != true and original_image_url != blank %}
+          src="{{ image_url }}"
+        {% else %}
+          data-src="{{ image_url }}"
+        {% endif %}
+        {{ html_attributes }}
+      {% if width != blank %}width="{{ width }}"{% endif %}
+      {% if height != blank %}height="{{ height }}"{% endif %}
+      {% if alt != blank %}alt="{{ alt }}"{% endif %}
+      {% if class != blank %}class="{{ class }}"{% endif %}
+      {% if style != blank %}style="{{ style }}"{% endif %}
+      {% if sizes != blank %}sizes="{{ sizes }}"{% endif %}
+      {% if loading != blank %}loading="{{ loading }}"{% endif %}
+      {% if preload %}fetchpriority="high"{% endif %}
+      {% if role != blank %}role="{{ role }}"{% endif %}
+        {% if srcset != blank %}
+          {% if data_src != true and original_image_url != blank %}
+            srcset="{{ srcset }}"
+          {% else %}
+            data-srcset="{{ srcset }}"
+          {% endif %}
+        {% endif %}
+        data-image="{{ loading }}">
+  </picture>
+{% else %}
+  <img
+      {% if data_src != true and original_image_url != blank %}
+        src="{{ image_url }}"
+      {% else %}
+        data-src="{{ image_url }}"
+      {% endif %}
+      {{ html_attributes }}
+    {% if width != blank %}width="{{ width }}"{% endif %}
+    {% if height != blank %}height="{{ height }}"{% endif %}
+    {% if alt != blank %}alt="{{ alt }}"{% endif %}
+    {% if class != blank %}class="{{ class }}"{% endif %}
+    {% if style != blank %}style="{{ style }}"{% endif %}
+    {% if sizes != blank %}sizes="{{ sizes }}"{% endif %}
+    {% if loading != blank %}loading="{{ loading }}"{% endif %}
+    {% if preload %}fetchpriority="high"{% endif %}
+    {% if role != blank %}role="{{ role }}"{% endif %}
+      {% if srcset != blank %}
+        {% if data_src != true and original_image_url != blank %}
+          srcset="{{ srcset }}"
+        {% else %}
+          data-srcset="{{ srcset }}"
+        {% endif %}
+      {% endif %}
+      data-image="{{ loading }}">
+{% endif %}
+

@@ -1,0 +1,133 @@
+{% liquid
+
+  if autoplay == null
+    assign autoplay = true
+  endif
+
+  if controls == null
+    assign controls = true
+  endif
+
+  if loop == null
+    assign loop = true
+  endif
+
+  if muted == null
+    assign muted = true
+  endif
+%}
+
+{% if media == blank %}  {% break %}  {% endif %}
+
+{% if media.media_type == 'image' %}
+  {% render '_object.image', image: media, class: class, id: id, sizes: sizes, max_width: max_width, preload: preload, html_attributes: html_attributes, data_src: data_src %}
+  {% break %}
+{% endif %}
+{% if media.media_type == 'video' %}
+  {% capture rendered_video %}
+    <video
+        x-data="{ playing: !!($el.currentTime > 0 && !$el.paused && !$el.ended && $el.readyState > 2), started: $el.currentTime > 0, ended: $el.ended, playVideo: $el.play, pauseVideo: $el.pause, player: undefined }"
+        @play="playing = true; started = true"
+        @pause="playing = false"
+        @ended="playing = false; ended = true"
+        @click.prevent="!playing ? $el.play() : $el.pause();"
+        {{ html_attributes }}
+        playsinline
+        webkit-playsinline
+        {% if controls %}
+          :controls="playing ? 'controls' : false"
+        {% endif %}
+        {% if autoplay %}
+          autoplay
+        {% endif %}
+        {% if loop %}
+          loop
+        {% endif %}
+        {% if preload != true %}
+          preload="none"
+          x-intersect.once="$el.querySelectorAll('source')?.forEach(child => { child.src = child.getAttribute('data-src'); }); $el.load();"
+        {% endif %}
+        {% if muted or autoplay %}
+          muted
+        {% endif %}
+        class="{{ class }}"
+        style="aspect-ratio: {{ media.preview_image.aspect_ratio }};"
+        aria-label="{{ media.alt }}">
+      {% assign sorted_sources = media.sources | sort: "width" %}
+      {% for source in sorted_sources %}
+        {% if source.mime_type == 'video/mp4' %}
+          {% assign mp4_found = true %}
+        {% else %}
+          {% continue %}
+        {% endif %}
+        <source
+            {% if preload %}
+              src="{{ source.url }}"
+            {% else %}
+              src=""
+              data-src="{{ source.url }}"
+            {% endif %}
+            type="{{ source.mime_type }}"
+            {% if forloop.first %}
+              media="all"
+            {% else %}
+              media="(min-width: {{ prev_source.width | plus: 1 }}px)"
+            {% endif %}
+        />
+        {% assign prev_source = source %}
+      {% endfor %}
+    </video>
+  {% endcapture %}
+  {% if mp4_found %}
+    {{ rendered_video }}
+  {% endif %}
+  {% break %}
+{% endif %}
+{% if media.media_type == 'external_video' %}
+  {%- assign video_class = class | append: ' js-' | append: media.host -%}
+  {% if muted %}
+    {% assign muted = '1' %}
+  {% endif %}
+  {{ media | external_video_url: autoplay: autoplay, mute: muted, loop: loop | external_video_tag: class: video_class, loading: "lazy", html_attributes: html_attributes }}
+  {% break %}
+{% endif %}
+{% if media.media_type == 'model' %}
+  <span {{ html_attributes }}
+      class="absolute w-full h-full top-0 left-0 block"
+    {% if id %}id="{{ id }}"{% endif %}
+      style="padding-bottom: calc(100% * {{ media.preview_image.aspect_ratio }})">
+    {{ media | model_viewer_tag: class: class, id: id, style: "position: absolute; top: 0; left: 0;" }}
+  </span>
+  {% break %}
+{% endif %}
+{% if media.media_type == blank and media contains 'vimeo' or media contains 'youtu.be' or media contains 'youtube' %}
+  {%- assign video_class = class | append: ' js-' | append: media.host -%}
+
+  <div class="relative h-full w-full" {{ html_attributes }}
+       x-data="{ playing: false, started: false, ended: false, player: undefined }"
+       @youtube-loaded.document="player = new window.YT.Player($el.firstElementChild, { events: { onStateChange: (e) => { playing = e.data === 1; started = e.data !== -1; ended = e.data === 0 } } });">
+    <iframe
+        x-init="utils.initYouTube()"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        class="h-full w-full border-0 bg-inherit object-contain js-youtube"
+        loading="lazy"
+        {% if media.type == 'youtube' %}
+          src="https://www.youtube.com/embed/{{ media.id }}?enablejsapi=1&autoplay={% if autoplay %}1&autopause=0{% else %}0{% endif %}&controls={% if controls %}1{% else %}0{% endif %}&mute={% if muted or autoplay %}1{% else %}0{% endif %}&loop={% if loop %}1{% else %}0{% endif %}&modestbranding=1&playlist={{ media.id }}&playsinline=1&rel=0"
+        {% endif %}
+        {% if media.type == 'vimeo' %}
+          src="https://player.vimeo.com/video/{{ media.id }}?autoplay={% if autoplay %}1{% else %}0{% endif %}{% unless controls %}&title=0&byline=0&portrait=0{% endunless %}&loop={% if loop %}1{% else %}0{% endif %}&muted={% if muted or autoplay %}1{% else %}0{% endif %}"
+        {% endif %}
+        title="{{ media.alt | default: media.url }}"></iframe>
+    {% if preview_image %}
+      <button type="button"
+              class="block absolute inset-0 z-10"
+              x-show="!playing && !started"
+              {% if autoplay %}x-cloak{% endif %}
+              @click.prevent="!playing ? player.playVideo() : player.pauseVideo();"
+              aria-label="Play/Pause video">
+        {% render '_object.image', image: preview_image, class: "w-full h-full object-cover" %}
+      </button>
+    {% endif %}
+  </div>
+{% endif %}

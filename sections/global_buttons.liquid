@@ -1,0 +1,304 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "global_buttons"
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% for block in section.blocks %}
+  {% if block.type == "button" %}
+    {% render 'global_buttons.button', block: block %}
+  {% endif %}
+  {% if block.type == "label" %}
+    {% render 'global_buttons.label', block: block %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Buttons",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Button",
+      "type": "button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "button-primary",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.buttons.blocks.button.settings.paragraph__1.content"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Block Globals"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  border: 2px solid #000000;\n  \n  font-family: inherit;\n  font-size: 16px;\n  font-style: normal;\n  font-weight: 700;\n  line-height: 0.9;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  text-align: center;\n  \n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 12px 20px;\n  min-height: unset; \n}\n\n@media (max-width: 768px) {\n  & {\n    border-width: 1px;\n    font-size: 14px;\n    padding: 10px 16px;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  background: #ffffff;\n  color: #000000;\n  border-color: #000000;\n}\n&.active {\n  background: #e3e3e3;\n  color: #000000;\n  border-color: #000000;\n}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    },
+    {
+      "name": "Label style",
+      "type": "label",
+      "settings": [
+        {
+          "type": "text",
+          "id": "class",
+          "label": "CSS Class name",
+          "default": "label-lg",
+          "info": "hyphens / lowercase / no-spaces [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case)"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.buttons.blocks.label_style.settings.paragraph__1.content"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Block Globals"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n  background: #000000;\n  color: #ffffff;\n  border: 1px solid #000000;\n  border-radius: 3px;\n  \n    font-family: inherit;\n  font-size: 12px;\n  font-style: normal;\n  font-weight: 400;\n  line-height: 0.9;\n  letter-spacing: 0.2em;\n  text-transform: uppercase;\n  text-align: center;\n  \n    display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 8px 12px;\n  min-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    border-radius: 2px;\n    font-size: 11px;padding: 4px 8px;\n  }\n}\n"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "override_preview_background",
+          "label": "Override preview background"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Buttons",
+      "settings": {
+        "category_name": "",
+        "hidden_name_backup": "Buttons"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "name": "button-primary",
+          "settings": {
+            "class": "button-primary",
+            "text_color": "#ffffff",
+            "background_color": "#272824",
+            "custom_css": "& {\n  border: 2px solid #373834;\n  font-size: 15px;\n  font-weight: 500;\n  line-height: 1;\n  letter-spacing: 0.02em;\n  text-align: center;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 10px 24px;\n  min-height: 36px; \n  border-radius: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    border-width: 1px;\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n    padding: 10px 16px;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  background: #474844;\n}\n&.active {\n  background:  #474844\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "button",
+          "name": "button-primary-outline",
+          "settings": {
+            "class": "button-primary-outline",
+            "text_color": "#272727",
+            "background_color": "#ffffff",
+            "custom_css": "& {\n  display: inline-flex;\n  border: 2px solid #000000;\n  font-size: 15px;\n  font-weight: 500;\n  line-height: 1;\n  letter-spacing: 0.02em;\n  text-align: center;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 10px 24px;\n  min-height: 36px; \n  border-radius: 4px;\n  gap: 6px;\n}\n\n@media (max-width: 768px) {\n  & {\n      border-width: 1px;\n    font-size: 14px;\n      padding: 10px 16px;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  background: #272824;\n  color: #ffffff;\n  border-color: #272824;\n}\n&.active {\n  background:  #272824;\n  color: #ffffff;\n  border-color: #272824;\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "button",
+          "name": "button-primary-sm",
+          "settings": {
+            "class": "button-primary-sm",
+            "text_color": "#ffffff",
+            "background_color": "#272824",
+            "custom_css": "& {\n  border: 2px solid #373834;\n  font-size: 14px;\n  font-weight: 500;\n  line-height: 1;\n  letter-spacing: 0.02em;\n  text-align: center;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 4px 16px;\n  min-height: 28px; \n  border-radius: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n    /*Colors*/\n    border-width: 1px;\n    \n    /*Typography*/\n    font-size: 14px;\n    \n    /*Spacing*/\n    padding: 10px 16px;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  background: #474844;\n}\n&.active {\n  background:  #474844\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "button",
+          "name": "button-primary-outline-sm",
+          "settings": {
+            "class": "button-primary-outline-sm",
+            "text_color": "#272727",
+            "background_color": "#ffffff",
+            "custom_css": "& {\n  display: inline-flex;\n  border: 2px solid #000000;\n  font-size: 14px;\n  font-weight: 500;\n  line-height: 1;\n  letter-spacing: 0.02em;\n  text-align: center;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 4px 16px;\n  min-height: 28px; \n  border-radius: 4px;\n}\n\n@media (max-width: 768px) {\n  & {\n      border-width: 1px;\n    font-size: 14px;\n      padding: 10px 16px;\n  }\n}\n\n&:where(:hover,:focus-visible) {\n  background: #272824;\n  color: #ffffff;\n  border-color: #272824;\n}\n&.active {\n  background:  #272824;\n  color: #ffffff;\n  border-color: #272824;\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "label",
+          "name": "label-primary",
+          "settings": {
+            "class": "label-primary",
+            "text_color": "#ffffff",
+            "background_color": "#272824",
+            "custom_css": "& {\n  border: 1px solid #272824;\n  border-radius: 4px;\n  \n  font-family: inherit;\n  font-size: 12px;\n  font-style: normal;\n  font-weight: 600;\n  line-height: 0.9;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  text-align: center;\n  \n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 8px 12px;\n  min-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    border-radius: 3px;\n    font-size: 11px;\n    padding: 5px 8px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "label",
+          "name": "label-sold-out",
+          "settings": {
+            "class": "label-sold-out",
+            "text_color": "#555555",
+            "background_color": "#e6e6e6",
+            "custom_css": "& {\n  border: 1px solid #e3e3e3;\n  border-radius: 4px;\n  \n  font-family: inherit;\n  font-size: 12px;\n  font-style: normal;\n  font-weight: 600;\n  line-height: 0.9;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  text-align: center;\n  \n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 8px 12px;\n  min-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    border-radius: 3px;\n    font-size: 11px;\n    padding: 5px 8px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "label",
+          "name": "label-low-inventory",
+          "settings": {
+            "class": "label-low-inventory",
+            "text_color": "#272727",
+            "background_color": "#f8c8e1",
+            "custom_css": "& {\n  border: 1px solid #272824;\n  border-radius: 4px;\n  \n  font-family: inherit;\n  font-size: 12px;\n  font-style: normal;\n  font-weight: 600;\n  line-height: 0.9;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  text-align: center;\n  \n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 8px 12px;\n  min-height: unset;\n}\n\n@media (max-width: 768px) {\n  & {\n    border-radius: 3px;\n    font-size: 11px;\n    padding: 5px 8px;\n  }\n}",
+            "override_preview_background": ""
+          }
+        },
+        {
+          "type": "button",
+          "name": "plain-link",
+          "settings": {
+            "class": "plain-link",
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  text-align: left;\n}\n\n@media (max-width: 768px) {\n  & {\n    \n  }\n}\n\n&:where(:hover,:focus-visible) {\n  opacity: 0.7;\n}\n&.active {\n \n}",
+            "override_preview_background": ""
+          }
+        }
+      ],
+      "category": "Design System"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.global"
+    ]
+  },
+  "limit": 2,
+  "class": "shopify_section__global_buttons"
+}
+{% endschema %}

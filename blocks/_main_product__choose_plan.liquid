@@ -1,0 +1,697 @@
+{% style %}
+  [data-component-choose-plan] {
+    display: flex;
+    margin-top: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__heading {
+    margin: 0;
+    width: 100%;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.1px;
+    line-height: normal;
+    text-transform: uppercase;
+    color: #888888;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants > li {
+    position: relative;
+    margin-bottom: 8px;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d5d1c8;
+    box-sizing: border-box;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants > li:last-child {
+    border-bottom: none;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants > li.active {
+    background-color: #f0ede6;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants > li > label {
+    display: flex !important;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 14px;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 20px 22px 21px;
+    text-align: left;
+    cursor: pointer;
+    background: none !important;
+    background-image: none !important;
+    border: none;
+    border-radius: 0;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants li:first-child {
+    order: 2;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants li:nth-child(2) {
+    order: 3;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants li:last-child {
+    order: 1;
+  }
+
+  /* Radio column: Figma div.radio-outer:margin 20×22, inner pt-[2px] */
+  [data-component-choose-plan] .product-choose-plan__radio-col {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 20px;
+    min-height: 22px;
+    padding-top: 2px;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__radio {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #d5d1c8;
+    background-color: #ffffff;
+    box-sizing: border-box;
+  }
+
+  [data-component-choose-plan] li.active .product-choose-plan__radio {
+    border-color: #111111;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__radio-inner {
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #111111;
+    opacity: 0;
+  }
+
+  [data-component-choose-plan] li.active .product-choose-plan__radio-inner {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    opacity: 1;
+  }
+
+  /* Content: Figma div.option-content gap 5px; title row gap 10px center */
+  [data-component-choose-plan] .product-choose-plan__body {
+    flex: 2;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__title-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #1a1a1a;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.84px;
+    line-height: normal;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: {{ block.settings.badge_background | default: '#111111' }};
+    color: {{ block.settings.badge_text_color | default: '#ffffff' }};
+  }
+
+  [data-component-choose-plan] .product-choose-plan__badge--featured {
+    padding: 3px 8px;
+    font-size: 9.5px;
+    letter-spacing: 0.57px;
+    background-color: {{ block.settings.badge_featured_background | default: '#5E91D5' }};
+    color: {{ block.settings.badge_featured_text_color | default: '#ffffff' }};
+  }
+
+  [data-component-choose-plan] .product-choose-plan__desc {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18.2px;
+    color: #555555;
+    width: 100%;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__bullets {
+    margin: 0;
+    padding: 0 0 0 19.5px;
+    list-style: disc;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18.2px;
+    color: #555555;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__bullets li {
+    margin: 0;
+    border: none;
+    background: none;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__bullets li:first-child {
+    margin-bottom: 0;
+  }
+
+  /* Figma div.option-perks:margin pt-px */
+  [data-component-choose-plan] .product-choose-plan__perks-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1px;
+    width: 100%;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__perks {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: normal;
+    color: #888888;
+    width: 100%;
+  }
+
+  /* Figma div.option-pricing: gap 3px, min-w 72px, items-end */
+  [data-component-choose-plan] .product-choose-plan__pricing {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__price-main {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #1a1a1a;
+    white-space: nowrap;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__price-compare {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #aaaaaa;
+    text-decoration: line-through;
+    text-decoration-skip-ink: none;
+    white-space: nowrap;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants li p.price {
+    display: none !important;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants li p.saved {
+    display: none;
+    margin: 0;
+    max-width: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: normal;
+    color: #4659ff;
+    text-align: right;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__total-saved {
+    font-size: 11px;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__total-saved span:first-child {
+    color: #888888;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__total-saved span.strike-through {
+    text-decoration: line-through;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__total-saved span:nth-child(2) {
+    color: #444444;
+  }
+
+  [data-component-choose-plan] .product-choose-plan__total-saved span:nth-child(3) {
+    color: #5E91D5;
+  }
+
+  [data-component-choose-plan] .richtext-md[data-content*="Subscribe & Save"] {
+    font-weight: 500;
+  }
+
+  [data-component-choose-plan] div[data-style-id*="main_product_subscribe_toggle_card"] {
+    margin-top: 15px !important;
+  }
+
+  @media (max-width: 768px) {
+    [data-component-choose-plan] ul.product-choose-supply-variants > li > label {
+      flex-wrap: wrap;
+      padding: 20px 22px 21px;
+      row-gap: 14px;
+    }
+
+    [data-component-choose-plan] .product-choose-plan__pricing {
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding-left: 0 !important;
+      align-items: baseline;
+      justify-content: flex-end;
+      width: 100%;
+      min-width: 0;
+      padding-left: 34px;
+      box-sizing: border-box;
+    }
+
+    [data-component-choose-plan] .product-choose-plan__price-main {
+      font-size: 16px;
+      line-height: 16px;
+    }
+
+    button[data-style-id*="main_product_add_to_cart_button"]
+      ~ button[data-style-id*="main_product_add_to_cart_button"] {
+      display: none;
+    }
+
+    div#rating-benefits-container {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<div data-component-choose-plan data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <p class="product-choose-plan__heading" id="legend-{{ block.id }}">Choose your plan</p>
+  <fieldset class="relative w-full min-w-0 border-0 p-0 m-0" aria-labelledby="legend-{{ block.id }}">
+    <ul class="product-choose-supply-variants">
+      {% assign current_value = product.selected_or_first_available_variant.id %}
+
+      {% for variant in product.variants %}
+        {% liquid
+          assign variant_bottles = variant.title | split: " " | first | times: 1
+          if variant_bottles < 1
+            assign variant_bottles = 1
+          endif
+          assign variant_months = variant_bottles
+          assign skio_price = variant.metafields.custom.choose_supply_variant_price.value
+          assign skio_num = skio_price | default: 0
+          assign compare_at_num = variant.compare_at_price | default: 0
+          assign save_pct = ''
+          if variant.compare_at_price > variant.price
+            assign save_pct = variant.compare_at_price | minus: variant.price | times: 100 | divided_by: variant.compare_at_price
+          endif
+          if skio_num < variant.price and save_pct == ''
+            assign save_pct = variant.price | minus: skio_num | times: 100 | divided_by: variant.price
+          endif
+          assign show_skio_saved = false
+          if skio_num < variant.price
+            assign show_skio_saved = true
+          endif
+        %}
+
+        <li{% if variant.id == current_value %} class="active"{% endif %}>
+          <label
+            class="shrink-0 cursor-pointer relative{% if variant.id == current_value %} active{% endif %}"
+            x-effect="$el.closest('li')?.classList.toggle('active', (pdp?.selected_variant?.id ?? 0) === {{ variant.id }})"
+            @pointerenter="hoverValue = '{{ variant.title }}'"
+            @pointerleave="hoverValue = ''"
+            aria-label="{{ variant.title }}"
+          >
+            <input
+              type="radio"
+              class="sr-only"
+              name="{{ block.id }}"
+              @change="$data.setSelectedVariant(Number($el.value))"
+              :checked="(pdp?.selected_variant?.id ?? 0) == $el.value"
+              value="{{ variant.id }}"
+            >
+
+            <span class="product-choose-plan__radio-col" aria-hidden="true">
+              <span class="product-choose-plan__radio">
+                <span class="product-choose-plan__radio-inner"></span>
+              </span>
+            </span>
+
+            <div class="product-choose-plan__body">
+              <div class="product-choose-plan__title-row">
+                <h3 class="product-choose-plan__title" title="{{ variant.title | escape }}">{{ variant.title }}</h3>
+                {% if save_pct != '' %}
+                  {% if save_pct > 0 %}
+                    <span class="product-choose-plan__badge">Save {{ save_pct | replace: '34', '35' }}%</span>
+                  {% endif %}
+                {% endif %}
+                {% unless variant.metafields.custom.choose_supply_variant_label == blank %}
+                  <span class="product-choose-plan__badge product-choose-plan__badge--featured">{{ variant.metafields.custom.choose_supply_variant_label }}</span>
+                {% endunless %}
+              </div>
+              {% unless variant.metafields.custom.choose_supply_variant_subheading == blank %}
+                <p class="product-choose-plan__desc">{{ variant.metafields.custom.choose_supply_variant_subheading }}</p>
+              {% endunless %}
+              {% comment %}
+              {% if forloop.last %}
+                <ul class="product-choose-plan__bullets">
+                  <li>FREE gift worth $120</li>
+                  <li>Most weight lost</li>
+                </ul>
+              {% endif %}
+              {% endcomment %}
+              <div class="product-choose-plan__perks-wrap">
+                <p class="product-choose-plan__perks">Free shipping. Pause or cancel anytime.</p>
+              </div>
+            </div>
+
+            <div class="product-choose-plan__pricing">
+              <p
+                class="product-choose-plan__price-main"
+                x-text="(() => { const months = Number({{ variant_months }}) || 1; const useSkio = !!pdp?.selected_selling_plan && {{ skio_num }} > 0; if (useSkio) return utils.formatMoney(Math.round({{ skio_num }} / months)) + '/mo'; return utils.formatMoney(Math.round({{ variant.price }} / months)) + '/mo'; })()"
+              >
+                {{ variant.price | divided_by: variant_months | money_without_trailing_zeros }}/mo
+              </p>
+              {% comment %}
+              <p
+                class="product-choose-plan__price-compare"
+                x-show="(pdp?.selected_selling_plan && {{ skio_num }} > 0) || (!pdp?.selected_selling_plan && {{ compare_at_num }} > {{ variant.price }})"
+                x-text="(() => { const months = Number({{ variant_months }}) || 1; const useSkio = !!pdp?.selected_selling_plan && {{ skio_num }} > 0; if (useSkio) return utils.formatMoney(Math.round({{ variant.price }} / months)); if ({{ compare_at_num }} > {{ variant.price }}) return utils.formatMoney(Math.round({{ compare_at_num }} / months)); return ''; })()"
+              >
+                {% if variant.compare_at_price > variant.price %}
+                  {{ variant.compare_at_price | divided_by: variant_months | money_without_trailing_zeros }}
+                {% endif %}
+              </p>
+              {% endcomment %}
+              <p
+                class="saved"
+                x-show="pdp?.selected_selling_plan && {{ skio_num }} > 0 && {{ skio_num }} < {{ variant.price }}"
+              >
+                {% if show_skio_saved %}
+                  {{ variant.price | minus: skio_num | times: 100 | divided_by: variant.price | round }}% off
+                {% endif %}
+              </p>
+
+              <p class="product-choose-plan__total-saved" x-show="pdp?.selected_selling_plan && {{ skio_num }} > 0 && {{ skio_num }} < {{ variant.price }}">
+                {% if show_skio_saved %}
+                  <span class="product-choose-plan__total-savings-value">
+                    {% assign save_price = variant.metafields.custom.choose_supply_save_price.value | money %}
+                    {% assign save_price_raw = variant.metafields.custom.choose_supply_save_price.value %}
+                    
+                    <span class="strike-through">{{ skio_num | plus: save_price_raw | money }}</span>
+                    <span>{{ skio_num | money }} total</span>
+
+                    {% if save_price != blank %}
+                      {% if save_price != blank %}
+                        <span class="block">save {{ save_price }}</span>
+                      {% endif %}
+                    {% endif %}
+                  </span>
+                {% endif %}
+              </p>
+            </div>
+
+            <p class="price" data-price="{{ variant.price }}" data-bottles="{{ variant_bottles }}" hidden>
+              <span class="price">{{ variant.price | money }}</span>
+              {% if variant.compare_at_price > variant.price %}
+                <span class="compare-at-price line-through">{{ variant.compare_at_price | money }}</span>
+                <span class="saved">Save {{ variant.compare_at_price | minus: variant.price | money }}</span>
+              {% endif %}
+              {% if skio_num < variant.price %}
+                <span class="compare-at-price line-through">{{ skio_num | money }}</span>
+                <span class="saved">Save {{ variant.price | minus: skio_num | money }}</span>
+              {% endif %}
+            </p>
+          </label>
+        </li>
+      {% endfor %}
+    </ul>
+  </fieldset>
+</div>
+
+<script type="application/javascript">
+  /**
+   * Choose plan row active on click
+   * @description Choose plan row active on click
+   * @returns {void}
+   */
+  function choose_plan_row_active_on_click() {
+    var root = document.querySelector('[data-component-choose-plan]');
+    if (!root) return;
+    root.querySelectorAll('ul.product-choose-supply-variants li label').forEach(function (label) {
+      label.addEventListener('click', function () {
+        var row = label.closest('li');
+        var list = root.querySelector('ul.product-choose-supply-variants');
+        if (!row || !list) return;
+        list.querySelectorAll('li.active').forEach(function (li) {
+          li.classList.remove('active');
+        });
+        row.classList.add('active');
+      });
+    });
+  }
+
+  var mobile_stat_strip_reorder_snapshot = null;
+  var mobile_gallery_mobile_header_snapshot = null;
+
+  /**
+   * Restore gallery to pre-mobile-header order
+   * @description Undo move_mobile_gallery_before_mobile_header
+   * @returns {void}
+   */
+  function restore_mobile_gallery_before_mobile_header() {
+    if (!mobile_gallery_mobile_header_snapshot) return;
+
+    var snap = mobile_gallery_mobile_header_snapshot;
+    mobile_gallery_mobile_header_snapshot = null;
+
+    if (!snap.el || !snap.parent) return;
+    snap.parent.insertBefore(snap.el, snap.next);
+  }
+
+  /**
+   * Move main product gallery before mobile header (mobile only)
+   * @description Inserts div[data-style-id*="main_product_gallery"] before #mobile-header
+   * @returns {void}
+   */
+  function move_mobile_gallery_before_mobile_header() {
+    var mq = window.matchMedia('(max-width: 768px)');
+    if (!mq.matches) {
+      restore_mobile_gallery_before_mobile_header();
+      return;
+    }
+
+    var header = document.querySelector('#mobile-header');
+    if (!header) return;
+
+    var gallery = document.querySelector('div[data-style-id*="main_product_gallery"]');
+    if (!gallery) return;
+
+    if (mobile_gallery_mobile_header_snapshot !== null) return;
+
+    mobile_gallery_mobile_header_snapshot = {
+      el: gallery,
+      parent: gallery.parentNode,
+      next: gallery.nextSibling
+    };
+
+    header.parentNode.insertBefore(gallery, header);
+  }
+
+  /**
+   * Restore product elements to pre-mobile stat-strip order
+   * @description Undo move_mobile_product_elements_after_stat_strip
+   * @returns {void}
+   */
+  function restore_mobile_product_elements_from_stat_strip() {
+    if (!mobile_stat_strip_reorder_snapshot) return;
+
+    var snap = mobile_stat_strip_reorder_snapshot;
+    mobile_stat_strip_reorder_snapshot = null;
+
+    var i = snap.length;
+    while (i--) {
+      var item = snap[i];
+      if (!item.el || !item.parent) continue;
+      item.parent.insertBefore(item.el, item.next);
+    }
+  }
+
+  /**
+   * Move mobile product elements after stat strip
+   * @description Move mobile product elements after stat strip
+   * @returns {void}
+   */
+  function move_mobile_product_elements_after_stat_strip() {
+    var mq = window.matchMedia('(max-width: 768px)');
+    if (!mq.matches) {
+      restore_mobile_product_elements_from_stat_strip();
+      return;
+    }
+
+    var anchor = document.querySelector('div#mobile-stat-strip');
+    if (!anchor) return;
+
+    if (mobile_stat_strip_reorder_snapshot !== null) return;
+
+    var selectors = [
+      'div[data-component-choose-plan]',
+      'div#launch-special',
+      'button[data-style-id*="main_product_add_to_cart_button"]',
+      'div[data-component-buy-once]',
+      'div#free-shipping-icons',
+      { selector: 'lightlabs-widget', moveParent: true },
+      'div#bundle-set'
+    ];
+
+    var skip_if_inside_main_product_bar = {
+      'button[data-style-id*="main_product_add_to_cart_button"]': true,
+      'div[data-component-buy-once]': true
+    };
+
+    var snapshot = [];
+    var ref = anchor;
+    var movedParents = new Set();
+
+    selectors.forEach(function (item) {
+      var selector = typeof item === 'string' ? item : item.selector;
+      var moveParent = typeof item === 'object' && item && item.moveParent;
+      var elements = document.querySelectorAll(selector);
+      if (!elements.length) return;
+
+      elements.forEach(function (element) {
+        if (!element || element === anchor) return;
+        if (skip_if_inside_main_product_bar[selector] && element.closest('section[data-style-id*="main_product_bar"]')) return;
+
+        var toMove = moveParent ? element.parentElement : element;
+        if (!toMove || toMove === anchor || anchor.contains(toMove)) return;
+        if (moveParent) {
+          if (movedParents.has(toMove)) return;
+          movedParents.add(toMove);
+        }
+
+        snapshot.push({ el: toMove, parent: toMove.parentNode, next: toMove.nextSibling });
+        ref.insertAdjacentElement('afterend', toMove);
+        ref = toMove;
+      });
+    });
+
+    if (snapshot.length) {
+      mobile_stat_strip_reorder_snapshot = snapshot;
+    }
+  }
+
+  /**
+   * Initialize choose plan scripts
+   * @description Initialize choose plan scripts
+   * @returns {void}
+   */
+  function init_choose_plan_scripts() {
+    choose_plan_row_active_on_click();
+    var mq = window.matchMedia('(max-width: 768px)');
+    var syncMobileLayout = function () {
+      move_mobile_gallery_before_mobile_header();
+      move_mobile_product_elements_after_stat_strip();
+    };
+    mq.addEventListener('change', syncMobileLayout);
+    syncMobileLayout();
+  }
+
+  /**
+   * Load choose plan scripts
+   * @description Load choose plan scripts
+   * @returns {void}
+   */
+  window.addEventListener('load', function () {
+    window.requestAnimationFrame(init_choose_plan_scripts);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Choose Plan",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Badge colors"
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Default badge background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_featured_background",
+      "label": "Featured badge background",
+      "default": "#5e91d5"
+    },
+    {
+      "type": "color",
+      "id": "badge_featured_text_color",
+      "label": "Featured badge text",
+      "default": "#ffffff"
+    }
+  ],
+  "class": "shopify_block___main_product__choose_plan",
+  "presets": [
+    {
+      "name": "Choose Plan",
+      "category": "** Product **"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

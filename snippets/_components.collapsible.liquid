@@ -1,0 +1,105 @@
+{% comment %}
+    Accordion Element
+
+    Accepts:
+    - class: {string}
+    - default_open: {boolean}
+    - no_richtext_content: {boolean}
+    - no_dynamic_content: {boolean}
+    - image: {sting}
+    - label: {string}
+    - content: {string}
+    - open_dynamic: {string} - Variable to dynamically set the dropdown to open / close for multi accordion effect
+
+    Usage:
+    {% render '_components.collapsible',
+        class: 'accordion',
+        default_open: false',
+        image: 'https://example.com/image.jpg',
+        label: 'Accordion Title',
+        content: 'Accordion content',
+        open_dynamic: '$data.state.open',
+        no_richtext_content: true,
+        no_dynamic_content: false
+    %}
+{% endcomment %}
+
+{% liquid
+  assign richtext_classes = "richtext richtext-margins"
+  if no_richtext_content
+    assign richtext_classes = ""
+  endif
+%}
+
+{% capture label %}{% render '_input.inline_richtext', content: label %}{% endcapture %}
+
+{% if no_dynamic_content %}
+  <div class="flex appearance-none {{ class }}">
+    <div class=" cursor-pointer select-none">
+      <span class="w-full flex-1 flex flex-col items-stretch">{{ label }}</span>
+    </div>
+  </div>
+  {% break %}
+{% endif %}
+
+<details
+    x-data="{ ...utils.initCollapsible($el, $refs.collapsible_content, $el.getAttribute('open') === 'open')}"
+    {{ html_attributes }}
+    {% if no_richtext_content %}
+      x-init="$watch('$data.windowWidth', () => { $nextTick(() => { collapsible.containerHeight = $refs.collapsible_content?.scrollHeight }) }); $refs?.content?.classList?.add(getComputedStyle($el)?.getPropertyValue('--richtext-class')?.split(' ')?.join(',') || 'no_class');"
+    {% else %}
+      x-init="$watch('$data.windowWidth', () => { $nextTick(() => { collapsible.containerHeight = $refs.collapsible_content?.scrollHeight }) });"
+    {% endif %}
+    {% if auto_close_siblings %}
+      x-effect="if (collapsible?.opening) { closeSiblingCollapsibles() }"
+    {% endif %}
+    class="{{ class }} block appearance-none"
+    :open="collapsible.open_accordion"
+  {% if default_open %}open="open"{% endif %}>
+  <summary class="cursor-pointer select-none list-none"
+      {{ summary_html_attributes }}
+           @click.prevent.stop="toggleOpen()"
+      {% if dropdown_menu %}
+        @keydown.up.prevent.stop="toggleOpen(false, true)"
+        @keydown.down.prevent.stop="toggleOpen(true)"
+      {% endif %}
+           tabIndex="0">
+    <span class="flex w-full flex-1 items-center justify-between gap-2">
+      <span class="flex gap-2 items-center">
+        {% if image != blank %}
+          {% render '_object.image', image: image, width: 100, height: 100, class: "aspect-1 object-cover w-10 h-10 md:w-14 md:h-14" %}
+        {% endif %}
+        {{ label }}
+      </span>
+      <i data-animated-icon class="relative flex shrink-0 items-center justify-center h-2.5 w-2.5">
+        <span class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-2.5"
+              :class="collapsible.open_accordion && !collapsible.closing ? 'rotate-0' : '-rotate-180'">
+        </span>
+        <span class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-2.5"
+              :class="collapsible.open_accordion && !collapsible.closing ? 'rotate-0' : '-rotate-90'">
+        </span>
+      </i>
+      <i data-simple-icon class="bg-current transition-all duration-300 ease-linear"
+         :class="collapsible.open_accordion && !collapsible.closing ? 'rotate-[--accordion-icon-rotate]' : 'rotate-0'"
+         style="mask: var(--accordion-icon); -webkit-mask: var(--accordion-icon); aspect-ratio: var(--accordion-icon-aspect-ratio, 1);">
+      </i>
+    </span>
+  </summary>
+  {% if dropdown_menu %}
+    <template x-if="collapsible.open_accordion">
+      <div @keydown.esc.document.prevent="toggleOpen(false, true)"></div>
+    </template>
+  {% endif %}
+  <div class="accordion-content transition-all overflow-hidden duration-200 ease-linear"
+      {% if dropdown_menu %}
+        @click.outside="if (collapsible.open_accordion) { toggleOpen(false, true) }"
+        x-trap.noautofocus="collapsible.open_accordion"
+      {% endif %}
+       :class="collapsible.open_accordion ? '': 'select-none'"
+       x-ref="collapsible_content"
+       x-init="$el.querySelector('.richtext-margins :where(h1,h2,h3,h4,h5,h6,p,ul,ol)')?.classList?.add('mt-0')">
+    <div class="{{ manual_richtext_class | default: richtext_classes }} ">
+      {{ content }}
+    </div>
+  </div>
+</details>

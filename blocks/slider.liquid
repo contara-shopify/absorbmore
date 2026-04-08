@@ -1,0 +1,824 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "slider"
+  assign slider_scroll_snap = block.settings.slider_scroll_snap
+  assign slider_overflow_container = block.settings.slider_overflow_container
+  assign auto_rotate = block.settings.auto_rotate
+  assign pause_on_hover = block.settings.pause_on_hover
+  assign enable_mouse_dragging = block.settings.enable_mouse_dragging
+  assign scrollbar_class = block.settings.scrollbar_class
+  assign scroll_pagination_class = block.settings.scroll_pagination_class
+  assign enable_show_more_button = block.settings.enable_show_more_button
+  assign show_more_button_content = block.settings.show_more_button_content
+  assign show_less_button_content = block.settings.show_less_button_content
+  assign button_class = block.settings.button_class
+  assign display_limit = block.settings.display_limit
+  assign infinite_scroll = block.settings.infinite_scroll
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+  assign hide_if_empty = block.settings.hide_if_empty
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign container_spacing = section.settings.container_spacing
+  case slider_overflow_container
+    when 'all'
+      assign slider_overflow = container_spacing | replace: 'px', '-mx' | append: " scroll-" | append: container_spacing | append: " " | append: container_spacing
+    when 'mobile'
+      assign slider_overflow = container_spacing | replace: 'px', 'max-md:-mx' | append: " max-md:scroll-" | append: container_spacing | append: " max-md:" | append: container_spacing
+    when 'desktop'
+      assign slider_overflow = container_spacing | replace: 'px', 'md:-mx' | append: " md:scroll-" | append: container_spacing | append: " md:" | append: container_spacing
+  endcase
+
+  assign display_limit = display_limit | strip_newlines | replace: ' ', "" | split: '|'
+  assign display_limit = display_limit[0] | split: '/'
+
+  assign desktop_display_limit = display_limit.first | abs
+  assign mobile_display_limit = display_limit.last | abs
+
+%}
+
+{% capture container_content %}
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  {% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }} {{ hide_attribute }}
+       class="relative max-w-full"
+       style="-webkit-overflow-scrolling: touch;  touch-action: pan-x;"
+      {% if pause_on_hover %}
+        @pointerover="content_slider.state.rotatePause = true"
+        @pointerout="content_slider.state.rotatePause = false"
+      {% endif %}
+      {% if enable_show_more_button %}
+        x-data="{
+          ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`, `{{ enable_mouse_dragging }}` === 'true'),
+          show_all_items: false,
+          desktop_display_limit: +`{{ desktop_display_limit }}`,
+          mobile_display_limit: +`{{ mobile_display_limit }}`,
+          show_show_more_buttons: ($data.windowWidth >= 768 ? +`{{ desktop_display_limit }}` : +`{{ mobile_display_limit }}`) < [...($refs.scrollContainer.children ?? [])].filter(el => !['SCRIPT','STYLE'].includes(el.tagName) && (el.classList.contains('toggle-hidden') || getComputedStyle(el).display !== 'none')).length,
+          show_more_children: [...($refs.scrollContainer.children ?? [])].filter(el => !['SCRIPT','STYLE'].includes(el.tagName))
+        }"
+        x-defer="intersect"
+      {% else %}
+        x-data="{ ...utils.initContentSlider($el, $refs.scrollContainer, undefined,`{{ infinite_scroll }}`, +`{{ auto_rotate }}`, `{{ enable_mouse_dragging }}` === 'true'), show_all_items: true, desktop_display_limit: 9999, mobile_display_limit: 9999 }"
+        x-defer="intersect"
+      {% endif %}
+      {% if request.design_mode %}
+        x-effect="() => {
+          content_slider.state.rotatePause = $el.querySelector(`[data-style-id='${$editor.select_section_id}--${$editor.select_block_id}']`)
+        }"
+      {% endif %}
+  >
+    <div class="grid-container relative grid overflow-x-auto scrollbar-none overflow-y-hidden {{ slider_scroll_snap }} {{ slider_overflow }}"
+         x-ref="scrollContainer"
+         @resize.window="content_slider.handleResize"
+         @scroll="content_slider.handleScroll"
+         @scrollend="content_slider.handleInfiniteScroll"
+        {% if enable_show_more_button %}
+          x-effect="show_more_children?.forEach((child, i) => child.classList.toggle('toggle-hidden', !show_all_items && ($data.windowWidth >= 768 ? desktop_display_limit : mobile_display_limit) <= i))"
+          x-init="$nextTick(() => content_slider.handleResize()); const observer = new MutationObserver(() => { show_more_children = [...$el.children].filter(el => !['SCRIPT','STYLE'].includes(el.tagName)) }); observer.observe($el, { childList: true, subtree: false })"
+        {% else %}
+          x-init="$nextTick(() => content_slider.handleResize())"
+        {% endif %}
+    >
+      {% content_for 'blocks' %}
+    </div>
+    {% if scrollbar_class != blank %}
+      {% render '_components.scrollbar', class: scrollbar_class %}
+    {% endif %}
+    {% if scroll_pagination_class != blank %}
+      {% render '_components.scroll_pagination', class: scroll_pagination_class %}
+    {% endif %}
+    {% if enable_show_more_button %}
+      {% if show_more_button_content != blank %}
+        <button type="button"
+                data-show-more-button
+                class="{{ button_class }}"
+                x-effect="show_show_more_buttons = ($data.windowWidth >= 768 ? desktop_display_limit : mobile_display_limit) < show_more_children.filter(el => el.classList.contains('toggle-hidden') || getComputedStyle(el).display !== 'none').length"
+                x-cloak
+                @click="show_all_items = true"
+                x-show="!show_all_items && show_show_more_buttons">{% render '_input.inline_richtext', content: show_more_button_content %}</button>
+      {% endif %}
+      {% if show_less_button_content != blank %}
+        <button type="button"
+                data-show-more-button
+                class="{{ button_class }}"
+                x-cloak
+                @click="show_all_items = false"
+                x-show="show_all_items && show_show_more_buttons">{% render '_input.inline_richtext', content: show_less_button_content %}</button>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% liquid
+
+    capture hide_conditionally
+      if hide_if_empty == 'block'
+        echo '<script type="block/hide"></script>'
+        assign hide_attribute = 'data-hide-if-empty-block'
+      endif
+      if hide_if_empty == 'container'
+        echo '<script type="container/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-container'
+      endif
+      if hide_if_empty == 'section'
+        echo '<script type="section/break"></script>'
+        assign hide_attribute = 'data-hide-if-empty-section'
+      endif
+    endcapture
+
+    if request.design_mode != true and hide_conditionally contains '<script'
+      echo hide_conditionally
+      break
+    endif
+
+    assign container_content = container_content | replace: '<script type="container/break"></script>', ''
+  %}
+{% endif %}
+{{ container_content }}
+
+{% schema %}
+{
+  "name": "Slider",
+  "settings": [
+    {
+      "type": "select",
+      "id": "slider_scroll_snap",
+      "label": "Scroll snap to",
+      "default": "snap-mandatory [&>*]:snap-start",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "snap-mandatory snap-to-slide",
+          "label": "Slide"
+        },
+        {
+          "value": "snap-mandatory [&>*]:snap-start",
+          "label": "Item"
+        },
+        {
+          "value": "snap-m md:[&>*]:snap-start [&>*]:snap-center",
+          "label": "Item (mobile centered)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slider_overflow_container",
+      "label": "Overflow container",
+      "default": "",
+      "options": [
+        {
+          "value": "",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate",
+      "label": "Auto rotate",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "s",
+      "info": "Set to 0 to disable auto rotate."
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on Hover"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_dragging",
+      "label": "Enable mouse dragging"
+    },
+    {
+      "type": "text",
+      "id": "scrollbar_class",
+      "label": "Scrollbar class",
+      "default": "scrollbar",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "text",
+      "id": "scroll_pagination_class",
+      "label": "Scroll Pagination class",
+      "info": "Leave empty to disable."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Show More Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_show_more_button",
+      "label": "Enable Show more button"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "show_more_button_content",
+      "label": "Show more content",
+      "default": "See more",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "show_less_button_content",
+      "label": "Show less content",
+      "default": "See less",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "text",
+      "id": "display_limit",
+      "label": "Display limit",
+      "default": "12 / 4",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ block.settings.enable_show_more_button == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Infinite Scroll"
+    },
+    {
+      "type": "paragraph",
+      "content": "Infinite scroll works best when all cards have a fixed size. Dynamic cards may cause issues, and enabling a scrollbar can lead to unexpected behavior."
+    },
+    {
+      "type": "select",
+      "id": "infinite_scroll",
+      "label": "Infinite scroll",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "all",
+          "label": "All"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  margin-top: 16px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 2;\n  }\n}\n"
+    },
+    {
+      "type": "select",
+      "id": "hide_if_empty",
+      "label": "If empty, hide:",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "info": "Always shows in the Theme Editor."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "UGC Video Slider",
+      "settings": {
+        "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+        "slider_overflow_container": "",
+        "auto_rotate": 0,
+        "pause_on_hover": false,
+        "scrollbar_class": "scrollbar-no-buttons",
+        "scroll_pagination_class": "",
+        "enable_show_more_button": false,
+        "show_more_button_content": "See more",
+        "show_less_button_content": "See less",
+        "button_class": "button-primary",
+        "display_limit": "12 / 4",
+        "infinite_scroll": "off",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  margin-top: 16px;\n  --grid-cols: 5;\n  --grid-gap: 10px;\n}\n& .grid-container {\n  display: grid;\n  grid-auto-flow: column;\n  grid-auto-columns: calc((100% - (var(--grid-gap) * (var(--grid-cols) - 1))) / var(--grid-cols));\n  gap: var(--grid-gap);\n}\n& [data-scrollbar] {\n  margin-top: 16px;\n}\n@media (max-width: 768px) {\n  & {\n    --grid-cols: 4;\n    --grid-gap: 10px;\n  }\n}",
+        "hide_if_empty": "container",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_ugc_video",
+          "name": "Cards ugc video",
+          "settings": {
+            "video_url": "https://youtu.be/pgGrQjYcm5A",
+            "preview_image": "shopify://shop_images/1__image.jpg",
+            "caption": "",
+            "metafield_namespace_key": "",
+            "metafield_video_key": "video",
+            "metafield_video_url_key": "video_url",
+            "metafield_preview_image_key": "preview_image",
+            "metafield_caption_key": "author",
+            "text_alignment": "inherit",
+            "caption_class": "richtext-md",
+            "autoplay": false,
+            "controls": true,
+            "muted": false,
+            "loop": false,
+            "products": [
+              "amazing-aluminum-bag-collection11",
+              "amazing-aluminum-bag-collection13",
+              "amazing-aluminum-bag-collection18"
+            ],
+            "metafield_products_key": "products",
+            "closest_product_fallback": true,
+            "preload": false,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw",
+            "max_width": 256,
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  align-items: center;\n}\n& .image-wrapper {\n  display: block;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: 999px;\n  overflow: hidden;\n  padding: 5px;\n  border: 1px solid #434343;\n  object-fit: contain;\n}\n& .image-wrapper img {\n  border-radius: 999px;\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "cards_ugc_video",
+          "name": "Cards ugc video",
+          "settings": {
+            "video_url": "https://youtu.be/pgGrQjYcm5A",
+            "preview_image": "shopify://shop_images/Mugsy_Hero_Banner.png",
+            "caption": "",
+            "metafield_namespace_key": "",
+            "metafield_video_key": "video",
+            "metafield_video_url_key": "video_url",
+            "metafield_preview_image_key": "preview_image",
+            "metafield_caption_key": "author",
+            "text_alignment": "inherit",
+            "caption_class": "richtext-md",
+            "autoplay": false,
+            "controls": true,
+            "muted": false,
+            "loop": false,
+            "products": [
+              "amazing-aluminum-sandals-collection6",
+              "amazing-aluminum-sandals-collection5",
+              "amazing-aluminum-sandals-collection4",
+              "amazing-aluminum-sandals-collection3",
+              "amazing-aluminum-sandals-collection20",
+              "amazing-aluminum-sandals-collection19",
+              "amazing-aluminum-sandals-collection18",
+              "amazing-aluminum-sandals-collection17"
+            ],
+            "metafield_products_key": "products",
+            "closest_product_fallback": true,
+            "preload": false,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw",
+            "max_width": 256,
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  align-items: center;\n}\n& .image-wrapper {\n  display: block;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: 999px;\n  overflow: hidden;\n  padding: 5px;\n  border: 1px solid #434343;\n  object-fit: contain;\n}\n& .image-wrapper img {\n  border-radius: 999px;\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "cards_ugc_video",
+          "name": "Cards ugc video",
+          "settings": {
+            "video_url": "https://youtu.be/pgGrQjYcm5A",
+            "preview_image": "shopify://shop_images/1__image.jpg",
+            "caption": "",
+            "metafield_namespace_key": "",
+            "metafield_video_key": "video",
+            "metafield_video_url_key": "video_url",
+            "metafield_preview_image_key": "preview_image",
+            "metafield_caption_key": "author",
+            "text_alignment": "inherit",
+            "caption_class": "richtext-md",
+            "autoplay": false,
+            "controls": true,
+            "muted": false,
+            "loop": false,
+            "products": [
+              "amazing-aluminum-bag-collection11",
+              "amazing-aluminum-bag-collection13",
+              "amazing-aluminum-bag-collection18"
+            ],
+            "metafield_products_key": "products",
+            "closest_product_fallback": true,
+            "preload": false,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw",
+            "max_width": 256,
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  align-items: center;\n}\n& .image-wrapper {\n  display: block;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: 999px;\n  overflow: hidden;\n  padding: 5px;\n  border: 1px solid #434343;\n  object-fit: contain;\n}\n& .image-wrapper img {\n  border-radius: 999px;\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "cards_ugc_video",
+          "name": "Cards ugc video",
+          "settings": {
+            "video_url": "https://youtu.be/pgGrQjYcm5A",
+            "preview_image": "shopify://shop_images/Mugsy_Hero_Banner.png",
+            "caption": "",
+            "metafield_namespace_key": "",
+            "metafield_video_key": "video",
+            "metafield_video_url_key": "video_url",
+            "metafield_preview_image_key": "preview_image",
+            "metafield_caption_key": "author",
+            "text_alignment": "inherit",
+            "caption_class": "richtext-md",
+            "autoplay": false,
+            "controls": true,
+            "muted": false,
+            "loop": false,
+            "products": [
+              "amazing-aluminum-sandals-collection6",
+              "amazing-aluminum-sandals-collection5",
+              "amazing-aluminum-sandals-collection4",
+              "amazing-aluminum-sandals-collection3",
+              "amazing-aluminum-sandals-collection20",
+              "amazing-aluminum-sandals-collection19",
+              "amazing-aluminum-sandals-collection18",
+              "amazing-aluminum-sandals-collection17"
+            ],
+            "metafield_products_key": "products",
+            "closest_product_fallback": true,
+            "preload": false,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw",
+            "max_width": 256,
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  align-items: center;\n}\n& .image-wrapper {\n  display: block;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: 999px;\n  overflow: hidden;\n  padding: 5px;\n  border: 1px solid #434343;\n  object-fit: contain;\n}\n& .image-wrapper img {\n  border-radius: 999px;\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "cards_ugc_video",
+          "name": "Cards ugc video",
+          "settings": {
+            "video_url": "https://youtu.be/pgGrQjYcm5A",
+            "preview_image": "shopify://shop_images/1__image.jpg",
+            "caption": "",
+            "metafield_namespace_key": "",
+            "metafield_video_key": "video",
+            "metafield_video_url_key": "video_url",
+            "metafield_preview_image_key": "preview_image",
+            "metafield_caption_key": "author",
+            "text_alignment": "inherit",
+            "caption_class": "richtext-md",
+            "autoplay": false,
+            "controls": true,
+            "muted": false,
+            "loop": false,
+            "products": [
+              "amazing-aluminum-bag-collection11",
+              "amazing-aluminum-bag-collection13",
+              "amazing-aluminum-bag-collection18"
+            ],
+            "metafield_products_key": "products",
+            "closest_product_fallback": true,
+            "preload": false,
+            "sizes": "(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 40vw",
+            "max_width": 256,
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  align-items: center;\n}\n& .image-wrapper {\n  display: block;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: 999px;\n  overflow: hidden;\n  padding: 5px;\n  border: 1px solid #434343;\n  object-fit: contain;\n}\n& .image-wrapper img {\n  border-radius: 999px;\n}",
+            "hide_if_empty": "none",
+            "generate_block_presets": "never",
+            "category_name": "",
+            "hidden_name_backup": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Slider"
+    },
+    {
+      "name": "Product Cards: Flat",
+      "settings": {
+        "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+        "slider_overflow_container": "",
+        "auto_rotate": 0,
+        "pause_on_hover": false,
+        "enable_mouse_dragging": false,
+        "scrollbar_class": "",
+        "scroll_pagination_class": "",
+        "enable_show_more_button": false,
+        "show_more_button_content": "See more",
+        "show_less_button_content": "See less",
+        "button_class": "button-primary",
+        "display_limit": "12 / 4",
+        "infinite_scroll": "off",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  --grid-cols: 1;\n  --grid-gap: 24px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: var(--grid-gap);\n}",
+        "hide_if_empty": "none",
+        "category_name": "",
+        "hidden_name_backup": "Product Cards: Flat"
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": "{{ closest.article.metafields.smart.related_products.value }}",
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "3",
+            "product_card_class": "product-card-flat",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "hydrate_immediately": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& .button-secondary, & .label-secondary{\n  display: none;\n}\n\n& .product-card--product-card-flat form > div:first-of-type > div:first-of-type{\n  width: 120px;\n  height: 120px;\n}\n\n& .product-card--product-card-flat form > div:first-of-type{\n  gap: 24px;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Slider"
+    },
+    {
+      "name": "Article Cards: Flat",
+      "settings": {
+        "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+        "slider_overflow_container": "",
+        "auto_rotate": 0,
+        "pause_on_hover": false,
+        "enable_mouse_dragging": false,
+        "scrollbar_class": "scrollbar",
+        "scroll_pagination_class": "",
+        "enable_show_more_button": false,
+        "show_more_button_content": "See more",
+        "show_less_button_content": "See less",
+        "button_class": "button-primary",
+        "display_limit": "12 / 4",
+        "infinite_scroll": "off",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "&{\n  margin-top: 24px;\n}\n& .grid-container {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 24px;\n}",
+        "hide_if_empty": "none",
+        "category_name": "",
+        "hidden_name_backup": "Article Cards: Flat"
+      },
+      "blocks": [
+        {
+          "type": "cards_article",
+          "name": "Article Cards",
+          "settings": {
+            "blog": "news",
+            "order_offset": 1,
+            "filter_by_tag": "",
+            "display_limit": "3",
+            "article_card_class": "article-card-flat",
+            "hydrate_immediately": false,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& > div > div:first-of-type {\n  max-width: 120px;\n}\n\n@media (max-width: 1023px) {\n  & > div > div:first-of-type {\n    max-width: 100px;\n  }\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Slider"
+    },
+    {
+      "name": "Product Grid",
+      "settings": {
+        "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+        "slider_overflow_container": "",
+        "auto_rotate": 0,
+        "pause_on_hover": false,
+        "scrollbar_class": "scrollbar",
+        "scroll_pagination_class": "",
+        "enable_show_more_button": false,
+        "show_more_button_content": "See more",
+        "show_less_button_content": "See less",
+        "button_class": "button-primary",
+        "display_limit": "10 / 8",
+        "infinite_scroll": "off",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  margin-top: 30px;\n  --grid-cols: 4;\n  --grid-gap: 16px;\n}\n& .grid-container {\n  display: grid;\n grid-template-columns: repeat(4, 1fr);\n  gap: var(--grid-gap);\n}\n\n& [data-show-more-button] {\n  margin-top: 30px;\n  width: 100%;\n}\n\n@media (max-width: 1024px) {\n  & .grid-container {\n    grid-template-columns: repeat(3, 1fr);\n  }\n}\n\n\n@media (max-width: 768px) {\n  & .grid-container {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}",
+        "hide_if_empty": "none",
+        "category_name": "",
+        "hidden_name_backup": "Product Grid"
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": [
+              "amazing-aluminum-bag-collection12",
+              "amazing-aluminum-bag-collection1",
+              "amazing-aluminum-bag-collection10",
+              "amazing-aluminum-bag-collection11",
+              "amazing-aluminum-bag-collection13",
+              "amazing-aluminum-bag-collection14",
+              "amazing-aluminum-bag-collection15",
+              "amazing-aluminum-bag-collection16",
+              "amazing-aluminum-bag-collection17"
+            ],
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "14",
+            "product_card_class": "product-card",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& [data-product-id] {\n  background: #f2f2f2;\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Slider"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__slider"
+}
+{% endschema %}

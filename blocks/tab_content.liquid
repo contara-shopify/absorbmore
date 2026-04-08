@@ -1,0 +1,611 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "tab_content"
+  assign label = block.settings.label
+  assign hash_target = block.settings.hash_target
+  assign tab_group = block.settings.tab_group
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture container_content %}
+  <tab-content-group>{{ tab_group }}</tab-content-group>
+  <tab-content-label>{{ label }}</tab-content-label>
+
+  {% assign tab_handle = label | strip_html | handleize %}
+
+  {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+  <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+       class="block relative" {% if hash_target != blank %}id="{{ hash_target | replace: "#", '' }}"{% endif %}
+       data-tab-id="{{ tab_handle }}"
+       data-tab-group="{{ tab_group }}"
+       x-data="{ index: +`{{ tab_group | default: 0 }}` }"
+       data-tab-content-x-cloak-placeholder
+      {% if request.design_mode %}
+        x-effect="() => {
+          if ($router.hash.replace(/#/gi,'') === `{{ hash_target | default: '#INVALID_HASH' | replace: "#", '' }}`) {
+            $data.current_tabs[index] = '{{ tab_handle }}';
+          }
+
+          if ($editor?.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='{{ section.id }}--${$editor?.select_block_id}']`)) {
+            $data.current_tabs[index] = '{{ tab_handle }}';
+          }
+        }"
+      {% else %}
+        x-effect="() => {
+          if ($router.hash.replace(/#/gi,'') === `{{ hash_target | default: '#INVALID_HASH' | replace: "#", '' }}`) {
+            $data.current_tabs[index] = '{{ tab_handle }}';
+          }
+        }"
+      {% endif %}
+       x-show="$data.current_tabs[index] === '{{ tab_handle }}'">
+    {% content_for "blocks" %}
+  </div>
+{% endcapture %}
+
+{% if container_content contains '<script type="container/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ container_content }}
+
+{% schema %}
+{
+  "name": "Tab content",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "label",
+      "label": "Label",
+      "default": "Title",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "text",
+      "id": "hash_target",
+      "label": "Hash target",
+      "info": "Triggers a scroll to the section and opening the tab when a link to the hash target is clicked."
+    },
+    {
+      "type": "select",
+      "id": "tab_group",
+      "label": "Tab group",
+      "default": "0",
+      "info": "Configure up to 3 Tab groups for any given Section.",
+      "options": [
+        {
+          "value": "0",
+          "label": "1"
+        },
+        {
+          "value": "1",
+          "label": "2"
+        },
+        {
+          "value": "2",
+          "label": "3"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_block_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab content",
+      "category": "Tabs"
+    },
+    {
+      "name": "Tab: Powders",
+      "settings": {
+        "label": "Powders",
+        "hash_target": "",
+        "tab_group": "0",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": [
+              "restore",
+              "sleep",
+              "calm"
+            ],
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "3",
+            "product_card_class": "product-card-simple",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "hydrate_immediately": false,
+            "preload_images": 0,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Image with Caption",
+          "settings": {
+            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "caption": "<p>SHOP POWDERS</p>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "inherit",
+            "caption_class": "button-secondary",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.format=Powders",
+            "dynamic_content_type": "default",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  order: 999;\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: end;\n  justify-content: center;\n  padding: 16px;\n  \n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}\n\n& figcaption {\n  width: 100%;\n}\n\n& .button-secondary {\n  border-color: #fff;\n  width: 100%;\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Tabs"
+    },
+    {
+      "name": "Tab: Magnesium",
+      "settings": {
+        "label": "Magnesium Glycinate",
+        "hash_target": "",
+        "tab_group": "0",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": [
+              "magnesium-glycinate",
+              "magnesium-restore-bundle",
+              "magnesium-calm-bundle"
+            ],
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "3",
+            "product_card_class": "product-card-simple",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "hydrate_immediately": false,
+            "preload_images": 0,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Image with Caption",
+          "settings": {
+            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "caption": "<p>SHOP MAGNESIUM</p>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "inherit",
+            "caption_class": "button-secondary",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "shopify://collections/magnesium-glycinate",
+            "dynamic_content_type": "default",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  order: 999;\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: end;\n  justify-content: center;\n  padding: 16px;\n  \n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}\n\n& figcaption {\n  width: 100%;\n}\n\n& .button-secondary {\n  border-color: #fff;\n  width: 100%;\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Tabs"
+    },
+    {
+      "name": "Tab: Stacks",
+      "settings": {
+        "label": "Stacks",
+        "hash_target": "",
+        "tab_group": "0",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": [
+              "starter-pack",
+              "best-sellers-bundle",
+              "advanced-sleep-recovery-set"
+            ],
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "3",
+            "product_card_class": "product-card-simple",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "hydrate_immediately": false,
+            "preload_images": 0,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Image with Caption",
+          "settings": {
+            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "caption": "<p>SHOP STACKS</p>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "inherit",
+            "caption_class": "button-secondary",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "shopify://collections/bundles-and-save",
+            "dynamic_content_type": "default",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  order: 999;\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: end;\n  justify-content: center;\n  padding: 16px;\n  \n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}\n\n& figcaption {\n  width: 100%;\n}\n\n& .button-secondary {\n  border-color: #fff;\n  width: 100%;\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Tabs"
+    },
+    {
+      "name": "Tab: Best Sellers",
+      "settings": {
+        "label": "Best Sellers",
+        "hash_target": "",
+        "tab_group": "0",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "cards_product",
+          "name": "Product Cards",
+          "settings": {
+            "primary_source": "manual",
+            "fallback_source": "manual",
+            "fallback_products": [
+              "restore",
+              "sleep",
+              "calm"
+            ],
+            "fallback_collection": "",
+            "order_offset": 1,
+            "targeting_type": "product",
+            "target_product": "",
+            "display_limit": "3",
+            "product_card_class": "product-card-simple",
+            "hide_out_of_stock": false,
+            "addon_products": false,
+            "addon_auto_add": false,
+            "addon_bundle_in_cart": true,
+            "hydrate_immediately": false,
+            "preload_images": 0,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n}",
+            "hide_if_empty": "none"
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Image with Caption",
+          "settings": {
+            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "caption": "<p>SHOP All</p>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "inherit",
+            "caption_class": "button-secondary",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "shopify://collections/all",
+            "dynamic_content_type": "default",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "",
+            "background_color": "",
+            "custom_css": "& {\n  order: 999;\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: end;\n  justify-content: center;\n  padding: 16px;\n  \n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}\n\n& figcaption {\n  width: 100%;\n}\n\n& .button-secondary {\n  border-color: #fff;\n  width: 100%;\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Tabs"
+    },
+    {
+      "name": "Tab: Shop by Goal",
+      "settings": {
+        "label": "Shop by Goal",
+        "hash_target": "",
+        "tab_group": "0",
+        "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "image_with_caption",
+          "name": "Focus & Energy",
+          "settings": {
+            "image": "shopify://shop_images/image_ratios-3_010a4b79-6211-44da-ae73-591068063cc7.jpg",
+            "caption": "<p>[icon.battery-full.48px]</p><h4><strong>Longevity & Performance</strong></h4>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "center",
+            "caption_class": "richtext-md",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.benefits=Longevity+%26+Performance",
+            "dynamic_content_type": "default",
+            "show_overlay": true,
+            "overlay_color": "rgba(39,32,7,0.4)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "#ffffff",
+            "background_color": "",
+            "custom_css": "& {\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 24px;\n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& figcaption {\n  z-index: 1;\n}\n& .richtext-md {\n  display: flex;\n  gap: 16px;\n  flex-direction: column;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Relaxed & Calm",
+          "settings": {
+            "image": "shopify://shop_images/image_ratios-2_5ea8b155-e47e-416c-8d97-9003781451f7.jpg",
+            "caption": "<p>[icon.moon.48px]</p><h4><strong>Sleep & Mood Support </strong></h4>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "center",
+            "caption_class": "richtext-md",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.benefits=Sleep+%26+Mood+Support",
+            "dynamic_content_type": "default",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "#ffffff",
+            "background_color": "",
+            "custom_css": "& {\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 24px;\n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& figcaption {\n  z-index: 1;\n}\n& .richtext-md {\n  display: flex;\n  gap: 16px;\n  flex-direction: column;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Better Sleep",
+          "settings": {
+            "image": "shopify://shop_images/image_ratios-1_609e82ac-b6f4-4c52-97ae-cf08bcd78ffe.jpg",
+            "caption": "<p>[icon.waves.48px]</p><h4><strong>Metabolism & Hormone Balance</strong></h4>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "center",
+            "caption_class": "richtext-md",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.benefits=Metabolism+%26+Hormone+Balance",
+            "dynamic_content_type": "default",
+            "show_overlay": true,
+            "overlay_color": "rgba(127,92,51,0.2)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "#ffffff",
+            "background_color": "",
+            "custom_css": "& {\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 24px;\n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& figcaption {\n  z-index: 1;\n}\n& .richtext-md {\n  display: flex;\n  gap: 16px;\n  flex-direction: column;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        },
+        {
+          "type": "image_with_caption",
+          "name": "Daily Reset",
+          "settings": {
+            "image": "shopify://shop_images/image_ratios_9e7ff8a2-09b3-41b4-bd7d-9a5f4720ac0a.jpg",
+            "caption": "<p>[icon.sun.48px]</p><h4><strong>Immunity & Inflammation</strong></h4>",
+            "description": "",
+            "metafield_namespace_key": "",
+            "metafield_image_key": "image",
+            "metafield_caption_key": "caption",
+            "text_alignment": "center",
+            "caption_class": "richtext-md",
+            "metafield_description_key": "description",
+            "description_class": "richtext-md",
+            "metafield_url_key": "url",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.benefits=Immunity+%26+Inflammation",
+            "dynamic_content_type": "default",
+            "show_overlay": true,
+            "overlay_color": "rgba(53,45,1,0.4)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 25vw",
+            "max_width": 500,
+            "text_color": "#ffffff",
+            "background_color": "",
+            "custom_css": "& {\n  position: relative;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 24px;\n  min-height: 338px;\n}\n\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  object-fit: cover;\n}\n\n& figcaption {\n  z-index: 1;\n}\n& .richtext-md {\n  display: flex;\n  gap: 16px;\n  flex-direction: column;\n}\n\n& img {\n  transform: scale(1);\n  will-change: transform;\n  transition: all 300ms ease-in-out;\n}\n\n&:hover img,\n&:focus img {\n  transform: scale(1.05);\n}",
+            "hide_if_empty": "none",
+            "element_id": ""
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Tabs"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block__tab_content"
+}
+{% endschema %}

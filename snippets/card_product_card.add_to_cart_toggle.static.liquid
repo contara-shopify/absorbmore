@@ -1,0 +1,63 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_card_product_card__add_to_cart_toggle"
+  assign section_type = "card_product_card"
+  assign active_color = block.settings.active_color
+  assign inactive_color = block.settings.inactive_color
+  assign custom_css = block.settings.custom_css
+  assign show_conditionally = block.settings.show_conditionally
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if show_conditionally == 'with_subscriptions' and product.selling_plan_groups.size <= 0
+    break
+  endif
+  if show_conditionally == 'no_subscriptions' and product.selling_plan_groups.size > 0
+    break
+  endif
+  if show_conditionally == 'with_variants' and product.variants.size <= 1
+    break
+  endif
+  if show_conditionally == 'no_variants' and product.variants.size > 1
+    break
+  endif
+  if show_conditionally == 'bundle' and is_bundle
+    break
+  endif
+  if show_conditionally == 'no_bundle' and is_bundle != true
+    break
+  endif
+%}
+
+<label
+    data-style-id="{{ style_id }}"
+    style="--inactive-color: {{ inactive_color }}; --active-color: {{ active_color }};"
+    {% if show_conditionally != blank and show_conditionally != 'always' %}
+      x-cloak
+      x-show="$editor.select_block_id === `{{ block_id }}` || $el.querySelector(`[data-style-id='${$editor?.select_block_id}']`) || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
+    {% endif %}
+    class="group/switch relative inline-block p-0.5 w-12 h-6"
+    :class="clsx($cart.isLoading || $cart.isChanging && 'opacity-70 pointer-events-none')"
+    x-data="{ active: !!$cart?.state?.items?.find(item => item.variant_id === p_card?.selected_variant?.id)?.quantity }"
+    x-effect="active = !!$cart?.state?.items?.find(item => item.variant_id === p_card?.selected_variant?.id)?.quantity"
+    aria-label="Add to cart">
+  <input type="checkbox"
+         class="sr-only"
+         :disabled="!!($cart.loading || Object.keys($cart.debounce_updates ?? {})?.length || $cart.isChanging)"
+         @change="active = !!$el.checked;
+          if (active) {
+            handleAddToCart();
+          } else {
+            const lineItem = $cart?.state?.items?.find(item => item.variant_id === p_card?.selected_variant?.id);
+            if (lineItem) {
+              _cart.updateLineItemQuantity(0, lineItem.index);
+            }
+          }">
+  <span :class="active ? 'active bg-[--active-color]' : 'bg-[--inactive-color]'"
+        class="slider cursor-pointer absolute inset-0 flex items-center rounded-full w-full h-full transition-all">
+    <span :class="active ? 'translate-x-6 group-active/switch:translate-x-5 origin-right' : 'origin-left'"
+          class="icon h-5 w-5 absolute rounded-full bg-white transition-all left-0.5 group-active/switch:w-6"></span>
+  </span>
+</label>
+

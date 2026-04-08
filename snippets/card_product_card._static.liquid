@@ -1,0 +1,165 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "card_product_card"
+  assign _handle = section.settings.handle
+  assign product_card = section.settings.product_card
+  assign preview_product = section.settings.preview_product
+  assign link_to_object = section.settings.link_to_object
+  assign open_in_new_tab = section.settings.open_in_new_tab
+  assign default_select_selling_plan = section.settings.default_select_selling_plan
+  assign default_variant_metafield = section.settings.default_variant_metafield
+  assign dynamic_text_color = section.settings.dynamic_text_color
+  assign dynamic_background_color = section.settings.dynamic_background_color
+  assign dynamic_border_color = section.settings.dynamic_border_color
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+  assign override_preview_background = section.settings.override_preview_background
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  if product_card != blank
+    assign _handle = product_card | json | handleize
+  endif
+
+  assign card_class = _handle | handleize | prepend: "product-card--"
+
+  if default_variant_metafield != blank
+    assign variant_namespace = default_variant_metafield | strip | split: "." | first
+    assign variant_key = default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant
+
+  assign price = variant.price
+  assign compare_at_price = variant.compare_at_price | at_least: variant.price
+
+  if settings.data__product__enable_price_overrides
+    assign discount_percentage = variant.metafields.smart.discount_percentage.value | default: product.metafields.smart.discount_percentage.value | default: 0 | times: 0.01
+    assign discount_value = variant.price | times: discount_percentage
+    assign variant_price = variant.price | minus: discount_value
+
+    assign price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price
+    assign compare_at_price = variant.compare_at_price | at_least: variant.price
+  endif
+
+  if settings.data__product__variant__preorder != blank
+    assign preorder_namespace_key = settings.data__product__variant__preorder | replace: " ", '' | split: "."
+    assign preorder_date_namespace_key = settings.data__product__variant__preorder_date | replace: " ", '' | split: "."
+    assign preorder_quantity_namespace_key = settings.data__product__variant__preorder_quantity | replace: " ", '' | split: "."
+
+    assign preorder = variant.metafields[preorder_namespace_key.first][preorder_namespace_key.last].value
+    assign preorder_date = variant.metafields[preorder_date_namespace_key.first][preorder_date_namespace_key.last].value
+    assign preorder_quantity = variant.metafields[preorder_quantity_namespace_key.first][preorder_quantity_namespace_key.last].value
+  endif
+%}
+
+{% capture blocks_content %}{% render "card_product_card._render_blocks",
+    product: product,
+    variant: variant,
+    section: section,
+    blocks: section.blocks,
+    block_order: section.block_order,
+    preorder: preorder,
+    preorder_date: preorder_date,
+    preorder_quantity: preorder_quantity,
+    price: price,
+    compare_at_price: compare_at_price,
+    is_bundle: is_bundle,
+    is_pdp: is_pdp,
+    preload_images: preload_images
+%}{% endcapture %}
+
+{% liquid
+  assign splitter = '|~|SPLIT|~|'
+  assign maxOptions = product.options_with_values.size | minus: 1
+
+  assign final_content = blocks_content
+
+  for i in (0..maxOptions)
+    assign match_by_name = '<product-option ' | append: i | append: ' by_name>'
+    assign match_by_index = '<product-option ' | append: i | append: ' by_index>'
+    assign match_fallback_option = '<product-option ' | append: i | append: ' fallback_options>'
+    if blocks_content contains match_by_name
+      assign blocks_content_array = final_content | replace_first: match_by_name, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+
+      continue
+    endif
+    if blocks_content contains match_by_index
+      assign blocks_content_array = final_content | replace_first: match_by_index, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+      continue
+    endif
+    if blocks_content contains match_fallback_option
+      assign blocks_content_array = final_content | replace_first: match_fallback_option, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+      continue
+    endif
+  endfor
+
+  assign blocks_content_array = final_content | split: '</product-option>'
+  assign cleaned_final_content = ''
+  for part in blocks_content_array
+    assign pre_option = part | split: '<product-option' | first
+    assign cleaned_final_content = cleaned_final_content | append: pre_option
+  endfor
+%}
+
+{% capture render_card %}
+  {% if addon_default_subscription_override != blank %}
+    {% assign default_select_selling_plan = addon_default_subscription_override %}
+  {% endif %}
+  <article
+      data-product-handle="{{ product.handle }}"
+      data-product-id="{{ product.id }}"
+      x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')) }"
+      x-defer="intersect"
+      data-variant-id="{{ variant.id }}"
+      data-product-available="{{ product.available }}"
+      {% if default_select_selling_plan %}
+        data-default-subscription="true"
+      {% endif %}
+      {% if link_to_object %}
+        :href="`${_stores.router?.pathname?.replace(/^.*?(\/collections\/[^/]*)?.*$/gi,'$1')?.replace(/^\/$/gi,'') ?? ''}/products/${p_card?.product_handle}?variant=${p_card?.selected_variant?.id}${$el.hasAttribute('data-recommendation-params') ? `&${$el.getAttribute('data-recommendation-params')}` : ''}`"
+        href="{{ product.url | within: collection }}"
+        {% if open_in_new_tab %}
+          target="_blank"
+        {% endif %}
+      {% endif %}
+      class="block {{ card_class }} {{ container_spacing }}"
+      x-init="utils.barbaPrefetchTargetPage($el, `{{ product.url }}`)"
+      {% if dynamic_text_color != blank or dynamic_background_color != blank or dynamic_border_color != blank %}
+        :style="`color: ${getDynamicValue(`{{ dynamic_text_color }}`) ?? ''}; background: ${getDynamicValue(`{{ dynamic_background_color }}`) ?? ''}; border-color: ${getDynamicValue(`{{ dynamic_border_color }}`) ?? ''};`"
+        style="color: {% render '_input.dynamic_content', content: dynamic_text_color, keys: 'product, variant, selected_variant', product: product, variant: variant, selected_variant: variant %};
+            background: {% render '_input.dynamic_content', content: dynamic_background_color, keys: 'product, variant, selected_variant', product: product, variant: variant, selected_variant: variant %};
+            border-color: {% render '_input.dynamic_content', content: dynamic_border_color, keys: 'product, variant, selected_variant', product: product, variant: variant, selected_variant: variant %};"
+      {% endif %}
+      {{ html_attributes }} >
+    {{ cleaned_final_content }}
+  </article>
+{% endcapture %}
+
+{% if link_to_object %}
+  {% assign render_card = render_card | replace: '<article', '<a' | replace: '</article', '</a' %}
+{% else %}
+  {% assign render_card = render_card | replace: '<article', '<div' | replace: '</article', '</div' %}
+{% endif %}
+
+{{ render_card }}

@@ -1,0 +1,26 @@
+{% liquid
+  for block_id in block_order
+    assign block = blocks[block_id]
+    if block.disabled
+      continue
+    endif
+    assign style_id = block_id
+    assign selector = '[data-style-id="' | append: style_id | append: '"]'
+
+    if block.type == '_card__container'
+      render 'card.container.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, card_object: card_object, preload_images: preload_images
+    endif
+    if block.type == '_card__image'
+      render 'card.image.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, card_object: card_object, preload_images: preload_images
+    endif
+    if block.type == '_card__button'
+      render 'card.button.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, card_object: card_object, preload_images: preload_images
+    endif
+    if block.type == '_card__text'
+      render 'card.text.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, card_object: card_object, preload_images: preload_images
+    endif
+    if block.type == '_card__labels'
+      render 'card.labels.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, section: section, block: block, card_object: card_object, preload_images: preload_images
+    endif
+  endfor
+%}

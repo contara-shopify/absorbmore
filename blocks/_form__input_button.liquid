@@ -1,0 +1,112 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_form__input_button"
+  assign section_type = "form"
+  assign title = block.settings.title
+  assign button_type = block.settings.button_type
+  assign name = block.settings.name
+  assign default_value = block.settings.default_value
+  assign button_class = block.settings.button_class
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+<style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
+
+<button
+    data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
+    type="{{ button_type }}"
+    {% if default_value != blank %}
+      value="{{ default_value }}"
+    {% endif %}
+    {% if name != blank %}
+      name="{{ name }}"
+    {% endif %}
+    {% if button_type == 'submit' %}
+      :class="$data?.submitting ? 'button-loading' :''"
+    {% endif %}
+    :disabled="!!$data?.submitting"
+    class="disabled:opacity-50 {{ button_class }}"
+>
+  {% render '_input.inline_richtext', content: title %}
+</button>
+
+{% schema %}
+{
+  "name": "Input: Button",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Button content",
+      "default": "Sign-In",
+      "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
+    },
+    {
+      "type": "select",
+      "id": "button_type",
+      "label": "Button type",
+      "default": "submit",
+      "options": [
+        {
+          "value": "submit",
+          "label": "Submit"
+        },
+        {
+          "value": "button",
+          "label": "Button"
+        },
+        {
+          "value": "reset",
+          "label": "Reset"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "id": "default_value",
+      "label": "Default Value",
+      "default": "Sign In"
+    },
+    {
+      "type": "text",
+      "id": "button_class",
+      "label": "Button class",
+      "default": "button-primary"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Input: Button",
+      "category": "** Form **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___form__input_button"
+}
+{% endschema %}

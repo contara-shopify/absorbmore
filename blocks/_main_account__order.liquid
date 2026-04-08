@@ -1,0 +1,212 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_main_account__order"
+  assign section_type = "main_account"
+  assign text_color = block.settings.text_color
+  assign background_color = block.settings.background_color
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+{% if text_color != blank or text_color.alpha != 0 or background_color != blank %}
+  {% capture css %}
+    & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  {% endcapture %}
+{% endif %}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <section class="">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-300">
+        <thead class="whitespace-nowrap bg-inherit">
+          <tr>
+            <th scope="col"
+                class="w-full pl-4 pr-3 text-left text-sm font-semibold text-opacity/90 py-3.5 sm:pl-6">
+              {{ "main_account.product" | t }}
+            </th>
+            <th scope="col"
+                class="px-4 text-left text-sm font-semibold text-opacity/90 sm:px-6 py-3.5">
+              {{ "main_account.sku" | t }}
+            </th>
+            <th scope="col"
+                class="px-4 text-right text-sm font-semibold text-opacity/90 sm:px-6 py-3.5">
+              {{ "main_account.quantity" | t }}
+            </th>
+            <th scope="col"
+                class="px-4 text-right text-sm font-semibold text-opacity/90 sm:px-6 py-3.5">
+              {{ "main_account.total" | t }}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for line_item in order.line_items %}
+            <tr class="cursor-pointer group hf:bg-gray-50"
+                data-order-link="{{ line_item.url }}">
+              <td class="py-4 pl-4 pr-3 text-sm sm:pl-6 min-w-[300px]">
+                <div class="grid w-full grid-cols-[100px_1fr] items-center gap-4">
+                  {% render '_object.image', image: line_item.image, width: 100, height: 100, placeholder: 'product-1', class: 'w-[100px]' %}
+                  <div class="flex-1">
+                    <h3 class="font-semibold group-hf:underline">{{ line_item.product.title }}</h3>
+                    <h4 class="text-xs uppercase tracking-wide opacity-50">{{ line_item.title | replace: line_item.product.title, "" | replace_first: "-", "" | strip }}</h4>
+                    <div class="mt-1 text-primary-outline">
+                      {{ line_item.final_price | money }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-4 py-2 text-sm opacity-50 sm:px-6">
+                {{ line_item.sku }}
+              </td>
+              <td class="whitespace-nowrap px-4 py-2 text-right text-sm opacity-50 sm:px-6">
+                {{ line_item.quantity }}
+              </td>
+              <td class="whitespace-nowrap px-4 py-2 text-right text-sm opacity-50 sm:px-6">
+                {{ line_item.final_line_price | money }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="grid border-t border-t-gray-200 text-sm md:grid-cols-2 divide-y divide-y-gray-200">
+      <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+        <span class="">
+          {{ "main_account.subtotal" | t }}
+        </span>
+        <span class="text-gray-700">{{ order.subtotal_price | money }}</span>
+      </div>
+
+      {%- for discount_application in order.cart_level_discount_applications -%}
+        <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+          <span class="">
+            {{ "main_account.discount" | t }}
+            ({{ discount_application.title }})</span>
+          <span class="text-gray-700">{{ discount_application.total_allocated_amount | times: -1.0 | money }}</span>
+        </div>
+      {%- endfor -%}
+
+      {%- for shipping_method in order.shipping_methods -%}
+        <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+          <span class="">
+            {{ "main_account.shipping" | t }}
+            ({{ shipping_method.title }})</span>
+          <span class="text-gray-700">{{ shipping_method.price | money }}</span>
+        </div>
+      {%- endfor -%}
+
+      {%- for tax_line in order.tax_lines -%}
+        <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+          {%- if cart.taxes_included -%}
+            <span class="">
+              {{ "main_account.tax_included" | t }}
+              ({{ tax_line.title }} {{ tax_line.rate_percentage }}%)</span>
+          {%- else -%}
+            <span class="">
+              {{ "main_account.tax_excluded" | t }}
+              ({{ tax_line.title }} {{ tax_line.rate_percentage }}%)</span>
+          {%- endif -%}
+          <span class="text-gray-700">{{ tax_line.price | money }}</span>
+        </div>
+      {%- endfor -%}
+
+      {%- if order.total_refunded_amount > 0 -%}
+        <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+          <span class="">
+            {{ "main_account.refunded_amount" | t }}
+          </span>
+          <span class="text-gray-700">{{ order.total_refunded_amount | money }}</span>
+        </div>
+      {%- endif -%}
+
+      <div class="flex items-center justify-between px-3 py-4 md:px-6 md:py-5 md:col-end-3">
+        <span class="font-semibold">
+          {{ "main_account.total" | t }}
+        </span>
+        <span class="font-semibold text-opacity/90">{{ order.total_net_amount | money }}</span>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="mt-3 grid gap-2 sm:grid-cols-2">
+    <section class="px-6 py-4 text-sm">
+      <p class="mb-2 font-semibold uppercase tracking-wide">
+        {{ "main_account.billing_address" | t }}
+      </p>
+      {%- if order.billing_address -%}
+        {{- order.billing_address | format_address -}}
+      {%- else -%}
+        <p>
+          {{ "main_account.no_billing" | t }}
+        </p>
+      {%- endif -%}
+    </section>
+    <section class="px-6 py-4 text-sm">
+      <p class="mb-2 font-semibold uppercase tracking-wide">
+        {{ "main_account.shipping_address" | t }}
+      </p>
+      {%- if order.shipping_address -%}
+        {{- order.shipping_address | format_address -}}
+      {%- else -%}
+        <p>
+          {{ "main_account.no_shipping" | t }}
+        </p>
+      {%- endif -%}
+    </section>
+  </footer>
+</div>
+
+
+{% schema %}
+{
+  "name": "Order",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Block Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Order",
+      "category": "** Account **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___main_account__order"
+}
+{% endschema %}

@@ -1,0 +1,199 @@
+{% style %}
+  :root {
+    --component_also_reported_mid:      #555555;
+    --component_also_reported_light:    #888888;
+    --component_also_reported_lighter:  #AAAAAA;
+    --component_also_reported_border:   #D5D1C8;
+    --component_also_reported_panel:    #E2DDD3;
+  }
+
+  [data-component-also-reported] {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Also reported section */
+  .also-section {
+    overflow: hidden;
+    background: var(--component_also_reported_panel);
+    border: 1px solid var(--component_also_reported_border);
+    border-radius: 8px;
+  }
+
+  .also-header {
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid var(--component_also_reported_border);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--component_also_reported_lighter);
+  }
+
+  .also-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 20px;
+    gap: 12px 16px;
+  }
+
+  .also-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--component_also_reported_mid);
+    line-height: 1.4;
+    font-weight: 400;
+  }
+
+  .also-dash {
+    color: var(--component_also_reported_lighter);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 14px;
+    line-height: 1;
+  }
+{% endstyle %}
+
+<div data-component-also-reported data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="component component--also-reported">
+    <div class="also-section">
+      <div class="also-header">{{ block.settings.heading | escape }}</div>
+      <div class="also-grid">
+        {% if block.settings.also_1_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_1_text | escape }}
+          </div>
+        {% endif %}
+        {% if block.settings.also_2_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_2_text | escape }}
+          </div>
+        {% endif %}
+        {% if block.settings.also_3_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_3_text | escape }}
+          </div>
+        {% endif %}
+        {% if block.settings.also_4_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_4_text | escape }}
+          </div>
+        {% endif %}
+        {% if block.settings.also_5_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_5_text | escape }}
+          </div>
+        {% endif %}
+        {% if block.settings.also_6_text != blank %}
+          <div class="also-item">
+            <span class="also-dash">—</span>
+            {{ block.settings.also_6_text | escape }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Also Reported",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Users also reported*"
+    },
+    {
+      "type": "header",
+      "content": "Item 1"
+    },
+    {
+      "type": "text",
+      "id": "also_1_text",
+      "label": "Text",
+      "default": "Steadier energy throughout the day"
+    },
+    {
+      "type": "header",
+      "content": "Item 2"
+    },
+    {
+      "type": "text",
+      "id": "also_2_text",
+      "label": "Text",
+      "default": "Reduced stress-related cravings"
+    },
+    {
+      "type": "header",
+      "content": "Item 3"
+    },
+    {
+      "type": "text",
+      "id": "also_3_text",
+      "label": "Text",
+      "default": "Improved cholesterol levels†"
+    },
+    {
+      "type": "header",
+      "content": "Item 4"
+    },
+    {
+      "type": "text",
+      "id": "also_4_text",
+      "label": "Text",
+      "default": "Less bloating after meals"
+    },
+    {
+      "type": "header",
+      "content": "Item 5"
+    },
+    {
+      "type": "text",
+      "id": "also_5_text",
+      "label": "Text",
+      "default": "Better portion control"
+    },
+    {
+      "type": "header",
+      "content": "Item 6"
+    },
+    {
+      "type": "text",
+      "id": "also_6_text",
+      "label": "Text",
+      "default": "Improved body composition†"
+    }
+  ],
+  "class": "shopify_block___main_product__also_reported",
+  "presets": [
+    {
+      "name": "Also Reported",
+      "category": "** Product **",
+      "settings": {
+        "heading": "Users also reported*",
+        "also_1_text": "Steadier energy throughout the day",
+        "also_2_text": "Reduced stress-related cravings",
+        "also_3_text": "Improved cholesterol levels†",
+        "also_4_text": "Less bloating after meals",
+        "also_5_text": "Better portion control",
+        "also_6_text": "Improved body composition†"
+      }
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = "_form__option"
+  assign section_type = "form"
+  assign title = block.settings.title
+  assign value = block.settings.value
+  assign disabled = block.settings.disabled
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% if value == blank %}
+  {% assign value = title %}
+{% endif %}
+{{ title }}|%|SPLIT|%|{{ value }}|%|DISABLED|%|{{ disabled | default: false }}|%|END|%|
+
+{% schema %}
+{
+  "name": "Option",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "value",
+      "label": "Value",
+      "info": "Defaults to the title if left blank"
+    },
+    {
+      "type": "checkbox",
+      "id": "disabled",
+      "label": "Disabled"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Option",
+      "category": "** Form **"
+    }
+  ],
+  "tag": null,
+  "class": "shopify_block___form__option"
+}
+{% endschema %}
