@@ -21,6 +21,10 @@
 {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
 
 {% capture css %}
+  {% if section.settings.hide_header %}
+    .header-sections-container { display: none !important; }
+  {% endif %}
+
   & {
     position: relative;
     width: 100%;
@@ -715,6 +719,12 @@
       "type": "textarea",
       "id": "custom_css",
       "label": "Custom CSS"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_header",
+      "label": "Hide header",
+      "default": false
     },
     {
       "type": "text",

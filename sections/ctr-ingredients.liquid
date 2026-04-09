@@ -1,0 +1,759 @@
+{%- comment -%} Ingredients Section — "What's Inside" {%- endcomment -%}
+{%- liquid
+  assign section_type = "ingredients"
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign subtext = section.settings.subtext
+  assign subtext_color = section.settings.subtext_color
+  assign subtext_size_desktop = section.settings.subtext_size_desktop
+  assign subtext_size_mobile = section.settings.subtext_size_mobile
+  assign legend_1_label = section.settings.legend_1_label
+  assign legend_1_color = section.settings.legend_1_color
+  assign legend_1_subtext = section.settings.legend_1_subtext
+  assign legend_2_label = section.settings.legend_2_label
+  assign legend_2_color = section.settings.legend_2_color
+  assign legend_2_subtext = section.settings.legend_2_subtext
+  assign card_bg = section.settings.card_bg
+  assign card_border = section.settings.card_border
+  assign card_border_radius = section.settings.card_border_radius
+  assign card_bg_hover = section.settings.card_bg_hover
+  assign card_border_hover = section.settings.card_border_hover
+  assign image_border_radius = section.settings.image_border_radius
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    position: relative;
+    width: 100%;
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+  }
+
+  & .ig__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  & .ig__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  & .ig__headline {
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    font-size: {{ headline_size_mobile }}px;
+    {% comment %} font-style: italic; {% endcomment %}
+    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+  }
+  & .ig__headline p { margin: 0; }
+
+  & .ig__subtext {
+    line-height: 1.6;
+    margin: 0;
+    font-size: {{ subtext_size_mobile }}px;
+    {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
+  }
+  & .ig__subtext p { margin: 0; }
+
+  & .ig__legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  & .ig__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+  }
+
+  & .ig__legend-item.is-active {
+    color: #ffffff;
+    background-color: #7D2D2E;
+    border-color: #7D2D2E;
+  }
+
+  & .ig__legend-item.is-active .ig__legend-dot {
+    background-color: #ffffff !important;
+  }
+
+  & .ig__legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  & .ig__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  & .ig__grid[hidden] {
+    display: none !important;
+  }
+
+  & .ig__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 16px;
+    cursor: pointer;
+    border-radius: {{ card_border_radius }}px;
+    {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
+    {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
+    position: relative;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  & .ig__card:hover {
+    {% if card_bg_hover != blank %}background-color: {{ card_bg_hover }};{% endif %}
+    {% if card_border_hover != blank %}border-color: {{ card_border_hover }};{% endif %}
+  }
+
+  & .ig__card:hover .ig__card-dot {
+    background-color: #7D2D2E !important;
+  }
+
+  & .ig__card-dot {
+    position: absolute;
+    top: -5px;
+   left: 50%;
+   transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  & .ig__card-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: {{ image_border_radius }}px;
+  }
+
+  & .ig__card-title {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  & .ig__card-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.7;
+  }
+  & .ig__card-desc p { margin: 0; }
+
+  @media (min-width: 768px) {
+    & .ig__container {
+      padding: 80px 48px;
+    }
+    & .ig__header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    & .ig__header-left {
+      flex-shrink: 0;
+    }
+    & .ig__header-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+      max-width: 560px;
+    }
+    & .ig__headline {
+      font-size: {{ headline_size_desktop }}px;
+    }
+    & .ig__subtext {
+      font-size: {{ subtext_size_desktop }}px;
+    }
+    & .ig__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    & .ig__grid--wlp {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    & .ig__grid--berberine {
+      grid-template-columns: minmax(280px, 420px);
+    }
+    & .ig__card {
+      flex-direction: row;
+      text-align: left;
+      align-items: center;
+      padding: 16px;
+    }
+    & .ig__card-image {
+      width: 92px;
+      flex-shrink: 0;
+    }
+    & .ig__card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    & .ig__card-title {
+      font-size: 17px;
+    }
+    & .ig__card-desc {
+      font-size: 14px;
+    }
+    & .ig__card-dot {
+      top: 12px;
+      right: 12px;
+    }
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+    x-data="{ activeTab: 'wlp' }"
+  >
+    <div class="ig__container">
+
+      <div class="ig__header">
+        <div class="ig__header-left">
+          {% if headline != blank %}
+            <h2 class="ig__headline">{{ headline }}</h2>
+          {% endif %}
+        </div>
+        <div class="ig__header-right">
+          {% if legend_1_subtext != blank or legend_2_subtext != blank or subtext != blank %}
+            <div class="ig__subtext">
+              {% if legend_1_subtext != blank %}
+                <div x-show="activeTab === 'wlp'">{{ legend_1_subtext }}</div>
+              {% elsif subtext != blank %}
+                <div x-show="activeTab === 'wlp'">{{ subtext }}</div>
+              {% endif %}
+
+              {% if legend_2_subtext != blank %}
+                <div x-show="activeTab === 'berberine'">{{ legend_2_subtext }}</div>
+              {% elsif subtext != blank %}
+                <div x-show="activeTab === 'berberine'">{{ subtext }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+          {% if legend_1_label != blank or legend_2_label != blank %}
+            <div class="ig__legend">
+              {% if legend_1_label != blank %}
+                <button
+                  type="button"
+                  class="ig__legend-item"
+                  :class="{ 'is-active': activeTab === 'wlp' }"
+                  @click="activeTab = 'wlp'">
+                  <span class="ig__legend-dot" style="background-color: {{ legend_1_color }};"></span>
+                  {{ legend_1_label }}
+                </button>
+              {% endif %}
+              {% if legend_2_label != blank %}
+                <button
+                  type="button"
+                  class="ig__legend-item"
+                  :class="{ 'is-active': activeTab === 'berberine' }"
+                  @click="activeTab = 'berberine'">
+                  <span class="ig__legend-dot" style="background-color: {{ legend_2_color }};"></span>
+                  {{ legend_2_label }}
+                </button>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ig__grid ig__grid--wlp" x-show="activeTab === 'wlp'">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign card_image = block.settings.image
+            assign card_title = block.settings.title
+            assign card_desc = block.settings.description
+            assign dot_color = block.settings.dot_color
+            assign tab_assignment = block.settings.tab_assignment
+            assign block_card_bg = block.settings.card_bg
+            assign block_card_border = block.settings.card_border
+            assign block_card_bg_hover = block.settings.card_bg_hover
+            assign block_card_border_hover = block.settings.card_border_hover
+          -%}
+
+          {% unless tab_assignment == 'wlp' %}
+            {% continue %}
+          {% endunless %}
+
+          {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+          <style>
+            {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
+            {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
+            {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
+            {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+          </style>
+
+          <div
+            class="ig__card"
+            data-style-id="{{ section.id }}--{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            {% if dot_color != blank %}
+              <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
+            {% endif %}
+
+            {% if card_image != blank %}
+              <img
+                class="ig__card-image"
+                src="{{ card_image | image_url: width: 300 }}"
+                alt="{{ card_image.alt | default: card_title }}"
+                width="{{ card_image.width }}"
+                height="{{ card_image.height }}"
+                loading="lazy"
+              >
+            {% endif %}
+
+            <div class="ig__card-text">
+              {% if card_title != blank %}
+                <h3 class="ig__card-title">{{ card_title }}</h3>
+              {% endif %}
+              {% if card_desc != blank %}
+                <div class="ig__card-desc">{{ card_desc }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="ig__grid ig__grid--berberine" x-show="activeTab === 'berberine'">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign card_image = block.settings.image
+            assign card_title = block.settings.title
+            assign card_desc = block.settings.description
+            assign dot_color = block.settings.dot_color
+            assign tab_assignment = block.settings.tab_assignment
+            assign block_card_bg = block.settings.card_bg
+            assign block_card_border = block.settings.card_border
+            assign block_card_bg_hover = block.settings.card_bg_hover
+            assign block_card_border_hover = block.settings.card_border_hover
+          -%}
+
+          {% unless tab_assignment == 'berberine' %}
+            {% continue %}
+          {% endunless %}
+
+          {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+          <style>
+            {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
+            {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
+            {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
+            {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+          </style>
+
+          <div
+            class="ig__card"
+            data-style-id="{{ section.id }}--{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            {% if dot_color != blank %}
+              <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
+            {% endif %}
+
+            {% if card_image != blank %}
+              <img
+                class="ig__card-image"
+                src="{{ card_image | image_url: width: 300 }}"
+                alt="{{ card_image.alt | default: card_title }}"
+                width="{{ card_image.width }}"
+                height="{{ card_image.height }}"
+                loading="lazy"
+              >
+            {% endif %}
+
+            <div class="ig__card-text">
+              {% if card_title != blank %}
+                <h3 class="ig__card-title">{{ card_title }}</h3>
+              {% endif %}
+              {% if card_desc != blank %}
+                <div class="ig__card-desc">{{ card_desc }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Ingredients",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>What's inside.<br>And why it matters.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 48,
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 36,
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Subtext"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Every ingredient is clinically studied and formulated for maximum absorption. No fillers, no fluff just the compounds that move the needle on your metabolism.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "subtext_color",
+      "label": "Subtext color"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size_desktop",
+      "label": "Subtext size — Desktop (px)",
+      "default": 16,
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size_mobile",
+      "label": "Subtext size — Mobile (px)",
+      "default": 15,
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Legend"
+    },
+    {
+      "type": "text",
+      "id": "legend_1_label",
+      "label": "Legend 1 label",
+      "default": "WLP-1"
+    },
+    {
+      "type": "color",
+      "id": "legend_1_color",
+      "label": "Legend 1 dot color",
+      "default": "#3b82f6"
+    },
+    {
+      "type": "richtext",
+      "id": "legend_1_subtext",
+      "label": "Legend 1 subtext",
+      "default": "<p>WLP-1 ingredients are focused on appetite control, fullness signaling, and calorie burn.</p>"
+    },
+    {
+      "type": "text",
+      "id": "legend_2_label",
+      "label": "Legend 2 label",
+      "default": "Berberine"
+    },
+    {
+      "type": "color",
+      "id": "legend_2_color",
+      "label": "Legend 2 dot color",
+      "default": "#991b1b"
+    },
+    {
+      "type": "richtext",
+      "id": "legend_2_subtext",
+      "label": "Legend 2 subtext",
+      "default": "<p>Berberine ingredients are focused on blood sugar, AMPK activation, and cellular energy use.</p>"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Cards Global"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#e8eef6"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#b8cce4"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius (px)",
+      "default": 12,
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_hover",
+      "label": "Card background — hover",
+      "default": "#f5e6e3"
+    },
+    {
+      "type": "color",
+      "id": "card_border_hover",
+      "label": "Card border — hover",
+      "default": "#d4a0a0"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius (px)",
+      "default": 10,
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#f7f5f1"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient Card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "tab_assignment",
+          "label": "Assign to tab",
+          "default": "wlp",
+          "options": [
+            {
+              "value": "wlp",
+              "label": "WLP-1"
+            },
+            {
+              "value": "berberine",
+              "label": "Berberine"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name + dosage",
+          "default": "IGOB131® – 400mg"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Leptin/adiponectin rebalancing, fat loss, appetite control</p>"
+        },
+        {
+          "type": "color",
+          "id": "dot_color",
+          "label": "Dot color",
+          "default": "#3b82f6",
+          "info": "Indicator dot — match to legend color."
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Card Color Override",
+          "info": "Leave blank to use global card colors."
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Background override"
+        },
+        {
+          "type": "color",
+          "id": "card_border",
+          "label": "Border override"
+        },
+        {
+          "type": "color",
+          "id": "card_bg_hover",
+          "label": "Background hover override"
+        },
+        {
+          "type": "color",
+          "id": "card_border_hover",
+          "label": "Border hover override"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Ingredients",
+      "category": "Content",
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "tab_assignment": "wlp",
+            "title": "IGOB131® – 400mg",
+            "description": "<p>Leptin/adiponectin rebalancing, fat loss, appetite control</p>",
+            "dot_color": "#3b82f6"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "tab_assignment": "wlp",
+            "title": "CQR-300® – 300mg",
+            "description": "<p>321% GLP-1 boost, fat/carb blocker, DPP-4 reduction</p>",
+            "dot_color": "#3b82f6"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "tab_assignment": "wlp",
+            "title": "Capsifen® – 200mg",
+            "description": "<p>20x absorbed capsaicin, thermogenesis, calorie burn at rest</p>",
+            "dot_color": "#3b82f6"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "tab_assignment": "wlp",
+            "title": "Body Ready™ Tripeptide",
+            "description": "<p>Peptide-based appetite suppression via the ECS system</p>",
+            "dot_color": "#3b82f6"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "tab_assignment": "berberine",
+            "title": "Berberine – 250mg",
+            "description": "<p>AMPK activation, insulin sensitivity, blood sugar and lipid support</p>",
+            "dot_color": "#991b1b",
+            "card_bg": "#f5e6e3",
+            "card_border": "#d4a0a0",
+            "card_bg_hover": "#e8eef6",
+            "card_border_hover": "#b8cce4"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
