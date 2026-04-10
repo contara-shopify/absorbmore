@@ -22,6 +22,7 @@
   assign card_border_hover = section.settings.card_border_hover
   assign image_border_radius = section.settings.image_border_radius
   assign background_color = section.settings.background_color
+  assign enable_tabs = section.settings.enable_tabs
   assign custom_css = section.settings.custom_css
   assign section_id = section.settings.section_id
 -%}
@@ -94,6 +95,12 @@
 
   & .ig__legend-item.is-active .ig__legend-dot {
     background-color: #ffffff !important;
+  }
+
+  & .ig__legend-item.is-disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 1;
   }
 
   & .ig__legend-dot {
@@ -230,6 +237,7 @@
     & .ig__card-dot {
       top: 12px;
       right: 12px;
+      left: auto;
     }
   }
 {% endcapture %}
@@ -242,7 +250,7 @@
   <section
     data-style-id="{{ section.id }}"
     {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    x-data="{ activeTab: 'wlp' }"
+    {% if enable_tabs %}x-data="{ activeTab: 'wlp' }"{% endif %}
   >
     <div class="ig__container">
 
@@ -255,16 +263,21 @@
         <div class="ig__header-right">
           {% if legend_1_subtext != blank or legend_2_subtext != blank or subtext != blank %}
             <div class="ig__subtext">
-              {% if legend_1_subtext != blank %}
-                <div x-show="activeTab === 'wlp'">{{ legend_1_subtext }}</div>
-              {% elsif subtext != blank %}
-                <div x-show="activeTab === 'wlp'">{{ subtext }}</div>
-              {% endif %}
-
-              {% if legend_2_subtext != blank %}
-                <div x-show="activeTab === 'berberine'">{{ legend_2_subtext }}</div>
-              {% elsif subtext != blank %}
-                <div x-show="activeTab === 'berberine'">{{ subtext }}</div>
+              {% if enable_tabs %}
+                {% if legend_1_subtext != blank %}
+                  <div x-show="activeTab === 'wlp'">{{ legend_1_subtext }}</div>
+                {% elsif subtext != blank %}
+                  <div x-show="activeTab === 'wlp'">{{ subtext }}</div>
+                {% endif %}
+                {% if legend_2_subtext != blank %}
+                  <div x-show="activeTab === 'berberine'">{{ legend_2_subtext }}</div>
+                {% elsif subtext != blank %}
+                  <div x-show="activeTab === 'berberine'">{{ subtext }}</div>
+                {% endif %}
+              {% else %}
+                {% if subtext != blank %}
+                  <div>{{ subtext }}</div>
+                {% endif %}
               {% endif %}
             </div>
           {% endif %}
@@ -273,9 +286,8 @@
               {% if legend_1_label != blank %}
                 <button
                   type="button"
-                  class="ig__legend-item"
-                  :class="{ 'is-active': activeTab === 'wlp' }"
-                  @click="activeTab = 'wlp'">
+                  class="ig__legend-item {% unless enable_tabs %}is-disabled{% endunless %}"
+                  {% if enable_tabs %}:class="{ 'is-active': activeTab === 'wlp' }" @click="activeTab = 'wlp'"{% endif %}>
                   <span class="ig__legend-dot" style="background-color: {{ legend_1_color }};"></span>
                   {{ legend_1_label }}
                 </button>
@@ -283,9 +295,8 @@
               {% if legend_2_label != blank %}
                 <button
                   type="button"
-                  class="ig__legend-item"
-                  :class="{ 'is-active': activeTab === 'berberine' }"
-                  @click="activeTab = 'berberine'">
+                  class="ig__legend-item {% unless enable_tabs %}is-disabled{% endunless %}"
+                  {% if enable_tabs %}:class="{ 'is-active': activeTab === 'berberine' }" @click="activeTab = 'berberine'"{% endif %}>
                   <span class="ig__legend-dot" style="background-color: {{ legend_2_color }};"></span>
                   {{ legend_2_label }}
                 </button>
@@ -295,123 +306,181 @@
         </div>
       </div>
 
-      <div class="ig__grid ig__grid--wlp" x-show="activeTab === 'wlp'">
-        {% for block in section.blocks %}
-          {%- liquid
-            assign card_image = block.settings.image
-            assign card_title = block.settings.title
-            assign card_desc = block.settings.description
-            assign dot_color = block.settings.dot_color
-            assign tab_assignment = block.settings.tab_assignment
-            assign block_card_bg = block.settings.card_bg
-            assign block_card_border = block.settings.card_border
-            assign block_card_bg_hover = block.settings.card_bg_hover
-            assign block_card_border_hover = block.settings.card_border_hover
-          -%}
+      {% if enable_tabs %}
+        {%- comment -%} Tab mode: two separate grids toggled by Alpine {%- endcomment -%}
+        <div class="ig__grid ig__grid--wlp" x-show="activeTab === 'wlp'">
+          {% for block in section.blocks %}
+            {%- liquid
+              assign card_image = block.settings.image
+              assign card_title = block.settings.title
+              assign card_desc = block.settings.description
+              assign dot_color = block.settings.dot_color
+              assign tab_assignment = block.settings.tab_assignment
+              assign block_card_bg = block.settings.card_bg
+              assign block_card_border = block.settings.card_border
+              assign block_card_bg_hover = block.settings.card_bg_hover
+              assign block_card_border_hover = block.settings.card_border_hover
+            -%}
 
-          {% unless tab_assignment == 'wlp' %}
-            {% continue %}
-          {% endunless %}
+            {% unless tab_assignment == 'wlp' %}
+              {% continue %}
+            {% endunless %}
 
-          {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+            {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
-          <style>
-            {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
-            {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
-            {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
-            {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
-          </style>
+            <style>
+              {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
+              {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
+              {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
+              {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+            </style>
 
-          <div
-            class="ig__card"
-            data-style-id="{{ section.id }}--{{ block.id }}"
-            {{ block.shopify_attributes }}
-          >
-            {% if dot_color != blank %}
-              <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
-            {% endif %}
-
-            {% if card_image != blank %}
-              <img
-                class="ig__card-image"
-                src="{{ card_image | image_url: width: 300 }}"
-                alt="{{ card_image.alt | default: card_title }}"
-                width="{{ card_image.width }}"
-                height="{{ card_image.height }}"
-                loading="lazy"
-              >
-            {% endif %}
-
-            <div class="ig__card-text">
-              {% if card_title != blank %}
-                <h3 class="ig__card-title">{{ card_title }}</h3>
+            <div
+              class="ig__card"
+              data-style-id="{{ section.id }}--{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if dot_color != blank %}
+                <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
               {% endif %}
-              {% if card_desc != blank %}
-                <div class="ig__card-desc">{{ card_desc }}</div>
+
+              {% if card_image != blank %}
+                <img
+                  class="ig__card-image"
+                  src="{{ card_image | image_url: width: 300 }}"
+                  alt="{{ card_image.alt | default: card_title }}"
+                  width="{{ card_image.width }}"
+                  height="{{ card_image.height }}"
+                  loading="lazy"
+                >
               {% endif %}
+
+              <div class="ig__card-text">
+                {% if card_title != blank %}
+                  <h3 class="ig__card-title">{{ card_title }}</h3>
+                {% endif %}
+                {% if card_desc != blank %}
+                  <div class="ig__card-desc">{{ card_desc }}</div>
+                {% endif %}
+              </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
+          {% endfor %}
+        </div>
 
-      <div class="ig__grid ig__grid--berberine" x-show="activeTab === 'berberine'">
-        {% for block in section.blocks %}
-          {%- liquid
-            assign card_image = block.settings.image
-            assign card_title = block.settings.title
-            assign card_desc = block.settings.description
-            assign dot_color = block.settings.dot_color
-            assign tab_assignment = block.settings.tab_assignment
-            assign block_card_bg = block.settings.card_bg
-            assign block_card_border = block.settings.card_border
-            assign block_card_bg_hover = block.settings.card_bg_hover
-            assign block_card_border_hover = block.settings.card_border_hover
-          -%}
+        <div class="ig__grid ig__grid--berberine" x-show="activeTab === 'berberine'">
+          {% for block in section.blocks %}
+            {%- liquid
+              assign card_image = block.settings.image
+              assign card_title = block.settings.title
+              assign card_desc = block.settings.description
+              assign dot_color = block.settings.dot_color
+              assign tab_assignment = block.settings.tab_assignment
+              assign block_card_bg = block.settings.card_bg
+              assign block_card_border = block.settings.card_border
+              assign block_card_bg_hover = block.settings.card_bg_hover
+              assign block_card_border_hover = block.settings.card_border_hover
+            -%}
 
-          {% unless tab_assignment == 'berberine' %}
-            {% continue %}
-          {% endunless %}
+            {% unless tab_assignment == 'berberine' %}
+              {% continue %}
+            {% endunless %}
 
-          {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+            {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
-          <style>
-            {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
-            {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
-            {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
-            {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
-          </style>
+            <style>
+              {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
+              {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
+              {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
+              {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+            </style>
 
-          <div
-            class="ig__card"
-            data-style-id="{{ section.id }}--{{ block.id }}"
-            {{ block.shopify_attributes }}
-          >
-            {% if dot_color != blank %}
-              <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
-            {% endif %}
-
-            {% if card_image != blank %}
-              <img
-                class="ig__card-image"
-                src="{{ card_image | image_url: width: 300 }}"
-                alt="{{ card_image.alt | default: card_title }}"
-                width="{{ card_image.width }}"
-                height="{{ card_image.height }}"
-                loading="lazy"
-              >
-            {% endif %}
-
-            <div class="ig__card-text">
-              {% if card_title != blank %}
-                <h3 class="ig__card-title">{{ card_title }}</h3>
+            <div
+              class="ig__card"
+              data-style-id="{{ section.id }}--{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if dot_color != blank %}
+                <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
               {% endif %}
-              {% if card_desc != blank %}
-                <div class="ig__card-desc">{{ card_desc }}</div>
+
+              {% if card_image != blank %}
+                <img
+                  class="ig__card-image"
+                  src="{{ card_image | image_url: width: 300 }}"
+                  alt="{{ card_image.alt | default: card_title }}"
+                  width="{{ card_image.width }}"
+                  height="{{ card_image.height }}"
+                  loading="lazy"
+                >
               {% endif %}
+
+              <div class="ig__card-text">
+                {% if card_title != blank %}
+                  <h3 class="ig__card-title">{{ card_title }}</h3>
+                {% endif %}
+                {% if card_desc != blank %}
+                  <div class="ig__card-desc">{{ card_desc }}</div>
+                {% endif %}
+              </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        {%- comment -%} All cards mode: single grid, all cards visible {%- endcomment -%}
+        <div class="ig__grid">
+          {% for block in section.blocks %}
+            {%- liquid
+              assign card_image = block.settings.image
+              assign card_title = block.settings.title
+              assign card_desc = block.settings.description
+              assign dot_color = block.settings.dot_color
+              assign block_card_bg = block.settings.card_bg
+              assign block_card_border = block.settings.card_border
+              assign block_card_bg_hover = block.settings.card_bg_hover
+              assign block_card_border_hover = block.settings.card_border_hover
+            -%}
+
+            {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+
+            <style>
+              {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
+              {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
+              {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
+              {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+            </style>
+
+            <div
+              class="ig__card"
+              data-style-id="{{ section.id }}--{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if dot_color != blank %}
+                <span class="ig__card-dot" style="background-color: {{ dot_color }};"></span>
+              {% endif %}
+
+              {% if card_image != blank %}
+                <img
+                  class="ig__card-image"
+                  src="{{ card_image | image_url: width: 300 }}"
+                  alt="{{ card_image.alt | default: card_title }}"
+                  width="{{ card_image.width }}"
+                  height="{{ card_image.height }}"
+                  loading="lazy"
+                >
+              {% endif %}
+
+              <div class="ig__card-text">
+                {% if card_title != blank %}
+                  <h3 class="ig__card-title">{{ card_title }}</h3>
+                {% endif %}
+                {% if card_desc != blank %}
+                  <div class="ig__card-desc">{{ card_desc }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
     </div>
   </section>
@@ -505,7 +574,14 @@
     },
     {
       "type": "header",
-      "content": "Legend"
+      "content": "Legend / Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tabs",
+      "label": "Enable tab switching",
+      "default": true,
+      "info": "When off, all cards are shown at once. Legend buttons remain visible but not clickable."
     },
     {
       "type": "text",

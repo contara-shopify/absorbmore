@@ -99,18 +99,10 @@
     
   }
 
-  #shopify-section-{{ section.id }} .ctr-dual-split__actions {
-    margin-top: 26px;
-    display: grid;
-    gap: 10px;
-    justify-items: center;
-  }
-
-  #shopify-section-{{ section.id }} .ctr-dual-split__cta {
+  #shopify-section-{{ section.id }} .ctr-dual-split__card-cta {
     min-width: 340px;
     min-height: 50px;
     padding: 0 28px;
-    border-radius: 8px;
     background: {{ section.settings.button_background }};
     color: {{ section.settings.button_text_color }};
     display: inline-flex;
@@ -118,22 +110,37 @@
     justify-content: center;
     text-align: center;
     text-decoration: none;
+    border-radius: 8px;
     font-size: 16px;
-    line-height: 1;
     font-weight: 700;
+    line-height: 1;
+    margin-top: 20px;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card-cta:hover {
+    opacity: 0.9;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__actions {
+    margin-top: 26px;
+    display: grid;
+    gap: 10px;
+    justify-items: center;
   }
 
   #shopify-section-{{ section.id }} .ctr-dual-split__meta {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
     font-size: 10px;
     line-height: 1.3;
     font-weight: 600;
     color: rgba(17, 17, 17, 0.82);
-    text-align: center;
+    margin-top: 14px;
   }
 
   #shopify-section-{{ section.id }} .ctr-dual-split__meta-sep {
@@ -196,27 +203,25 @@
       padding-left: 16px;
     }
 
+    #shopify-section-{{ section.id }} .ctr-dual-split__card-cta {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 0 20px;
+      font-size: 15px;
+      margin-top: 16px;
+    }
+
     #shopify-section-{{ section.id }} .ctr-dual-split__actions {
       margin-top: 18px;
       justify-items: stretch;
       padding: 0 20px;
     }
 
-    #shopify-section-{{ section.id }} .ctr-dual-split__cta {
-      width: 100%;
-      min-width: 0;
-      min-height: 48px;
-      font-size: 15px;
-    }
-
     #shopify-section-{{ section.id }} .ctr-dual-split__meta {
-      justify-content: center;
-      gap: 6px 8px;
-      overflow-x: auto;
-      /* flex-wrap: nowrap;
-      white-space: nowrap; */
-      padding-bottom: 2px;
-      scrollbar-width: none;
+      gap: 4px 6px;
+      margin-top: 10px;
+      font-size: 9px;
     }
 
     #shopify-section-{{ section.id }} .ctr-dual-split__meta::-webkit-scrollbar {
@@ -254,6 +259,28 @@
             {% if section.settings.left_bullet_5 != blank %}<li>{{ section.settings.left_bullet_5 | escape }}</li>{% endif %}
             {% if section.settings.left_bullet_6 != blank %}<li>{{ section.settings.left_bullet_6 | escape }}</li>{% endif %}
           </ul>
+          {% if section.settings.left_cta_text != blank %}
+            <a class="ctr-dual-split__card-cta" href="{{ section.settings.left_cta_url | default: '#' }}">
+              {{ section.settings.left_cta_text | escape }}
+            </a>
+          {% endif %}
+          <div class="ctr-dual-split__meta">
+            {% if section.settings.left_urgency_1 != blank %}
+              <span>{{ section.settings.left_urgency_1 | escape }}</span>
+            {% endif %}
+            {% if section.settings.left_urgency_1 != blank and section.settings.left_urgency_2 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.left_urgency_2 != blank %}
+              <span>{{ section.settings.left_urgency_2 | escape }}</span>
+            {% endif %}
+            {% if section.settings.left_urgency_2 != blank and section.settings.left_urgency_3 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.left_urgency_3 != blank %}
+              <span>{{ section.settings.left_urgency_3 | escape }}</span>
+            {% endif %}
+          </div>
         </div>
       </article>
 
@@ -279,35 +306,32 @@
             {% if section.settings.right_bullet_5 != blank %}<li>{{ section.settings.right_bullet_5 | escape }}</li>{% endif %}
             {% if section.settings.right_bullet_6 != blank %}<li>{{ section.settings.right_bullet_6 | escape }}</li>{% endif %}
           </ul>
+          {% if section.settings.right_cta_text != blank %}
+            <a class="ctr-dual-split__card-cta" href="{{ section.settings.right_cta_url | default: '#' }}">
+              {{ section.settings.right_cta_text | escape }}
+            </a>
+          {% endif %}
+          <div class="ctr-dual-split__meta">
+            {% if section.settings.right_urgency_1 != blank %}
+              <span>{{ section.settings.right_urgency_1 | escape }}</span>
+            {% endif %}
+            {% if section.settings.right_urgency_1 != blank and section.settings.right_urgency_2 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.right_urgency_2 != blank %}
+              <span>{{ section.settings.right_urgency_2 | escape }}</span>
+            {% endif %}
+            {% if section.settings.right_urgency_2 != blank and section.settings.right_urgency_3 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.right_urgency_3 != blank %}
+              <span>{{ section.settings.right_urgency_3 | escape }}</span>
+            {% endif %}
+          </div>
         </div>
       </article>
     </div>
 
-    <div class="ctr-dual-split__actions">
-      {% if section.settings.cta_text != blank %}
-        <a class="ctr-dual-split__cta" href="{{ section.settings.cta_url | default: '#' }}">
-          {{ section.settings.cta_text | escape }}
-        </a>
-      {% endif %}
-
-      <div class="ctr-dual-split__meta">
-        {% if section.settings.urgency_label_1 != blank %}
-          <span>{{ section.settings.urgency_label_1 | escape }}</span>
-        {% endif %}
-        {% if section.settings.urgency_label_1 != blank and section.settings.urgency_label_2 != blank %}
-          <span class="ctr-dual-split__meta-sep">·</span>
-        {% endif %}
-        {% if section.settings.urgency_label_2 != blank %}
-          <span>{{ section.settings.urgency_label_2 | escape }}</span>
-        {% endif %}
-        {% if section.settings.urgency_label_2 != blank and section.settings.urgency_label_3 != blank %}
-          <span class="ctr-dual-split__meta-sep">·</span>
-        {% endif %}
-        {% if section.settings.urgency_label_3 != blank %}
-          <span>{{ section.settings.urgency_label_3 | escape }}</span>
-        {% endif %}
-      </div>
-    </div>
   </div>
 </section>
 
@@ -455,6 +479,17 @@
       "label": "Left bullet 6"
     },
     {
+      "type": "text",
+      "id": "left_cta_text",
+      "label": "Left button text",
+      "default": "Shop Restore"
+    },
+    {
+      "type": "url",
+      "id": "left_cta_url",
+      "label": "Left button URL"
+    },
+    {
       "type": "header",
       "content": "Right Product"
     },
@@ -511,19 +546,15 @@
       "label": "Right bullet 6"
     },
     {
-      "type": "header",
-      "content": "CTA"
-    },
-    {
       "type": "text",
-      "id": "cta_text",
-      "label": "CTA text",
-      "default": "Subscribe & Save Up To 35%"
+      "id": "right_cta_text",
+      "label": "Right button text",
+      "default": "Shop Vitamin D3 + K2"
     },
     {
       "type": "url",
-      "id": "cta_url",
-      "label": "CTA URL"
+      "id": "right_cta_url",
+      "label": "Right button URL"
     },
     {
       "type": "color",
@@ -539,24 +570,46 @@
     },
     {
       "type": "header",
-      "content": "Urgency Row"
+      "content": "Left Urgency Labels"
     },
     {
       "type": "text",
-      "id": "urgency_label_1",
-      "label": "Urgency label 1",
+      "id": "left_urgency_1",
+      "label": "Left urgency 1",
       "default": "Stock Alert: Running Low"
     },
     {
       "type": "text",
-      "id": "urgency_label_2",
-      "label": "Urgency label 2",
+      "id": "left_urgency_2",
+      "label": "Left urgency 2",
       "default": "Free Shipping"
     },
     {
       "type": "text",
-      "id": "urgency_label_3",
-      "label": "Urgency label 3",
+      "id": "left_urgency_3",
+      "label": "Left urgency 3",
+      "default": "30-Day Money-Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Right Urgency Labels"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_1",
+      "label": "Right urgency 1",
+      "default": "Stock Alert: Running Low"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_2",
+      "label": "Right urgency 2",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_3",
+      "label": "Right urgency 3",
       "default": "30-Day Money-Back Guarantee"
     }
   ],
