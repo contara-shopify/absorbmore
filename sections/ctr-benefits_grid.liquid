@@ -79,7 +79,7 @@
     font-size: {{ headline_size_mob }}px;
     {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
   }
-  & .bg__headline p { margin: 0; }
+  & .bg__headline p { margin: 0; font-size: inherit; line-height: inherit; }
 
   /* ── Cards: 2-col on mobile ── */
   & .bg__grid {
@@ -173,10 +173,10 @@
       font-size: {{ headline_size_desk }}px;
     }
 
-    & .bg__grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+     & .bg__headline {
+      font-size: {{ headline_size_desk }}px;
     }
+    & .bg__headline p { font-size: inherit; }
 
     & .bg__card {
       padding: 20px;
