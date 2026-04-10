@@ -38,7 +38,7 @@
   & .ig__container {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 48px 24px;
+    padding: 24px 24px;
   }
 
   & .ig__header {
@@ -60,7 +60,7 @@
 
   & .ig__subtext {
     line-height: 1.6;
-    margin: 0;
+    margin: 10px 0;
     font-size: {{ subtext_size_mobile }}px;
     {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
   }
@@ -148,7 +148,7 @@
 
   & .ig__card-image {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 0.8;
     object-fit: cover;
     border-radius: {{ image_border_radius }}px;
   }
@@ -194,6 +194,7 @@
     }
     & .ig__subtext {
       font-size: {{ subtext_size_desktop }}px;
+      margin:  0;
     }
     & .ig__grid {
       grid-template-columns: repeat(3, 1fr);
