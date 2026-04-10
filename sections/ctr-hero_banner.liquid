@@ -119,6 +119,14 @@
     margin: 0;
   }
 
+  & .hero-banner__subtitle {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0;
+  }
+  & .hero-banner__subtitle p { margin: 0; }
+
   & .hero-banner__description {
     line-height: 1.6;
   }
@@ -271,7 +279,7 @@
     .hero-banner__clinicians {
       flex-direction: row;
       gap: 8px; 
-      padding: 0 16px;
+      padding: 16px 16px 0;
     }
 
 
@@ -378,6 +386,27 @@
 
     {% capture slide_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
+    {%- comment -%} Map text-align to flex justify for mobile {%- endcomment -%}
+    {%- liquid
+      case text_align_mobile
+        when 'left'
+          assign flex_align_mobile = 'flex-start'
+        when 'center'
+          assign flex_align_mobile = 'center'
+        when 'right'
+          assign flex_align_mobile = 'flex-end'
+      endcase
+
+      case text_align_desktop
+        when 'left'
+          assign flex_align_desktop = 'flex-start'
+        when 'center'
+          assign flex_align_desktop = 'center'
+        when 'right'
+          assign flex_align_desktop = 'flex-end'
+      endcase
+    -%}
+
     {% capture slide_css %}
       & {
         {% if slide_bg_color != blank %}background-color: {{ slide_bg_color }};{% endif %}
@@ -399,10 +428,17 @@
       & .hero-banner__rating {
         {% if rating_color != blank and rating_color.alpha != 0 %}color: {{ rating_color }};{% endif %}
         {% if rating_size != blank %}font-size: {{ rating_size }}px;{% endif %}
+        justify-content: {{ flex_align_mobile }};
       }
       & .hero-banner__headline {
         {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
         font-size: {{ headline_size_mobile }}px;
+      }
+      & .hero-banner__subtitle {
+        {%- assign subtitle_color = block.settings.subtitle_color -%}
+        {% if subtitle_color != blank and subtitle_color.alpha != 0 %}color: {{ subtitle_color }};{% endif %}
+        {%- assign subtitle_size_val = block.settings.subtitle_size -%}
+        {% if subtitle_size_val != blank %}font-size: {{ subtitle_size_val }}px;{% endif %}
       }
       & .hero-banner__description {
         {% if description_color != blank and description_color.alpha != 0 %}color: {{ description_color }};{% endif %}
@@ -411,6 +447,7 @@
       & .hero-banner__badges {
         {% if badges_color != blank and badges_color.alpha != 0 %}color: {{ badges_color }};{% endif %}
         {% if badges_size != blank %}font-size: {{ badges_size }}px;{% endif %}
+        justify-content: {{ flex_align_mobile }};
       }
       @media (min-width: 768px) {
         & .hero-banner__content {
@@ -426,6 +463,12 @@
         }
         & .hero-banner__description {
           font-size: {{ description_size_desktop }}px;
+        }
+        & .hero-banner__rating {
+          justify-content: {{ flex_align_desktop }};
+        }
+        & .hero-banner__badges {
+          justify-content: {{ flex_align_desktop }};
         }
       }
     {% endcapture %}
@@ -545,6 +588,11 @@
                 <h1 class="hero-banner__headline">
                   {{ headline }}
                 </h1>
+              {% endif %}
+
+              {%- assign subtitle = block.settings.subtitle -%}
+              {% if subtitle != blank %}
+                <div class="hero-banner__subtitle">{{ subtitle }}</div>
               {% endif %}
 
               {% if description != blank %}
@@ -1113,6 +1161,37 @@
           "default": 32,
           "min": 16,
           "max": 72,
+          "step": 1,
+          "unit": "px"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Subtitle"
+        },
+        {
+          "type": "richtext",
+          "id": "subtitle",
+          "label": "Subtitle text",
+          "default": "<p>Most People Only Do 1</p>"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "subtitle_color",
+          "label": "Subtitle color",
+          "default": "#ff7816"
+        },
+        {
+          "type": "range",
+          "id": "subtitle_size",
+          "label": "Subtitle size (px)",
+          "default": 18,
+          "min": 12,
+          "max": 32,
           "step": 1,
           "unit": "px"
         },

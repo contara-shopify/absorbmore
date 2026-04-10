@@ -1,0 +1,187 @@
+{%- comment -%} Divider Section {%- endcomment -%}
+{%- liquid
+  assign padding_top_desktop = section.settings.padding_top_desktop
+  assign padding_bottom_desktop = section.settings.padding_bottom_desktop
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign container_width = section.settings.container_width
+  assign border_color = section.settings.border_color
+  assign border_width = section.settings.border_width
+  assign border_style = section.settings.border_style
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    padding: {{ padding_top_mobile }}px 24px {{ padding_bottom_mobile }}px;
+  }
+
+  & .divider__line {
+    max-width: {{ container_width }}px;
+    margin: 0 auto;
+    border: none;
+    border-top: {{ border_width }}px {{ border_style }} {% if border_color != blank %}{{ border_color }}{% else %}#d4d4d4{% endif %};
+  }
+
+  @media (min-width: 768px) {
+    & {
+      padding: {{ padding_top_desktop }}px 48px {{ padding_bottom_desktop }}px;
+    }
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <hr class="divider__line">
+  </div>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Divider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top spacing — Desktop (px)",
+      "default": 40,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom spacing — Desktop (px)",
+      "default": 40,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top spacing — Mobile (px)",
+      "default": 24,
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom spacing — Mobile (px)",
+      "default": 24,
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Border"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#d4d4d4"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border thickness (px)",
+      "default": 1,
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "default": "solid",
+      "options": [
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width — Desktop (px)",
+      "default": 1200,
+      "min": 200,
+      "max": 1440,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Divider",
+      "category": "Layout"
+    }
+  ]
+}
+{% endschema %}
