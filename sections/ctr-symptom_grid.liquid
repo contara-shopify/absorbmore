@@ -21,6 +21,7 @@
   assign trust_image         = section.settings.trust_image
   assign background_color    = section.settings.background_color
   assign image_border_radius = section.settings.image_border_radius
+  assign max_width_desktop    = section.settings.max_width_desktop
   assign custom_css          = section.settings.custom_css
   assign section_id          = section.settings.section_id
 -%}
@@ -34,7 +35,7 @@
   }
 
   & .sg__container {
-    max-width: 1240px;
+    max-width: {{ max_width_desktop }}px;
     margin: 0 auto;
     padding: 48px 20px;
   }
@@ -71,11 +72,14 @@
     font-size: 14px;
   }
 
+  & .sg__header {
+    margin-bottom: 32px;
+  }
+
   & .sg__content {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    max-width: 720px;
   }
 
   & .sg__headline {
@@ -208,9 +212,11 @@
     & .sg__image-wrap {
       order: 1;
       flex: 0 0 38%;
-      max-width: 420px;
-      position: sticky;
-      top: 40px;
+      max-width: 340px;
+    }
+
+    & .sg__header {
+      margin-bottom: 40px;
     }
 
     & .sg__content {
@@ -267,20 +273,21 @@
     {% if section_id != blank %}id="{{ section_id }}"{% endif %}
     class="relative {{ container_spacing }}"
   >
+    <div class="sg__container">
+      {%- comment -%} Header — full width above columns {%- endcomment -%}
+      <div class="sg__header">
+        {% if headline != blank %}
+          <h2 class="sg__headline">{{ headline }}</h2>
+        {% endif %}
+        {% if subtext != blank %}
+          <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
+        {% endif %}
+      </div>
+
       <div class="sg__layout">
 
         {%- comment -%} Left / main content column {%- endcomment -%}
         <div class="sg__content">
-
-          {%- comment -%} Header {%- endcomment -%}
-          <div class="sg__header">
-            {% if headline != blank %}
-              <h2 class="sg__headline">{{ headline }}</h2>
-            {% endif %}
-            {% if subtext != blank %}
-              <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
-            {% endif %}
-          </div>
 
           {%- comment -%} Symptom cards grid {%- endcomment -%}
           {% if section.blocks.size > 0 %}
@@ -362,6 +369,7 @@
         </div>
 
       </div>
+    </div>
   </section>
 {% endcapture %}
 
@@ -583,6 +591,16 @@
     {
       "type": "header",
       "content": "Section Globals"
+    },
+    {
+      "type": "range",
+      "id": "max_width_desktop",
+      "label": "Max width desktop (px)",
+      "min": 800,
+      "max": 1440,
+      "step": 20,
+      "default": 1240,
+      "unit": "px"
     },
     {
       "type": "color",

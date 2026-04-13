@@ -14,6 +14,7 @@
   assign label_color         = section.settings.label_color
   assign background_color    = section.settings.background_color
   assign icon_size           = section.settings.icon_size
+  assign max_width_desktop   = section.settings.max_width_desktop
   assign custom_css          = section.settings.custom_css
   assign section_id          = section.settings.section_id
 -%}
@@ -27,7 +28,7 @@
   }
 
   & .bg__container {
-    max-width: 1200px;
+    max-width: {{ max_width_desktop }}px;
     margin: 0 auto;
     padding: 48px 20px;
   }
@@ -159,7 +160,7 @@
 
     & .bg__image-wrap {
       flex: 0 0 32%;
-      max-width: 380px;
+      max-width: 252px;
       position: sticky;
       top: 40px;
     }
@@ -412,6 +413,16 @@
     {
       "type": "header",
       "content": "Section Globals"
+    },
+    {
+      "type": "range",
+      "id": "max_width_desktop",
+      "label": "Max width desktop (px)",
+      "min": 800,
+      "max": 1440,
+      "step": 20,
+      "default": 1200,
+      "unit": "px"
     },
     {
       "type": "color",
