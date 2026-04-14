@@ -587,12 +587,27 @@
         ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
         galleryIndex: 0,
         mobileStickyVisible: false,
+        selectedVariantId: +`{{ variant.id }}`,
         selectDefaultPlan() {
           const allocations = this.pdp?.selling_plan_allocations || [];
           const matchedPlan = allocations.find((allocation) => /60\s*day/i.test(allocation?.selling_plan?.name || ''));
           const targetPlan = matchedPlan?.selling_plan || allocations[0]?.selling_plan;
           if (targetPlan?.id && this.pdp?.selected_selling_plan?.id !== targetPlan.id) {
             this.setSellingPlan(targetPlan.id);
+          }
+        },
+        handleVariantChange(selectEl) {
+          const variantId = +selectEl.value;
+          const sellingPlanId = +(selectEl.selectedOptions?.[0]?.dataset.sellingPlanId || 0);
+          const useSubscription = !!this.pdp?.selected_selling_plan?.id || !!this.pdp?.product?.requires_selling_plan;
+
+          this.selectedVariantId = variantId;
+          this.setSelectedVariant(variantId);
+
+          if (useSubscription) {
+            this.$nextTick(() => {
+              this.setSellingPlan(sellingPlanId || this.pdp?.selected_variant?.selling_plan_allocations?.[0]?.selling_plan?.id || undefined);
+            });
           }
         },
         toggleSubscription() {
@@ -605,8 +620,9 @@
         },
         initPurchaseBox() {
           this.selectDefaultPlan();
-          this.$watch('pdp.selling_plan_allocations', () => this.selectDefaultPlan());
-          this.$watch('pdp.selected_variant', () => this.selectDefaultPlan());
+          this.$watch('pdp.selected_variant?.id', (value) => {
+            this.selectedVariantId = +(value || 0);
+          });
 
           if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) {
             return;
@@ -743,13 +759,17 @@
 
           <select
             class="ctr-ppb__plan-select"
-            aria-label="Delivery frequency"
-            :disabled="!(pdp.selling_plan_allocations || []).length"
-            @change="setSellingPlan(+$el.value)"
-            :value="pdp.selected_selling_plan?.id || ''">
-            <template x-for="allocation in (pdp.selling_plan_allocations || [])" :key="allocation?.selling_plan?.id">
-              <option :value="allocation?.selling_plan?.id" x-text="allocation?.selling_plan?.name"></option>
-            </template>
+            aria-label="Delivery option"
+            @change="handleVariantChange($event.target)"
+            :value="selectedVariantId">
+            {% for product_variant in product.variants %}
+              <option
+                value="{{ product_variant.id }}"
+                data-selling-plan-id="{{ product_variant.selling_plan_allocations.first.selling_plan.id }}"
+                {% if product_variant.id == variant.id %}selected{% endif %}>
+                {{ product_variant.title }}{% if product_variant.metafields.custom.choose_supply_variant_subheading != blank %} - {{ product_variant.metafields.custom.choose_supply_variant_subheading }}{% endif %}
+              </option>
+            {% endfor %}
           </select>
 
           <ul class="ctr-ppb__subscription-perks">
