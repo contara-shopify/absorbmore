@@ -844,3 +844,5 @@ const hydrateProductCard = utils.hydrateCard("product");
 
 window._sections["initProductCard"] = initProductCard;
 window._sections["hydrateProductCard"] = hydrateProductCard;
+
+/* LAST HASH: 047650c04a58835d2be08f091190468e1c3b55d4 */

@@ -1199,7 +1199,6 @@ export type MainProductBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__container" }>
   | Extract<ThemeBlocks, { type: "_main_product__collapsible_container" }>
   | Extract<ThemeBlocks, { type: "_main_product__availability" }>
-  | Extract<ThemeBlocks, { type: "_main_product__selected_plan_duration" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery" }>
   | Extract<ThemeBlocks, { type: "_main_product__thumbnails" }>
   | Extract<ThemeBlocks, { type: "_main_product__price" }>
@@ -1232,7 +1231,6 @@ export type MainProductBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__image" }>
   | Extract<ThemeBlocks, { type: "_main_product__labels" }>
   | Extract<ThemeBlocks, { type: "_main_product__gift_card_recipient" }>
-  | Extract<ThemeBlocks, { type: "_main_product__bundle_variants" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery_button" }>
   | Extract<ThemeBlocks, { type: "_main_product__rebuy_popup" }>
   | GlobalThemeBlocks
@@ -1274,7 +1272,6 @@ export type MainProductBarBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__container" }>
   | Extract<ThemeBlocks, { type: "_main_product__collapsible_container" }>
   | Extract<ThemeBlocks, { type: "_main_product__availability" }>
-  | Extract<ThemeBlocks, { type: "_main_product__selected_plan_duration" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery" }>
   | Extract<ThemeBlocks, { type: "_main_product__thumbnails" }>
   | Extract<ThemeBlocks, { type: "_main_product__price" }>
@@ -1307,7 +1304,6 @@ export type MainProductBarBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__image" }>
   | Extract<ThemeBlocks, { type: "_main_product__labels" }>
   | Extract<ThemeBlocks, { type: "_main_product__gift_card_recipient" }>
-  | Extract<ThemeBlocks, { type: "_main_product__bundle_variants" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery_button" }>
   | Extract<ThemeBlocks, { type: "_main_product__rebuy_popup" }>
   | GlobalThemeBlocks

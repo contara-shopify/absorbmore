@@ -15,8 +15,6 @@
   assign no_subscription_highlights = block.settings.no_subscription_highlights
   assign fourteen_sticks_subscription_highlights = block.settings.fourteen_sticks_subscription_highlights
   assign highlights_class = block.settings.highlights_class
-  assign gwp_image = block.settings.gwp_image
-  assign promotional_text = block.settings.promotional_text
   assign default_selection = block.settings.default_selection
   assign quick_view_visibility = block.settings.quick_view_visibility
   assign text_color = block.settings.text_color
@@ -147,13 +145,6 @@
   {% endif %}
   data-quick-view-visibility="{{ quick_view_visibility }}"
   x-show="pdp?.selected_variant?.selling_plan_allocations?.length">
-  {%- if gwp_variant_id != 0 -%}
-    <div
-      class="hidden"
-      data-gwp-variant-id="{{ gwp_variant_id }}"
-      data-gwp-threshold="28"
-    ></div>
-  {%- endif -%}
   <header class="flex justify-between items-center gap-2">
     {% if product.requires_selling_plan != true %}
       <button
@@ -227,53 +218,38 @@
         server_rendered_title: selected_subscription_title
     %}
   </div>
-  <div class="flex max-md:flex-col gap-6 mt-4">
-    <div
-      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
-      x-show="pdp.selected_selling_plan && !((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
-      data-content="{% render '_input.inline_richtext', content: highlights, escape: true %}"
-      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
-      {% if default_selection != 'subcription' %}
-        x-cloak
-      {% endif %}
-    >
-      {% render '_input.inline_richtext', content: highlights_content %}
-    </div>
-    <div
-      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
-      x-show="pdp.selected_selling_plan && ((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
-      data-content="{% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights, escape: true %}"
-      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
-      {% if default_selection != 'subcription' %}
-        x-cloak
-      {% endif %}
-    >
-      {% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights_content %}
-    </div>
-    <div
-      class="{{ highlights_class }} flex-1 grid gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
-      :class="pdp.selected_options?.[1]?.includes('Servings') && parseInt(pdp.selected_options[1].match(/^(\d+)/)?.[1] || '0', 10) >= 28 ? pdp.selected_selling_plan ? '' : 'line-through' : ''"
-      x-show="!pdp.selected_selling_plan"
-      data-content="{% render '_input.inline_richtext', content: no_subscription_highlights, escape: true %}"
-      x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
-      {% if default_selection == 'subcription' %}
-        x-cloak
-      {% endif %}
-    >
-      {% render '_input.inline_richtext', content: no_subscription_highlights_content %}
-    </div>
-    <div
-      class="shrink-0 flex items-center subscribe-gwp"
-      :class="pdp.selected_selling_plan ? 'active' : 'line-through'"
-      x-show="pdp.selected_options?.[1]?.includes('Servings') && parseInt(pdp.selected_options[1].match(/^(\d+)/)?.[1] || '0', 10) >= 28"
-    >
-      <div class="flex items-center gap-4 p-4 max-md:px-3 w-full bg-[#F7F5F1] rounded-[8px]" :class="!pdp.selected_selling_plan ? 'opacity-50' : ''">
-        <div class="w-[56px] h-[56px] flex items-center justify-center shadow-sm">
-          {% render '_object.image', image: gwp_image, class: "w-full h-full transition-all object-[inherit] rounded-[8px]", max_width: 112 %}
-        </div>
-        {% render '_input.richtext', content: promotional_text, class: "richtext-md [&>h5]:text-black" %}
-      </div>
-    </div>
+  <div
+    class="{{ highlights_class }} grid mt-4 gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+    x-show="pdp.selected_selling_plan && !((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
+    data-content="{% render '_input.inline_richtext', content: highlights, escape: true %}"
+    x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+    {% if default_selection != 'subcription' %}
+      x-cloak
+    {% endif %}
+  >
+    {% render '_input.inline_richtext', content: highlights_content %}
+  </div>
+  <div
+    class="{{ highlights_class }} grid mt-4 gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+    x-show="pdp.selected_selling_plan && ((pdp.selected_options?.[0] === 'Sticks' && pdp.selected_options?.[1] === '14 Servings') || pdp.selected_options?.[0] === '14 Sticks')"
+    data-content="{% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights, escape: true %}"
+    x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+    {% if default_selection != 'subcription' %}
+      x-cloak
+    {% endif %}
+  >
+    {% render '_input.inline_richtext', content: fourteen_sticks_subscription_highlights_content %}
+  </div>
+  <div
+    class="{{ highlights_class }} grid mt-4 gap-2 [&>*]:flex [&>*]:gap-2 [&>*]:items-center"
+    x-show="!pdp.selected_selling_plan"
+    data-content="{% render '_input.inline_richtext', content: no_subscription_highlights, escape: true %}"
+    x-html="$el.getAttribute('data-content')?.replace(/\[value\]/gi, pdp?.selling_plan_discount_wording)"
+    {% if default_selection == 'subcription' %}
+      x-cloak
+    {% endif %}
+  >
+    {% render '_input.inline_richtext', content: no_subscription_highlights_content %}
   </div>
 </div>
 
@@ -402,20 +378,6 @@
       "id": "highlights_class",
       "label": "Highlights class",
       "default": "richtext-md"
-    },
-    {
-      "type": "header",
-      "content": "Gift with purchase"
-    },
-    {
-      "type": "image_picker",
-      "id": "gwp_image",
-      "label": "GWP Image"
-    },
-    {
-      "type": "richtext",
-      "id": "promotional_text",
-      "label": "Promotional text"
     },
     {
       "type": "paragraph",

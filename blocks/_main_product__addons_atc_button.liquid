@@ -23,11 +23,7 @@
   assign variant_price = variant.price | minus: discount_value
 
   assign formatted_price = variant.metafields.smart.price_override.value | default: variant.price | at_most: variant_price | money
-  assign formatted_compare_at_price = ''
-  assign compare_at_raw = variant.compare_at_price | at_least: variant.price
-  if compare_at_raw > variant.price
-    assign formatted_compare_at_price = compare_at_raw | money | prepend: '<span style="text-decoration: line-through; opacity: 0.5;">' | append: '</span>'
-  endif
+  assign formatted_compare_at_price = variant.compare_at_price | at_least: variant.price | money | prepend: '<span style="text-decoration: line-through; opacity: 0.5;">' | append: '</span>'
   assign _content = content | replace: '[price]', formatted_price | replace: '[compare_at_price]', formatted_compare_at_price | replace: '[total]', formatted_price | replace: '[compare_at_total]', formatted_compare_at_price
 %}
 
@@ -36,6 +32,7 @@
 <style>
   {{ custom_css | replace: '&', selector | strip_newlines }}
 </style>
+
 <button
   data-style-id="{{ section.id }}--{{ block.id }}"
   {{ block.shopify_attributes }}
@@ -44,8 +41,8 @@
   class="w-full disabled:opacity-70 disabled:pointer-events-none {{ button_class }} {{ available_classes }}"
   :class="pdp.isAdding ? 'button-loading':''"
   :disabled="pdp.isAdding || pdp.disable_add_to_cart?.size > 0 || !pdp.addons?.size"
-  x-html="(function(){ const useSub = $el.closest('form')?.querySelector?.('[data-addon-product-target]')?.closest?.('[data-addons-default-subscription]')?.getAttribute?.('data-addons-default-subscription') === 'true'; const plan = useSub ? (pdp?.selected_selling_plan ?? null) : null; const addons = Array.from(pdp?.addons?.values() || []); const firstAlloc = (v, hasPlan) => !hasPlan || !v?.selling_plan_allocations?.length ? null : v.selling_plan_allocations[0]; const total = addons.reduce((sum, i) => { const alloc = firstAlloc(i.variant, !!plan); return sum + (alloc ? alloc.price : (i.variant?.price ?? 0)); }, 0); const compareTotal = addons.reduce((sum, i) => { const alloc = firstAlloc(i.variant, !!plan); return sum + (alloc ? (alloc.compare_at_price ?? i.variant?.compare_at_price ?? 0) : (i.variant?.compare_at_price ?? 0)); }, 0); const compareHtml = compareTotal > total ? `<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(compareTotal)}</span>` : ''; return ($el.getAttribute('data-content') || '').replace('[price]', utils.formatMoney(total)).replace('[compare_at_price]', compareHtml); })()"
-  @click.prevent="$event.stopPropagation(); handleAddAddonsToCart($event);"
+  x-html="$el.getAttribute('data-content').replace('[price]', utils.formatMoney(Array.from(pdp?.addons.values())?.map(i => i.variant)?.reduce((sum,v) => sum+=v?.price,0))).replace('[compare_at_price]',`<span style='text-decoration: line-through; opacity: 0.5;'>${utils.formatMoney(Array.from(pdp?.addons.values())?.map(i => i.variant)?.reduce((sum,v) => sum+=v?.compare_at_price,0))}</span>`)"
+  @click="handleAddAddonsToCart($event);"
   data-content="{% render '_input.inline_richtext', content: content, escape: true %}"
 >
   {% render '_input.inline_richtext', content: _content %}

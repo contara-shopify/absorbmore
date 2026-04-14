@@ -123,16 +123,12 @@
 %}
 
 {% capture render_card %}
-  {% if addon_default_subscription_override != blank %}
-    {% assign default_select_selling_plan = addon_default_subscription_override %}
-  {% endif %}
   <article
       data-product-handle="{{ product.handle }}"
       data-product-id="{{ product.id }}"
       x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')) }"
       x-defer="intersect"
       data-variant-id="{{ variant.id }}"
-      data-product-available="{{ product.available }}"
       {% if default_select_selling_plan %}
         data-default-subscription="true"
       {% endif %}

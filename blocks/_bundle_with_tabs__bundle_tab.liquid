@@ -20,16 +20,16 @@
 
 {% capture container_content %}
   <tab-content-label>{{ tab_name }}</tab-content-label>
-  {% assign tab_handle = tab_name | strip_html | handleize %}
+
   {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
   <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
 
   <section data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
            class="block relative bg-white md:px-5 md:py-12 px-6 py-5 border-x border-x-[#D3D3D3] border-b border-b-[#D3D3D3] max-xl:border-x-0" {% if hash_target != blank %}id="{{ hash_target | replace: "#", '' }}"{% endif %}
-           data-tab-id="{{ tab_handle }}"
+           data-tab-id="{{ tab_name }}"
            data-tab-content-x-cloak-placeholder
-           x-show="current_tab === '{{ tab_handle }}'">
+           x-show="current_tab === '{{ tab_name }}'">
     <header class="flex gap-5">
       <div class="image-wrapper aspect-1 relative w-[26%] shrink-0 max-md:hidden">
         {% render '_object.image', image: image, preload: true, sizes: '(max-width: 768px) 25vw, (max-width: 1024px) 20vw, 15vw', class: "w-full h-full object-contain" %}

@@ -64,79 +64,59 @@
       x-show="$editor.select_block_id === `{{ block_id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
     {% endif %}
     class="inline-flex gap-2 {{ text_alignment | prepend: 'text-' }}">
-
-  {% unless product.id == 10282549149985 or product.id == 10305902412065 %}
-    <span
-        class="{{ css_class }}{% if has_discount %} discounted-price{% endif %}"
-        {% if product.variants.size > 1 %}
-          :class="(({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) || (p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)) ? 'discounted-price' : ''"
-          x-html="utils.formatMoney((({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price) * (+$el.getAttribute('data-fixed-quantity') ?? p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
-        {% endif %}
-        {% if price_calculation == 'normal' %}
-          data-fixed-quantity="1"
-        {% endif %}
-    >
-      {% if currency_display == "store_default" or currency_display == "amount" %}
-        {{ display_price | money }}
+  <span
+      class="{{ css_class }}{% if has_discount %} discounted-price{% endif %}"
+      {% if product.variants.size > 1 %}
+        :class="(({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) || (p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)) ? 'discounted-price' : ''"
+        x-html="utils.formatMoney((({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price) * (+$el.getAttribute('data-fixed-quantity') ?? p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
       {% endif %}
-      {% if currency_display == "amount_no_decimals" %}
-        {{ display_price | money_without_trailing_zeros }}
+      {% if price_calculation == 'normal' %}
+        data-fixed-quantity="1"
       {% endif %}
-    </span>
-  {% endunless %}
-  
-  {% if show_compare_as_price %}
-
-    {% if product.id == 10282549149985 or product.id == 10305902412065 %}
-      {% assign skio_price = variant.metafields.custom.choose_supply_variant_price.value %}
-      {% assign skio_num = skio_price | default: 0 %}
-      {% assign skio_months = 3 %}
-
-      <span class="richtext-md h5 discounted-price">
-        {{ skio_num | divided_by: skio_months | money }}/mo
-      </span>
-      <span class="richtext-md h5 line-through">
-        {{ product.price_min | money }}
-      </span>
+  >
+    {% if currency_display == "store_default" or currency_display == "amount" %}
+      {{ display_price | money }}
     {% endif %}
-    
-    {% unless product.id == 10282549149985 or product.id == 10305902412065 %}
-      {% if compare_at_price > display_price %}
-        <span
-            class="{{ discount_css_class }} line-through"
-            {% if product.variants.size > 1 %}
-              x-show="(p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)"
-              x-html="utils.formatMoney(p_card?.selected_variant?.compare_at_price * (+$el.getAttribute('data-fixed-quantity') ?? p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
-            {% endif %}
-            {% if price_calculation == 'normal' %}
-              data-fixed-quantity="1"
-            {% endif %}
-        >
-          {% if currency_display == "store_default" or currency_display == "amount" %}
-            {{ compare_at_price | money }}
-          {% endif %}
-          {% if currency_display == "amount_no_decimals" %}
-            {{ compare_at_price | money_without_trailing_zeros }}
-          {% endif %}
-        </span>
-      {% elsif product.variants.size > 1 %}
-        <span
-            class="{{ discount_css_class }} line-through"
-            x-cloak
+    {% if currency_display == "amount_no_decimals" %}
+      {{ display_price | money_without_trailing_zeros }}
+    {% endif %}
+  </span>
+  {% if show_compare_as_price %}
+    {% if compare_at_price > display_price %}
+      <span
+          class="{{ discount_css_class }} line-through"
+          {% if product.variants.size > 1 %}
             x-show="(p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)"
             x-html="utils.formatMoney(p_card?.selected_variant?.compare_at_price * (+$el.getAttribute('data-fixed-quantity') ?? p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
-            {% if price_calculation == 'normal' %}
-              data-fixed-quantity="1"
-            {% endif %}
-        >
-          {% if currency_display == "store_default" or currency_display == "amount" %}
-            {{ compare_at_price | money }}
           {% endif %}
-          {% if currency_display == "amount_no_decimals" %}
-            {{ compare_at_price | money_without_trailing_zeros }}
+          {% if price_calculation == 'normal' %}
+            data-fixed-quantity="1"
           {% endif %}
-        </span>
-      {% endif %}
-    {% endunless %}
+      >
+        {% if currency_display == "store_default" or currency_display == "amount" %}
+          {{ compare_at_price | money }}
+        {% endif %}
+        {% if currency_display == "amount_no_decimals" %}
+          {{ compare_at_price | money_without_trailing_zeros }}
+        {% endif %}
+      </span>
+    {% elsif product.variants.size > 1 %}
+      <span
+          class="{{ discount_css_class }} line-through"
+          x-cloak
+          x-show="(p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)"
+          x-html="utils.formatMoney(p_card?.selected_variant?.compare_at_price * (+$el.getAttribute('data-fixed-quantity') ?? p_card?.quantity ?? 1), window.money_format.replace(/amount[^}]*/gi,`{{ currency_display }}`))"
+          {% if price_calculation == 'normal' %}
+            data-fixed-quantity="1"
+          {% endif %}
+      >
+        {% if currency_display == "store_default" or currency_display == "amount" %}
+          {{ compare_at_price | money }}
+        {% endif %}
+        {% if currency_display == "amount_no_decimals" %}
+          {{ compare_at_price | money_without_trailing_zeros }}
+        {% endif %}
+      </span>
+    {% endif %}
   {% endif %}
 </div>

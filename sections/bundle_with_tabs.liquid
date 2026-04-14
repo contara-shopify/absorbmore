@@ -92,13 +92,12 @@
       assign tab_navigation_buttons_markup = ''
 
       for tab in tab_blocks
-        assign tab_handle = tab | strip_html | handleize
         assign tab_label_content = tab_label | replace: '[label]', tab
 
         capture tab_label_richtext_content
           render '_input.inline_richtext', content: tab_label_content
         endcapture
-        assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab_handle
+        assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab
         assign tab_navigation_buttons_markup = tab_navigation_buttons_markup | append: tab_button_markup
       endfor
 

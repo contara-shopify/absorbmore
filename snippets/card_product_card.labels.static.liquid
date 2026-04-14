@@ -4,6 +4,7 @@
   assign section_type = "card_product_card"
   assign content_source = block.settings.content_source
   assign label_class__content = block.settings.label_class__content
+  assign label_background__color = block.settings.label_background__color
   assign label_type__discounts = block.settings.label_type__discounts
   assign show_subscription_price = block.settings.show_subscription_price
   assign label_class__discount = block.settings.label_class__discount
@@ -71,6 +72,7 @@
     {% if labels contains '|~|SPLIT|~|' %}
       {% assign labels = labels | split: '|~|SPLIT|~|' %}
     {% endif %}
+    
     {% for label in labels %}
       <label class="{{ label_class__content }} {{ label | handleize }}">
         {{ label }}

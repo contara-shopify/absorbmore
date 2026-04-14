@@ -282,7 +282,7 @@
 
   {%- render '_layout.global_settings' -%}
   {%- render '_layout.imports' -%}
-  {% comment %}addon atc{% endcomment %}{%- render '_layout.dynamic_imports' -%}
+  {% comment %}{%- render '_layout.dynamic_imports' -%}{% endcomment %}
   {%- render '_layout.library_imports' -%}
   {%- render '_layout.translations' -%}
   {%- render '_layout.global_layout' -%}
@@ -368,14 +368,9 @@
     {% assign cleaned_head_sections = head_sections | replace: '<!-- BEGIN sections: 0_head -->', '' | replace: '<!-- END sections: 0_head -->', '' | replace_first: '>', '|~|SPLIT|~|' | split: '|~|SPLIT|~|' | last | replace: '</div>', '' %}
     {{ cleaned_head_sections }}
   {% endif %}
-
-   {% render 'collection-schema' %}
-
 </head>
 
 <body id="shopify-override"
-      data-template="{{ template | handleize }}"
-      data-page-handle="{{ page.handle }}"
       x-data="{ windowWidth: window.innerWidth, windowHeight: window.innerHeight }"
       :class="$modal.id && 'modal-open'"
       :data-active-modal="$modal.id"
@@ -383,16 +378,6 @@
       class="relative flex min-h-screen flex-col overscroll-none{% if request.visual_preview_mode %} bg-white text-black{% endif %}"
       @hashchange.window="$router.hash = window.location.hash;"
       data-barba="wrapper">
-
-  <style type="text/css">
-    /* Preview bar */
-    #preview-bar-iframe,
-    #PBarNextFrameWrapper,
-    #PBarNextFrame {
-      display: block !important;
-    }
-  </style>
-
   {% if request.design_mode == true and request.visual_preview_mode != true %}
     {% sections '0_head' %}
   {% endif %}
@@ -546,6 +531,15 @@
             class="header-sections-container transition-all duration-200 ease-in-out"
             x-init="_sections.initLayoutEffects(document.body, $el)">
       {% sections '0_header' %}
+
+      {% style %}
+        /* Preview bar */
+        #preview-bar-iframe,
+        #PBarNextFrameWrapper,
+        #PBarNextFrame {
+          display: block !important;
+        }
+      {% endstyle %}
     </header>
   {% endif %}
 

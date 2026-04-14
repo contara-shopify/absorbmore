@@ -12,36 +12,34 @@
   <tab-content-group>{{ tab_group }}</tab-content-group>
   <tab-content-label>{{ label }}</tab-content-label>
 
-  {% assign tab_handle = label | strip_html | handleize %}
-
   {% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
   <style>{{ custom_css | replace: '&', selector | strip_newlines }}</style>
 
   <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
        class="block relative" {% if hash_target != blank %}id="{{ hash_target | replace: "#", '' }}"{% endif %}
-       data-tab-id="{{ tab_handle }}"
+       data-tab-id="{{ label }}"
        data-tab-group="{{ tab_group }}"
        x-data="{ index: +`{{ tab_group | default: 0 }}` }"
        data-tab-content-x-cloak-placeholder
       {% if request.design_mode %}
         x-effect="() => {
           if ($router.hash.replace(/#/gi,'') === `{{ hash_target | default: '#INVALID_HASH' | replace: "#", '' }}`) {
-            $data.current_tabs[index] = '{{ tab_handle }}';
+            $data.current_tabs[index] = '{{ label }}';
           }
 
           if ($editor?.select_block_id === `{{ block.id }}` || $el.querySelector(`[data-style-id='{{ section.id }}--${$editor?.select_block_id}']`)) {
-            $data.current_tabs[index] = '{{ tab_handle }}';
+            $data.current_tabs[index] = '{{ label }}';
           }
         }"
       {% else %}
         x-effect="() => {
           if ($router.hash.replace(/#/gi,'') === `{{ hash_target | default: '#INVALID_HASH' | replace: "#", '' }}`) {
-            $data.current_tabs[index] = '{{ tab_handle }}';
+            $data.current_tabs[index] = '{{ label }}';
           }
         }"
       {% endif %}
-       x-show="$data.current_tabs[index] === '{{ tab_handle }}'">
+       x-show="$data.current_tabs[index] === '{{ label }}'">
     {% content_for "blocks" %}
   </div>
 {% endcapture %}
@@ -219,7 +217,7 @@
           "type": "image_with_caption",
           "name": "Image with Caption",
           "settings": {
-            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "image": "shopify://shop_images/Copy_of_7W5A6427-13.jpg",
             "caption": "<p>SHOP POWDERS</p>",
             "description": "",
             "metafield_namespace_key": "",
@@ -230,7 +228,7 @@
             "metafield_description_key": "description",
             "description_class": "richtext-md",
             "metafield_url_key": "url",
-            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.format=Powders",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=manual&filter.p.m.smart.format=Powders#shop-now",
             "dynamic_content_type": "default",
             "show_overlay": false,
             "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
@@ -249,9 +247,9 @@
       "category": "Tabs"
     },
     {
-      "name": "Tab: Magnesium",
+      "name": "Tab: Capsules",
       "settings": {
-        "label": "Magnesium Glycinate",
+        "label": "Capsules",
         "hash_target": "",
         "tab_group": "0",
         "custom_css": "& {\n  display: grid;\n  grid-template-columns: repeat(4,1fr);\n  gap: 16px;\n}",
@@ -266,9 +264,9 @@
             "primary_source": "manual",
             "fallback_source": "manual",
             "fallback_products": [
-              "magnesium-glycinate",
-              "magnesium-restore-bundle",
-              "magnesium-calm-bundle"
+              "berberine",
+              "vitamin-d-k",
+              "curcumin"
             ],
             "fallback_collection": "",
             "order_offset": 1,
@@ -293,8 +291,8 @@
           "type": "image_with_caption",
           "name": "Image with Caption",
           "settings": {
-            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
-            "caption": "<p>SHOP MAGNESIUM</p>",
+            "image": "shopify://shop_images/TAC_Magnesium-Glycinate_PDP-Image_1080x1080_3_51814749-93b6-48ae-941d-b491d4eebc09.png",
+            "caption": "<p>SHOP CAPSULES</p>",
             "description": "",
             "metafield_namespace_key": "",
             "metafield_image_key": "image",
@@ -304,7 +302,7 @@
             "metafield_description_key": "description",
             "description_class": "richtext-md",
             "metafield_url_key": "url",
-            "url": "shopify://collections/magnesium-glycinate",
+            "url": "shopify://collections/foundational-supplements",
             "dynamic_content_type": "default",
             "show_overlay": false,
             "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
@@ -340,9 +338,9 @@
             "primary_source": "manual",
             "fallback_source": "manual",
             "fallback_products": [
-              "starter-pack",
               "best-sellers-bundle",
-              "advanced-sleep-recovery-set"
+              "daily-basics",
+              "magnesium-calm-bundle"
             ],
             "fallback_collection": "",
             "order_offset": 1,
@@ -367,7 +365,7 @@
           "type": "image_with_caption",
           "name": "Image with Caption",
           "settings": {
-            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "image": "shopify://shop_images/Copy_of_TAC_March2025_DigitalSelects_CSharp_SmallFiles-066.jpg",
             "caption": "<p>SHOP STACKS</p>",
             "description": "",
             "metafield_namespace_key": "",
@@ -378,7 +376,7 @@
             "metafield_description_key": "description",
             "description_class": "richtext-md",
             "metafield_url_key": "url",
-            "url": "shopify://collections/bundles-and-save",
+            "url": "shopify://collections/stack-and-save",
             "dynamic_content_type": "default",
             "show_overlay": false,
             "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
@@ -414,9 +412,9 @@
             "primary_source": "manual",
             "fallback_source": "manual",
             "fallback_products": [
+              "best-sellers-bundle",
               "restore",
-              "sleep",
-              "calm"
+              "sleep"
             ],
             "fallback_collection": "",
             "order_offset": 1,
@@ -441,7 +439,7 @@
           "type": "image_with_caption",
           "name": "Image with Caption",
           "settings": {
-            "image": "shopify://shop_images/megamenu-rd-nav.jpg",
+            "image": "shopify://shop_images/Copy_of_Absorption_062025_036.jpg",
             "caption": "<p>SHOP All</p>",
             "description": "",
             "metafield_namespace_key": "",
@@ -452,7 +450,7 @@
             "metafield_description_key": "description",
             "description_class": "richtext-md",
             "metafield_url_key": "url",
-            "url": "shopify://collections/all",
+            "url": "https://www.absorbmore.com/collections/all?sort_by=best-selling#shop-now",
             "dynamic_content_type": "default",
             "show_overlay": false,
             "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",

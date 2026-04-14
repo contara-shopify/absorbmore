@@ -7,7 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
     "main_product_PJRr9q": {
       "type": "main_product",
@@ -400,11 +400,9 @@
                       "name": "Gallery Button",
                       "settings": {
                         "slide": 3,
-                        "slide_dynamic": "{{ closest.product.metafields.smart.ingredients_image_position.value }}",
                         "title": "<em>Ingredients</em>[gap.8px]<strong>·</strong>",
                         "button_class": "richtext-md h5",
                         "accessibility_label": "",
-                        "dynamic_content_type": "metafield",
                         "quick_view_visibility": "hidden",
                         "custom_css": "& strong{\n  text-decoration: none;\n}\n\n& em{\n  font-style: normal;\n  text-decoration: underline;\n}"
                       },
@@ -415,11 +413,9 @@
                       "name": "Gallery Button",
                       "settings": {
                         "slide": 1,
-                        "slide_dynamic": "{{ closest.product.metafields.smart.benefits_image_position.value }}",
                         "title": "Benefits",
                         "button_class": "richtext-md h5 underline",
                         "accessibility_label": "",
-                        "dynamic_content_type": "metafield",
                         "quick_view_visibility": "hidden",
                         "custom_css": "& {\n}"
                       },
@@ -467,22 +463,9 @@
               },
               "blocks": {}
             },
-            "main_product_waterdrop_list_7AewFT": {
-              "type": "_main_product__waterdrop_list",
-              "name": "Waterdrop list",
-              "settings": {},
-              "blocks": {}
-            },
-            "main_product_choose_supply_gfVNUn": {
-              "type": "_main_product__choose_supply",
-              "name": "Choose Supply",
-              "settings": {},
-              "blocks": {}
-            },
-            "main_product_bundle_variants_KJVe8c": {
+            "main_product_bundle_variants_QhirEi": {
               "type": "_main_product__bundle_variants",
               "name": "Bundle Variants",
-              "disabled": true,
               "settings": {},
               "blocks": {}
             },
@@ -555,10 +538,9 @@
                 "currency_display": "store_default",
                 "select_class": "input-select",
                 "highlights": "<h5>[icon.check-mark] [value] off today</h5><h5>[icon.check-mark]Update, pause, or cancel anytime</h5><h5>[icon.check-mark]Get FREE gifts valued at $55<a href=\"#popup--gifts\" title=\"Open Gifts Popup\">[icon.info-circle.16px]</a></h5>",
-                "no_subscription_highlights": "<h5>[icon.x-mark.image.16px] [value] off today</h5><h5>[icon.x-mark.image.16px] Update, pause, or cancel anytime</h5><h5>[icon.x-mark.image.16px]Get FREE gifts valued at $55<a href=\"#popup--gifts\" title=\"Open Gifts Popup\">[icon.info-circle.16px]</a></h5>",
+                "no_subscription_highlights": "<h5>[icon.x-mark.image.16px] [value] off today</h5><h5>[icon.x-mark.image.16px] Update, pause, or cancel anytime</h5><h5>[icon.check-mark]Get FREE gifts valued at $55<a href=\"#popup--gifts\" title=\"Open Gifts Popup\">[icon.info-circle.16px]</a></h5>",
                 "fourteen_sticks_subscription_highlights": "",
                 "highlights_class": "richtext-md",
-                "promotional_text": "",
                 "default_selection": "subscription",
                 "quick_view_visibility": "default",
                 "text_color": "",
@@ -866,7 +848,6 @@
                     "addon_products": false,
                     "addon_auto_add": false,
                     "addon_bundle_in_cart": true,
-                    "addon_default_subscription": false,
                     "hydrate_immediately": false,
                     "preload_images": 0,
                     "text_color": "",
@@ -1021,7 +1002,6 @@
                         "addon_products": false,
                         "addon_auto_add": false,
                         "addon_bundle_in_cart": true,
-                        "addon_default_subscription": false,
                         "hydrate_immediately": false,
                         "preload_images": 0,
                         "text_color": "",
@@ -1062,9 +1042,7 @@
             "main_product_container_KUP9Ra",
             "main_product_dynamic_text_y9Ge7Y",
             "main_product_dynamic_text_7fqtEd",
-            "main_product_waterdrop_list_7AewFT",
-            "main_product_choose_supply_gfVNUn",
-            "main_product_bundle_variants_KJVe8c",
+            "main_product_bundle_variants_QhirEi",
             "main_product_option_radio_Dhpq4V",
             "main_product_option_radio_detailed_UzM4rk",
             "main_product_subscribe_toggle_card_XGV7ng",
@@ -1438,13 +1416,18 @@
                         "hide_if_empty_MHwHHh"
                       ]
                     },
-                    "main_product_selected_plan_duration_dp3T4x": {
-                      "type": "_main_product__selected_plan_duration",
-                      "name": "Selected Plan Duration",
+                    "main_product_dynamic_text_7Qid3i": {
+                      "type": "_main_product__dynamic_text",
+                      "name": "Months Supply",
                       "settings": {
-                        "css_class": "richtext-md h5",
-                        "text_color": "#6a6a6a",
-                        "custom_css": "& {\n white-space: nowrap;\n display: inline-block;\n}\n\n@media (max-width: 564px) {\n  & {\n   display: none;\n  }\n}"
+                        "title": "<h5>[selected_variant.metafields.custom.months_supply]</h5>",
+                        "text_alignment": "inherit",
+                        "type_richtext_metafield": "",
+                        "css_class": "richtext-md",
+                        "link_to_product": false,
+                        "quick_view_visibility": "default",
+                        "text_color": "",
+                        "custom_css": "& {\n white-space: nowrap;\n display: inline-block;\n}\n\n& h5{\n  color: #6A6A6A;\n}\n\n@media (max-width: 564px) {\n  & {\n   display: none;\n  }\n}"
                       },
                       "blocks": {}
                     }
@@ -1452,7 +1435,7 @@
                   "block_order": [
                     "main_product_dynamic_text_cXKExy",
                     "main_product_container_XfpBJh",
-                    "main_product_selected_plan_duration_dp3T4x"
+                    "main_product_dynamic_text_7Qid3i"
                   ]
                 }
               },
@@ -2269,7 +2252,6 @@
                 "addon_products": false,
                 "addon_auto_add": false,
                 "addon_bundle_in_cart": true,
-                "addon_default_subscription": false,
                 "hydrate_immediately": false,
                 "preload_images": 0,
                 "text_color": "",
@@ -3266,45 +3248,6 @@
         "hidden_name_backup": ""
       }
     },
-    "custom_code_9aJEjP": {
-      "type": "custom_code",
-      "blocks": {
-        "liquid_68rnJH": {
-          "type": "liquid",
-          "settings": {
-            "custom_liquid": "<link rel=\"preload\" as=\"style\" href=\"https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap\">\n<link href=\"https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap\" rel=\"stylesheet\" media=\"all\">"
-          }
-        },
-        "css_tNqEt9": {
-          "type": "css",
-          "settings": {
-            "css": ""
-          }
-        },
-        "liquid_6WweK4": {
-          "type": "liquid",
-          "settings": {
-            "custom_liquid": "<section class=\"fr-testimonials\">\n  {% if request.path contains '/products/magnesium-glycinate' %}\n    <script async type=\"text/javascript\" src=\"https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=qual&product_id=2835\"></script>\n    <iframe id=\"frontrow-testimonials\" class=\"iframe-frontrow-testimonials\" frameborder=\"0\" src=\"https://app.thefrontrowhealth.com/api/widgets?presentation_type=qual&product_id=2835\"></iframe>\n    \n  {% elsif request.path contains '/products/restore' %}\n    <script async type=\"text/javascript\" src=\"https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=qual&product_id=2819\"></script>\n    <iframe id=\"frontrow-testimonials\" class=\"iframe-frontrow-testimonials\" frameborder=\"0\" src=\"https://app.thefrontrowhealth.com/api/widgets?presentation_type=qual&product_id=2819\"></iframe>\n  \n  {% elsif request.path contains '/products/calm' %}\n    <script async type=\"text/javascript\" src=\"https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=qual&product_id=2818\"></script>\n    <iframe id=\"frontrow-testimonials\" class=\"iframe-frontrow-testimonials\" frameborder=\"0\" src=\"https://app.thefrontrowhealth.com/api/widgets?presentation_type=qual&product_id=2818\"></iframe>\n  \n  {% endif %}\n\n  <style>iframe.iframe-frontrow-testimonials { width: 100%; } iframe.iframe-modal-testimonials { z-index: 99999998; }</style>\n</section>"
-          }
-        }
-      },
-      "block_order": [
-        "liquid_68rnJH",
-        "css_tNqEt9",
-        "liquid_6WweK4"
-      ],
-      "name": "Clinician Reviews",
-      "settings": {
-        "container_spacing": "px-container-md",
-        "text_color": "",
-        "background_color": "",
-        "custom_css": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}",
-        "section_id": "",
-        "generate_presets": "never",
-        "category_name": "",
-        "hidden_name_backup": ""
-      }
-    },
     "176286790193f9a66c": {
       "type": "apps",
       "blocks": {
@@ -3588,7 +3531,6 @@
     "generic_section_CXN3FN",
     "generic_section_brpH7a",
     "generic_section_WG9nki",
-    "custom_code_9aJEjP",
     "176286790193f9a66c",
     "generic_section_n3nja9"
   ]

@@ -79,39 +79,21 @@
   </style>
 {% endif %}
 
-{% liquid
-  assign product = section.settings.product | default: product
-
-  assign reviews_rating = settings.data__product__reviews_rating | replace: " ", '' | split: "."
-  assign reviews_rating = product.metafields[reviews_rating.first][reviews_rating.last].value
-  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 0 | times: 1.0
-
-  assign reviews_count = settings.data__product__reviews_count | replace: " ", '' | split: "."
-  assign reviews_count = product.metafields[reviews_count.first][reviews_count.last].value | default: 0 | times: 1
-
-  assign reviews_count_content = reviews_count
-  assign reviews_rating_content = reviews_rating
-
-  if reviews_rating <= 0
-    assign reviews_count_content = 'No Rating'
-    assign reviews_rating_content = ''
-  endif
-  assign reviews_content = reviews_heading | replace: "[count]", reviews_count_content | replace: "[rating]", reviews_rating_content
-%}
-
 <div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
      x-ignore
      x-show="(p_card?.product?.reviews?.review_count > +`{{ hide_zero_reviews }}` || !'{{ hide_zero_reviews }}') && ($editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle))"
      style="{{ styles }}">
   <meter class="relative block appearance-none shrink-0"
-      value="{{ reviews_rating }}"
-      min="0"
-      max="5">
-    <span>
-    <span>{{ reviews_rating }}</span>/
+       value="5"
+       min="0"
+       max="5"
+       :value="p_card?.product?.reviews?.rating ?? 0">
+  <span>
+    <span x-text="p_card?.product?.reviews?.rating ?? '5'">5</span>/
     <span>5</span>
-    </span>
-  </meter>
+  </span>
+</meter>
+  
   <label class="{{ css_class }}"
          x-cloak
          x-show="!!p_card?.product?.reviews"

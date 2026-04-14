@@ -112,15 +112,6 @@ const isExternalURL = function (url) {
   return (url?.indexOf(":") > -1 || url?.indexOf("//") > -1) && checkDomain(location.href) !== checkDomain(url);
 };
 
-const liquidHandle = (str = "") =>
-  str
-    .replace(/<[^>]*>/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
 const transpileRichtextMetafield = (schema) => {
   function convertSchemaToHtml(schema) {
     let html = ``;
@@ -1344,7 +1335,6 @@ const utils = {
   isElementScrollable,
   checkDomain,
   isExternalURL,
-  liquidHandle,
   getElementPosition,
   applyInlinePluralization,
   getBracketInputDynamicPluralizedText,
@@ -1382,3 +1372,5 @@ export default utils;
 // @ts-ignore
 window.utils = utils;
 document.dispatchEvent(new CustomEvent("theme:utils:loaded"));
+
+/* LAST HASH: 565ae5d6cf5d9f5cd1a7943dd800fd57f77f90d3 */

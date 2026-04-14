@@ -606,39 +606,18 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   const handleAddAddonsToCart = async () => {
     state.isAdding = true;
     const random_id = utils.shortUUID();
-    const mainProduct = Alpine.store("main_product");
-    const currentState = state ?? mainProduct?.state;
-    const addonEntries = [...(currentState.addons?.values() ?? [])];
-    const form = state?.element;
-    const addonsBlock = form?.querySelector?.("[data-addon-product-target]")?.closest?.("[data-addons-default-subscription]");
-    const useSubscription = addonsBlock?.getAttribute?.("data-addons-default-subscription") === "true";
-    const selected_plan = useSubscription
-      ? (mainProduct?.state?.selected_selling_plan ?? mainProduct?.pdp?.selected_selling_plan ?? currentState.selected_selling_plan)
-      : null;
-    const selected_plan_id = selected_plan?.id != null ? +selected_plan.id : null;
-    const selected_plan_name = selected_plan?.name;
-
-    const allocForVariant = (variant, useSubscription) => {
-      if (!useSubscription) return null;
-      const allocations = variant?.selling_plan_allocations;
-      const first = allocations?.[0]?.selling_plan;
-      return first?.id != null ? +first.id : null;
-    };
-
-    const itemsToSend = addonEntries.map((entry) => {
-      const variant = entry.variant;
-      const plan_id = allocForVariant(variant, selected_plan_id != null || selected_plan_name);
-
-      return {
-        id: entry.id,
-        quantity: entry.quantity,
-        selling_plan: plan_id ?? null,
-        properties: { _bundle_id: random_id },
-      };
-    });
 
     const data = await _cart.add({
-      items: itemsToSend,
+      items: [
+        ...[...state.addons.values()].map((entry) => ({
+          id: entry.id,
+          selling_plan: null,
+          quantity: entry.quantity,
+          properties: {
+            _bundle_id: random_id,
+          },
+        })),
+      ],
     });
 
     state.isAdding = false;
@@ -1235,3 +1214,5 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
 };
 
 window._sections["initMainProduct"] = initMainProduct;
+
+/* LAST HASH: 10bfa317d0368e391fa146bfdb1b1db94bb38cfa */

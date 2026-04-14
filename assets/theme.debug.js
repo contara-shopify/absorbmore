@@ -509,18 +509,9 @@ const initTabs = ($el) => {
 
   const tabs = window.Alpine.store("tabs");
 
-  const liquidHandle = (str = "") =>
-    str
-      .replace(/<[^>]*>/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/['"]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-
   tabs[$el.id] = {
-    tabs: raw_tabs?.map((t) => (t?.split("|%S%|") || []).map(liquidHandle)),
-    current_tabs: raw_tabs?.map((t) => liquidHandle(t?.split("|%S%|")?.[0] || "")),
+    tabs: raw_tabs?.map((t) => t?.split("|%S%|")),
+    current_tabs: raw_tabs?.map((t) => t?.split("|%S%|")?.[0] ?? ""),
   };
 
   const ensureNoHiddenTabs = createEnsureNoHiddenTabs({
@@ -548,7 +539,7 @@ window._sections["initTabs"] = initTabs;
 
 document.addEventListener("alpine:init", initTabsStore);
 
-/* LAST HASH: 22229dd2a65a8a3e1790e0be9c5fc131d5cb3a63 */
+/* LAST HASH: 751a17d2e12b99b789afde0d72c090f2bc589d56 */
 ;
 
 })();
@@ -970,15 +961,6 @@ const isExternalURL = function (url) {
 
   return (url?.indexOf(":") > -1 || url?.indexOf("//") > -1) && checkDomain(location.href) !== checkDomain(url);
 };
-
-const liquidHandle = (str = "") =>
-  str
-    .replace(/<[^>]*>/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 
 const transpileRichtextMetafield = (schema) => {
   function convertSchemaToHtml(schema) {
@@ -2203,7 +2185,6 @@ const utils = {
   isElementScrollable,
   checkDomain,
   isExternalURL,
-  liquidHandle,
   getElementPosition,
   applyInlinePluralization,
   getBracketInputDynamicPluralizedText,
@@ -2240,6 +2221,9 @@ utils;
 // @ts-ignore
 window.utils = utils;
 document.dispatchEvent(new CustomEvent("theme:utils:loaded"));
+
+/* LAST HASH: 565ae5d6cf5d9f5cd1a7943dd800fd57f77f90d3 */
+;
 
 })();
 
@@ -3766,6 +3750,9 @@ const initCart = () => {
 };
 
 document.addEventListener("alpine:init", initCart);
+
+/* LAST HASH: 0e60e7f6ce3e6e339bc7ed6975ae768fae30e54d */
+;
 
 })();
 
@@ -5387,6 +5374,9 @@ const _product = {
 };
 
 window._product = _product;
+
+/* LAST HASH: b0d7f8e4a7fd0148fca60b282ea489404386cdf6 */
+;
 
 })();
 
@@ -8325,6 +8315,9 @@ const hydrateProductCard = utils.hydrateCard("product");
 window._sections["initProductCard"] = initProductCard;
 window._sections["hydrateProductCard"] = hydrateProductCard;
 
+/* LAST HASH: 047650c04a58835d2be08f091190468e1c3b55d4 */
+;
+
 })();
 
 // ---- __section--color_wheel.js ----
@@ -10519,6 +10512,9 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
 
 window._sections["initMainProduct"] = initMainProduct;
 
+/* LAST HASH: 10bfa317d0368e391fa146bfdb1b1db94bb38cfa */
+;
+
 })();
 
 // ---- __section--main_search.js ----
@@ -12251,6 +12247,9 @@ const initContentSlider = (
 };
 
 window.utils.initContentSlider = initContentSlider;
+
+/* LAST HASH: 51e5ed52257dd24dc5f54cda2cecaf87b53c8a44 */
+;
 
 })();
 

@@ -3,11 +3,9 @@
   assign block_type = "_main_product__gallery_button"
   assign section_type = "main_product"
   assign slide = block.settings.slide
-  assign slide_dynamic = block.settings.slide_dynamic
   assign title = block.settings.title
   assign button_class = block.settings.button_class
   assign accessibility_label = block.settings.accessibility_label
-  assign dynamic_content_type = block.settings.dynamic_content_type
   assign quick_view_visibility = block.settings.quick_view_visibility
   assign custom_css = block.settings.custom_css
 -%}
@@ -19,18 +17,10 @@
   {{ custom_css | replace: '&', selector | strip_newlines }}
 </style>
 
-{%  liquid  
-if dynamic_content_type == 'metafield'
-  assign slide_index = slide_dynamic
-else
-  assign slide_index = slide
-endif
-%}
-
 <button
   data-style-id="{{ section.id }}--{{ block.id }}"
   data-quick-view-visibility="{{ quick_view_visibility }}"
-  data-gallery-slide="{{ slide_index | default: 1 | at_least: 1 | minus: 1 }}"
+  data-gallery-slide="{{ slide | default: 0 | at_least: 0 }}"
   x-data="{ index: $el.getAttribute('data-gallery-slide')}"
   @click="() => {
     const media = Array.from($el.closest('form').querySelectorAll(`[data-main-product-images] [data-media-id]:not(.hidden)`))
@@ -59,21 +49,14 @@ endif
       "id": "slide",
       "label": "Slide",
       "info": "Clicking on the button will scroll the media gallery to the selected slide.",
-      "default": 1,
-      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
-    },
-    {
-      "type": "text",
-      "id": "slide_dynamic",
-      "label": "Slide",
-      "info": "Clicking on the button will scroll the media gallery to the selected slide.",
-      "visible_if": "{{ block.settings.dynamic_content_type == 'metafield' }}"
+      "default": 1
     },
     {
       "type": "inline_richtext",
       "id": "title",
       "label": "Label",
       "default": "Ingredients",
+      "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}",
       "info": "[Shortcodes](https://getplatter.atlassian.net/wiki/external/YTBhYmQxMzFhOWQ1NGQ4MzhlNzY1MjZiNDU1YmQ5ODk)"
     },
     {
@@ -100,26 +83,6 @@ endif
       "label": "Accessibility label",
       "info": "Please provide an accessibility label if the button has generic content. I.e. 'Read More' or only uses an icon.",
       "visible_if": "{{ block.settings.dynamic_content_type != 'metafield' }}"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "select",
-      "id": "dynamic_content_type",
-      "label": "Content Type",
-      "default": "default",
-      "options": [
-        {
-          "value": "default",
-          "label": "Default"
-        },
-        {
-          "value": "metafield",
-          "label": "Metafield"
-        }
-      ]
     },
     {
       "type": "header",

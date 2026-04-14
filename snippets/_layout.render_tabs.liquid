@@ -92,11 +92,10 @@
         endif
 
         for tab in tab_blocks
-          assign tab_handle = tab | strip_html | handleize
           assign tab_label_content = tab_label | replace: '[label]', tab
           assign tab_label_richtext_content = tab_label_richtext | replace: '[label]', tab
 
-          assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab_handle | replace: "|%|TAB_HOVER_TRIGGER|%|", tab_hover_trigger | replace: "420421337", tab_group_index
+          assign tab_button_markup = tab_navigation_content | replace: "|%|LABEL_CONTENT|%|", tab_label_richtext_content | replace: "|%|BUTTON_CLASS|%|", tab_button_class | replace: "|%|TAB_LABEL|%|", tab | replace: "|%|TAB_HOVER_TRIGGER|%|", tab_hover_trigger | replace: "420421337", tab_group_index
           assign tab_navigation_buttons_markup = tab_navigation_buttons_markup | append: tab_button_markup
         endfor
 

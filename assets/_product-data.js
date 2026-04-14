@@ -737,3 +737,5 @@ export const _product = {
 };
 
 window._product = _product;
+
+/* LAST HASH: b0d7f8e4a7fd0148fca60b282ea489404386cdf6 */

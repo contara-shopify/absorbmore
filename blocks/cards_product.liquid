@@ -14,7 +14,6 @@
   assign addon_products = block.settings.addon_products
   assign addon_auto_add = block.settings.addon_auto_add
   assign addon_bundle_in_cart = block.settings.addon_bundle_in_cart
-  assign addon_default_subscription = block.settings.addon_default_subscription
   assign hydrate_immediately = block.settings.hydrate_immediately
   assign preload_images = block.settings.preload_images
   assign text_color = block.settings.text_color
@@ -310,7 +309,6 @@
        data-render-index="{{ block.id }}--{{ forloop.index0 }}"
        data-hide-if-empty="{{ hide_if_empty }}"
        data-product-handle="{{ product.handle }}"
-       {% if addon_products %}data-addons-default-subscription="{% if addon_default_subscription == true %}true{% else %}false{% endif %}"{% endif %}
        style="--order: {{ order_index | times: 10 }}">
     {% capture html_attributes %}
       {% if addon_products %}
@@ -336,8 +334,7 @@
           is_pdp: is_pdp,
           preload_images: preload_images,
           html_attributes: html_attributes,
-          preload_images: preload_images_boolean,
-          addon_default_subscription_override: addon_default_subscription
+          preload_images: preload_images_boolean
       %}
     {% else %}
       <section
@@ -547,14 +544,6 @@
       "default": true
     },
     {
-      "type": "checkbox",
-      "id": "addon_default_subscription",
-      "label": "Add addons as subscription when main product is subscription",
-      "visible_if": "{{ block.settings.addon_products == true and section.settings.supports_addon_products > 0 }}",
-      "default": false,
-      "info": "When enabled, addons use the main product's selected selling plan. When disabled, addons are always added as one-time purchase."
-    },
-    {
       "type": "paragraph",
       "content": "t:all.empty_char"
     },
@@ -653,7 +642,6 @@
         "addon_products": false,
         "addon_auto_add": false,
         "addon_bundle_in_cart": true,
-        "addon_default_subscription": false,
         "hydrate_immediately": false,
         "text_color": "",
         "background_color": "",

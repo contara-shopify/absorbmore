@@ -317,9 +317,6 @@
       "type": "_main_product__availability"
     },
     {
-      "type": "_main_product__selected_plan_duration"
-    },
-    {
       "type": "_main_product__gallery"
     },
     {
@@ -345,6 +342,9 @@
     },
     {
       "type": "_main_product__description"
+    },
+    {
+      "type": "_main_product__bundle_variants"
     },
     {
       "type": "_main_product__option__color"
@@ -413,40 +413,7 @@
       "type": "_main_product__labels"
     },
     {
-      "type": "_main_product__waterdrop_list"
-    },
-    {
       "type": "_main_product__gift_card_recipient"
-    },
-    {
-      "type": "_main_product__bundle_variants"
-    },
-    {
-      "type": "_main_product__choose_supply"
-    },
-    {
-      "type": "_main_product__free_from"
-    },
-    {
-      "type": "_main_product__also_reported"
-    },
-    {
-      "type": "_main_product__faq"
-    },
-    {
-      "type": "_main_product__stat_strip"
-    },
-    {
-      "type": "_main_product__choose_plan"
-    },
-    {
-      "type": "_main_product__buy_once"
-    },
-    {
-      "type": "_main_product__benefits"
-    },
-    {
-      "type": "_main_product__clinical_results"
     },
     {
       "type": "_main_product__gallery_button"
@@ -665,6 +632,10 @@
                 "open_accordions": "",
                 "custom_css": "& {\n  margin: 0;\n  padding: 0 12px;\n  margin-top: 10px;\n}\n& li {\n  margin-top: 4px;\n}\n@media (max-width: 1024px) {\n  & {\n    \n  }\n}"
               }
+            },
+            {
+              "type": "_main_product__bundle_variants",
+              "settings": {}
             }
           ]
         }
@@ -1513,9 +1484,9 @@
     {
       "name": "Bundle",
       "settings": {
-        "product": "{{ closest.collection.metafields.smart.bundle_parent.value }}",
+        "product": "best-sellers-bundle",
         "supports_addon_products": 1,
-        "default_select_selling_plan": false,
+        "default_select_selling_plan": true,
         "default_variant_metafield": "smart.default_variant",
         "container_spacing": "px-container-md",
         "text_color": "",
@@ -1638,7 +1609,7 @@
                           "type": "richtext",
                           "name": "Subtitle",
                           "settings": {
-                            "title": "<h4>{{ closest.collection.metafields.smart.bundle_text | metafield_tag }}</h4>",
+                            "title": "<h5>{{ closest.collection.metafields.smart.bundle_text | metafield_tag }}</h5>",
                             "text_alignment": "inherit",
                             "content_class": "richtext-md",
                             "text_color": "",
@@ -1719,7 +1690,7 @@
                         "target_product": "",
                         "display_limit": "4",
                         "product_card_class": "product-card-flat",
-                        "hide_out_of_stock": false,
+                        "hide_out_of_stock": true,
                         "addon_products": false,
                         "addon_auto_add": false,
                         "addon_bundle_in_cart": true,
@@ -1775,7 +1746,7 @@
                       "type": "richtext",
                       "name": "Richtext",
                       "settings": {
-                        "title": "<h6>Free shipping · Money-back Guarantee</h6>",
+                        "title": "<h6>Free shipping · 30-day money-back guarantee</h6>",
                         "text_alignment": "center",
                         "content_class": "richtext-md",
                         "text_color": "#6a6a6a",
@@ -1871,7 +1842,7 @@
                   "type": "richtext",
                   "name": "Subtitle",
                   "settings": {
-                    "title": "<h4>Your Nightly Reset in One Bundle</h4>",
+                    "title": "<h5>Our best-selling Restore and Calm duo with up to 5x better absorption for hydration, focus, stress balance, and recovery.</h5>",
                     "text_alignment": "inherit",
                     "content_class": "richtext-md",
                     "text_color": "",
