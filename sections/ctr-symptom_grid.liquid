@@ -21,12 +21,9 @@
   assign trust_image         = section.settings.trust_image
   assign background_color    = section.settings.background_color
   assign image_border_radius = section.settings.image_border_radius
+  assign max_width_desktop    = section.settings.max_width_desktop
   assign custom_css          = section.settings.custom_css
   assign section_id          = section.settings.section_id
-  assign padding_top_mob     = section.settings.padding_top_mobile
-  assign padding_bottom_mob  = section.settings.padding_bottom_mobile
-  assign padding_top_desk    = section.settings.padding_top_desktop
-  assign padding_bottom_desk = section.settings.padding_bottom_desktop
 -%}
 
 {% capture selector %}[data-sg-id="{{ section.id }}"]{% endcapture %}
@@ -34,16 +31,17 @@
 {% capture css %}
   & {
     width: 100%;
-    padding-top: {{ padding_top_mob }}px;
-    padding-bottom: {{ padding_bottom_mob }}px;
     {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
   }
 
-  & .sg__layout {
-    max-width: 1240px;
+  & .sg__container {
+    max-width: {{ max_width_desktop }}px;
     margin: 0 auto;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 48px 20px;
+  }
+
+  /* ── Mobile: single column, image on top ── */
+  & .sg__layout {
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -74,11 +72,14 @@
     font-size: 14px;
   }
 
+  & .sg__header {
+    margin-bottom: 32px;
+  }
+
   & .sg__content {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    max-width: 720px;
   }
 
   & .sg__headline {
@@ -168,14 +169,16 @@
     flex-direction: row;
     align-items: center;
     gap: 28px;
+    justify-content: center;
   }
 
   & .sg__trust-row {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    gap: 16px;
     font-size: 12px;
     line-height: 17px;
+    flex-direction: row;
+    justify-content: center;
   }
 
   & .sg__trust-row span:nth-child(2) {
@@ -197,14 +200,11 @@
 
   /* ── Desktop: side-by-side layout ── */
   @media (min-width: 900px) {
-    & {
-      padding-top: {{ padding_top_desk }}px;
-      padding-bottom: {{ padding_bottom_desk }}px;
+    & .sg__container {
+      padding: 80px 48px;
     }
 
     & .sg__layout {
-      padding-left: 48px;
-      padding-right: 48px;
       flex-direction: row;
       align-items: flex-start;
       gap: 56px;
@@ -214,9 +214,11 @@
     & .sg__image-wrap {
       order: 1;
       flex: 0 0 38%;
-      max-width: 420px;
-      position: sticky;
-      top: 40px;
+      max-width: 340px;
+    }
+
+    & .sg__header {
+      margin-bottom: 40px;
     }
 
     & .sg__content {
@@ -257,6 +259,11 @@
       gap: 28px;
     }
 
+    & .sg__trust-row {
+      flex-direction: column;
+      gap: 4px;
+    }
+
     & .sg__trust-img {
       width: 106px;
     }
@@ -273,20 +280,21 @@
     {% if section_id != blank %}id="{{ section_id }}"{% endif %}
     class="relative {{ container_spacing }}"
   >
+    <div class="sg__container">
+      {%- comment -%} Header — full width above columns {%- endcomment -%}
+      <div class="sg__header">
+        {% if headline != blank %}
+          <h2 class="sg__headline">{{ headline }}</h2>
+        {% endif %}
+        {% if subtext != blank %}
+          <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
+        {% endif %}
+      </div>
+
       <div class="sg__layout">
 
         {%- comment -%} Left / main content column {%- endcomment -%}
         <div class="sg__content">
-
-          {%- comment -%} Header {%- endcomment -%}
-          <div class="sg__header">
-            {% if headline != blank %}
-              <h2 class="sg__headline">{{ headline }}</h2>
-            {% endif %}
-            {% if subtext != blank %}
-              <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
-            {% endif %}
-          </div>
 
           {%- comment -%} Symptom cards grid {%- endcomment -%}
           {% if section.blocks.size > 0 %}
@@ -314,12 +322,12 @@
           {% endif %}
 
           {%- comment -%} CTA + Trust {%- endcomment -%}
-            <div class="sg__cta-row">
+          <div class="sg__cta-row">
             {% if cta_text != blank %}
-  
-            href="{{ cta_url | default: '#' }}"
-            class="sg__cta-btn"
-            >{{ cta_text }}</a>
+              <a
+                href="{{ cta_url | default: '#' }}"
+                class="sg__cta-btn"
+              >{{ cta_text }}</a>
             {% endif %}
 
             <div class="sg__trust-block">
@@ -368,6 +376,7 @@
         </div>
 
       </div>
+    </div>
   </section>
 {% endcapture %}
 
@@ -382,58 +391,32 @@
       "id": "container_spacing",
       "default": "px-container-md",
       "options": [
-        { "value": "px-container-xs", "label": "Extra Small" },
-        { "value": "px-container-sm", "label": "Small" },
-        { "value": "px-container-md", "label": "Medium" },
-        { "value": "px-container-lg", "label": "Large" },
-        { "value": "px-container-gutter", "label": "Gutter Only" },
-        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
       ],
       "label": "Container Spacing"
-    },
-    {
-      "type": "header",
-      "content": "Section Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_mobile",
-      "label": "Padding top — Mobile (px)",
-      "default": 48,
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_mobile",
-      "label": "Padding bottom — Mobile (px)",
-      "default": 48,
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_desktop",
-      "label": "Padding top — Desktop (px)",
-      "default": 80,
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_desktop",
-      "label": "Padding bottom — Desktop (px)",
-      "default": 80,
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px"
     },
     {
       "type": "header",
@@ -617,6 +600,16 @@
       "content": "Section Globals"
     },
     {
+      "type": "range",
+      "id": "max_width_desktop",
+      "label": "Max width desktop (px)",
+      "min": 800,
+      "max": 1440,
+      "step": 20,
+      "default": 1240,
+      "unit": "px"
+    },
+    {
       "type": "color",
       "alpha": true,
       "id": "background_color",
@@ -671,11 +664,7 @@
         "headline_size_desktop": 40,
         "headline_size_mobile": 28,
         "subtext_size": 16,
-        "image_border_radius": 16,
-        "padding_top_mobile": 48,
-        "padding_bottom_mobile": 48,
-        "padding_top_desktop": 80,
-        "padding_bottom_desktop": 80
+        "image_border_radius": 16
       },
       "blocks": [
         {
