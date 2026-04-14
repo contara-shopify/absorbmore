@@ -33,7 +33,7 @@
             "card_product_card_image_Rdpwty": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[product.metafields.smart.image_override],[selected_variant.featured_media],[product.image]",
+                "primary_image": "[selected_variant.featured_media],[product.image]",
                 "show_secondary_image": true,
                 "secondary_image": "[selected_variant.metafields.smart.images.1],[selected_variant.metafields.smart.images.0]",
                 "link_to_object": true,
@@ -55,14 +55,14 @@
                 "dynamic_border_color": "",
                 "text_color": "",
                 "background_color": "",
-                "custom_css": "& {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  right: 10px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n  \n}\n\n@media (max-width: 768px) {\n  & {\n    top: 8px;\n    left: 8px;\n    flex-direction: column;\n  }\n}",
+                "custom_css": "& {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  right: 10px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
                 "generate_block_presets": "never",
                 "category_name": "",
                 "hidden_name_backup": "",
                 "show_conditionally": "always"
               },
               "blocks": {
-                "card_product_card_labels_cQjVk6": {
+                "card_product_card_labels_mwAGMc": {
                   "type": "_card_product_card__labels",
                   "name": "Labels",
                   "settings": {
@@ -81,12 +81,12 @@
                     "label_type__preorder": "hide",
                     "default_content__preorder": "Preorder",
                     "label_class__preorder": "label-primary",
-                    "custom_css": "& {\n  position: relative;\n  /*top: 10px;*/\n  /*left: 10px;*/\n  /*right: 10px;*/\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n  \n  \n}\n\n\n\n\n@media (max-width: 768px) {\n  & {\n    flex-direction: column;\n  }\n  \n  & label{\n    width: fit-content;\n  }\n}",
+                    "custom_css": "& {\n  position: relative;\n  /*top: 10px;*/\n  /*left: 10px;*/\n  /*right: 10px;*/\n  display: flex;\n  //flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
                     "show_conditionally": "always"
                   },
                   "blocks": {}
                 },
-                "card_product_card_labels_DjxJk9": {
+                "card_product_card_labels_yPd4hQ": {
                   "type": "_card_product_card__labels",
                   "name": "Labels",
                   "settings": {
@@ -112,8 +112,8 @@
                 }
               },
               "block_order": [
-                "card_product_card_labels_cQjVk6",
-                "card_product_card_labels_DjxJk9"
+                "card_product_card_labels_mwAGMc",
+                "card_product_card_labels_yPd4hQ"
               ]
             },
             "card_product_card_container_QM97MA": {
@@ -259,13 +259,28 @@
             "dynamic_border_color": "",
             "text_color": "",
             "background_color": "",
-            "custom_css": "& {\n  flex: 1;\n  padding: 24px;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding: 8px 12px 16px;\n  }\n}",
+            "custom_css": "& {\n  flex: 1;\n  padding: 24px;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding: 12px 12px 16px;\n  }\n}",
             "generate_block_presets": "never",
             "category_name": "",
             "hidden_name_backup": "",
             "show_conditionally": "always"
           },
           "blocks": {
+            "card_product_card_rating_DiQYje": {
+              "type": "_card_product_card__rating",
+              "name": "Rating",
+              "settings": {
+                "reviews_heading": "[rating] ([count])",
+                "css_class": "richtext-md h6",
+                "icon": "star",
+                "icon_active_color": "",
+                "icon_base_color": "",
+                "hide_zero_reviews": 1,
+                "custom_css": "& {\n  display: flex;\n  width: 100%;\n  align-items: center;\n  gap: 6px;\n  --star-size: 12px;\n  --star-gap: 2px;\n}\n\n& label{\n  line-height: 12px;\n  margin-top: 2px;\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": {}
+            },
             "card_product_card_richtext_dcKWWB": {
               "type": "_card_product_card__richtext",
               "name": "Title",
@@ -276,7 +291,7 @@
                 "link_to_product": true,
                 "open_in_new_tab": false,
                 "text_color": "",
-                "custom_css": "&{\n\n}\n&:hover {\n  text-decoration: underline;\n}\n@media (max-width: 768px) {\n  & {\n    \n  }\n}",
+                "custom_css": "&{\n  margin-top: 12px;\n}\n&:hover {\n  text-decoration: underline;\n}\n@media (max-width: 768px) {\n  & {\n    \n  }\n}",
                 "hide_if_empty": "none",
                 "show_conditionally": "always"
               },
@@ -298,21 +313,6 @@
               },
               "blocks": {}
             },
-            "card_product_card_rating_DiQYje": {
-              "type": "_card_product_card__rating",
-              "name": "Rating",
-              "settings": {
-                "reviews_heading": "[rating] ([count])",
-                "css_class": "richtext-md h6",
-                "icon": "star",
-                "icon_active_color": "",
-                "icon_base_color": "",
-                "hide_zero_reviews": 1,
-                "custom_css": "& {\n  display: flex;\n  width: 100%;\n  align-items: center;\n  gap: 6px;\n padding-top: 8px;\n  --star-size: 12px;\n  --star-gap: 2px;\n}\n\n& label{\n  line-height: 12px;\n  margin-top: 2px;\n}",
-                "show_conditionally": "always"
-              },
-              "blocks": {}
-            },
             "card_product_card_container_3bHBTc": {
               "type": "_card_product_card__container",
               "name": "Container",
@@ -322,7 +322,7 @@
                 "dynamic_border_color": "",
                 "text_color": "",
                 "background_color": "",
-                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-top: 12px;\n  flex-wrap: nowrap;\n}",
+                "custom_css": "& {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  margin-top: 12px;\n  flex-wrap: nowrap;\n}",
                 "generate_block_presets": "never",
                 "category_name": "",
                 "hidden_name_backup": "",
@@ -364,7 +364,7 @@
                     "label_type__preorder": "hide",
                     "default_content__preorder": "Preorder",
                     "label_class__preorder": "label-primary",
-                    "custom_css": "& {\n  display: flex;\n  align-items: center;\n}\n& .h6 {\n  font-weight: 500;\n  color: #4659ff;\n  flex-shrink: 0;\n}\n\n&::before {\n  content: \"·\";\n  margin-right: 4px;\n}",
+                    "custom_css": "& {\n  display: flex;\n  align-items: center;\n}\n& .h6 {\n  font-weight: 500;\n  color: #4659ff;\n}\n\n&::before {\n  content: \"·\";\n  margin-right: 4px;\n}",
                     "show_conditionally": "always"
                   },
                   "blocks": {}
@@ -377,9 +377,9 @@
             }
           },
           "block_order": [
+            "card_product_card_rating_DiQYje",
             "card_product_card_richtext_dcKWWB",
             "card_product_card_richtext_4TwEBe",
-            "card_product_card_rating_DiQYje",
             "card_product_card_container_3bHBTc"
           ]
         }
@@ -392,7 +392,7 @@
       "settings": {
         "handle": "product-card",
         "product_card": "product-card",
-        "preview_product": "spring-essentials-stack",
+        "preview_product": "starter-pack",
         "link_to_object": true,
         "open_in_new_tab": false,
         "default_select_selling_plan": true,
@@ -433,7 +433,7 @@
             "card_product_card_image_3ajJyf": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[product.metafields.smart.image_override],[selected_variant.featured_media],[product.image]",
+                "primary_image": "[selected_variant.featured_media],[product.image]",
                 "show_secondary_image": true,
                 "secondary_image": "[selected_variant.metafields.smart.images.1],[selected_variant.metafields.smart.images.0]",
                 "link_to_object": true,
@@ -485,13 +485,27 @@
             "dynamic_border_color": "",
             "text_color": "",
             "background_color": "",
-            "custom_css": "& {\n  flex: 1;\n  padding: 24px;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding: 8px 12px 16px;\n  }\n}",
+            "custom_css": "& {\n  flex: 1;\n  padding: 24px;\n}\n\n@media (max-width: 768px) {\n  & {\n    padding: 12px 12px 16px;\n  }\n}",
             "generate_block_presets": "never",
             "category_name": "",
             "hidden_name_backup": "",
             "show_conditionally": "always"
           },
           "blocks": {
+            "card_product_card_rating_LCHBGc": {
+              "type": "_card_product_card__rating",
+              "name": "Rating",
+              "settings": {
+                "reviews_heading": "[rating] ([count])",
+                "css_class": "richtext-md h6",
+                "icon": "star",
+                "icon_active_color": "",
+                "icon_base_color": "",
+                "custom_css": "& {\n  display: flex;\n  width: 100%;\n  align-items: center;\n  gap: 6px;\n  --star-size: 12px;\n  --star-gap: 2px;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
+                "show_conditionally": "always"
+              },
+              "blocks": {}
+            },
             "card_product_card_richtext_aVnLJb": {
               "type": "_card_product_card__richtext",
               "name": "Title",
@@ -502,7 +516,7 @@
                 "link_to_product": true,
                 "open_in_new_tab": false,
                 "text_color": "",
-                "custom_css": "&{\n\n}\n&:hover {\n  text-decoration: underline;\n}\n@media (max-width: 768px) {\n  & {\n    margin-top: 0;\n  }\n}",
+                "custom_css": "&{\n  margin-top: 12px;\n}\n&:hover {\n  text-decoration: underline;\n}\n@media (max-width: 768px) {\n  & {\n    margin-top: 0;\n  }\n}",
                 "hide_if_empty": "none",
                 "show_conditionally": "always"
               },
@@ -520,20 +534,6 @@
                 "text_color": "#6a6a6a",
                 "custom_css": "&{\n  margin-top: 4px;\n}\n&:hover {\n  text-decoration: underline;\n}",
                 "hide_if_empty": "none",
-                "show_conditionally": "always"
-              },
-              "blocks": {}
-            },
-            "card_product_card_rating_LCHBGc": {
-              "type": "_card_product_card__rating",
-              "name": "Rating",
-              "settings": {
-                "reviews_heading": "[rating] ([count])",
-                "css_class": "richtext-md h6",
-                "icon": "star",
-                "icon_active_color": "",
-                "icon_base_color": "#000000",
-                "custom_css": "& {\n  display: flex;\n  width: 100%;\n  align-items: center;\n  gap: 6px;\n  padding-top: 8px;\n  --star-size: 12px;\n  --star-gap: 2px;\n}\n\n@media (max-width: 768px) {\n  & {\n    display: none;\n  }\n}",
                 "show_conditionally": "always"
               },
               "blocks": {}
@@ -577,9 +577,9 @@
             }
           },
           "block_order": [
+            "card_product_card_rating_LCHBGc",
             "card_product_card_richtext_aVnLJb",
             "card_product_card_richtext_XekR6k",
-            "card_product_card_rating_LCHBGc",
             "card_product_card_container_QmRUcP"
           ]
         }
@@ -633,7 +633,7 @@
             "card_product_card_image_aCbUAE": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[product.metafields.smart.image_override],[selected_variant.featured_media],[product.image]",
+                "primary_image": "[selected_variant.featured_media],[product.image]",
                 "show_secondary_image": true,
                 "secondary_image": "[selected_variant.metafields.smart.images.1],[selected_variant.metafields.smart.images.0]",
                 "link_to_object": true,
@@ -1111,7 +1111,7 @@
             "card_product_card_image_7RyxYA": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[product.metafields.smart.image_override],[selected_variant.featured_media],[product.image]",
+                "primary_image": "[selected_variant.featured_media],[product.image]",
                 "show_secondary_image": true,
                 "secondary_image": "[selected_variant.metafields.smart.images.1],[selected_variant.metafields.smart.images.0]",
                 "link_to_object": true,
@@ -1124,80 +1124,34 @@
               },
               "blocks": {}
             },
-            "card_product_card_container_Dxrh7a": {
-              "type": "_card_product_card__container",
-              "name": "Container",
+            "card_product_card_labels_rAkK9T": {
+              "type": "_card_product_card__labels",
+              "name": "Labels",
               "settings": {
-                "dynamic_text_color": "",
-                "dynamic_background_color": "",
-                "dynamic_border_color": "",
-                "text_color": "",
-                "background_color": "",
-                "custom_css": "& {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  right: 10px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
-                "generate_block_presets": "never",
-                "category_name": "",
-                "hidden_name_backup": "",
+                "content_source": "product.metafields.custom.card_badge",
+                "label_class__content": "label-primary",
+                "label_type__discounts": "",
+                "show_subscription_price": false,
+                "label_class__discount": "label-secondary",
+                "label_type__low_inventory": "hide",
+                "default_content__low_inventory": "Almost Gone",
+                "label_class__low_inventory": "label-low-inventory",
+                "low_inventory_threshold": 4,
+                "label_type__out_of_stock": "show",
+                "default_content__out_of_stock": "Sold out",
+                "label_class__out_of_stock": "label-secondary",
+                "label_type__preorder": "hide",
+                "default_content__preorder": "Preorder",
+                "label_class__preorder": "label-primary",
+                "custom_css": "& {\n  position: absolute;\n  top: 12px;\n  left: 16px;\n  right: 16px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
                 "show_conditionally": "always"
               },
-              "blocks": {
-                "card_product_card_labels_EGih9r": {
-                  "type": "_card_product_card__labels",
-                  "name": "Labels",
-                  "settings": {
-                    "content_source": "product.metafields.custom.card_badge",
-                    "label_class__content": "label-primary",
-                    "label_type__discounts": "",
-                    "show_subscription_price": false,
-                    "label_class__discount": "label-secondary",
-                    "label_type__low_inventory": "hide",
-                    "default_content__low_inventory": "Almost Gone",
-                    "label_class__low_inventory": "label-low-inventory",
-                    "low_inventory_threshold": 4,
-                    "label_type__out_of_stock": "show",
-                    "default_content__out_of_stock": "Sold out",
-                    "label_class__out_of_stock": "label-secondary",
-                    "label_type__preorder": "hide",
-                    "default_content__preorder": "Preorder",
-                    "label_class__preorder": "label-primary",
-                    "custom_css": "& {\n  position: relative;\n  /*top: 10px;*/\n  /*left: 10px;*/\n  /*right: 10px;*/\n  display: flex;\n  //flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
-                    "show_conditionally": "always"
-                  },
-                  "blocks": {}
-                },
-                "card_product_card_labels_ATyzxf": {
-                  "type": "_card_product_card__labels",
-                  "name": "Labels",
-                  "settings": {
-                    "content_source": "product.metafields.smart.card_badge_2",
-                    "label_class__content": "label-secondary",
-                    "label_type__discounts": "",
-                    "show_subscription_price": false,
-                    "label_class__discount": "label-secondary",
-                    "label_type__low_inventory": "hide",
-                    "default_content__low_inventory": "Almost Gone",
-                    "label_class__low_inventory": "label-low-inventory",
-                    "low_inventory_threshold": 4,
-                    "label_type__out_of_stock": "hide",
-                    "default_content__out_of_stock": "Sold out",
-                    "label_class__out_of_stock": "label-secondary",
-                    "label_type__preorder": "hide",
-                    "default_content__preorder": "Preorder",
-                    "label_class__preorder": "label-primary",
-                    "custom_css": "& {\n  position: relative;\n  /*top: 10px;*/\n  /*left: 10px;*/\n  /*right: 10px;*/\n  display: flex;\n  flex-wrap: wrap;\n  gap: 2px 3px;\n  z-index: 1;\n}",
-                    "show_conditionally": "always"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "card_product_card_labels_EGih9r",
-                "card_product_card_labels_ATyzxf"
-              ]
+              "blocks": {}
             }
           },
           "block_order": [
             "card_product_card_image_7RyxYA",
-            "card_product_card_container_Dxrh7a"
+            "card_product_card_labels_rAkK9T"
           ]
         },
         "card_product_card_container_gCgVJE": {
@@ -1521,7 +1475,7 @@
             "card_product_card_image_wT3RtJ": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[selected_variant.featured_media],[product.image]",
+                "primary_image": "[product.image]",
                 "show_secondary_image": false,
                 "secondary_image": "[product.image]",
                 "link_to_object": false,
@@ -1754,7 +1708,7 @@
             "card_product_card_image_Eakw9G": {
               "type": "_card_product_card__image",
               "settings": {
-                "primary_image": "[selected_variant.featured_media],[product.image]",
+                "primary_image": "[product.image]",
                 "show_secondary_image": false,
                 "secondary_image": "[product.image]",
                 "link_to_object": false,
@@ -2390,21 +2344,9 @@
                 "custom_liquid": "x-effect=\"line_card?.line_item?.properties?._Gifted ? $el.style.display= 'none' : ''\""
               },
               "blocks": {
-                "card_line_item_card_subscription_button_U78QxQ": {
-                  "type": "_card_line_item_card__subscription_button",
-                  "name": "Subscription button",
-                  "settings": {
-                    "label": "Subscribe & Save [value]",
-                    "select_class": "input-select",
-                    "custom_css": ".input-select& {\n  min-height: 30px;\n  padding: 7px 16px;\n  border: 1px solid #000;\n  justify-content: center;\n  font-size: var(--typography-richtext-md-h5, 11px);\n  font-weight: 500;\n  line-height: 130%;\n  text-transform: uppercase;\n}\n\n& .input-select {\n  min-height: 30px;\n  padding: 7px 16px;\n  border: 1px solid #000;\n  justify-content: center;\n  font-size: var(--typography-richtext-md-h5, 11px);\n  font-weight: 500;\n  line-height: 130%;\n  text-transform: uppercase;\n}\n\n@media (max-width: 768px) {\n  .input-select& {\n    padding: 7px 8px;\n  }\n  & .input-select {\n    padding: 7px 8px;\n  }\n}",
-                    "show_conditionally": "always"
-                  },
-                  "blocks": {}
-                },
                 "card_line_item_card_subscription_selector_jW9FTC": {
                   "type": "_card_line_item_card__subscription_selector",
                   "name": "Subscription Selector",
-                  "disabled": true,
                   "settings": {
                     "label": "One time purchase",
                     "select_class": "input-select",
@@ -2415,7 +2357,6 @@
                 }
               },
               "block_order": [
-                "card_line_item_card_subscription_button_U78QxQ",
                 "card_line_item_card_subscription_selector_jW9FTC"
               ]
             }
@@ -2489,7 +2430,7 @@
       "name": "line-item-card",
       "settings": {
         "handle": "line-item-card",
-        "line_item_card": "line-item-card",
+        "line_item_card": "",
         "dynamic_text_color": "",
         "dynamic_background_color": "",
         "dynamic_border_color": "",

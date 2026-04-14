@@ -69,18 +69,9 @@ export const initTabs = ($el) => {
 
   const tabs = window.Alpine.store("tabs");
 
-  const liquidHandle = (str = "") =>
-    str
-      .replace(/<[^>]*>/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/['"]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-
   tabs[$el.id] = {
-    tabs: raw_tabs?.map((t) => (t?.split("|%S%|") || []).map(liquidHandle)),
-    current_tabs: raw_tabs?.map((t) => liquidHandle(t?.split("|%S%|")?.[0] || "")),
+    tabs: raw_tabs?.map((t) => t?.split("|%S%|")),
+    current_tabs: raw_tabs?.map((t) => t?.split("|%S%|")?.[0] ?? ""),
   };
 
   const ensureNoHiddenTabs = createEnsureNoHiddenTabs({
@@ -108,4 +99,4 @@ window._sections["initTabs"] = initTabs;
 
 document.addEventListener("alpine:init", initTabsStore);
 
-/* LAST HASH: 22229dd2a65a8a3e1790e0be9c5fc131d5cb3a63 */
+/* LAST HASH: 751a17d2e12b99b789afde0d72c090f2bc589d56 */

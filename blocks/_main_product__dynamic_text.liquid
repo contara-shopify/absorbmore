@@ -38,7 +38,7 @@
 
 {% capture dynamic_parsed_content %}{% render '_input.dynamic_content', content: title, keys: 'product, selected_variant', product: product, selected_variant: variant %}{% endcapture %}
 
-{% if title contains '[selected_' or title contains '[product' %}
+{% if title contains '[selected_' %}
   {% assign is_dynamic = true %}
 {% endif %}
 {% if dynamic_parsed_content == blank and is_dynamic != true %}

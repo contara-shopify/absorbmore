@@ -40,7 +40,6 @@ declare const utils: {
     isElementScrollable: (element: Element) => boolean;
     checkDomain: (url: string) => string;
     isExternalURL: (url: string) => boolean;
-    liquidHandle: (str?: string) => string;
     getElementPosition: typeof getElementPosition;
     applyInlinePluralization: (content: string) => string;
     getBracketInputDynamicPluralizedText: (content: string, object?: {}) => string;

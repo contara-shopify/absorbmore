@@ -4297,7 +4297,6 @@ export type MainProductContainerBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__container" }>
   | Extract<ThemeBlocks, { type: "_main_product__collapsible_container" }>
   | Extract<ThemeBlocks, { type: "_main_product__availability" }>
-  | Extract<ThemeBlocks, { type: "_main_product__selected_plan_duration" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery" }>
   | Extract<ThemeBlocks, { type: "_main_product__thumbnails" }>
   | Extract<ThemeBlocks, { type: "_main_product__price" }>
@@ -4330,7 +4329,6 @@ export type MainProductContainerBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__image" }>
   | Extract<ThemeBlocks, { type: "_main_product__labels" }>
   | Extract<ThemeBlocks, { type: "_main_product__gift_card_recipient" }>
-  | Extract<ThemeBlocks, { type: "_main_product__bundle_variants" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery_button" }>
   | Extract<ThemeBlocks, { type: "_main_product__rebuy_popup" }>
   | GlobalThemeBlocks
@@ -4365,7 +4363,6 @@ export type MainProductCollapsibleContainerBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__container" }>
   | Extract<ThemeBlocks, { type: "_main_product__collapsible_container" }>
   | Extract<ThemeBlocks, { type: "_main_product__availability" }>
-  | Extract<ThemeBlocks, { type: "_main_product__selected_plan_duration" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery" }>
   | Extract<ThemeBlocks, { type: "_main_product__thumbnails" }>
   | Extract<ThemeBlocks, { type: "_main_product__price" }>
@@ -4398,7 +4395,6 @@ export type MainProductCollapsibleContainerBlocks =
   | Extract<ThemeBlocks, { type: "_main_product__image" }>
   | Extract<ThemeBlocks, { type: "_main_product__labels" }>
   | Extract<ThemeBlocks, { type: "_main_product__gift_card_recipient" }>
-  | Extract<ThemeBlocks, { type: "_main_product__bundle_variants" }>
   | Extract<ThemeBlocks, { type: "_main_product__gallery_button" }>
   | Extract<ThemeBlocks, { type: "_main_product__rebuy_popup" }>
   | GlobalThemeBlocks
@@ -4425,21 +4421,6 @@ export type MainProductAvailabilityBlock = {
     text_color?: _Color_liquid | string;
   };
   type: "_main_product__availability";
-};
-
-export type MainProductSelectedPlanDurationBlock = {
-  blocks: never[];
-  id: string;
-  theme_block: true;
-  settings: {
-    /** Input type: text */
-    css_class?: string;
-    /** Input type: textarea */
-    custom_css?: string;
-    /** Input type: color */
-    text_color?: _Color_liquid | string;
-  };
-  type: "_main_product__selected_plan_duration";
 };
 
 export type MainProductGalleryBlock = {
@@ -5369,8 +5350,6 @@ export type MainProductSubscribeToggleCardBlock = {
     custom_css?: string;
     /** Input type: richtext */
     fourteen_sticks_subscription_highlights?: `<${_BlockTag}${string}</${_BlockTag}>`;
-    /** Input type: image_picker */
-    gwp_image?: _Image_liquid | string;
     /** Input type: richtext */
     highlights?: `<${_BlockTag}${string}</${_BlockTag}>`;
     /** Input type: text */
@@ -5383,8 +5362,6 @@ export type MainProductSubscribeToggleCardBlock = {
     no_subscription_highlights?: `<${_BlockTag}${string}</${_BlockTag}>`;
     /** Input type: text */
     price_class?: string;
-    /** Input type: richtext */
-    promotional_text?: `<${_BlockTag}${string}</${_BlockTag}>`;
     /** Input type: inline_richtext */
     savings_label?: string;
     /** Input type: text */
@@ -5569,20 +5546,11 @@ export type MainProductGiftCardRecipientBlock = {
   type: "_main_product__gift_card_recipient";
 };
 
-export type MainProductBundleVariantsBlock = {
-  blocks: never[];
-  id: string;
-  theme_block: true;
-  type: "_main_product__bundle_variants";
-};
-
 export type MainProductGalleryButtonBlock = {
   blocks: never[];
   id: string;
   theme_block: true;
   settings: {
-    /** Input type: select */
-    dynamic_content_type: "default" | "metafield";
     /** Input type: select */
     quick_view_visibility: "default" | "hidden" | "mobile_header" | "quick_view_only";
     /** Input type: text */
@@ -5593,8 +5561,6 @@ export type MainProductGalleryButtonBlock = {
     custom_css?: string;
     /** Input type: number */
     slide?: number;
-    /** Input type: text */
-    slide_dynamic?: string;
     /** Input type: inline_richtext */
     title?: string;
   };
@@ -7171,7 +7137,6 @@ export type ThemeBlocks =
   | MainProductContainerBlock
   | MainProductCollapsibleContainerBlock
   | MainProductAvailabilityBlock
-  | MainProductSelectedPlanDurationBlock
   | MainProductGalleryBlock
   | MainProductThumbnailsBlock
   | MainProductPriceBlock
@@ -7205,7 +7170,6 @@ export type ThemeBlocks =
   | MainProductImageBlock
   | MainProductLabelsBlock
   | MainProductGiftCardRecipientBlock
-  | MainProductBundleVariantsBlock
   | MainProductGalleryButtonBlock
   | MainProductRebuyPopupBlock
   | MainProductAddonsAtcButtonBlock

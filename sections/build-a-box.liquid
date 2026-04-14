@@ -1,0 +1,2231 @@
+{{ 'build-a-box.css' | asset_url | stylesheet_tag }}
+
+<div
+  id="build-a-box-root"
+  data-box-product-id="{{ section.settings.box_product_id | escape }}"
+  data-skio-api-key="{{ section.settings.skio_api_key | escape }}"
+  data-variant-display="{{ section.settings.variant_display | default: 'all' | escape }}"
+  data-storefront-domain="{{ shop.permanent_domain | escape }}"
+  data-storefront-api-version="{{ section.settings.storefront_api_version | default: '2026-01' | escape }}"
+  data-storefront-access-token="{{ section.settings.storefront_access_token | escape }}"
+>
+  <div id="build-a-box-content">
+    <div id="build-a-box-layout" class="build-a-box-layout">
+      <div id="build-a-box-products" class="build-a-box-products"></div>
+      <aside id="build-a-box-sidebar" class="build-a-box-sidebar">
+        <div class="build-a-box-sidebar-body">
+          <h2 data-sidebar="title">Your Stack</h2>
+          <div class="build-a-box-summary" data-sidebar="summary">Total items: 0 · Total value: $0.00</div>
+          <ul class="build-a-box-summary-list" data-sidebar="list"></ul>
+          <div class="build-a-box-mode">
+            <button type="button" data-sidebar="mode" data-mode="subscription">Subscribe &amp; Save</button>
+            <button type="button" data-sidebar="mode" data-mode="onetime">One-time</button>
+          </div>
+          <div class="build-a-box-plan-wrapper" data-sidebar="plan-wrapper" hidden>
+            <label>Delivery frequency</label>
+            <select data-sidebar="plan-select"></select>
+          </div>
+        </div>
+        <div class="build-a-box-sidebar-footer">
+          <button type="button" class="build-a-box-add-to-cart" data-sidebar="add" disabled>ADD TO CART - $0.00</button>
+          <div data-style-id="template--26197046493473__main_product_PJRr9q--ARm8xN3UvWW11QTdXS__main_product_container_rC3qVB" data-quick-view-visibility="hidden">
+            <div data-style-id="template--26197046493473__main_product_PJRr9q--AWGFEcVRuNy94TnlDV__richtext_9h4qLh" class="relative text-inherit">
+              <div class="_input-richtext richtext-md">
+                <h6>
+                  <svg data-icon-handle="truck" class="bg-current shrink-0 inline-flex items-center justify-center align-middle"
+                    x-data="{ url: getComputedStyle(document.documentElement).getPropertyValue(`--icon-truck--url`) }"
+                    :class="url ? 'cursor-pointer hf:opacity-70 transition-all duration-75': ''" :role="url ? 'link':''"
+                    :tabindex="url ? '0' : undefined" aria-label="truck"
+                    x-init="if (url) { $el.onclick = (e) =&gt; utils.isExternalURL(url) ? window.open(url) : barba.go(url) }"
+                    style="mask: var(--icon-truck); -webkit-mask: var(--icon-truck); aspect-ratio: var(--icon-truck-aspect-ratio, 1); height: 20px;width: 20px; color:currentColor;"
+                    role="">
+                  </svg>
+                  <span>Free shipping on orders $50+</span>
+                </h6>
+              </div>
+            </div>
+            <div data-style-id="template--26197046493473__main_product_PJRr9q--AaUFiTlNJWDZOTitJd__richtext_DzKP6Q" class="relative text-inherit">
+              <div class="_input-richtext richtext-md">
+                <h6>
+                  <svg data-icon-handle="currency"
+                    class="bg-current shrink-0 inline-flex items-center justify-center align-middle"
+                    x-data="{ url: getComputedStyle(document.documentElement).getPropertyValue(`--icon-currency--url`) }"
+                    :class="url ? 'cursor-pointer hf:opacity-70 transition-all duration-75': ''" :role="url ? 'link':''"
+                    :tabindex="url ? '0' : undefined" aria-label="currency"
+                    x-init="if (url) { $el.onclick = (e) =&gt; utils.isExternalURL(url) ? window.open(url) : barba.go(url) }"
+                    style="mask: var(--icon-currency); -webkit-mask: var(--icon-currency); aspect-ratio: var(--icon-currency-aspect-ratio, 1); height: 20px;width: 20px; color:currentColor;"
+                    role="">
+                  </svg>
+                  <span>30-day money-back guarantee</span>
+                </h6>
+              </div>
+            </div>
+            <div data-style-id="template--26197046493473__main_product_PJRr9q--Ad1MybUlNc1hLQ0Y4R__richtext_Ann9ah" class="relative text-inherit">
+              <div class="_input-richtext richtext-md">
+                <h6>
+                  <svg data-icon-handle="check-verified"
+                    class="bg-current shrink-0 inline-flex items-center justify-center align-middle"
+                    x-data="{ url: getComputedStyle(document.documentElement).getPropertyValue(`--icon-check-verified--url`) }"
+                    :class="url ? 'cursor-pointer hf:opacity-70 transition-all duration-75': ''" :role="url ? 'link':''"
+                    :tabindex="url ? '0' : undefined" aria-label="check-verified"
+                    x-init="if (url) { $el.onclick = (e) =&gt; utils.isExternalURL(url) ? window.open(url) : barba.go(url) }"
+                    style="mask: var(--icon-check-verified); -webkit-mask: var(--icon-check-verified); aspect-ratio: var(--icon-check-verified-aspect-ratio, 1); height: 20px;width: 20px; color:currentColor;"
+                    role="">
+                  </svg>
+                  <span>HSA/FSA Eligible</span>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </aside>    
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var SKIO_INTERNAL_UUID_RE =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    /**
+     * Safely resolve the core DOM elements required for the widget.
+     */
+    function getRootElements() {
+      var rootElement = document.getElementById('build-a-box-root');
+      if (!rootElement) {
+        return null;
+      }
+
+      var contentElement = document.getElementById('build-a-box-content');
+      var productsElement = document.getElementById('build-a-box-products');
+      var sidebarElement = document.getElementById('build-a-box-sidebar');
+
+      if (!contentElement || !productsElement || !sidebarElement) {
+        return null;
+      }
+
+      return {
+        rootElement: rootElement,
+        contentElement: contentElement,
+        productsElement: productsElement,
+        sidebarElement: sidebarElement
+      };
+    }
+
+    /**
+     * Money formatter that delegates to the theme's Shopify-style helpers.
+     *
+     * The Dynamic Box API returns prices in store units (e.g. "12.34" dollars),
+     * while Shopify money helpers expect cents, so values are scaled by 100
+     * before formatting.
+     */
+    function formatMoney(amount) {
+      if (typeof amount !== 'number') {
+        return '';
+      }
+
+      var hasWindow = typeof window !== 'undefined';
+      if (!hasWindow) {
+        return '';
+      }
+
+      var centsValue = Math.round(amount * 100);
+
+      if (typeof window.formatMoney === 'function') {
+        return window.formatMoney(centsValue);
+      }
+
+      if (window.utils && typeof window.utils.formatMoney === 'function') {
+        return window.utils.formatMoney(centsValue);
+      }
+
+      return '';
+    }
+
+    /**
+     * Final id segment for Skio/Shopify platform ids (JSON numbers, plain ids, or gid paths).
+     * Skio may send productPlatformId as a number; grouping settings may use GIDs or plain ids.
+     */
+    function getNumericIdFromPlatformId(platformId) {
+      if (platformId == null) {
+        return '';
+      }
+
+      var trimmed = String(platformId).trim();
+      if (!trimmed) {
+        return '';
+      }
+
+      var segments = trimmed.split('/');
+      var lastSegmentIndex = segments.length - 1;
+      if (lastSegmentIndex < 0) {
+        return '';
+      }
+
+      var lastSegment = segments[lastSegmentIndex];
+      if (!lastSegment) {
+        return '';
+      }
+
+      return lastSegment.trim();
+    }
+
+    /**
+     * Storefront API Product GID for metafield fetches (Skio sends numeric ids or full GIDs).
+     */
+    function toStorefrontProductGid(platformId) {
+      if (platformId == null) {
+        return '';
+      }
+
+      var trimmed = String(platformId).trim();
+      if (!trimmed) {
+        return '';
+      }
+
+      if (trimmed.indexOf('gid://shopify/ProductVariant/') === 0) {
+        return '';
+      }
+
+      if (trimmed.indexOf('gid://shopify/Product/') === 0) {
+        return trimmed;
+      }
+
+      var numericId = getNumericIdFromPlatformId(platformId);
+      if (!numericId || !/^\d+$/.test(numericId)) {
+        return '';
+      }
+
+      return 'gid://shopify/Product/' + numericId;
+    }
+
+    /**
+     * Keys in Skio grouping lists: Shopify GIDs (use last path segment), or Skio internal UUIDs (whole string).
+     */
+    function normalizeGroupingListKey(rawId) {
+      if (rawId == null) {
+        return '';
+      }
+
+      var trimmed = String(rawId).trim();
+      if (!trimmed) {
+        return '';
+      }
+
+      if (trimmed.indexOf('/') !== -1) {
+        return getNumericIdFromPlatformId(trimmed);
+      }
+
+      return trimmed;
+    }
+
+    function mergeProductGroupingIntoMap(targetMap, groupingObj) {
+      if (!groupingObj || typeof groupingObj !== 'object') {
+        return;
+      }
+
+      for (var groupName in groupingObj) {
+        if (!Object.prototype.hasOwnProperty.call(groupingObj, groupName)) {
+          continue;
+        }
+
+        var idList = groupingObj[groupName];
+        if (!Array.isArray(idList)) {
+          continue;
+        }
+
+        for (var index = 0; index < idList.length; index++) {
+          var rawId = idList[index];
+          if (rawId == null) {
+            continue;
+          }
+
+          var key = normalizeGroupingListKey(rawId);
+          if (!key) {
+            continue;
+          }
+
+          targetMap[key] = groupName;
+        }
+      }
+    }
+
+    function mergeVariantGroupingRows(targetMap, rows) {
+      if (!Array.isArray(rows)) {
+        return;
+      }
+
+      for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+        var row = rows[rowIndex];
+        if (!row || typeof row !== 'object') {
+          continue;
+        }
+
+        var groupName = null;
+        if (typeof row.name === 'string' && row.name.trim()) {
+          groupName = row.name.trim();
+        }
+        if (!groupName && typeof row.label === 'string' && row.label.trim()) {
+          groupName = row.label.trim();
+        }
+        if (!groupName && typeof row.title === 'string' && row.title.trim()) {
+          groupName = row.title.trim();
+        }
+        if (!groupName && typeof row.groupName === 'string' && row.groupName.trim()) {
+          groupName = row.groupName.trim();
+        }
+        if (!groupName && typeof row.group === 'string' && row.group.trim()) {
+          groupName = row.group.trim();
+        }
+        if (!groupName) {
+          continue;
+        }
+
+        var ids = null;
+        if (Array.isArray(row.variantIds)) {
+          ids = row.variantIds;
+        }
+        if (!ids && Array.isArray(row.ids)) {
+          ids = row.ids;
+        }
+        if (!ids && Array.isArray(row.productVariantIds)) {
+          ids = row.productVariantIds;
+        }
+        if (!ids) {
+          continue;
+        }
+
+        for (var idIndex = 0; idIndex < ids.length; idIndex++) {
+          var listKey = normalizeGroupingListKey(ids[idIndex]);
+          if (!listKey) {
+            continue;
+          }
+          targetMap[listKey] = groupName;
+        }
+      }
+    }
+
+    function isUuidKeyedGroupAssignment(obj) {
+      var keys = Object.keys(obj);
+      if (!keys.length) {
+        return false;
+      }
+
+      var uuidKeyCount = 0;
+      for (var keyIndex = 0; keyIndex < keys.length; keyIndex++) {
+        if (SKIO_INTERNAL_UUID_RE.test(String(keys[keyIndex]).trim())) {
+          uuidKeyCount++;
+        }
+      }
+
+      return uuidKeyCount === keys.length;
+    }
+
+    function mergeUuidKeysToGroupNames(targetMap, obj) {
+      for (var uuidKey in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, uuidKey)) {
+          continue;
+        }
+
+        var groupLabel = obj[uuidKey];
+        if (typeof groupLabel !== 'string' || !groupLabel.trim()) {
+          continue;
+        }
+
+        var nk = normalizeGroupingListKey(uuidKey);
+        if (!nk) {
+          continue;
+        }
+
+        targetMap[nk] = groupLabel.trim();
+      }
+    }
+
+    function mergeGroupingFlexible(targetMap, value) {
+      if (value == null) {
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        mergeVariantGroupingRows(targetMap, value);
+        return;
+      }
+
+      if (typeof value !== 'object') {
+        return;
+      }
+
+      if (isUuidKeyedGroupAssignment(value)) {
+        mergeUuidKeysToGroupNames(targetMap, value);
+        return;
+      }
+
+      mergeProductGroupingIntoMap(targetMap, value);
+    }
+
+    /**
+     * Map grouping keys (Shopify ids / GID tails, Skio variant UUIDs) -> group label.
+     */
+    function buildProductIdToGroupMap(settings, payload) {
+      var productIdToGroup = {};
+
+      if (!settings || typeof settings !== 'object') {
+        settings = {};
+      }
+
+      mergeGroupingFlexible(productIdToGroup, settings.productGrouping);
+      mergeGroupingFlexible(productIdToGroup, settings.productVariantGrouping);
+
+      if (payload && typeof payload === 'object') {
+        mergeGroupingFlexible(productIdToGroup, payload.productVariantGrouping);
+      }
+
+      return productIdToGroup;
+    }
+
+    /**
+     * Skio internal variant id for matching productVariantGrouping (field name varies by API version).
+     */
+    function getSkioInternalVariantKey(variant) {
+      if (!variant || typeof variant !== 'object') {
+        return '';
+      }
+
+      var preferred = [
+        'id',
+        'productVariantId',
+        'skioVariantId',
+        'dynamicVariantId',
+        'internalId',
+        'variantUuid',
+        'uuid',
+        'skioId'
+      ];
+
+      for (var pi = 0; pi < preferred.length; pi++) {
+        var pk = preferred[pi];
+        if (!Object.prototype.hasOwnProperty.call(variant, pk)) {
+          continue;
+        }
+
+        var pv = variant[pk];
+        if (pv == null) {
+          continue;
+        }
+
+        var ck = normalizeGroupingListKey(pv);
+        if (ck) {
+          return ck;
+        }
+      }
+
+      for (var prop in variant) {
+        if (!Object.prototype.hasOwnProperty.call(variant, prop)) {
+          continue;
+        }
+
+        var val = variant[prop];
+        if (typeof val !== 'string') {
+          continue;
+        }
+
+        var trimmed = val.trim();
+        if (!trimmed) {
+          continue;
+        }
+
+        if (SKIO_INTERNAL_UUID_RE.test(trimmed)) {
+          return trimmed;
+        }
+      }
+
+      return '';
+    }
+
+    /**
+     * Collect unique Storefront Product GIDs from normalized group items (reliable vs handle search).
+     */
+    function collectStorefrontProductGids(dynamicBoxData) {
+      if (!dynamicBoxData || !dynamicBoxData.groups) {
+        return [];
+      }
+
+      var gidsInOrder = [];
+      var seen = {};
+      var groupNames = Object.keys(dynamicBoxData.groups);
+      for (var groupIndex = 0; groupIndex < groupNames.length; groupIndex++) {
+        var groupName = groupNames[groupIndex];
+        var items = dynamicBoxData.groups[groupName];
+        if (!Array.isArray(items)) {
+          continue;
+        }
+
+        for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
+          var item = items[itemIndex];
+          if (!item) {
+            continue;
+          }
+
+          var gid = toStorefrontProductGid(item.productPlatformId);
+          if (!gid || seen[gid]) {
+            continue;
+          }
+
+          seen[gid] = true;
+          gidsInOrder.push(gid);
+        }
+      }
+
+      return gidsInOrder;
+    }
+
+    /**
+     * Merge namespace/key metafields into an item.
+     */
+    function mergeProductMetafields(item, sourceMetafields) {
+      if (!item || typeof item !== 'object') {
+        return;
+      }
+      if (!sourceMetafields || typeof sourceMetafields !== 'object') {
+        return;
+      }
+
+      if (!item.productMetafields || typeof item.productMetafields !== 'object') {
+        item.productMetafields = {};
+      }
+
+      for (var namespace in sourceMetafields) {
+        if (!Object.prototype.hasOwnProperty.call(sourceMetafields, namespace)) {
+          continue;
+        }
+
+        var namespaceFields = sourceMetafields[namespace];
+        if (!namespaceFields || typeof namespaceFields !== 'object') {
+          continue;
+        }
+
+        if (!item.productMetafields[namespace] || typeof item.productMetafields[namespace] !== 'object') {
+          item.productMetafields[namespace] = {};
+        }
+
+        for (var key in namespaceFields) {
+          if (!Object.prototype.hasOwnProperty.call(namespaceFields, key)) {
+            continue;
+          }
+
+          item.productMetafields[namespace][key] = namespaceFields[key];
+        }
+      }
+    }
+
+    /**
+     * Query Storefront API and enrich normalized items with metafields.
+     */
+    function enrichWithStorefrontMetafields(dynamicBoxData, storefrontConfig) {
+      if (!dynamicBoxData || !dynamicBoxData.groups) {
+        return Promise.resolve(dynamicBoxData);
+      }
+      if (!storefrontConfig || !storefrontConfig.domain || !storefrontConfig.token) {
+        return Promise.resolve(dynamicBoxData);
+      }
+
+      var productGids = collectStorefrontProductGids(dynamicBoxData);
+      if (!productGids.length) {
+        return Promise.resolve(dynamicBoxData);
+      }
+
+      var endpoint = 'https://' + storefrontConfig.domain + '/api/' + storefrontConfig.version + '/graphql.json';
+      var query = [
+        'query BuildABoxMetafields($ids: [ID!]!) {',
+        '  nodes(ids: $ids) {',
+        '    ... on Product {',
+        '      id',
+        '      handle',
+        '      metafield(namespace: "smart", key: "short_description") {',
+        '        value',
+        '      }',
+        '      cardBadgeMetafield: metafield(namespace: "custom", key: "card_badge") {',
+        '        value',
+        '      }',
+        '    }',
+        '  }',
+        '}'
+      ].join('\n');
+
+      var chunkSize = 50;
+      var requests = [];
+      for (var index = 0; index < productGids.length; index += chunkSize) {
+        var chunk = productGids.slice(index, index + chunkSize);
+
+        requests.push(
+          fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Shopify-Storefront-Access-Token': storefrontConfig.token
+            },
+            body: JSON.stringify({
+              query: query,
+              variables: {
+                ids: chunk
+              }
+            })
+          }).then(function (response) {
+            if (!response || !response.ok) {
+              return null;
+            }
+
+            return response.json().catch(function () {
+              return null;
+            });
+          })
+        );
+      }
+
+      if (!requests.length) {
+        return Promise.resolve(dynamicBoxData);
+      }
+
+      return Promise.all(requests).then(function (payloads) {
+        var metafieldsByProductGid = {};
+
+        for (var payloadIndex = 0; payloadIndex < payloads.length; payloadIndex++) {
+          var payload = payloads[payloadIndex];
+          if (!payload || !payload.data || !Array.isArray(payload.data.nodes)) {
+            continue;
+          }
+
+          var nodes = payload.data.nodes;
+          for (var nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+            var node = nodes[nodeIndex];
+            if (!node || typeof node.id !== 'string' || !node.id) {
+              continue;
+            }
+
+            var shortDescription = '';
+            if (node.metafield && typeof node.metafield.value === 'string') {
+              shortDescription = node.metafield.value;
+            }
+
+            var cardBadge = '';
+            if (node.cardBadgeMetafield && typeof node.cardBadgeMetafield.value === 'string') {
+              cardBadge = node.cardBadgeMetafield.value;
+            }
+
+            metafieldsByProductGid[node.id] = {
+              smart: {
+                short_description: shortDescription,
+                card_badge: cardBadge
+              }
+            };
+          }
+        }
+
+        var groups = dynamicBoxData.groups;
+        var groupNames = Object.keys(groups);
+        for (var groupNameIndex = 0; groupNameIndex < groupNames.length; groupNameIndex++) {
+          var groupName = groupNames[groupNameIndex];
+          var items = groups[groupName];
+          if (!Array.isArray(items)) {
+            continue;
+          }
+
+          for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
+            var item = items[itemIndex];
+            if (!item) {
+              continue;
+            }
+
+            var itemGid = toStorefrontProductGid(item.productPlatformId);
+            if (!itemGid) {
+              continue;
+            }
+
+            var gidMetafields = metafieldsByProductGid[itemGid];
+            if (!gidMetafields) {
+              continue;
+            }
+
+            mergeProductMetafields(item, gidMetafields);
+          }
+        }
+
+        return dynamicBoxData;
+      }).catch(function () {
+        return dynamicBoxData;
+      });
+    }
+
+    /**
+     * Normalize the Dynamic Box API response into a compact shape
+     * that is convenient for rendering.
+     */
+    function normalizeDynamicBox(rawResponse) {
+      if (!rawResponse) {
+        return null;
+      }
+
+      var payload = rawResponse;
+      if (rawResponse.DynamicBox && typeof rawResponse.DynamicBox === 'object') {
+        payload = rawResponse.DynamicBox;
+      }
+
+      var selectableProductVariants = payload.selectableProductVariants;
+      if (!Array.isArray(selectableProductVariants)) {
+        return null;
+      }
+
+      var groupsByLabel = {};
+
+      var settings = payload.settings;
+      if (!settings || typeof settings !== 'object') {
+        settings = {};
+      }
+
+      if (
+        rawResponse &&
+        typeof rawResponse === 'object' &&
+        rawResponse !== payload &&
+        rawResponse.settings &&
+        typeof rawResponse.settings === 'object'
+      ) {
+        var envelopeSettings = rawResponse.settings;
+        if (settings.productVariantGrouping == null && envelopeSettings.productVariantGrouping != null) {
+          settings = Object.assign({}, settings);
+          settings.productVariantGrouping = envelopeSettings.productVariantGrouping;
+        }
+        if (settings.productGrouping == null && envelopeSettings.productGrouping != null) {
+          settings = Object.assign({}, settings);
+          settings.productGrouping = envelopeSettings.productGrouping;
+        }
+      }
+
+      var productIdToGroup = buildProductIdToGroupMap(settings, payload);
+
+      for (var productIndex = 0; productIndex < selectableProductVariants.length; productIndex++) {
+        var product = selectableProductVariants[productIndex];
+        if (!product) {
+          continue;
+        }
+
+        var productVariants = [];
+        if (Array.isArray(product.productVariants)) {
+          productVariants = product.productVariants;
+        }
+
+        var numericProductId = getNumericIdFromPlatformId(product.productPlatformId);
+
+        for (var variantIndex = 0; variantIndex < productVariants.length; variantIndex++) {
+          var variant = productVariants[variantIndex];
+          if (!variant) {
+            continue;
+          }
+
+          var groupFromSettings = null;
+          if (numericProductId && productIdToGroup[numericProductId]) {
+            groupFromSettings = productIdToGroup[numericProductId];
+          }
+          if (!groupFromSettings) {
+            var variantIdKey = getNumericIdFromPlatformId(variant.platformId);
+            if (variantIdKey && productIdToGroup[variantIdKey]) {
+              groupFromSettings = productIdToGroup[variantIdKey];
+            }
+          }
+          if (!groupFromSettings) {
+            var skioKey = getSkioInternalVariantKey(variant);
+            if (skioKey && productIdToGroup[skioKey]) {
+              groupFromSettings = productIdToGroup[skioKey];
+            }
+          }
+
+          var labelsForVariant = ['Ungrouped'];
+          if (groupFromSettings) {
+            labelsForVariant = [groupFromSettings];
+          }
+
+          if (!groupFromSettings && Array.isArray(variant.customLabel) && variant.customLabel.length) {
+            labelsForVariant = variant.customLabel;
+          }
+
+          for (var labelIndex = 0; labelIndex < labelsForVariant.length; labelIndex++) {
+            var rawLabel = labelsForVariant[labelIndex];
+            var label = rawLabel;
+
+            if (!label) {
+              label = 'Ungrouped';
+            }
+
+            if (!groupsByLabel[label]) {
+              groupsByLabel[label] = [];
+            }
+
+            groupsByLabel[label].push({
+              productTitle: product.productTitle,
+              productHandle: product.productHandle,
+              productPlatformId: product.productPlatformId,
+              productImageSrc: product.productImageSrc,
+              productMetafields: product.productMetafields || {},
+              variantPlatformId: variant.platformId,
+              variantTitle: variant.productVariantTitle,
+              variantImageSrc: variant.imageSrc,
+              price: variant.price,
+              labels: labelsForVariant
+            });
+          }
+        }
+      }
+
+      return {
+        boxMeta: {
+          boxId: payload.boxId,
+          platformId: payload.platformId,
+          title: payload.title,
+          imageSrc: payload.imageSrc,
+          currencyCode: payload.currencyCode,
+          fixedDiscountTier: payload.fixedDiscountTier,
+          percentDiscountTier: payload.percentDiscountTier,
+          sizeRange: payload.sizeRange,
+          sizeInterval: payload.sizeInterval,
+          sellingPlanGroup: payload.sellingPlanGroup
+        },
+        groups: groupsByLabel,
+        settings: {
+          productGroupingOrder: settings.productGroupingOrder
+        }
+      };
+    }
+
+    /**
+     * Build a stable ordering of group names from settings.
+     */
+    function getOrderedGroupNames(dynamicBoxData) {
+      var groups = dynamicBoxData.groups;
+      var baseNames = Object.keys(groups);
+
+      var orderedNames = [];
+
+      var settings = dynamicBoxData.settings;
+      var hasSettings = !!settings && typeof settings === 'object';
+      var productGroupingOrder = null;
+      if (hasSettings && Array.isArray(settings.productGroupingOrder)) {
+        productGroupingOrder = settings.productGroupingOrder;
+      }
+
+      if (!productGroupingOrder || !productGroupingOrder.length) {
+        return baseNames;
+      }
+
+      for (var index = 0; index < productGroupingOrder.length; index++) {
+        var candidateName = productGroupingOrder[index];
+        if (groups[candidateName]) {
+          orderedNames.push(candidateName);
+        }
+      }
+
+      for (var baseIndex = 0; baseIndex < baseNames.length; baseIndex++) {
+        var baseName = baseNames[baseIndex];
+        if (orderedNames.indexOf(baseName) < 0) {
+          orderedNames.push(baseName);
+        }
+      }
+
+      return orderedNames;
+    }
+
+    /**
+     * Create a summary of any subscription discount available on the box.
+     */
+    function getSubscriptionDiscount(sellingPlanGroup) {
+      if (!sellingPlanGroup || typeof sellingPlanGroup !== 'object') {
+        return null;
+      }
+
+      var planIds = Object.keys(sellingPlanGroup);
+      if (!planIds.length) {
+        return null;
+      }
+
+      var firstPlanId = planIds[0];
+      var firstPlan = sellingPlanGroup[firstPlanId];
+      if (!firstPlan) {
+        return null;
+      }
+
+      var isPercentage = firstPlan.priceAdjustmentType === 'PERCENTAGE';
+      var hasNumericAmount = typeof firstPlan.priceAdjustmentAmount === 'number';
+      if (!isPercentage || !hasNumericAmount) {
+        return null;
+      }
+
+      return {
+        type: 'PERCENTAGE',
+        amount: firstPlan.priceAdjustmentAmount
+      };
+    }
+
+    /**
+     * Compute the display price (sale, original and badge text) for a box item.
+     */
+    function getDisplayPrice(originalPrice, isSubscriptionMode, subscriptionDiscount) {
+      var numericPrice = 0;
+      if (typeof originalPrice === 'number') {
+        numericPrice = originalPrice;
+      }
+
+      var result = {
+        salePrice: numericPrice,
+        originalPrice: numericPrice,
+        badge: ''
+      };
+
+      if (!isSubscriptionMode || !subscriptionDiscount) {
+        return result;
+      }
+
+      if (subscriptionDiscount.type !== 'PERCENTAGE') {
+        return result;
+      }
+
+      var percentage = subscriptionDiscount.amount;
+      var multiplier = 1 - percentage / 100;
+      var saleValue = Math.round(numericPrice * multiplier * 100) / 100;
+
+      result.salePrice = saleValue;
+      result.originalPrice = numericPrice;
+      result.badge = percentage + '% off';
+
+      return result;
+    }
+
+    /**
+     * Represent the current in-memory box state.
+     */
+    function createInitialState() {
+      return {
+        totalItems: 0,
+        totalPrice: 0,
+        selections: {},
+        quantities: {},
+        mode: 'subscription',
+        selectedPlanId: null
+      };
+    }
+
+    /**
+     * Read an integer quantity for a selectionKey.
+     */
+    function getSelectionQuantity(state, selectionKey) {
+      var qty = 0;
+      if (state.quantities && state.quantities[selectionKey] != null) {
+        qty = Number(state.quantities[selectionKey]);
+      }
+
+      if (Number.isNaN(qty) || qty < 0) {
+        qty = 0;
+      }
+
+      return Math.floor(qty);
+    }
+
+    /**
+     * Resolve a product short description from normalized metafields.
+     */
+    function getProductShortDescription(item) {
+      if (!item || !item.productMetafields || typeof item.productMetafields !== 'object') {
+        return '';
+      }
+
+      var smartMetafields = item.productMetafields.smart;
+      if (!smartMetafields || typeof smartMetafields !== 'object') {
+        return '';
+      }
+
+      var shortDescription = smartMetafields.short_description;
+      if (shortDescription && typeof shortDescription === 'object' && typeof shortDescription.value === 'string') {
+        return shortDescription.value;
+      }
+      if (typeof shortDescription !== 'string') {
+        return '';
+      }
+
+      return shortDescription;
+    }
+
+    /**
+     * Resolve card badge copy from normalized metafields (same shape as short description).
+     */
+    function getProductCardBadge(item) {
+      if (!item || !item.productMetafields || typeof item.productMetafields !== 'object') {
+        return '';
+      }
+
+      var smartMetafields = item.productMetafields.smart;
+      if (!smartMetafields || typeof smartMetafields !== 'object') {
+        return '';
+      }
+
+      var cardBadge = smartMetafields.card_badge;
+      if (cardBadge && typeof cardBadge === 'object' && typeof cardBadge.value === 'string') {
+        return cardBadge.value;
+      }
+      if (typeof cardBadge !== 'string') {
+        return '';
+      }
+
+      return cardBadge;
+    }
+
+    /**
+     * Set a selection's quantity and keep state.selections in sync.
+     */
+    function upsertSelectionWithQuantity(state, selectionKey, item, quantity) {
+      if (!selectionKey || !item) {
+        return;
+      }
+
+      var qty = Number(quantity);
+      if (Number.isNaN(qty) || qty < 0) {
+        qty = 0;
+      }
+
+      qty = Math.floor(qty);
+      if (qty <= 0) {
+        delete state.selections[selectionKey];
+        delete state.quantities[selectionKey];
+        return;
+      }
+
+      var priceValue = 0;
+      if (typeof item.price === 'number') {
+        priceValue = item.price;
+      }
+
+      state.selections[selectionKey] = {
+        productTitle: item.productTitle,
+        variantTitle: item.variantTitle,
+        variantPlatformId: item.variantPlatformId,
+        price: priceValue
+      };
+      state.quantities[selectionKey] = qty;
+    }
+
+    /**
+     * Determine the selection key for a product/variant entry.
+     */
+    function getSelectionKey(item) {
+      if (item && item.variantPlatformId) {
+        return item.variantPlatformId;
+      }
+
+      if (item && item.productPlatformId) {
+        return item.productPlatformId;
+      }
+
+      return '';
+    }
+
+    /**
+     * Compute the discounted numeric price for a given original value.
+     */
+    function getEffectivePrice(originalPrice, isSubscriptionMode, subscriptionDiscount) {
+      var priceDisplay = getDisplayPrice(originalPrice, isSubscriptionMode, subscriptionDiscount);
+      return priceDisplay.salePrice;
+    }
+
+    /**
+     * Utility for clearing a DOM node.
+     */
+    function clearNodeContent(node) {
+      while (node.firstChild) {
+        node.removeChild(node.firstChild);
+      }
+    }
+
+    /**
+     * Render price contents into a container element.
+     */
+    function renderPriceContents(container, originalPrice, currencyCode, isSubscriptionMode, subscriptionDiscount) {
+      clearNodeContent(container);
+
+      var priceDisplay = getDisplayPrice(originalPrice, isSubscriptionMode, subscriptionDiscount);
+
+      var currentSpan = document.createElement('span');
+      currentSpan.className = 'price-current';
+      currentSpan.textContent = formatMoney(priceDisplay.salePrice, currencyCode);
+      container.appendChild(currentSpan);
+
+      var hasBadge = !!priceDisplay.badge;
+      if (!hasBadge) {
+        return;
+      }
+
+      var originalSpan = document.createElement('span');
+      originalSpan.className = 'price-original';
+      originalSpan.textContent = formatMoney(priceDisplay.originalPrice, currencyCode);
+      container.appendChild(originalSpan);
+
+      var badgeSpan = document.createElement('span');
+      badgeSpan.className = 'price-badge';
+      badgeSpan.textContent = priceDisplay.badge;
+      container.appendChild(badgeSpan);
+
+      var saveBadge = document.createElement('div');
+      saveBadge.className = 'product-card__save_badge';
+      saveBadge.textContent = 'Save ' + priceDisplay.badge.replace(' off', '');
+
+      var priceParent = container.parentElement;
+      if (!priceParent) return;
+      priceParent.insertAdjacentElement('afterend', saveBadge);
+    }
+
+    /**
+     * Find a product item by its selection key.
+     */
+    function findItemByKey(groups, selectionKey) {
+      var groupKeys = Object.keys(groups);
+
+      for (var groupIndex = 0; groupIndex < groupKeys.length; groupIndex++) {
+        var groupKey = groupKeys[groupIndex];
+        var itemsInGroup = groups[groupKey];
+
+        if (!Array.isArray(itemsInGroup)) {
+          continue;
+        }
+
+        for (var itemIndex = 0; itemIndex < itemsInGroup.length; itemIndex++) {
+          var candidate = itemsInGroup[itemIndex];
+          var candidateKey = getSelectionKey(candidate);
+
+          if (candidateKey === selectionKey) {
+            return candidate;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    /**
+     * Toggle a selection in state (0 <-> 1+), but keep quantities as source of truth.
+     */
+    function toggleSelection(state, selectionKey, item) {
+      if (!selectionKey) {
+        return;
+      }
+
+      var currentQty = getSelectionQuantity(state, selectionKey);
+      if (currentQty > 0) {
+        delete state.selections[selectionKey];
+        delete state.quantities[selectionKey];
+        return;
+      }
+
+      upsertSelectionWithQuantity(state, selectionKey, item, 1);
+    }
+
+    /**
+     * Re-render all product-card prices based on the current mode.
+     */
+    function updateAllCardPrices(rootColumn, dynamicBoxData, isSubscriptionMode, subscriptionDiscount) {
+      var cards = rootColumn.querySelectorAll('[data-variant-key]');
+      var groups = dynamicBoxData.groups;
+      var currencyCode = dynamicBoxData.boxMeta.currencyCode;
+
+      for (var index = 0; index < cards.length; index++) {
+        var cardElement = cards[index];
+        var selectionKey = cardElement.getAttribute('data-variant-key');
+
+        if (!selectionKey) {
+          continue;
+        }
+
+        var item = findItemByKey(groups, selectionKey);
+        if (!item) {
+          continue;
+        }
+
+        var priceContainer = cardElement.querySelector('[data-price-container="true"]');
+        if (!priceContainer) {
+          continue;
+        }
+
+        var originalPrice = 0;
+        if (typeof item.price === 'number') {
+          originalPrice = item.price;
+        }
+
+        renderPriceContents(
+          priceContainer,
+          originalPrice,
+          currencyCode,
+          isSubscriptionMode,
+          subscriptionDiscount
+        );
+      }
+    }
+
+    /**
+     * Update sidebar DOM from state (sidebar markup is hardcoded; only values/visibility change).
+     */
+    function updateSidebar(sidebarElement, state, dynamicBoxData, subscriptionDiscount) {
+      var boxMeta = dynamicBoxData.boxMeta;
+      var sellingPlanGroup = boxMeta.sellingPlanGroup;
+      var sellingPlans = sellingPlanGroup;
+      if (!sellingPlans || typeof sellingPlans !== 'object') {
+        sellingPlans = {};
+      }
+
+      var planIds = Object.keys(sellingPlans);
+      if (!state.selectedPlanId && planIds.length) {
+        state.selectedPlanId = planIds[0];
+      }
+
+      var summaryEl = sidebarElement.querySelector('[data-sidebar="summary"]');
+      if (summaryEl) {
+        summaryEl.textContent = 'Total items: ' + state.totalItems +
+          ' · Total value: ' + formatMoney(state.totalPrice, boxMeta.currencyCode);
+      }
+
+      var listEl = sidebarElement.querySelector('[data-sidebar="list"]');
+      if (listEl) {
+        clearNodeContent(listEl);
+        var selectionKeys = Object.keys(state.selections);
+        for (var index = 0; index < selectionKeys.length; index++) {
+          var selectionKey = selectionKeys[index];
+          var selection = state.selections[selectionKey];
+          if (!selection) {
+            continue;
+          }
+
+          var listItem = document.createElement('li');
+          var titleNode = document.createElement('div');
+          titleNode.textContent = selection.productTitle || '';
+          listItem.appendChild(titleNode);
+
+          var variantNode = document.createElement('div');
+          variantNode.textContent = selection.variantTitle || '';
+          listItem.appendChild(variantNode);
+
+          var lineQty = getSelectionQuantity(state, selectionKey);
+          var lineTotal = getEffectivePrice(
+            selection.price,
+            state.mode === 'subscription',
+            subscriptionDiscount
+          ) * lineQty;
+          var linePriceNode = document.createElement('div');
+          linePriceNode.textContent = formatMoney(lineTotal, boxMeta.currencyCode);
+          listItem.appendChild(linePriceNode);
+
+          listEl.appendChild(listItem);
+        }
+      }
+
+      var modeButtons = sidebarElement.querySelectorAll('[data-sidebar="mode"]');
+      for (var modeIndex = 0; modeIndex < modeButtons.length; modeIndex++) {
+        var btn = modeButtons[modeIndex];
+        var mode = btn.getAttribute('data-mode');
+        btn.removeAttribute('data-active');
+        if (state.mode === mode) {
+          btn.setAttribute('data-active', 'true');
+        }
+      }
+
+      var planWrapper = sidebarElement.querySelector('[data-sidebar="plan-wrapper"]');
+      var planSelect = sidebarElement.querySelector('[data-sidebar="plan-select"]');
+      var isSubscriptionMode = state.mode === 'subscription';
+      var hasPlans = planIds.length > 0;
+
+      if (planWrapper) {
+        planWrapper.hidden = !(isSubscriptionMode && hasPlans);
+      }
+
+      if (planSelect && isSubscriptionMode && hasPlans) {
+        clearNodeContent(planSelect);
+        for (var planIndex = 0; planIndex < planIds.length; planIndex++) {
+          var planId = planIds[planIndex];
+          var plan = sellingPlans[planId] || {};
+          var option = document.createElement('option');
+          option.value = planId;
+          option.textContent = plan.title || '';
+          if (state.selectedPlanId === planId) {
+            option.selected = true;
+          }
+          planSelect.appendChild(option);
+        }
+      }
+
+      var addButton = sidebarElement.querySelector('[data-sidebar="add"]');
+      if (addButton) {
+        addButton.textContent = 'ADD TO CART - ' + formatMoney(state.totalPrice, boxMeta.currencyCode);
+        addButton.disabled = !state.totalItems;
+      }
+    }
+
+    /**
+     * Bind sidebar events once (mode, plan select, add to cart).
+     */
+    function bindSidebarEvents(sidebarElement, state, dynamicBoxData, onModeChange) {
+      var boxMeta = dynamicBoxData.boxMeta;
+
+      sidebarElement.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!target || target.getAttribute('data-sidebar') !== 'mode') {
+          return;
+        }
+        var mode = target.getAttribute('data-mode');
+        if (!mode) {
+          return;
+        }
+        state.mode = mode;
+        onModeChange();
+      });
+
+      var planSelect = sidebarElement.querySelector('[data-sidebar="plan-select"]');
+      if (planSelect) {
+        planSelect.addEventListener('change', function (event) {
+          var selectedValue = event.target.value;
+          if (!selectedValue) {
+            state.selectedPlanId = null;
+            return;
+          }
+          state.selectedPlanId = selectedValue;
+        });
+      }
+
+      var addButton = sidebarElement.querySelector('[data-sidebar="add"]');
+      if (addButton) {
+        addButton.addEventListener('click', function () {
+          if (!state.totalItems) {
+            return;
+          }
+
+          var lineKeys = Object.keys(state.selections);
+          var itemsForCart = [];
+
+          for (var lineIndex = 0; lineIndex < lineKeys.length; lineIndex++) {
+            var lineKey = lineKeys[lineIndex];
+            var selection = state.selections[lineKey];
+            if (!selection) {
+              continue;
+            }
+
+            var variantIdNumericString = getNumericIdFromPlatformId(selection.variantPlatformId);
+            if (!variantIdNumericString) {
+              continue;
+            }
+
+            var quantityForCart = getSelectionQuantity(state, lineKey);
+            if (quantityForCart <= 0) {
+              continue;
+            }
+
+            var cartItem = {
+              id: Number(variantIdNumericString),
+              quantity: quantityForCart,
+              properties: {
+                _dynamicBoxId: boxMeta.boxId,
+                _dynamicBoxIndex: 0
+              }
+            };
+
+            if (state.mode === 'subscription' && state.selectedPlanId) {
+              var planId = state.selectedPlanId;
+              var parts = String(planId).split('/');
+              var lastIndex = parts.length - 1;
+              var planNumberString = lastIndex >= 0 ? parts[lastIndex] : '';
+              if (planNumberString) {
+                cartItem.selling_plan = Number(planNumberString);
+              }
+            }
+
+            itemsForCart.push(cartItem);
+          }
+
+          if (!itemsForCart.length) {
+            return;
+          }
+
+          addButton.disabled = true;
+          addButton.classList.add('button-loading');
+
+          window._cart.add({ items: itemsForCart }).then(function (data) {
+            if (!data.cart_error && window._stores && window._stores.modal) {
+              window._stores.modal.setId('modal--cart-drawer');
+            }
+          }).finally(function () {
+            addButton.disabled = false;
+            addButton.classList.remove('button-loading');
+          });
+        });
+      }
+    }
+
+    /**
+     * Render all product groups and cards.
+     */
+    function renderGroups(leftColumn, dynamicBoxData, variantDisplayMode, state, subscriptionDiscount, onStateChange) {
+      var groupNames = getOrderedGroupNames(dynamicBoxData);
+      var groups = dynamicBoxData.groups;
+      var boxMeta = dynamicBoxData.boxMeta;
+      var currencyCode = boxMeta.currencyCode;
+
+      function createCardCtaRow(quantity) {
+        var qty = quantity;
+        if (Number.isNaN(qty) || qty < 0) {
+          qty = 0;
+        }
+        qty = Math.floor(qty);
+
+        var cardCtaRow = document.createElement('div');
+        cardCtaRow.className = 'build-a-box-card-cta-row';
+
+        var quantityControl = document.createElement('div');
+        quantityControl.className = 'build-a-box-quantity';
+
+        var minusButton = document.createElement('button');
+        minusButton.type = 'button';
+        minusButton.className = 'build-a-box-quantity__btn';
+        minusButton.setAttribute('data-action', 'quantity-decrement');
+        minusButton.textContent = '-';
+        if (qty <= 0) {
+          minusButton.disabled = true;
+        }
+
+        var quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.className = 'build-a-box-quantity__input';
+        quantityInput.inputMode = 'numeric';
+        quantityInput.min = '0';
+        quantityInput.step = '1';
+        quantityInput.value = String(qty);
+        quantityInput.setAttribute('data-quantity-input', 'true');
+        quantityInput.setAttribute('aria-label', 'Quantity');
+
+        var plusButton = document.createElement('button');
+        plusButton.type = 'button';
+        plusButton.className = 'build-a-box-quantity__btn';
+        plusButton.setAttribute('data-action', 'quantity-increment');
+        plusButton.textContent = '+';
+
+        quantityControl.appendChild(minusButton);
+        quantityControl.appendChild(quantityInput);
+        quantityControl.appendChild(plusButton);
+
+        var toggleButton = document.createElement('button');
+        toggleButton.type = 'button';
+        toggleButton.className = 'build-a-box-card-button';
+        toggleButton.setAttribute('data-action', 'toggle');
+        toggleButton.setAttribute('data-selected', 'false');
+        toggleButton.textContent = 'ADD TO STACK';
+        toggleButton.style.display = 'block';
+
+        if (qty > 0) {
+          //toggleButton.setAttribute('data-selected', 'true');
+          //toggleButton.textContent = 'REMOVE FROM STACK';
+          toggleButton.style.display = 'none';
+          quantityControl.style.display = 'flex';
+        }
+
+        cardCtaRow.appendChild(quantityControl);
+        cardCtaRow.appendChild(toggleButton);
+
+        return cardCtaRow;
+      }
+
+      function syncCardQuantityUi(cardElement, selectionKey) {
+        var qty = getSelectionQuantity(state, selectionKey);
+
+        var quantityInput = cardElement.querySelector('input[data-quantity-input="true"]');
+        if (quantityInput) {
+          quantityInput.value = String(qty);
+        }
+
+        var minusButton = cardElement.querySelector('button[data-action="quantity-decrement"]');
+        if (minusButton) {
+          minusButton.disabled = qty <= 0;
+        }
+
+        var toggleButton = cardElement.querySelector('button[data-action="toggle"]');
+        if (toggleButton) {
+          quantityInput.parentElement.style.display = 'none';
+          
+          toggleButton.setAttribute('data-selected', 'false');
+          toggleButton.textContent = 'ADD TO STACK';
+          toggleButton.style.display = 'block';
+
+          if (qty > 0) {
+            //toggleButton.setAttribute('data-selected', 'true');
+            //toggleButton.textContent = 'REMOVE FROM STACK';
+            toggleButton.style.display = 'none';
+            quantityInput.parentElement.style.display = 'flex';
+          }
+        }
+      }
+
+      for (var groupIndex = 0; groupIndex < groupNames.length; groupIndex++) {
+        var groupName = groupNames[groupIndex];
+        var items = groups[groupName];
+
+        if (!Array.isArray(items) || !items.length) {
+          continue;
+        }
+
+        var groupWrapper = document.createElement('section');
+        groupWrapper.className = 'build-a-box-group';
+
+        var groupHeading = document.createElement('h2');
+        groupHeading.textContent = groupName;
+        groupWrapper.appendChild(groupHeading);
+
+        var grid = document.createElement('div');
+        grid.className = 'build-a-box-group-grid';
+
+        var isDropdownMode = variantDisplayMode === 'dropdown';
+        if (isDropdownMode) {
+          var byProduct = {};
+
+          for (var index = 0; index < items.length; index++) {
+            var productItem = items[index];
+            var productKey = productItem.productPlatformId;
+
+            if (!productKey) {
+              productKey = productItem.productTitle || '';
+            }
+
+            if (!byProduct[productKey]) {
+              byProduct[productKey] = [];
+            }
+
+            byProduct[productKey].push(productItem);
+          }
+
+          var productKeys = Object.keys(byProduct);
+
+          for (var productIndex = 0; productIndex < productKeys.length; productIndex++) {
+            var keyForProduct = productKeys[productIndex];
+            var variantsForProduct = byProduct[keyForProduct];
+            var firstItem = variantsForProduct[0];
+
+            var selectionKey = getSelectionKey(firstItem);
+
+            var card = document.createElement('article');
+            card.className = 'product-card';
+            if (selectionKey) {
+              card.setAttribute('data-variant-key', selectionKey);
+            }
+
+            var imageWrapper = document.createElement('div');
+            imageWrapper.className = 'product-card__image';
+
+            var hasImage = !!firstItem.variantImageSrc || !!firstItem.productImageSrc;
+            if (hasImage) {
+              var image = document.createElement('img');
+              image.loading = 'lazy';
+
+              if (firstItem.variantImageSrc) {
+                image.src = firstItem.variantImageSrc;
+              }
+
+              if (!firstItem.variantImageSrc && firstItem.productImageSrc) {
+                image.src = firstItem.productImageSrc;
+              }
+
+              image.alt = firstItem.productTitle || '';
+              imageWrapper.appendChild(image);
+            }
+
+            card.appendChild(imageWrapper);
+
+            var body = document.createElement('div');
+            body.className = 'product-card__body';
+
+            var title = document.createElement('h5');
+            title.innerHTML = '<strong>' + (firstItem.productTitle || '') + '</strong>';
+            body.appendChild(title);
+
+            // short description
+            var shortDescriptionValue = getProductShortDescription(firstItem);
+            if (shortDescriptionValue) {
+              var shortDescription = document.createElement('p');
+              shortDescription.innerHTML = shortDescriptionValue;
+              body.appendChild(shortDescription);
+            }
+
+            // card badge
+            var cardBadgeValue = getProductCardBadge(firstItem);
+            console.log('cardBadgeValue', cardBadgeValue);
+            console.log('firstItem', firstItem);
+            if (cardBadgeValue) {
+              var cardBadge = document.createElement('div');
+              cardBadge.className = 'product-card__card_badge';
+              var cardBadgeLabel = document.createElement('span');
+              cardBadgeLabel.className = 'label-primary';
+              cardBadgeLabel.innerHTML = cardBadgeValue;
+              cardBadge.appendChild(cardBadgeLabel);
+              body.appendChild(cardBadge);
+            }
+
+            var hasMultipleVariants = variantsForProduct.length > 1;
+            if (hasMultipleVariants) {
+              (function setupVariantTypeFilter(cardElement, bodyElement, variantsForCard, firstVariant) {
+                function getVariantTypeLabel(item) {
+                  var variantTitle = '';
+                  if (item && item.variantTitle) {
+                    variantTitle = String(item.variantTitle).toLowerCase();
+                  }
+                  if (variantTitle.indexOf('bag') !== -1) {
+                    return 'Bag';
+                  }
+                  if (variantTitle.indexOf('sticks') !== -1) {
+                    return 'Sticks';
+                  }
+                  return '';
+                }
+
+                var variantSelect = document.createElement('select');
+                variantSelect.className = 'product-card__variant-select';
+                variantSelect.setAttribute('data-variant-select', 'true');
+
+                var hasBagType = false;
+                var hasSticksType = false;
+                for (var typeIndex = 0; typeIndex < variantsForCard.length; typeIndex++) {
+                  var variantType = getVariantTypeLabel(variantsForCard[typeIndex]);
+                  if (variantType === 'Bag') {
+                    hasBagType = true;
+                  }
+                  if (variantType === 'Sticks') {
+                    hasSticksType = true;
+                  }
+                }
+
+                var typeToggle = document.createElement('div');
+                typeToggle.className = 'build-a-box-mode';
+
+                var bagTypeButton = document.createElement('button');
+                bagTypeButton.type = 'button';
+                bagTypeButton.textContent = 'Bag';
+                bagTypeButton.setAttribute('data-variant-type', 'Bag');
+                bagTypeButton.setAttribute('data-active', 'true');
+                bagTypeButton.classList.add('button-tabs');
+
+                if (!hasBagType) {
+                  bagTypeButton.disabled = true;
+                }
+
+                var sticksTypeButton = document.createElement('button');
+                sticksTypeButton.type = 'button';
+                sticksTypeButton.textContent = 'Sticks';
+                sticksTypeButton.setAttribute('data-variant-type', 'Sticks');
+                sticksTypeButton.classList.add('button-tabs');
+
+                if (!hasSticksType) {
+                  sticksTypeButton.disabled = true;
+                }
+
+                if (!hasBagType && !hasSticksType) {
+                  typeToggle.style.display = 'none';
+                }
+
+                typeToggle.appendChild(bagTypeButton);
+                typeToggle.appendChild(sticksTypeButton);
+                bodyElement.appendChild(typeToggle);
+
+                function setActiveVariantTypeButtons(nextType) {
+                  bagTypeButton.setAttribute('data-active', 'false');
+                  sticksTypeButton.setAttribute('data-active', 'false');
+                  if (nextType === 'Bag') {
+                    bagTypeButton.setAttribute('data-active', 'true');
+                  }
+                  if (nextType === 'Sticks') {
+                    sticksTypeButton.setAttribute('data-active', 'true');
+                  }
+                }
+
+                function renderVariantOptionsByType(nextType) {
+                  var previousSelectedKey = variantSelect.value;
+                  var firstMatchingKey = '';
+                  var hasPreviousInNextType = false;
+
+                  variantSelect.textContent = '';
+
+                  for (var variantIndex = 0; variantIndex < variantsForCard.length; variantIndex++) {
+                    var variantItem = variantsForCard[variantIndex];
+                    var variantTypeLabel = getVariantTypeLabel(variantItem);
+                    if (variantTypeLabel !== nextType) {
+                      continue;
+                    }
+
+                    var variantKey = getSelectionKey(variantItem);
+                    if (!variantKey) {
+                      continue;
+                    }
+
+                    if (!firstMatchingKey) {
+                      firstMatchingKey = variantKey;
+                    }
+
+                    if (variantKey === previousSelectedKey) {
+                      hasPreviousInNextType = true;
+                    }
+
+                    var option = document.createElement('option');
+                    option.value = variantKey;
+                    option.textContent = variantItem.variantTitle || firstVariant.productTitle || '';
+                    variantSelect.appendChild(option);
+                  }
+
+                  if (!firstMatchingKey) {
+                    return;
+                  }
+
+                  var nextSelectedKey = firstMatchingKey;
+                  if (hasPreviousInNextType) {
+                    nextSelectedKey = previousSelectedKey;
+                  }
+
+                  variantSelect.value = nextSelectedKey;
+                  setActiveVariantTypeButtons(nextType);
+
+                  var currentCardKey = cardElement.getAttribute('data-variant-key');
+                  if (currentCardKey === nextSelectedKey) {
+                    return;
+                  }
+
+                  variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                var initialVariantType = getVariantTypeLabel(firstVariant);
+                if (!initialVariantType && hasBagType) {
+                  initialVariantType = 'Bag';
+                }
+                if (!initialVariantType && hasSticksType) {
+                  initialVariantType = 'Sticks';
+                }
+
+                renderVariantOptionsByType(initialVariantType);
+
+                bagTypeButton.addEventListener('click', function () {
+                  renderVariantOptionsByType('Bag');
+                });
+
+                sticksTypeButton.addEventListener('click', function () {
+                  renderVariantOptionsByType('Sticks');
+                });
+
+                bodyElement.appendChild(variantSelect);
+              })(card, body, variantsForProduct, firstItem);
+            }
+
+            var priceNode = document.createElement('div');
+            priceNode.className = 'product-card__price';
+            priceNode.setAttribute('data-price-container', 'true');
+
+            var initialPrice = 0;
+            if (typeof firstItem.price === 'number') {
+              initialPrice = firstItem.price;
+            }
+
+            renderPriceContents(
+              priceNode,
+              initialPrice,
+              currencyCode,
+              state.mode === 'subscription',
+              subscriptionDiscount
+            );
+
+            body.appendChild(priceNode);
+
+            body.appendChild(createCardCtaRow(getSelectionQuantity(state, selectionKey)));
+
+            card.appendChild(body);
+            grid.appendChild(card);
+          }
+        }
+
+        var isAllVariantsMode = variantDisplayMode !== 'dropdown';
+        if (isAllVariantsMode) {
+          for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
+            var item = items[itemIndex];
+
+            var cardAll = document.createElement('article');
+            cardAll.className = 'product-card';
+
+            var selectionKeyAll = getSelectionKey(item);
+            if (selectionKeyAll) {
+              cardAll.setAttribute('data-variant-key', selectionKeyAll);
+            }
+
+            var imageWrapperAll = document.createElement('div');
+            imageWrapperAll.className = 'product-card__image';
+
+            var hasAnyImage = !!item.productImageSrc || !!item.variantImageSrc;
+            if (hasAnyImage) {
+              var imageAll = document.createElement('img');
+              imageAll.loading = 'lazy';
+
+              if (item.variantImageSrc) {
+                imageAll.src = item.variantImageSrc;
+              }
+
+              if (!item.variantImageSrc && item.productImageSrc) {
+                imageAll.src = item.productImageSrc;
+              }
+
+              imageAll.alt = item.productTitle || '';
+              imageWrapperAll.appendChild(imageAll);
+            }
+
+            cardAll.appendChild(imageWrapperAll);
+
+            var bodyAll = document.createElement('div');
+            bodyAll.className = 'product-card__body';
+
+            var titleAll = document.createElement('h3');
+            titleAll.textContent = item.productTitle || '';
+            bodyAll.appendChild(titleAll);
+
+            var variantTitleNode = document.createElement('div');
+            variantTitleNode.className = 'product-card__variant';
+            variantTitleNode.textContent = item.variantTitle || '';
+            bodyAll.appendChild(variantTitleNode);
+
+            var priceNodeAll = document.createElement('div');
+            priceNodeAll.className = 'product-card__price';
+            priceNodeAll.setAttribute('data-price-container', 'true');
+
+            var initialVariantPrice = 0;
+            if (typeof item.price === 'number') {
+              initialVariantPrice = item.price;
+            }
+
+            renderPriceContents(
+              priceNodeAll,
+              initialVariantPrice,
+              currencyCode,
+              state.mode === 'subscription',
+              subscriptionDiscount
+            );
+
+            bodyAll.appendChild(priceNodeAll);
+
+            bodyAll.appendChild(
+              createCardCtaRow(getSelectionQuantity(state, selectionKeyAll))
+            );
+
+            cardAll.appendChild(bodyAll);
+            grid.appendChild(cardAll);
+          }
+        }
+
+        grid.addEventListener('click', function (event) {
+          var target = event.target;
+          if (!target) {
+            return;
+          }
+
+          var action = target.getAttribute('data-action');
+          if (action !== 'toggle' && action !== 'quantity-decrement' && action !== 'quantity-increment') {
+            return;
+          }
+
+          var cardElement = target.closest('[data-variant-key]');
+          if (!cardElement) {
+            return;
+          }
+
+          var selectionKey = cardElement.getAttribute('data-variant-key');
+          if (!selectionKey) {
+            return;
+          }
+
+          var itemMeta = findItemByKey(groups, selectionKey);
+          if (!itemMeta) {
+            return;
+          }
+
+          if (action === 'toggle') {
+            toggleSelection(state, selectionKey, itemMeta);
+            syncCardQuantityUi(cardElement, selectionKey);
+            onStateChange();
+            return;
+          }
+
+          var currentQty = getSelectionQuantity(state, selectionKey);
+          var delta = -1;
+          if (action === 'quantity-increment') {
+            delta = 1;
+          }
+          var nextQtyForControl = currentQty + delta;
+          if (nextQtyForControl < 0) {
+            nextQtyForControl = 0;
+          }
+
+          upsertSelectionWithQuantity(state, selectionKey, itemMeta, nextQtyForControl);
+          syncCardQuantityUi(cardElement, selectionKey);
+          onStateChange();
+        });
+
+        grid.addEventListener('change', function (event) {
+          var target = event.target;
+          if (!target) {
+            return;
+          }
+
+          var isVariantSelect = typeof target.matches === 'function' &&
+            target.matches('select[data-variant-select]');
+
+          if (!isVariantSelect) {
+            return;
+          }
+
+          var cardElement = target.closest('[data-variant-key]');
+          if (!cardElement) {
+            return;
+          }
+
+          var previousKey = cardElement.getAttribute('data-variant-key');
+          var nextKey = target.value;
+
+          if (!nextKey) {
+            return;
+          }
+
+          if (nextKey === previousKey) {
+            return;
+          }
+
+          cardElement.setAttribute('data-variant-key', nextKey);
+          var nextItem = findItemByKey(groups, nextKey);
+          if (!nextItem) {
+            onStateChange();
+            return;
+          }
+
+          var imageElement = cardElement.querySelector('.product-card__image img');
+          var hasVariantImage = !!nextItem.variantImageSrc;
+          var hasProductImage = !!nextItem.productImageSrc;
+
+          if (imageElement && (hasVariantImage || hasProductImage)) {
+            if (hasVariantImage) {
+              imageElement.src = nextItem.variantImageSrc;
+            }
+
+            if (!hasVariantImage && hasProductImage) {
+              imageElement.src = nextItem.productImageSrc;
+            }
+
+            imageElement.alt = nextItem.productTitle || '';
+          }
+
+          var priceContainer = cardElement.querySelector('[data-price-container="true"]');
+          if (priceContainer) {
+            var originalPrice = 0;
+            if (typeof nextItem.price === 'number') {
+              originalPrice = nextItem.price;
+            }
+
+            renderPriceContents(
+              priceContainer,
+              originalPrice,
+              currencyCode,
+              state.mode === 'subscription',
+              subscriptionDiscount
+            );
+          }
+
+          syncCardQuantityUi(cardElement, nextKey);
+
+          onStateChange();
+        });
+
+        grid.addEventListener('change', function (event) {
+          var target = event.target;
+          if (!target) {
+            return;
+          }
+
+          var isQuantityInput = typeof target.matches === 'function' &&
+            target.matches('input[data-quantity-input="true"]');
+
+          if (!isQuantityInput) {
+            return;
+          }
+
+          var cardElement = target.closest('[data-variant-key]');
+          if (!cardElement) {
+            return;
+          }
+
+          var selectionKey = cardElement.getAttribute('data-variant-key');
+          if (!selectionKey) {
+            return;
+          }
+
+          var itemMeta = findItemByKey(groups, selectionKey);
+          if (!itemMeta) {
+            return;
+          }
+
+          var parsed = Math.floor(Number(target.value));
+          if (Number.isNaN(parsed) || parsed < 0) {
+            parsed = 0;
+          }
+
+          upsertSelectionWithQuantity(state, selectionKey, itemMeta, parsed);
+
+          syncCardQuantityUi(cardElement, selectionKey);
+
+          onStateChange();
+        });
+
+        groupWrapper.appendChild(grid);
+        leftColumn.appendChild(groupWrapper);
+      }
+    }
+
+    /**
+     * Render the main box layout (products column only; sidebar is hardcoded and updated in place).
+     */
+    function renderBox(rootElement, contentContainer, dynamicBoxData, productsElement) {
+      var noItemsMessage = 'No items available for this box.';
+
+      if (!dynamicBoxData || !dynamicBoxData.groups) {
+        if (productsElement) productsElement.textContent = noItemsMessage;
+        return;
+      }
+
+      var boxMeta = dynamicBoxData.boxMeta;
+      if (!boxMeta || typeof boxMeta !== 'object') {
+        if (productsElement) productsElement.textContent = noItemsMessage;
+        return;
+      }
+
+      var leftColumn = contentContainer.querySelector('#build-a-box-products');
+      var rightColumn = contentContainer.querySelector('#build-a-box-sidebar');
+      if (!leftColumn || !rightColumn) {
+        if (productsElement) productsElement.textContent = noItemsMessage;
+        return;
+      }
+
+      var groupNames = getOrderedGroupNames(dynamicBoxData);
+      if (!groupNames.length) {
+        if (productsElement) productsElement.textContent = noItemsMessage;
+        return;
+      }
+
+      clearNodeContent(leftColumn);
+
+      var variantDisplayMode = rootElement.getAttribute('data-variant-display');
+      if (!variantDisplayMode) {
+        variantDisplayMode = 'all';
+      }
+
+      var state = createInitialState();
+      var subscriptionDiscount = getSubscriptionDiscount(boxMeta.sellingPlanGroup);
+      var sidebarBound = false;
+
+      function handleStateOrModeChange() {
+        var isSubscriptionMode = state.mode === 'subscription';
+        var selectionKeys = Object.keys(state.selections);
+        var newTotalItems = 0;
+        var newTotalPrice = 0;
+
+        for (var selectionIndex = 0; selectionIndex < selectionKeys.length; selectionIndex++) {
+          var selectionKey = selectionKeys[selectionIndex];
+          var selection = state.selections[selectionKey];
+          if (!selection) {
+            continue;
+          }
+
+          var qty = getSelectionQuantity(state, selectionKey);
+          if (qty <= 0) {
+            continue;
+          }
+
+          newTotalPrice += getEffectivePrice(
+            selection.price,
+            isSubscriptionMode,
+            subscriptionDiscount
+          ) * qty;
+          newTotalItems += qty;
+        }
+
+        state.totalItems = newTotalItems;
+        state.totalPrice = newTotalPrice;
+
+        updateAllCardPrices(
+          leftColumn,
+          dynamicBoxData,
+          isSubscriptionMode,
+          subscriptionDiscount
+        );
+
+        updateSidebar(rightColumn, state, dynamicBoxData, subscriptionDiscount);
+
+        if (!sidebarBound) {
+          sidebarBound = true;
+          bindSidebarEvents(rightColumn, state, dynamicBoxData, handleStateOrModeChange);
+        }
+      }
+
+      renderGroups(
+        leftColumn,
+        dynamicBoxData,
+        variantDisplayMode,
+        state,
+        subscriptionDiscount,
+        handleStateOrModeChange
+      );
+
+      handleStateOrModeChange();
+    }
+
+    /**
+     * Bootstrap: resolve elements, fetch data and mount the widget.
+     */
+    function initializeBuildABox() {
+      var elements = getRootElements();
+      if (!elements) {
+        return;
+      }
+
+      var rootElement = elements.rootElement;
+      var contentElement = elements.contentElement;
+      var productsElement = elements.productsElement;
+
+      var boxProductId = rootElement.getAttribute('data-box-product-id');
+      if (!boxProductId) {
+        productsElement.textContent = 'Box product is not configured.';
+        console.error('[Build a Box] Missing box product ID.');
+        return;
+      }
+
+      var apiKey = rootElement.getAttribute('data-skio-api-key');
+      if (!apiKey) {
+        productsElement.textContent = 'Build a Box is not available.';
+        console.error('[Build a Box] Missing Skio API key.');
+        return;
+      }
+
+      var storefrontDomain = rootElement.getAttribute('data-storefront-domain');
+      var storefrontVersion = rootElement.getAttribute('data-storefront-api-version');
+      var storefrontToken = rootElement.getAttribute('data-storefront-access-token');
+
+      var storefrontConfig = {
+        domain: storefrontDomain || '',
+        version: storefrontVersion || '2026-01',
+        token: storefrontToken || ''
+      };
+
+      productsElement.textContent = 'Loading box...';
+
+      fetch('https://api.skio.com/storefront-http/get-dynamic-box', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: apiKey
+        },
+        body: JSON.stringify({ productPlatformId: boxProductId })
+      })
+        .then(function (response) {
+          if (!response || !response.ok) {
+            productsElement.textContent = 'Unable to load box.';
+            if (response) {
+              console.error('[Build a Box] Request failed with status', response.status);
+            }
+            return null;
+          }
+
+          return response.json().catch(function (error) {
+            productsElement.textContent = 'Unable to load box.';
+            console.error('[Build a Box] Invalid JSON response.', error);
+            return null;
+          });
+        })
+        .then(function (rawData) {
+          if (!rawData) {
+            return;
+          }
+
+          var normalizedData = normalizeDynamicBox(rawData);
+          if (!normalizedData) {
+            productsElement.textContent = 'No items available for this box.';
+            console.error('[Build a Box] Invalid Dynamic Box payload.', rawData);
+            return;
+          }
+
+          enrichWithStorefrontMetafields(normalizedData, storefrontConfig).then(function (enrichedData) {
+            if (typeof window !== 'undefined') {
+              window.buildABoxData = enrichedData;
+            }
+
+            try {
+              var event = new CustomEvent('buildabox:data', {
+                detail: enrichedData
+              });
+              rootElement.dispatchEvent(event);
+            } catch (error) {
+              console.warn('[Build a Box] CustomEvent not supported.', error);
+            }
+
+            renderBox(rootElement, contentElement, enrichedData, productsElement);
+          });
+        })
+        .catch(function (error) {
+          productsElement.textContent = 'Unable to load box.';
+          console.error('[Build a Box] Network error.', error);
+        });
+    }
+
+    initializeBuildABox();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Build a Box Script",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "box_product_id",
+      "label": "Dynamic Box product ID",
+      "default": "10276123771169"
+    },
+    {
+      "type": "text",
+      "id": "skio_api_key",
+      "label": "Skio API authorization key"
+    },
+    {
+      "type": "select",
+      "id": "variant_display",
+      "label": "Variant display",
+      "options": [
+        { "value": "all", "label": "Show all variants on page" },
+        { "value": "dropdown", "label": "Show product with variant dropdown" }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "text",
+      "id": "storefront_access_token",
+      "label": "Storefront API public access token"
+    },
+    {
+      "type": "text",
+      "id": "storefront_api_version",
+      "label": "Storefront API version",
+      "default": "2026-01"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Build a Box Script"
+    }
+  ]
+}
+{% endschema %}

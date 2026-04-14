@@ -345,7 +345,7 @@
               "settings": {
                 "type": "button",
                 "title": "Stacks",
-                "url": "shopify://collections/bundles-and-save",
+                "url": "shopify://collections/stack-and-save",
                 "collapsible_handle": "",
                 "target_handle": "",
                 "trigger_on_hover": false,
@@ -708,7 +708,7 @@
             "preload_images": 0,
             "text_color": "",
             "background_color": "",
-            "custom_css": "",
+            "custom_css": ".richtext-md:not(.p,.ul,.ol,.h1,.h2,.h3,.h4,.h5,.h6) :where(h6, .h6){\ndisplay: none;\n}",
             "hide_if_empty": "none"
           },
           "blocks": []
@@ -766,83 +766,6 @@
       "category": "Layout"
     },
     {
-      "name": "Promo Card",
-      "settings": {
-        "element_id": "",
-        "custom_effect": "off",
-        "url": "",
-        "accessibility_label": "",
-        "open_in_new_tab": false,
-        "scroll_reveal": "children",
-        "collapsible_handle": "",
-        "show": false,
-        "text_color": "",
-        "background_color": "",
-        "custom_css": "& {\n  position: relative;\n  order: 110;\n  grid-column: span 2 / span 2;\n  padding: 40px 64px;\n  border-radius: 8px;\n  display: flex;\n  flex-direction: column;\n  align-items: end;\n  overflow: hidden;\n  gap: 40px;\n  border: 1px solid #fff;\n}\n\n@media (max-width: 768px) {\n  & {\n    min-height: calc((100vw - 2 * var(--gutter)) * 219/327);\n    padding: 24px;\n    justify-content: space-between;\n  }\n}",
-        "category_name": "",
-        "hidden_name_backup": ""
-      },
-      "blocks": [
-        {
-          "type": "image",
-          "name": "Background Image",
-          "settings": {
-            "image": "{{ closest.collection.metafields.smart.promo_card_image.value }}",
-            "mobile_image": "{{ closest.collection.metafields.smart.promo_card_image_mobile.value }}",
-            "url": "{{ closest.collection.metafields.smart.promo_card_button_url.value }}",
-            "show_overlay": false,
-            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
-            "preload": false,
-            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
-            "max_width": 1920,
-            "mobile_max_width": 1200,
-            "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}",
-            "hide_if_empty": "container"
-          },
-          "blocks": []
-        },
-        {
-          "type": "richtext",
-          "name": "Richtext",
-          "settings": {
-            "title": "{{ closest.collection.metafields.smart.promo_card_content | metafield_tag }}",
-            "text_alignment": "right",
-            "content_class": "richtext-md",
-            "text_color": "",
-            "custom_css": "& h5{\n  margin-top: 8px;\n}",
-            "hide_if_empty": "container"
-          },
-          "blocks": []
-        },
-        {
-          "type": "button",
-          "name": "Button",
-          "settings": {
-            "type": "button",
-            "title": "{{ closest.collection.metafields.smart.promo_card_button_text.value }}",
-            "url": "{{ closest.collection.metafields.smart.promo_card_button_url.value }}",
-            "collapsible_handle": "",
-            "target_handle": "",
-            "trigger_on_hover": false,
-            "side_effect": "",
-            "tab_group": "0",
-            "metafield_namespace_key": "",
-            "metafield_label_key": "label",
-            "metafield_url_key": "url",
-            "button_class": "button-primary",
-            "show_active_state": false,
-            "accessibility_label": "",
-            "metafield_accessibility_label_key": "title",
-            "dynamic_content_type": "default",
-            "custom_css": "& {\n  width: fit-content;\n}",
-            "hide_if_empty": "container"
-          },
-          "blocks": []
-        }
-      ],
-      "category": "Layout"
-    },
-    {
       "name": "Content",
       "settings": {
         "element_id": "",
@@ -864,7 +787,7 @@
           "type": "richtext",
           "name": "Richtext",
           "settings": {
-            "title": "<h5><strong>The Problem</strong></h5><h3><strong>80% of your supplements</strong></h3><h3><strong>aren’t being absorbed.</strong></h3><p>Most supplements pass through your system with little effect, leaving your body without the nutrients it needs.</p>",
+            "title": "<h3><strong>The next generation of supplements.</strong></h3><p>We re-engineered five essentials using advanced Capsol® absorption technology unlocking up to 149× better nutrient delivery.<br/><br/>Because when your body actually absorbs what you take, everything changes — energy, recovery, and results you can measure.</p>",
             "text_alignment": "inherit",
             "content_class": "richtext-md",
             "text_color": "#000000",
@@ -877,7 +800,7 @@
           "type": "richtext",
           "name": "Richtext",
           "settings": {
-            "title": "<h5><strong>The Solution</strong></h5><h3><strong>We’re redefining supplements with absorption at the core.</strong></h3><p>We create comprehensive supplements with up to 500% more absorption—providing solutions you can actually feel.</p>",
+            "title": "<h5><strong>The Solution</strong></h5><h3><strong>We’re solving supplement absorption. </strong></h3><p>We create comprehensive supplements with up to 8x more absorption—providing solutions you can actually feel.</p>",
             "text_alignment": "inherit",
             "content_class": "richtext-md",
             "text_color": "rgba(0,0,0,0)",
@@ -908,6 +831,83 @@
             "dynamic_content_type": "default",
             "custom_css": "& {\n  margin-top: 40px;\n  width: max-content;\n}\n\n@media (max-width: 768px) {\n  & {\n    width: 100%;\n    margin-top: 24px;\n  }\n}",
             "hide_if_empty": "none"
+          },
+          "blocks": []
+        }
+      ],
+      "category": "Layout"
+    },
+    {
+      "name": "Promo Card",
+      "settings": {
+        "element_id": "",
+        "custom_effect": "off",
+        "url": "",
+        "accessibility_label": "",
+        "open_in_new_tab": false,
+        "scroll_reveal": "children",
+        "collapsible_handle": "",
+        "show": false,
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  position: relative;\n  order: 110;\n  grid-column: span 2 / span 2;\n  padding: 40px 64px;\n  border-radius: 8px;\n  display: flex;\n  flex-direction: column;\n  align-items: end;\n  overflow: hidden;\n  gap: 40px;\n  border: 1px solid #fff;\n}\n\n@media (max-width: 768px) {\n  & {\n    min-height: calc((100vw - 2 * var(--gutter)) * 219/327);\n    padding: 24px;\n    justify-content: space-between;\n  }\n}",
+        "category_name": "",
+        "hidden_name_backup": ""
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "name": "Background Image",
+          "settings": {
+            "image": "shopify://shop_images/foundational-supplements-product-card-all-4.jpg",
+            "mobile_image": "shopify://shop_images/foundational-supplements-product-card-all-4.jpg",
+            "url": "",
+            "show_overlay": false,
+            "overlay_color": "linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            "preload": false,
+            "sizes": "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 90vw",
+            "max_width": 1920,
+            "mobile_max_width": 1200,
+            "custom_css": "& {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  object-fit: cover;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        },
+        {
+          "type": "richtext",
+          "name": "Richtext",
+          "settings": {
+            "title": "<p>{{ closest.collection.metafields.smart.promo_card_content | metafield_tag }}</p>",
+            "text_alignment": "right",
+            "content_class": "richtext-md",
+            "text_color": "",
+            "custom_css": "& h5{\n  margin-top: 8px;\n}",
+            "hide_if_empty": "container"
+          },
+          "blocks": []
+        },
+        {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "type": "button",
+            "title": "{{ closest.collection.metafields.smart.promo_card_button_text.value }}",
+            "url": "{{ closest.collection.metafields.smart.promo_card_button_url.value }}",
+            "collapsible_handle": "",
+            "target_handle": "",
+            "trigger_on_hover": false,
+            "side_effect": "",
+            "tab_group": "0",
+            "metafield_namespace_key": "",
+            "metafield_label_key": "label",
+            "metafield_url_key": "url",
+            "button_class": "button-primary",
+            "show_active_state": false,
+            "accessibility_label": "",
+            "metafield_accessibility_label_key": "title",
+            "dynamic_content_type": "default",
+            "custom_css": "& {\n  width: fit-content;\n}",
+            "hide_if_empty": "container"
           },
           "blocks": []
         }
@@ -996,7 +996,7 @@
               "name": "Button",
               "settings": {
                 "type": "button",
-                "title": "Learn More",
+                "title": "More ingredients",
                 "url": "/pages/science/#ingredients",
                 "collapsible_handle": "",
                 "target_handle": "",
@@ -1046,13 +1046,16 @@
             "metaobjects": [
               "magnesium-glycinate-3",
               "capsoil-liposomal-glutathione",
-              "capsoil-liposomal-vitamin-c"
+              "capsoil-liposomal-vitamin-c",
+              "capsoil-liposomal-saffron",
+              "l-theanine-1",
+              "capsoil-coq-10"
             ],
             "metafield_image_key": "image",
             "metafield_title_key": "name",
             "metafield_short_description_key": "short_description",
             "percentages_label": "Absorption Percentage",
-            "percentage_1_label": "Industry Standard",
+            "percentage_1_label": "",
             "metafield_percentage_1_key": "absorption_percentage_industry_standard",
             "percentage_2_label": "Our Products",
             "metafield_percentage_2_key": "absorption_percentage_our_products",

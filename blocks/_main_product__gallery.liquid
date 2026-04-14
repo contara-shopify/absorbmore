@@ -46,36 +46,6 @@
 <style>
   {{ custom_css | replace: '&', selector | strip_newlines }}
   {{- custom_css | replace: '&', selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
-
-  {% if product.metafields.custom.featured_image_badge != blank %}
-    div[data-style-id*="main_product_gallery"]:after {
-      content: '{{ product.metafields.custom.featured_image_badge }}';
-      display: flex;
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 80px;
-      height: 80px;
-      background-color: {{ product.metafields.custom.featured_image_badge_color | default: '#4659ff' }};
-      border-radius: 100%;
-      font-size: 20px;
-      color: {{ product.metafields.custom.featured_image_badge_text_color | default: '#ffffff' }};
-      font-weight: 500;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @media (max-width: 768px) {
-      div[data-style-id*="main_product_gallery"]:after {
-        top: 10px;
-        right: auto;
-        left: 10px;
-        width: 40px;
-        height: 40px;
-        font-size: 13px;
-      }
-    }
-  {% endif %}
 </style>
 
 <div

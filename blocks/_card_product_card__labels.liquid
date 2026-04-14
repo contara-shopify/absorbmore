@@ -44,7 +44,7 @@
      {% if label_type__out_of_stock == "show" %}|| !p_card?.product?.available{% endif %}))">
   {% if content_source != blank %}
     <template x-for="value in getContentLabels('{{ content_source }}')">
-      <label data-loop-item class="{{ label_class__content }}" x-html="value" :class="utils.liquidHandle(value)"></label>
+      <label data-loop-item class="{{ label_class__content }}" x-html="value"></label>
     </template>
   {% endif %}
   {% if label_type__discounts != '' %}

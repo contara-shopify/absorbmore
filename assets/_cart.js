@@ -1219,3 +1219,5 @@ export const initCart = () => {
 };
 
 document.addEventListener("alpine:init", initCart);
+
+/* LAST HASH: 0e60e7f6ce3e6e339bc7ed6975ae768fae30e54d */

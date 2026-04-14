@@ -79,7 +79,7 @@
 {% if product_bundle_variants != blank %}
   <div data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}>
     <ul class="product-bundle-variants">
-      <li {% if single_product.title == product.title %}class="active"{% endif %}>
+      <li{% if single_product.title == product.title %} class="active"{% endif %}>
         <a href="{{ single_product.url }}" title="{{ single_product_title | escape }}">
           <div>
             <img src="{{ single_product.featured_image | image_url: width: 200, height: 200 }}" alt="{{ single_product.title | escape }}" width="100" height="100">
@@ -88,7 +88,7 @@
           <p>{{single_product_subheading}}</p>
         </a>
       </li>
-      <li {% if bundle_product.title == product.title %}class="active"{% endif %}>
+      <li{% if bundle_product.title == product.title %} class="active"{% endif %}>
         <a href="{{ bundle_product.url }}" title="{{ bundle_product_title | escape }}">
           <div>
             <img src="{{ bundle_product.featured_image | image_url: width: 200, height: 200 }}" alt="{{ bundle_product.title | escape }}" width="100" height="100">
@@ -105,14 +105,19 @@
 {% schema %}
 {
   "name": "Bundle Variants",
-  "settings": [],
-  "class": "shopify_block___main_product__bundle_variants",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    }
+  ],
   "presets": [
     {
       "name": "Bundle Variants",
       "category": "** Product **"
     }
   ],
-  "tag": null
+  "tag": null,
+  "class": "shopify_block___main_product__bundle_variants"
 }
 {% endschema %}
