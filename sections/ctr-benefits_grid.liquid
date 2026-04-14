@@ -14,6 +14,7 @@
   assign label_color         = section.settings.label_color
   assign background_color    = section.settings.background_color
   assign icon_size           = section.settings.icon_size
+  assign max_width_desktop   = section.settings.max_width_desktop
   assign custom_css          = section.settings.custom_css
   assign section_id          = section.settings.section_id
 -%}
@@ -27,11 +28,12 @@
   }
 
   & .bg__container {
-    max-width: 1200px;
+    max-width: {{ max_width_desktop }}px;
     margin: 0 auto;
     padding: 48px 20px;
   }
 
+  /* ── Mobile: single column, image on top ── */
   & .bg__layout {
     display: flex;
     flex-direction: column;
@@ -78,14 +80,9 @@
     font-size: {{ headline_size_mob }}px;
     {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
   }
-  & .bg__headline p {
-    margin: 0;
-    font-size: inherit;
-    line-height: inherit;
-    font-weight: inherit;
-    color: inherit;
-  }
+  & .bg__headline p { margin: 0; }
 
+  /* ── Cards: 2-col on mobile ── */
   & .bg__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -149,6 +146,7 @@
     {% if label_color != blank and label_color.alpha != 0 %}color: {{ label_color }};opacity:1;{% endif %}
   }
 
+  /* ── Desktop ── */
   @media (min-width: 900px) {
     & .bg__container {
       padding: 80px 48px;
@@ -162,7 +160,7 @@
 
     & .bg__image-wrap {
       flex: 0 0 32%;
-      max-width: 380px;
+      max-width: 252px;
       position: sticky;
       top: 40px;
     }
@@ -174,9 +172,6 @@
 
     & .bg__headline {
       font-size: {{ headline_size_desk }}px;
-    }
-    & .bg__headline p {
-      font-size: inherit;
     }
 
     & .bg__grid {
@@ -211,6 +206,7 @@
     <div class="bg__container">
       <div class="bg__layout">
 
+        {%- comment -%} Left: lifestyle image {%- endcomment -%}
         <div class="bg__image-wrap">
           {% if lifestyle_image != blank %}
             {{
@@ -229,6 +225,7 @@
           {% endif %}
         </div>
 
+        {%- comment -%} Right: headline + grid {%- endcomment -%}
         <div class="bg__content">
 
           {% if headline != blank %}
@@ -416,6 +413,16 @@
     {
       "type": "header",
       "content": "Section Globals"
+    },
+    {
+      "type": "range",
+      "id": "max_width_desktop",
+      "label": "Max width desktop (px)",
+      "min": 800,
+      "max": 1440,
+      "step": 20,
+      "default": 1200,
+      "unit": "px"
     },
     {
       "type": "color",
