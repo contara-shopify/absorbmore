@@ -13,6 +13,7 @@
   assign body_size = section.settings.body_size
   assign check_color = section.settings.check_color
   assign cta_text = section.settings.cta_text
+  assign cta_price_override = section.settings.cta_price_override
   assign cta_bg = section.settings.cta_bg
   assign cta_text_color = section.settings.cta_text_color
   assign trust_1 = section.settings.trust_1
@@ -252,7 +253,8 @@
         {% endif %}
 
         {% if cta_text != blank %}
-          <a href="{{ cta_url }}" class="ps__cta">{{ cta_text }}{% if product_price != blank %} - {{ product_price }}{% endif %}</a>
+          {%- assign display_price = cta_price_override | default: product_price -%}
+          <a href="{{ cta_url }}" class="ps__cta">{{ cta_text }}{% if display_price != blank %} - {{ display_price }}{% endif %}</a>
         {% endif %}
 
         {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
@@ -487,6 +489,12 @@
       "id": "cta_text",
       "label": "Button text",
       "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_price_override",
+      "label": "Price (override)",
+      "info": "Если заполнено — показывается вместо цены продукта. Например: $64/mo или From $49."
     },
     {
       "type": "url",

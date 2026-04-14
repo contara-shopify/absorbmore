@@ -268,10 +268,10 @@
           {% capture block_selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
 
           <style>
-            {% if block_card_bg != blank %}{{ block_selector }} { background-color: {{ block_card_bg }}; }{% endif %}
-            {% if block_card_border != blank %}{{ block_selector }} { border-color: {{ block_card_border }}; }{% endif %}
-            {% if block_card_bg_hover != blank %}{{ block_selector }}:hover { background-color: {{ block_card_bg_hover }}; }{% endif %}
-            {% if block_card_border_hover != blank %}{{ block_selector }}:hover { border-color: {{ block_card_border_hover }}; }{% endif %}
+            {% if block_card_bg != blank %}{{ block_selector }}.ig__card { background-color: {{ block_card_bg }} !important; }{% endif %}
+            {% if block_card_border != blank %}{{ block_selector }}.ig__card { border-color: {{ block_card_border }} !important; }{% endif %}
+            {% if block_card_bg_hover != blank %}{{ block_selector }}.ig__card:hover { background-color: {{ block_card_bg_hover }} !important; }{% endif %}
+            {% if block_card_border_hover != blank %}{{ block_selector }}.ig__card:hover { border-color: {{ block_card_border_hover }} !important; }{% endif %}
           </style>
 
           <div
