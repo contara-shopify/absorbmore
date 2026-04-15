@@ -1,652 +1,652 @@
 {%- comment -%} Product Summary Section {%- endcomment -%}
 {%- liquid
-  assign selected_product = section.settings.product
-  assign headline = section.settings.headline
-  assign headline_color = section.settings.headline_color
-  assign headline_size_desktop = section.settings.headline_size_desktop
-  assign headline_size_mobile = section.settings.headline_size_mobile
-  assign rating_text = section.settings.rating_text
-  assign rating_color = section.settings.rating_color
-  assign star_color = section.settings.star_color
-  assign body = section.settings.body
-  assign body_color = section.settings.body_color
-  assign body_size = section.settings.body_size
-  assign check_color = section.settings.check_color
-  assign cta_text = section.settings.cta_text
-  assign cta_price_override = section.settings.cta_price_override
-  assign cta_bg = section.settings.cta_bg
-  assign cta_text_color = section.settings.cta_text_color
-  assign trust_1 = section.settings.trust_1
-  assign trust_2 = section.settings.trust_2
-  assign trust_3 = section.settings.trust_3
-  assign trust_color = section.settings.trust_color
-  assign image_desktop = section.settings.image_desktop
-  assign image_mobile = section.settings.image_mobile
-  assign image_bg = section.settings.image_bg
-  assign image_border_radius = section.settings.image_border_radius
-  assign image_position = section.settings.image_position
-  assign background_color = section.settings.background_color
-  assign container_width = section.settings.container_width
-  assign custom_css = section.settings.custom_css
-  assign section_id = section.settings.section_id
-
-  if selected_product != blank
-    assign product_image = selected_product.featured_image
-    assign cta_url = selected_product.url
-    assign first_variant = selected_product.selected_or_first_available_variant
-    assign product_price = first_variant.price | money
-  else
-    assign product_image = nil
-    assign cta_url = section.settings.cta_url | default: '#'
-    assign product_price = ''
-  endif
--%}
-
-{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-
-{% capture css %}
-  & {
-    width: 100%;
-    max-width: {{ section.settings.section_width }}px;
-    margin-left: auto;
-    margin-right: auto;
-    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
-    padding: 48px 24px;
-  }
-
-  & .ps__container {
-    max-width: {{ container_width }}px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
-
-  & .ps__image {
-    order: -1;
-    border-radius: {{ image_border_radius }}px;
-    overflow: hidden;
-    {% if image_bg != blank %}background-color: {{ image_bg }};{% endif %}
-  }
-  & .ps__image img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
-
-  & .ps__content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  & .ps__headline {
-    font-weight: 900;
-    line-height: 1.1;
-    margin: 0;
-    font-size: {{ headline_size_mobile }}px;
-    {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
-  }
-
-  & .ps__rating {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    {% if rating_color != blank %}color: {{ rating_color }};{% endif %}
-  }
-  & .ps__rating svg {
-    flex-shrink: 0;
-    {% if star_color != blank %}color: {{ star_color }};{% endif %}
-  }
-
-  & .ps__body {
-    line-height: 1.7;
-    font-size: {{ body_size }}px;
-    {% if body_color != blank %}color: {{ body_color }};{% endif %}
-  }
-  & .ps__body p { margin: 0; }
-
-  & .ps__checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  & .ps__check-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    line-height: 1.5;
-    font-size: 14px;
-    {% if body_color != blank %}color: {{ body_color }};{% endif %}
-  }
-  & .ps__check-item svg {
-    flex-shrink: 0;
-    margin-top: 3px;
-    {% if check_color != blank %}color: {{ check_color }};{% endif %}
-  }
-  & .ps__check-item strong {
-    {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
-  }
-
-  & .ps__cta {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 12px 24px;
-    font-weight: 700;
-    font-size: 18px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.2s;
-    {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
-    {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
-  }
-  & .ps__cta:hover {
-    opacity: 0.9;
-  }
-
-  & .ps__trust {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    font-size: 13px;
-    {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
-  }
-  & .ps__trust-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  & .ps__trust-item svg {
-    flex-shrink: 0;
-  }
-
-  @media (min-width: 768px) {
+    assign selected_product = section.settings.product
+    assign headline = section.settings.headline
+    assign headline_color = section.settings.headline_color
+    assign headline_size_desktop = section.settings.headline_size_desktop
+    assign headline_size_mobile = section.settings.headline_size_mobile
+    assign rating_text = section.settings.rating_text
+    assign rating_color = section.settings.rating_color
+    assign star_color = section.settings.star_color
+    assign body = section.settings.body
+    assign body_color = section.settings.body_color
+    assign body_size = section.settings.body_size
+    assign check_color = section.settings.check_color
+    assign cta_text = section.settings.cta_text
+    assign cta_price_override = section.settings.cta_price_override
+    assign cta_bg = section.settings.cta_bg
+    assign cta_text_color = section.settings.cta_text_color
+    assign trust_1 = section.settings.trust_1
+    assign trust_2 = section.settings.trust_2
+    assign trust_3 = section.settings.trust_3
+    assign trust_color = section.settings.trust_color
+    assign image_desktop = section.settings.image_desktop
+    assign image_mobile = section.settings.image_mobile
+    assign image_bg = section.settings.image_bg
+    assign image_border_radius = section.settings.image_border_radius
+    assign image_position = section.settings.image_position
+    assign background_color = section.settings.background_color
+    assign container_width = section.settings.container_width
+    assign custom_css = section.settings.custom_css
+    assign section_id = section.settings.section_id
+  
+    if selected_product != blank
+      assign product_image = selected_product.featured_image
+      assign cta_url = selected_product.url
+      assign first_variant = selected_product.selected_or_first_available_variant
+      assign product_price = first_variant.price | money
+    else
+      assign product_image = nil
+      assign cta_url = section.settings.cta_url | default: '#'
+      assign product_price = ''
+    endif
+  -%}
+  
+  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
     & {
-      padding: 80px 48px;
+      width: 100%;
+      max-width: {{ section.settings.section_width }}px;
+      margin-left: auto;
+      margin-right: auto;
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      padding: 48px 24px;
     }
+  
     & .ps__container {
-      flex-direction: {% if image_position == 'left' %}row-reverse{% else %}row{% endif %};
-      align-items: center;
+      max-width: {{ container_width }}px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
     }
+  
     & .ps__image {
-      flex: 1;
-      order: 0;
+      order: -1;
+      border-radius: {{ image_border_radius }}px;
+      overflow: hidden;
+      {% if image_bg != blank %}background-color: {{ image_bg }};{% endif %}
     }
     & .ps__image img {
-      height: 100%;
+      display: block;
+      width: 100%;
+      height: auto;
       object-fit: contain;
     }
+  
     & .ps__content {
-      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
+  
     & .ps__headline {
-      font-size: {{ headline_size_desktop }}px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0;
+      font-size: {{ headline_size_mobile }}px;
+      {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
     }
+  
+    & .ps__rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      {% if rating_color != blank %}color: {{ rating_color }};{% endif %}
+    }
+    & .ps__rating svg {
+      flex-shrink: 0;
+      {% if star_color != blank %}color: {{ star_color }};{% endif %}
+    }
+  
+    & .ps__body {
+      line-height: 1.7;
+      font-size: {{ body_size }}px;
+      {% if body_color != blank %}color: {{ body_color }};{% endif %}
+    }
+    & .ps__body p { margin: 0; }
+  
+    & .ps__checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  
+    & .ps__check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+      font-size: 14px;
+      {% if body_color != blank %}color: {{ body_color }};{% endif %}
+    }
+    & .ps__check-item svg {
+      flex-shrink: 0;
+      margin-top: 3px;
+      {% if check_color != blank %}color: {{ check_color }};{% endif %}
+    }
+    & .ps__check-item strong {
+      {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
+    }
+  
     & .ps__cta {
-      {% comment %} width: auto; {% endcomment %}
-      align-self: flex-start;
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px 24px;
+      font-weight: 700;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
+      {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
     }
-  }
-{% endcapture %}
-
-{% capture section_content %}
-  <style>
-    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-  </style>
-
-  <section
-    data-style-id="{{ section.id }}"
-    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-  >
-    <div class="ps__container">
-
-      <div class="ps__content">
-
-        {% if headline != blank %}
-          <h2 class="ps__headline">{{ headline }}</h2>
-        {% endif %}
-
-        {% if rating_text != blank %}
-          <div class="ps__rating">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>
-            <span>{{ rating_text }}</span>
-          </div>
-        {% endif %}
-
-        {% if body != blank %}
-          <div class="ps__body">{{ body }}</div>
-        {% endif %}
-
-        {% assign has_checks = false %}
-        {% for i in (1..5) %}
-          {% assign check_id = 'check_' | append: i %}
-          {% if section.settings[check_id] != blank %}
-            {% assign has_checks = true %}
-            {% break %}
+    & .ps__cta:hover {
+      opacity: 0.9;
+    }
+  
+    & .ps__trust {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
+    }
+    & .ps__trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    & .ps__trust-item svg {
+      flex-shrink: 0;
+    }
+  
+    @media (min-width: 768px) {
+      & {
+        padding: 80px 48px;
+      }
+      & .ps__container {
+        flex-direction: {% if image_position == 'left' %}row-reverse{% else %}row{% endif %};
+        align-items: center;
+      }
+      & .ps__image {
+        flex: 1;
+        order: 0;
+      }
+      & .ps__image img {
+        height: 100%;
+        object-fit: contain;
+      }
+      & .ps__content {
+        flex: 1;
+      }
+      & .ps__headline {
+        font-size: {{ headline_size_desktop }}px;
+      }
+      & .ps__cta {
+        {% comment %} width: auto; {% endcomment %}
+        align-self: flex-start;
+      }
+    }
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  
+    <section
+      data-style-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+    >
+      <div class="ps__container">
+  
+        <div class="ps__content">
+  
+          {% if headline != blank %}
+            <h2 class="ps__headline">{{ headline }}</h2>
           {% endif %}
-        {% endfor %}
-
-        {% if has_checks %}
-          <div class="ps__checklist">
-            {% for i in (1..5) %}
-              {% assign check_id = 'check_' | append: i %}
-              {% assign check_val = section.settings[check_id] %}
-              {% if check_val != blank %}
-                <div class="ps__check-item">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+          {% if rating_text != blank %}
+            <div class="ps__rating">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span>{{ rating_text }}</span>
+            </div>
+          {% endif %}
+  
+          {% if body != blank %}
+            <div class="ps__body">{{ body }}</div>
+          {% endif %}
+  
+          {% assign has_checks = false %}
+          {% for i in (1..5) %}
+            {% assign check_id = 'check_' | append: i %}
+            {% if section.settings[check_id] != blank %}
+              {% assign has_checks = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+  
+          {% if has_checks %}
+            <div class="ps__checklist">
+              {% for i in (1..5) %}
+                {% assign check_id = 'check_' | append: i %}
+                {% assign check_val = section.settings[check_id] %}
+                {% if check_val != blank %}
+                  <div class="ps__check-item">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ check_val }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+  
+          {% if cta_text != blank %}
+            {%- assign display_price = cta_price_override | default: product_price -%}
+            <a href="{{ cta_url }}" class="ps__cta">{{ cta_text }}{% if display_price != blank %} - {{ display_price }}{% endif %}</a>
+          {% endif %}
+  
+          {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
+            <div class="ps__trust">
+              {% if trust_1 != blank %}
+                <span class="ps__trust-item">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  <span>{{ check_val }}</span>
-                </div>
+                  {{ trust_1 }}
+                </span>
               {% endif %}
-            {% endfor %}
-          </div>
-        {% endif %}
-
-        {% if cta_text != blank %}
-          {%- assign display_price = cta_price_override | default: product_price -%}
-          <a href="{{ cta_url }}" class="ps__cta">{{ cta_text }}{% if display_price != blank %} - {{ display_price }}{% endif %}</a>
-        {% endif %}
-
-        {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
-          <div class="ps__trust">
-            {% if trust_1 != blank %}
-              <span class="ps__trust-item">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                {{ trust_1 }}
-              </span>
-            {% endif %}
-            {% if trust_2 != blank %}
-              <span class="ps__trust-item">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                {{ trust_2 }}
-              </span>
-            {% endif %}
-            {% if trust_3 != blank %}
-              <span class="ps__trust-item">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                {{ trust_3 }}
-              </span>
-            {% endif %}
-          </div>
-        {% endif %}
-
-      </div>
-
-      <div class="ps__image">
-        <picture>
-          {% if image_mobile != blank %}
-            <source media="(max-width: 767px)" srcset="{{ image_mobile | image_url: width: 800 }}">
-          {% elsif selected_product != blank and product_image != blank %}
-            <source media="(max-width: 767px)" srcset="{{ product_image | image_url: width: 800 }}">
+              {% if trust_2 != blank %}
+                <span class="ps__trust-item">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ trust_2 }}
+                </span>
+              {% endif %}
+              {% if trust_3 != blank %}
+                <span class="ps__trust-item">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ trust_3 }}
+                </span>
+              {% endif %}
+            </div>
           {% endif %}
-
-          {% if image_desktop != blank %}
-            <img
-              src="{{ image_desktop | image_url: width: 1200 }}"
-              alt="{{ image_desktop.alt | default: headline }}"
-              loading="lazy"
-              width="{{ image_desktop.width }}"
-              height="{{ image_desktop.height }}"
-            >
-          {% elsif selected_product != blank and product_image != blank %}
-            <img
-              src="{{ product_image | image_url: width: 1200 }}"
-              alt="{{ product_image.alt | default: selected_product.title }}"
-              loading="lazy"
-              width="{{ product_image.width }}"
-              height="{{ product_image.height }}"
-            >
-          {% endif %}
-        </picture>
+  
+        </div>
+  
+        <div class="ps__image">
+          <picture>
+            {% if image_mobile != blank %}
+              <source media="(max-width: 767px)" srcset="{{ image_mobile | image_url: width: 800 }}">
+            {% elsif selected_product != blank and product_image != blank %}
+              <source media="(max-width: 767px)" srcset="{{ product_image | image_url: width: 800 }}">
+            {% endif %}
+  
+            {% if image_desktop != blank %}
+              <img
+                src="{{ image_desktop | image_url: width: 1200 }}"
+                alt="{{ image_desktop.alt | default: headline }}"
+                loading="lazy"
+                width="{{ image_desktop.width }}"
+                height="{{ image_desktop.height }}"
+              >
+            {% elsif selected_product != blank and product_image != blank %}
+              <img
+                src="{{ product_image | image_url: width: 1200 }}"
+                alt="{{ product_image.alt | default: selected_product.title }}"
+                loading="lazy"
+                width="{{ product_image.width }}"
+                height="{{ product_image.height }}"
+              >
+            {% endif %}
+          </picture>
+        </div>
+  
       </div>
-
-    </div>
-  </section>
-{% endcapture %}
-
-{{ section_content }}
-
-{% schema %}
-{
-  "name": "CTR Product Summary",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Product"
-    },
-    {
-      "type": "product",
-      "id": "product",
-      "label": "Product",
-      "info": "If selected, uses featured image and links CTA to product page with price."
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Headline"
-    },
-    {
-      "type": "text",
-      "id": "headline",
-      "label": "Headline",
-      "default": "This is exactly what TAC's Berberine was built for."
-    },
-    {
-      "type": "color",
-      "id": "headline_color",
-      "label": "Headline color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "range",
-      "id": "headline_size_desktop",
-      "label": "Headline size — Desktop (px)",
-      "default": 42,
-      "min": 24,
-      "max": 72,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "headline_size_mobile",
-      "label": "Headline size — Mobile (px)",
-      "default": 30,
-      "min": 20,
-      "max": 52,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Rating"
-    },
-    {
-      "type": "text",
-      "id": "rating_text",
-      "label": "Rating text",
-      "default": "4.84/5 from 10,000+ verified reviews"
-    },
-    {
-      "type": "color",
-      "id": "rating_color",
-      "label": "Rating text color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "star_color",
-      "label": "Star color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Body"
-    },
-    {
-      "type": "richtext",
-      "id": "body",
-      "label": "Body text",
-      "default": "<p>Every tip above points to the same conclusion. Berberine is one of the most clinically studied ingredients for metabolic health. But standard forms fail before they start. TAC's Berberine solves every factor that determines whether it works.</p>"
-    },
-    {
-      "type": "color",
-      "id": "body_color",
-      "label": "Body text color",
-      "default": "#444444"
-    },
-    {
-      "type": "range",
-      "id": "body_size",
-      "label": "Body / checklist size (px)",
-      "default": 16,
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Checklist"
-    },
-    {
-      "type": "richtext",
-      "id": "check_1",
-      "label": "Item 1",
-      "default": "<p><strong>Timing:</strong> FenuMat® sustained release. 24-hour coverage from one morning capsule.</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "check_2",
-      "label": "Item 2",
-      "default": "<p><strong>Pairing:</strong> Activates AMPK, the foundation that makes other metabolic support more effective.</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "check_3",
-      "label": "Item 3",
-      "default": "<p><strong>Dosage:</strong> 1,500 mg absorbed-equivalent per capsule. The full clinical dose, actually delivered.</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "check_4",
-      "label": "Item 4",
-      "default": "<p><strong>Consistency:</strong> Subscribe and it ships monthly. 25% off. Cancel anytime.</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "check_5",
-      "label": "Item 5",
-      "default": "<p><strong>Absorption:</strong> 6.2× more free berberine. 7× fewer GI issues. Pharmaceutical-grade.</p>"
-    },
-    {
-      "type": "color",
-      "id": "check_color",
-      "label": "Checkmark color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "CTA Button"
-    },
-    {
-      "type": "text",
-      "id": "cta_text",
-      "label": "Button text",
-      "default": "Add To Cart"
-    },
-    {
-      "type": "text",
-      "id": "cta_price_override",
-      "label": "Price (override)",
-      "info": "Если заполнено — показывается вместо цены продукта. Например: $64/mo или From $49."
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button URL (if no product selected)"
-    },
-    {
-      "type": "color",
-      "id": "cta_bg",
-      "label": "Button background",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "cta_text_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Trust Badges"
-    },
-    {
-      "type": "text",
-      "id": "trust_1",
-      "label": "Trust badge 1",
-      "default": "Free shipping on orders $50+"
-    },
-    {
-      "type": "text",
-      "id": "trust_2",
-      "label": "Trust badge 2",
-      "default": "HSA/FSA Eligible"
-    },
-    {
-      "type": "text",
-      "id": "trust_3",
-      "label": "Trust badge 3",
-      "default": "30 day money-back guarantee"
-    },
-    {
-      "type": "color",
-      "id": "trust_color",
-      "label": "Trust text color",
-      "default": "#666666"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_desktop",
-      "label": "Image — Desktop (overrides product image)"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_mobile",
-      "label": "Image — Mobile (optional)"
-    },
-    {
-      "type": "color",
-      "id": "image_bg",
-      "label": "Image background",
-      "default": "#f5f5f5"
-    },
-    {
-      "type": "range",
-      "id": "image_border_radius",
-      "label": "Image border radius (px)",
-      "default": 16,
-      "min": 0,
-      "max": 32,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "image_position",
-      "label": "Image position — Desktop",
-      "default": "right",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "background_color",
-      "label": "Background color"
-    },
-    {
-      "type": "range",
-      "id": "section_width",
-      "label": "Section width — Desktop (px)",
-      "default": 1440,
-      "min": 600,
-      "max": 1440,
-      "step": 20,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "container_width",
-      "label": "Content width — Desktop (px)",
-      "default": 1100,
-      "min": 600,
-      "max": 1400,
-      "step": 20,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Advanced"
-    },
-    {
-      "type": "textarea",
-      "id": "custom_css",
-      "label": "Custom CSS"
-    },
-    {
-      "type": "text",
-      "id": "section_id",
-      "label": "Section Id"
-    }
-  ],
-  "presets": [
-    {
-      "name": "CTR Product Summary",
-      "category": "Product"
-    }
-  ]
-}
-{% endschema %}
+    </section>
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Product Summary",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product"
+      },
+      {
+        "type": "product",
+        "id": "product",
+        "label": "Product",
+        "info": "If selected, uses featured image and links CTA to product page with price."
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "headline",
+        "label": "Headline",
+        "default": "This is exactly what TAC's Berberine was built for."
+      },
+      {
+        "type": "color",
+        "id": "headline_color",
+        "label": "Headline color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "label": "Headline size — Desktop (px)",
+        "default": 42,
+        "min": 24,
+        "max": 72,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "label": "Headline size — Mobile (px)",
+        "default": 30,
+        "min": 20,
+        "max": 52,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Rating"
+      },
+      {
+        "type": "text",
+        "id": "rating_text",
+        "label": "Rating text",
+        "default": "4.84/5 from 10,000+ verified reviews"
+      },
+      {
+        "type": "color",
+        "id": "rating_color",
+        "label": "Rating text color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "star_color",
+        "label": "Star color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Body"
+      },
+      {
+        "type": "richtext",
+        "id": "body",
+        "label": "Body text",
+        "default": "<p>Every tip above points to the same conclusion. Berberine is one of the most clinically studied ingredients for metabolic health. But standard forms fail before they start. TAC's Berberine solves every factor that determines whether it works.</p>"
+      },
+      {
+        "type": "color",
+        "id": "body_color",
+        "label": "Body text color",
+        "default": "#444444"
+      },
+      {
+        "type": "range",
+        "id": "body_size",
+        "label": "Body / checklist size (px)",
+        "default": 16,
+        "min": 14,
+        "max": 22,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Checklist"
+      },
+      {
+        "type": "richtext",
+        "id": "check_1",
+        "label": "Item 1",
+        "default": "<p><strong>Timing:</strong> FenuMat® sustained release. 24-hour coverage from one morning capsule.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "check_2",
+        "label": "Item 2",
+        "default": "<p><strong>Pairing:</strong> Activates AMPK, the foundation that makes other metabolic support more effective.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "check_3",
+        "label": "Item 3",
+        "default": "<p><strong>Dosage:</strong> 1,500 mg absorbed-equivalent per capsule. The full clinical dose, actually delivered.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "check_4",
+        "label": "Item 4",
+        "default": "<p><strong>Consistency:</strong> Subscribe and it ships monthly. 25% off. Cancel anytime.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "check_5",
+        "label": "Item 5",
+        "default": "<p><strong>Absorption:</strong> 6.2× more free berberine. 7× fewer GI issues. Pharmaceutical-grade.</p>"
+      },
+      {
+        "type": "color",
+        "id": "check_color",
+        "label": "Checkmark color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "CTA Button"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "Button text",
+        "default": "Add To Cart"
+      },
+      {
+        "type": "text",
+        "id": "cta_price_override",
+        "label": "Price (override)",
+        "info": "Если заполнено — показывается вместо цены продукта. Например: $64/mo или From $49."
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "Button URL (if no product selected)"
+      },
+      {
+        "type": "color",
+        "id": "cta_bg",
+        "label": "Button background",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "cta_text_color",
+        "label": "Button text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Trust Badges"
+      },
+      {
+        "type": "text",
+        "id": "trust_1",
+        "label": "Trust badge 1",
+        "default": "Free shipping on orders $50+"
+      },
+      {
+        "type": "text",
+        "id": "trust_2",
+        "label": "Trust badge 2",
+        "default": "HSA/FSA Eligible"
+      },
+      {
+        "type": "text",
+        "id": "trust_3",
+        "label": "Trust badge 3",
+        "default": "30 day money-back guarantee"
+      },
+      {
+        "type": "color",
+        "id": "trust_color",
+        "label": "Trust text color",
+        "default": "#666666"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_desktop",
+        "label": "Image — Desktop (overrides product image)"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image — Mobile (optional)"
+      },
+      {
+        "type": "color",
+        "id": "image_bg",
+        "label": "Image background",
+        "default": "#f5f5f5"
+      },
+      {
+        "type": "range",
+        "id": "image_border_radius",
+        "label": "Image border radius (px)",
+        "default": 16,
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position — Desktop",
+        "default": "right",
+        "options": [
+          { "value": "left", "label": "Left" },
+          { "value": "right", "label": "Right" }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Layout"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "background_color",
+        "label": "Background color"
+      },
+      {
+        "type": "range",
+        "id": "section_width",
+        "label": "Section width — Desktop (px)",
+        "default": 1440,
+        "min": 600,
+        "max": 1440,
+        "step": 20,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "container_width",
+        "label": "Content width — Desktop (px)",
+        "default": 1100,
+        "min": 600,
+        "max": 1400,
+        "step": 20,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Advanced"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section Id"
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Product Summary",
+        "category": "Product"
+      }
+    ]
+  }
+  {% endschema %}

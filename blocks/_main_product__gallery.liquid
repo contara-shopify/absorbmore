@@ -47,35 +47,30 @@
   {{ custom_css | replace: '&', selector | strip_newlines }}
   {{- custom_css | replace: '&', selector  | strip_newlines | replace: '@media screen and', '@container'| replace: '@media', '@container' -}}
 
-  {% if product.metafields.custom.featured_image_badge != blank %}
-    div[data-style-id*="main_product_gallery"]:after {
-      content: '{{ product.metafields.custom.featured_image_badge }}';
-      display: flex;
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 80px;
-      height: 80px;
-      background-color: {{ product.metafields.custom.featured_image_badge_color | default: '#4659ff' }};
-      border-radius: 100%;
-      font-size: 20px;
-      color: {{ product.metafields.custom.featured_image_badge_text_color | default: '#ffffff' }};
-      font-weight: 500;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @media (max-width: 768px) {
-      div[data-style-id*="main_product_gallery"]:after {
-        top: 10px;
-        right: auto;
-        left: 10px;
-        width: 40px;
-        height: 40px;
-        font-size: 13px;
-      }
-    }
-  {% endif %}
+{% if product.metafields.custom.featured_image_badge != blank %}
+  div[data-style-id*="main_product_gallery"]:after {
+    content: '{{ product.metafields.custom.featured_image_badge }}';
+    display: flex;
+    position: absolute;
+    top: clamp(-20px, -1.5vw, -10px);
+    right: clamp(-20px, -1.5vw, -10px);
+    left: auto;
+    width: clamp(56px, 8vw, 96px);
+    height: clamp(56px, 8vw, 96px);
+    background-color: {{ product.metafields.custom.featured_image_badge_color | default: '#4659ff' }};
+    border-radius: 100%;
+    font-size: clamp(11px, 1.1vw, 16px);
+    line-height: 1.1;
+    color: {{ product.metafields.custom.featured_image_badge_text_color | default: '#ffffff' }};
+    font-weight: 500;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6px;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+{% endif %}
 </style>
 
 <div

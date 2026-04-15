@@ -1,243 +1,243 @@
 {%- comment -%} Announcement Bar with Slides {%- endcomment -%}
 {%- liquid
-  assign bg_color = section.settings.bg_color
-  assign text_color = section.settings.text_color
-  assign text_size = section.settings.text_size
-  assign bar_height = section.settings.bar_height
-  assign auto_rotate = section.settings.auto_rotate
-  assign custom_css = section.settings.custom_css
-  assign section_id = section.settings.section_id
--%}
-
-{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-
-{% capture css %}
-  & {
-    width: 100%;
-    {% if bg_color != blank %}background-color: {{ bg_color }};{% endif %}
-    {% if text_color != blank %}color: {{ text_color }};{% endif %}
-    overflow: hidden;
-  }
-
-  & .ab__inner {
-    position: relative;
-    height: {{ bar_height }}px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  & .ab__slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 24px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-  }
-
-  & .ab__slide--active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  & .ab__text {
-    font-size: {{ text_size }}px;
-    line-height: 1.3;
-    text-align: center;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-  & .ab__text p { margin: 0; display: inline; }
-
-  & .ab__link {
-    color: inherit;
-    text-decoration: none;
-  }
-  & .ab__link:hover {
-    text-decoration: underline;
-  }
-{% endcapture %}
-
-{% capture section_content %}
-  <style>
-    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-  </style>
-
-  <div
-    data-style-id="{{ section.id }}"
-    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    role="marquee"
-    aria-label="Announcements"
-    x-data="{
-      current: 0,
-      total: {{ section.blocks.size }},
-      interval: null,
-      rotate: {{ auto_rotate }},
-      next() {
-        this.current = (this.current + 1) % this.total;
-      },
-      init() {
-        if (this.total > 1 && this.rotate > 0) {
-          this.interval = setInterval(() => this.next(), this.rotate * 1000);
+    assign bg_color = section.settings.bg_color
+    assign text_color = section.settings.text_color
+    assign text_size = section.settings.text_size
+    assign bar_height = section.settings.bar_height
+    assign auto_rotate = section.settings.auto_rotate
+    assign custom_css = section.settings.custom_css
+    assign section_id = section.settings.section_id
+  -%}
+  
+  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
+    & {
+      width: 100%;
+      {% if bg_color != blank %}background-color: {{ bg_color }};{% endif %}
+      {% if text_color != blank %}color: {{ text_color }};{% endif %}
+      overflow: hidden;
+    }
+  
+    & .ab__inner {
+      position: relative;
+      height: {{ bar_height }}px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    & .ab__slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+  
+    & .ab__slide--active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  
+    & .ab__text {
+      font-size: {{ text_size }}px;
+      line-height: 1.3;
+      text-align: center;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    & .ab__text p { margin: 0; display: inline; }
+  
+    & .ab__link {
+      color: inherit;
+      text-decoration: none;
+    }
+    & .ab__link:hover {
+      text-decoration: underline;
+    }
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  
+    <div
+      data-style-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      role="marquee"
+      aria-label="Announcements"
+      x-data="{
+        current: 0,
+        total: {{ section.blocks.size }},
+        interval: null,
+        rotate: {{ auto_rotate }},
+        next() {
+          this.current = (this.current + 1) % this.total;
+        },
+        init() {
+          if (this.total > 1 && this.rotate > 0) {
+            this.interval = setInterval(() => this.next(), this.rotate * 1000);
+          }
         }
-      }
-    }"
-  >
-    <div class="ab__inner">
-      {% for block in section.blocks %}
-        {%- liquid
-          assign slide_text = block.settings.text
-          assign slide_url = block.settings.url
-        -%}
-
-        <div
-          class="ab__slide"
-          :class="current === {{ forloop.index0 }} ? 'ab__slide--active' : ''"
-          {{ block.shopify_attributes }}
-        >
-          {% if slide_url != blank %}
-            <a href="{{ slide_url }}" class="ab__link">
+      }"
+    >
+      <div class="ab__inner">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign slide_text = block.settings.text
+            assign slide_url = block.settings.url
+          -%}
+  
+          <div
+            class="ab__slide"
+            :class="current === {{ forloop.index0 }} ? 'ab__slide--active' : ''"
+            {{ block.shopify_attributes }}
+          >
+            {% if slide_url != blank %}
+              <a href="{{ slide_url }}" class="ab__link">
+                <span class="ab__text">{{ slide_text }}</span>
+              </a>
+            {% else %}
               <span class="ab__text">{{ slide_text }}</span>
-            </a>
-          {% else %}
-            <span class="ab__text">{{ slide_text }}</span>
-          {% endif %}
-        </div>
-      {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
-  </div>
-{% endcapture %}
-
-{{ section_content }}
-
-{% schema %}
-{
-  "name": "CTR Announcement Bar",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Style"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "text_size",
-      "label": "Text size (px)",
-      "default": 14,
-      "min": 10,
-      "max": 20,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "bar_height",
-      "label": "Bar height (px)",
-      "default": 44,
-      "min": 28,
-      "max": 64,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Slider"
-    },
-    {
-      "type": "range",
-      "id": "auto_rotate",
-      "label": "Auto rotate (seconds)",
-      "default": 4,
-      "min": 0,
-      "max": 15,
-      "step": 1,
-      "unit": "s",
-      "info": "Set to 0 to disable."
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Advanced"
-    },
-    {
-      "type": "textarea",
-      "id": "custom_css",
-      "label": "Custom CSS"
-    },
-    {
-      "type": "text",
-      "id": "section_id",
-      "label": "Section Id"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "slide",
-      "name": "Slide",
-      "settings": [
-        {
-          "type": "richtext",
-          "id": "text",
-          "label": "Text",
-          "default": "<p>Up to 35% Off First Subscription + Free Shipping on $50+</p>"
-        },
-        {
-          "type": "url",
-          "id": "url",
-          "label": "Link (optional)"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "CTR Announcement Bar",
-      "blocks": [
-        {
-          "type": "slide",
-          "settings": {
-            "text": "<p>Up to 35% Off First Subscription + Free Shipping on $50+</p>"
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Announcement Bar",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Style"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "text_size",
+        "label": "Text size (px)",
+        "default": 14,
+        "min": 10,
+        "max": 20,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "bar_height",
+        "label": "Bar height (px)",
+        "default": 44,
+        "min": 28,
+        "max": 64,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Slider"
+      },
+      {
+        "type": "range",
+        "id": "auto_rotate",
+        "label": "Auto rotate (seconds)",
+        "default": 4,
+        "min": 0,
+        "max": 15,
+        "step": 1,
+        "unit": "s",
+        "info": "Set to 0 to disable."
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Advanced"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section Id"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "slide",
+        "name": "Slide",
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Up to 35% Off First Subscription + Free Shipping on $50+</p>"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Link (optional)"
           }
-        },
-        {
-          "type": "slide",
-          "settings": {
-            "text": "<p>Clinically Studied Ingredients · 3rd-Party Tested · Made in USA</p>"
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Announcement Bar",
+        "blocks": [
+          {
+            "type": "slide",
+            "settings": {
+              "text": "<p>Up to 35% Off First Subscription + Free Shipping on $50+</p>"
+            }
+          },
+          {
+            "type": "slide",
+            "settings": {
+              "text": "<p>Clinically Studied Ingredients · 3rd-Party Tested · Made in USA</p>"
+            }
+          },
+          {
+            "type": "slide",
+            "settings": {
+              "text": "<p>Subscribe & Save up to 35% — Cancel Anytime</p>"
+            }
           }
-        },
-        {
-          "type": "slide",
-          "settings": {
-            "text": "<p>Subscribe & Save up to 35% — Cancel Anytime</p>"
-          }
-        }
-      ]
-    }
-  ]
-}
-{% endschema %}
+        ]
+      }
+    ]
+  }
+  {% endschema %}

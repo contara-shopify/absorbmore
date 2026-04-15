@@ -1,716 +1,716 @@
 {%- comment -%} Symptom Grid — "Here's What the Gaps Look Like in Practice" {%- endcomment -%}
 {%- liquid
-  assign container_spacing = section.settings.container_spacing
-  assign headline            = section.settings.headline
-  assign headline_color      = section.settings.headline_color
-  assign headline_size_desk  = section.settings.headline_size_desktop
-  assign headline_size_mob   = section.settings.headline_size_mobile
-  assign subtext             = section.settings.subtext
-  assign subtext_color       = section.settings.subtext_color
-  assign subtext_size        = section.settings.subtext_size
-  assign lifestyle_image     = section.settings.lifestyle_image
-  assign card_title_color    = section.settings.card_title_color
-  assign card_body_color     = section.settings.card_body_color
-  assign card_bg             = section.settings.card_bg
-  assign cta_text            = section.settings.cta_text
-  assign cta_url             = section.settings.cta_url
-  assign cta_bg              = section.settings.cta_bg
-  assign cta_text_color      = section.settings.cta_text_color
-  assign trust_1             = section.settings.trust_1
-  assign trust_2             = section.settings.trust_2
-  assign trust_image         = section.settings.trust_image
-  assign background_color    = section.settings.background_color
-  assign image_border_radius = section.settings.image_border_radius
-  assign max_width_desktop    = section.settings.max_width_desktop
-  assign custom_css          = section.settings.custom_css
-  assign section_id          = section.settings.section_id
--%}
-
-{% capture selector %}[data-sg-id="{{ section.id }}"]{% endcapture %}
-
-{% capture css %}
-  & {
-    width: 100%;
-    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
-  }
-
-  & .sg__container {
-    max-width: {{ max_width_desktop }}px;
-    margin: 0 auto;
-    padding: 48px 20px;
-  }
-
-  /* ── Mobile: single column, image on top ── */
-  & .sg__layout {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
-
-  & .sg__image-wrap {
-    width: 100%;
-    order: -1;
-  }
-
-  & .sg__image-wrap img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    border-radius: {{ image_border_radius }}px;
-  }
-
-  & .sg__image-placeholder {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    background: #e8e3da;
-    border-radius: {{ image_border_radius }}px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: 14px;
-  }
-
-  & .sg__header {
-    margin-bottom: 32px;
-  }
-
-  & .sg__content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  & .sg__headline {
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0;
-    font-size: {{ headline_size_mob }}px;
-    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
-  }
-  & .sg__headline p { margin: 0; }
-
-  & .sg__subtext {
-    margin: 0;
-    line-height: 1.55;
-    font-size: {{ subtext_size }}px;
-    {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
-  }
-  & .sg__subtext p { margin: 0; }
-
-  & .sg__grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  & .sg__card {
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    gap: 10px 10px;
-    padding: 14px 0;
-    {% if card_bg != blank and card_bg != 'rgba(0,0,0,0)' %}background-color: {{ card_bg }};{% endif %}
-  }
-
-  & .sg__card-icon {
-    grid-row: 1 / 3;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 3px;
-  }
-
-  & .sg__card-title {
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 1.3;
-    margin: 0;
-    {% if card_title_color != blank and card_title_color.alpha != 0 %}color: {{ card_title_color }};{% endif %}
-  }
-
-  & .sg__card-body {
-    font-size: 13px;
-    line-height: 1.5;
-    margin: 0;
-    opacity: 0.75;
-    {% if card_body_color != blank and card_body_color.alpha != 0 %}color: {{ card_body_color }};opacity:1;{% endif %}
-    padding-top: 8px;
-  }
-  & .sg__card-body p { margin: 0; }
-
-  & .sg__cta-row {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  & .sg__cta-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 16px 24px;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    text-align: center;
-    transition: opacity 0.2s;
-    cursor: pointer;
-    border: none;
-    {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
-    {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
-  }
-  & .sg__cta-btn:hover { opacity: 0.88; }
-
-  & .sg__trust-block {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 28px;
-    justify-content: center;
-  }
-
-  & .sg__trust-row {
-    display: flex;
-    gap: 16px;
-    font-size: 12px;
-    line-height: 17px;
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  & .sg__trust-row span:nth-child(2) {
-    color: #707070;
-  }
-
-  & .sg__trust-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  & .sg__trust-img {
-    flex-shrink: 0;
-    width: 64px;
-    height: auto;
-    display: block;
-  }
-
-  /* ── Desktop: side-by-side layout ── */
-  @media (min-width: 900px) {
+    assign container_spacing = section.settings.container_spacing
+    assign headline            = section.settings.headline
+    assign headline_color      = section.settings.headline_color
+    assign headline_size_desk  = section.settings.headline_size_desktop
+    assign headline_size_mob   = section.settings.headline_size_mobile
+    assign subtext             = section.settings.subtext
+    assign subtext_color       = section.settings.subtext_color
+    assign subtext_size        = section.settings.subtext_size
+    assign lifestyle_image     = section.settings.lifestyle_image
+    assign card_title_color    = section.settings.card_title_color
+    assign card_body_color     = section.settings.card_body_color
+    assign card_bg             = section.settings.card_bg
+    assign cta_text            = section.settings.cta_text
+    assign cta_url             = section.settings.cta_url
+    assign cta_bg              = section.settings.cta_bg
+    assign cta_text_color      = section.settings.cta_text_color
+    assign trust_1             = section.settings.trust_1
+    assign trust_2             = section.settings.trust_2
+    assign trust_image         = section.settings.trust_image
+    assign background_color    = section.settings.background_color
+    assign image_border_radius = section.settings.image_border_radius
+    assign max_width_desktop    = section.settings.max_width_desktop
+    assign custom_css          = section.settings.custom_css
+    assign section_id          = section.settings.section_id
+  -%}
+  
+  {% capture selector %}[data-sg-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
+    & {
+      width: 100%;
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  
     & .sg__container {
-      padding: 80px 48px;
+      max-width: {{ max_width_desktop }}px;
+      margin: 0 auto;
+      padding: 48px 20px;
     }
-
+  
+    /* ── Mobile: single column, image on top ── */
     & .sg__layout {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 56px;
-      justify-content: space-between;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
     }
-
+  
     & .sg__image-wrap {
-      order: 1;
-      flex: 0 0 38%;
-      max-width: 340px;
+      width: 100%;
+      order: -1;
     }
-
+  
+    & .sg__image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      border-radius: {{ image_border_radius }}px;
+    }
+  
+    & .sg__image-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #e8e3da;
+      border-radius: {{ image_border_radius }}px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+    }
+  
     & .sg__header {
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
-
+  
     & .sg__content {
-      flex: 1 1 0;
-      order: 0;
-      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
-
+  
     & .sg__headline {
-      font-size: {{ headline_size_desk }}px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+      font-size: {{ headline_size_mob }}px;
+      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
     }
-
+    & .sg__headline p { margin: 0; }
+  
+    & .sg__subtext {
+      margin: 0;
+      line-height: 1.55;
+      font-size: {{ subtext_size }}px;
+      {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
+    }
+    & .sg__subtext p { margin: 0; }
+  
     & .sg__grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: 0;
     }
-
+  
     & .sg__card {
-      padding: 16px 0;
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 10px 10px;
+      padding: 14px 0;
+      {% if card_bg != blank and card_bg != 'rgba(0,0,0,0)' %}background-color: {{ card_bg }};{% endif %}
     }
-
-    & .sg__card:nth-child(odd) {
-      padding-right: 20px;
+  
+    & .sg__card-icon {
+      grid-row: 1 / 3;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 3px;
     }
-    & .sg__card:nth-child(even) {
-      padding-left: 20px;
+  
+    & .sg__card-title {
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.3;
+      margin: 0;
+      {% if card_title_color != blank and card_title_color.alpha != 0 %}color: {{ card_title_color }};{% endif %}
     }
-
-    & .sg__cta-btn {
-      max-width: 430px;
+  
+    & .sg__card-body {
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0.75;
+      {% if card_body_color != blank and card_body_color.alpha != 0 %}color: {{ card_body_color }};opacity:1;{% endif %}
+      padding-top: 8px;
     }
-
+    & .sg__card-body p { margin: 0; }
+  
     & .sg__cta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  
+    & .sg__cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.2s;
+      cursor: pointer;
+      border: none;
+      {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
+      {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
+    }
+    & .sg__cta-btn:hover { opacity: 0.88; }
+  
+    & .sg__trust-block {
+      display: flex;
       flex-direction: row;
       align-items: center;
-      flex-wrap: wrap;
       gap: 28px;
+      justify-content: center;
     }
-
+  
     & .sg__trust-row {
-      flex-direction: column;
-      gap: 4px;
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      line-height: 17px;
+      flex-direction: row;
+      justify-content: center;
     }
-
+  
+    & .sg__trust-row span:nth-child(2) {
+      color: #707070;
+    }
+  
+    & .sg__trust-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  
     & .sg__trust-img {
-      width: 106px;
+      flex-shrink: 0;
+      width: 64px;
+      height: auto;
+      display: block;
     }
-  }
-{% endcapture %}
-
-{% capture section_content %}
-  <style>
-    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-  </style>
-
-  <section
-    data-sg-id="{{ section.id }}"
-    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    class="relative {{ container_spacing }}"
-  >
-    <div class="sg__container">
-      {%- comment -%} Header — full width above columns {%- endcomment -%}
-      <div class="sg__header">
-        {% if headline != blank %}
-          <h2 class="sg__headline">{{ headline }}</h2>
-        {% endif %}
-        {% if subtext != blank %}
-          <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
-        {% endif %}
-      </div>
-
-      <div class="sg__layout">
-
-        {%- comment -%} Left / main content column {%- endcomment -%}
-        <div class="sg__content">
-
-          {%- comment -%} Symptom cards grid {%- endcomment -%}
-          {% if section.blocks.size > 0 %}
-            <div class="sg__grid">
-              {% for block in section.blocks %}
-                {%- assign card_title_val = block.settings.card_title -%}
-                {%- assign card_body_val  = block.settings.card_body -%}
-                <div class="sg__card" {{ block.shopify_attributes }}>
-                  <span class="sg__card-icon" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
-                      <path d="M0.8 11.776L0.64 11.616L0.544 11.712C0.373333 11.5413 0.288 11.4027 0.288 11.296C0.288 11.2107 0.245333 11.168 0.16 11.168L0 10.944L0.224 10.56V10.512L0.24 10.448C0.24 10.3733 0.224 10.336 0.192 10.336C0.117333 10.336 0.0533333 10.272 0 10.144C0.064 10.016 0.165333 9.83467 0.304 9.6C0.453333 9.36533 0.613333 9.10933 0.784 8.832C0.954667 8.55467 1.12 8.29333 1.28 8.048C1.44 7.80267 1.568 7.616 1.664 7.488L2.256 6.688C2.704 6.06933 3.18933 5.46133 3.712 4.864L3.456 4.288L3.264 3.808C3.12533 3.456 2.99733 3.136 2.88 2.848C2.76267 2.56 2.66667 2.304 2.592 2.08C2.44267 1.61067 2.368 1.34933 2.368 1.296C2.38933 1.17867 2.41067 1.07733 2.432 0.992001C2.464 0.906667 2.48533 0.842667 2.496 0.8H2.72C2.752 0.714667 2.77867 0.672 2.8 0.672C2.832 0.682667 2.87467 0.714667 2.928 0.768001C2.992 0.810667 3.02933 0.832001 3.04 0.832001L3.232 0.64L3.36 0.8L3.424 0.416C3.552 0.416 3.62667 0.437334 3.648 0.48C3.65867 0.522667 3.70133 0.549334 3.776 0.56L3.84 0.576H3.872L4.544 1.952L5.152 3.136C5.44 2.77333 5.70133 2.45333 5.936 2.176C6.17067 1.888 6.384 1.64267 6.576 1.44C6.77867 1.22667 6.976 1.008 7.168 0.784C7.37067 0.549334 7.584 0.298667 7.808 0.0320005L7.904 0.224L7.984 0.16L8.112 0.0960007C8.13333 0.106667 8.144 0.144 8.144 0.208C8.144 0.272 8.17067 0.32 8.224 0.352L8.288 0.384001C8.352 0.384001 8.45333 0.320001 8.592 0.192C8.74133 0.0640001 8.82133 0 8.832 0C8.85333 0 8.864 0.0106668 8.864 0.0320005C8.87467 0.0640001 8.88 0.096 8.88 0.128C8.88 0.16 8.88 0.192 8.88 0.224C8.88 0.298667 8.90133 0.362667 8.944 0.416C8.976 0.458667 8.992 0.517334 8.992 0.592C8.992 0.773334 8.93333 0.938667 8.816 1.088C8.688 1.248 7.936 2.24 6.56 4.064L5.984 4.832L6.4 5.696C6.70933 6.32533 6.944 6.82667 7.104 7.2C7.27467 7.56267 7.38133 7.79733 7.424 7.904L7.536 8.192C7.696 8.608 7.776 8.84267 7.776 8.896C7.776 8.93867 7.75467 8.976 7.712 9.008C7.66933 9.02933 7.62133 9.04 7.568 9.04L7.52 9.024H7.488C7.44533 9.024 7.392 9.06667 7.328 9.152L7.264 9.504L7.04 9.44L7.024 9.488L6.976 9.728C6.80533 9.71733 6.672 9.68533 6.576 9.632C6.49067 9.57867 6.34133 9.424 6.128 9.168C6.02133 9.04 5.888 8.85333 5.728 8.608C5.57867 8.352 5.39733 8.04267 5.184 7.68L4.608 6.688L3.808 7.84C3.41333 8.416 3.04533 8.976 2.704 9.52C2.36267 10.064 2.06933 10.56 1.824 11.008C1.57867 11.4667 1.32267 11.712 1.056 11.744L0.864 11.648L0.8 11.776Z" fill="#E1225C"/>
-                    </svg>
-                  </span>
-                  <div>
-                    {% if card_title_val != blank %}
-                      <p class="sg__card-title">{{ card_title_val }}</p>
-                    {% endif %}
-                    {% if card_body_val != blank %}
-                      <div class="sg__card-body">{{ card_body_val }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
+  
+    /* ── Desktop: side-by-side layout ── */
+    @media (min-width: 900px) {
+      & .sg__container {
+        padding: 80px 48px;
+      }
+  
+      & .sg__layout {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 56px;
+        justify-content: space-between;
+      }
+  
+      & .sg__image-wrap {
+        order: 1;
+        flex: 0 0 38%;
+        max-width: 340px;
+      }
+  
+      & .sg__header {
+        margin-bottom: 40px;
+      }
+  
+      & .sg__content {
+        flex: 1 1 0;
+        order: 0;
+        min-width: 0;
+      }
+  
+      & .sg__headline {
+        font-size: {{ headline_size_desk }}px;
+      }
+  
+      & .sg__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+      }
+  
+      & .sg__card {
+        padding: 16px 0;
+      }
+  
+      & .sg__card:nth-child(odd) {
+        padding-right: 20px;
+      }
+      & .sg__card:nth-child(even) {
+        padding-left: 20px;
+      }
+  
+      & .sg__cta-btn {
+        max-width: 430px;
+      }
+  
+      & .sg__cta-row {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 28px;
+      }
+  
+      & .sg__trust-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+  
+      & .sg__trust-img {
+        width: 106px;
+      }
+    }
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  
+    <section
+      data-sg-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      class="relative {{ container_spacing }}"
+    >
+      <div class="sg__container">
+        {%- comment -%} Header — full width above columns {%- endcomment -%}
+        <div class="sg__header">
+          {% if headline != blank %}
+            <h2 class="sg__headline">{{ headline }}</h2>
           {% endif %}
-
-          {%- comment -%} CTA + Trust {%- endcomment -%}
-          <div class="sg__cta-row">
-            {% if cta_text != blank %}
-              <a
-                href="{{ cta_url | default: '#' }}"
-                class="sg__cta-btn"
-              >{{ cta_text }}</a>
+          {% if subtext != blank %}
+            <div class="sg__subtext" style="margin-top:12px;">{{ subtext }}</div>
+          {% endif %}
+        </div>
+  
+        <div class="sg__layout">
+  
+          {%- comment -%} Left / main content column {%- endcomment -%}
+          <div class="sg__content">
+  
+            {%- comment -%} Symptom cards grid {%- endcomment -%}
+            {% if section.blocks.size > 0 %}
+              <div class="sg__grid">
+                {% for block in section.blocks %}
+                  {%- assign card_title_val = block.settings.card_title -%}
+                  {%- assign card_body_val  = block.settings.card_body -%}
+                  <div class="sg__card" {{ block.shopify_attributes }}>
+                    <span class="sg__card-icon" aria-hidden="true">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                        <path d="M0.8 11.776L0.64 11.616L0.544 11.712C0.373333 11.5413 0.288 11.4027 0.288 11.296C0.288 11.2107 0.245333 11.168 0.16 11.168L0 10.944L0.224 10.56V10.512L0.24 10.448C0.24 10.3733 0.224 10.336 0.192 10.336C0.117333 10.336 0.0533333 10.272 0 10.144C0.064 10.016 0.165333 9.83467 0.304 9.6C0.453333 9.36533 0.613333 9.10933 0.784 8.832C0.954667 8.55467 1.12 8.29333 1.28 8.048C1.44 7.80267 1.568 7.616 1.664 7.488L2.256 6.688C2.704 6.06933 3.18933 5.46133 3.712 4.864L3.456 4.288L3.264 3.808C3.12533 3.456 2.99733 3.136 2.88 2.848C2.76267 2.56 2.66667 2.304 2.592 2.08C2.44267 1.61067 2.368 1.34933 2.368 1.296C2.38933 1.17867 2.41067 1.07733 2.432 0.992001C2.464 0.906667 2.48533 0.842667 2.496 0.8H2.72C2.752 0.714667 2.77867 0.672 2.8 0.672C2.832 0.682667 2.87467 0.714667 2.928 0.768001C2.992 0.810667 3.02933 0.832001 3.04 0.832001L3.232 0.64L3.36 0.8L3.424 0.416C3.552 0.416 3.62667 0.437334 3.648 0.48C3.65867 0.522667 3.70133 0.549334 3.776 0.56L3.84 0.576H3.872L4.544 1.952L5.152 3.136C5.44 2.77333 5.70133 2.45333 5.936 2.176C6.17067 1.888 6.384 1.64267 6.576 1.44C6.77867 1.22667 6.976 1.008 7.168 0.784C7.37067 0.549334 7.584 0.298667 7.808 0.0320005L7.904 0.224L7.984 0.16L8.112 0.0960007C8.13333 0.106667 8.144 0.144 8.144 0.208C8.144 0.272 8.17067 0.32 8.224 0.352L8.288 0.384001C8.352 0.384001 8.45333 0.320001 8.592 0.192C8.74133 0.0640001 8.82133 0 8.832 0C8.85333 0 8.864 0.0106668 8.864 0.0320005C8.87467 0.0640001 8.88 0.096 8.88 0.128C8.88 0.16 8.88 0.192 8.88 0.224C8.88 0.298667 8.90133 0.362667 8.944 0.416C8.976 0.458667 8.992 0.517334 8.992 0.592C8.992 0.773334 8.93333 0.938667 8.816 1.088C8.688 1.248 7.936 2.24 6.56 4.064L5.984 4.832L6.4 5.696C6.70933 6.32533 6.944 6.82667 7.104 7.2C7.27467 7.56267 7.38133 7.79733 7.424 7.904L7.536 8.192C7.696 8.608 7.776 8.84267 7.776 8.896C7.776 8.93867 7.75467 8.976 7.712 9.008C7.66933 9.02933 7.62133 9.04 7.568 9.04L7.52 9.024H7.488C7.44533 9.024 7.392 9.06667 7.328 9.152L7.264 9.504L7.04 9.44L7.024 9.488L6.976 9.728C6.80533 9.71733 6.672 9.68533 6.576 9.632C6.49067 9.57867 6.34133 9.424 6.128 9.168C6.02133 9.04 5.888 8.85333 5.728 8.608C5.57867 8.352 5.39733 8.04267 5.184 7.68L4.608 6.688L3.808 7.84C3.41333 8.416 3.04533 8.976 2.704 9.52C2.36267 10.064 2.06933 10.56 1.824 11.008C1.57867 11.4667 1.32267 11.712 1.056 11.744L0.864 11.648L0.8 11.776Z" fill="#E1225C"/>
+                      </svg>
+                    </span>
+                    <div>
+                      {% if card_title_val != blank %}
+                        <p class="sg__card-title">{{ card_title_val }}</p>
+                      {% endif %}
+                      {% if card_body_val != blank %}
+                        <div class="sg__card-body">{{ card_body_val }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
             {% endif %}
-
-            <div class="sg__trust-block">
-              <div class="sg__trust-row">
-                {% if trust_1 != blank %}
-                  <span class="sg__trust-item">{{ trust_1 }}</span>
-                {% endif %}
-                {% if trust_2 != blank %}
-                  <span class="sg__trust-item">{{ trust_2 }}</span>
+  
+            {%- comment -%} CTA + Trust {%- endcomment -%}
+            <div class="sg__cta-row">
+              {% if cta_text != blank %}
+                <a
+                  href="{{ cta_url | default: '#' }}"
+                  class="sg__cta-btn"
+                >{{ cta_text }}</a>
+              {% endif %}
+  
+              <div class="sg__trust-block">
+                <div class="sg__trust-row">
+                  {% if trust_1 != blank %}
+                    <span class="sg__trust-item">{{ trust_1 }}</span>
+                  {% endif %}
+                  {% if trust_2 != blank %}
+                    <span class="sg__trust-item">{{ trust_2 }}</span>
+                  {% endif %}
+                </div>
+                {% if trust_image != blank %}
+                  {{
+                    trust_image
+                    | image_url: width: 144
+                    | image_tag:
+                      class: 'sg__trust-img',
+                      loading: 'lazy',
+                      widths: '72, 144',
+                      sizes: '72px',
+                      alt: trust_image.alt | default: ''
+                  }}
                 {% endif %}
               </div>
-              {% if trust_image != blank %}
-                {{
-                  trust_image
-                  | image_url: width: 144
-                  | image_tag:
-                    class: 'sg__trust-img',
-                    loading: 'lazy',
-                    widths: '72, 144',
-                    sizes: '72px',
-                    alt: trust_image.alt | default: ''
-                }}
-              {% endif %}
             </div>
+  
           </div>
-
+  
+          {%- comment -%} Right / lifestyle image {%- endcomment -%}
+          <div class="sg__image-wrap">
+            {% if lifestyle_image != blank %}
+              {{
+                lifestyle_image
+                | image_url: width: 840
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '420, 560, 840',
+                  sizes: '(min-width: 900px) 420px, 100vw',
+                  alt: lifestyle_image.alt | default: headline
+              }}
+            {% else %}
+              <div class="sg__image-placeholder">
+                <span>Upload lifestyle image</span>
+              </div>
+            {% endif %}
+          </div>
+  
         </div>
-
-        {%- comment -%} Right / lifestyle image {%- endcomment -%}
-        <div class="sg__image-wrap">
-          {% if lifestyle_image != blank %}
-            {{
-              lifestyle_image
-              | image_url: width: 840
-              | image_tag:
-                loading: 'lazy',
-                widths: '420, 560, 840',
-                sizes: '(min-width: 900px) 420px, 100vw',
-                alt: lifestyle_image.alt | default: headline
-            }}
-          {% else %}
-            <div class="sg__image-placeholder">
-              <span>Upload lifestyle image</span>
-            </div>
-          {% endif %}
-        </div>
-
       </div>
-    </div>
-  </section>
-{% endcapture %}
-
-{{ section_content }}
-
-{% schema %}
-{
-  "name": "CTR Symptom Grid",
-  "settings": [
-    {
-      "type": "select",
-      "id": "container_spacing",
-      "default": "px-container-md",
-      "options": [
-        {
-          "value": "px-container-xs",
-          "label": "Extra Small"
-        },
-        {
-          "value": "px-container-sm",
-          "label": "Small"
-        },
-        {
-          "value": "px-container-md",
-          "label": "Medium"
-        },
-        {
-          "value": "px-container-lg",
-          "label": "Large"
-        },
-        {
-          "value": "px-container-gutter",
-          "label": "Gutter Only"
-        },
-        {
-          "value": "px-container-fullwidth",
-          "label": "Fullwidth"
-        }
-      ],
-      "label": "Container Spacing"
-    },
-    {
-      "type": "header",
-      "content": "Headline"
-    },
-    {
-      "type": "richtext",
-      "id": "headline",
-      "label": "Headline",
-      "default": "<p>Here's what the gaps look like in practice.</p>"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "headline_color",
-      "label": "Headline color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "range",
-      "id": "headline_size_desktop",
-      "label": "Headline size — Desktop (px)",
-      "default": 40,
-      "min": 24,
-      "max": 80,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "headline_size_mobile",
-      "label": "Headline size — Mobile (px)",
-      "default": 28,
-      "min": 18,
-      "max": 56,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Subtext"
-    },
-    {
-      "type": "richtext",
-      "id": "subtext",
-      "label": "Subtext",
-      "default": "<p>Eating less means fewer vitamins, minerals, and electrolytes. These are the gaps most people don't realize they have.</p>"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "subtext_color",
-      "label": "Subtext color"
-    },
-    {
-      "type": "range",
-      "id": "subtext_size",
-      "label": "Subtext font size (px)",
-      "default": 16,
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Lifestyle Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "lifestyle_image",
-      "label": "Lifestyle image"
-    },
-    {
-      "type": "range",
-      "id": "image_border_radius",
-      "label": "Image border radius (px)",
-      "default": 16,
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Card Styles"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "card_title_color",
-      "label": "Card title color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "card_body_color",
-      "label": "Card body color"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "card_bg",
-      "label": "Card background (optional)"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "CTA Button"
-    },
-    {
-      "type": "text",
-      "id": "cta_text",
-      "label": "Button text",
-      "default": "Get Restore →"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button URL"
-    },
-    {
-      "type": "color",
-      "id": "cta_bg",
-      "label": "Button background",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "cta_text_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Trust Badges"
-    },
-    {
-      "type": "text",
-      "id": "trust_1",
-      "label": "Trust badge 1",
-      "default": "30-day guarantee"
-    },
-    {
-      "type": "text",
-      "id": "trust_2",
-      "label": "Trust badge 2",
-      "default": "Free shipping on $50+"
-    },
-    {
-      "type": "image_picker",
-      "id": "trust_image",
-      "label": "Trust badge image (e.g. product shot)"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
-    },
-    {
-      "type": "header",
-      "content": "Section Globals"
-    },
-    {
-      "type": "range",
-      "id": "max_width_desktop",
-      "label": "Max width desktop (px)",
-      "min": 800,
-      "max": 1440,
-      "step": 20,
-      "default": 1240,
-      "unit": "px"
-    },
-    {
-      "type": "color",
-      "alpha": true,
-      "id": "background_color",
-      "label": "Section background",
-      "default": "#f5f0e8"
-    },
-    {
-      "type": "textarea",
-      "id": "custom_css",
-      "label": "Custom CSS"
-    },
-    {
-      "type": "text",
-      "id": "section_id",
-      "label": "Section ID (anchor)"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "symptom",
-      "name": "Symptom Card",
-      "limit": 6,
-      "settings": [
-        {
-          "type": "text",
-          "id": "card_title",
-          "label": "Symptom title",
-          "default": "Fatigue that won't lift"
-        },
-        {
-          "type": "richtext",
-          "id": "card_body",
-          "label": "Body copy",
-          "default": "<p>Low B12 and Vitamin D reduce energy at the cellular level.</p>"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "CTR Symptom Grid",
-      "category": "Content",
-      "settings": {
-        "headline": "<p>Here's what the gaps look like in practice.</p>",
-        "subtext": "<p>Eating less means fewer vitamins, minerals, and electrolytes. These are the gaps most people don't realize they have.</p>",
-        "cta_text": "Get Restore →",
-        "trust_1": "30-day guarantee",
-        "trust_2": "Free shipping on $50+",
-        "background_color": "#f5f0e8",
-        "cta_bg": "#1a1a1a",
-        "cta_text_color": "#ffffff",
-        "headline_size_desktop": 40,
-        "headline_size_mobile": 28,
-        "subtext_size": 16,
-        "image_border_radius": 16
+    </section>
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Symptom Grid",
+    "settings": [
+      {
+        "type": "select",
+        "id": "container_spacing",
+        "default": "px-container-md",
+        "options": [
+          {
+            "value": "px-container-xs",
+            "label": "Extra Small"
+          },
+          {
+            "value": "px-container-sm",
+            "label": "Small"
+          },
+          {
+            "value": "px-container-md",
+            "label": "Medium"
+          },
+          {
+            "value": "px-container-lg",
+            "label": "Large"
+          },
+          {
+            "value": "px-container-gutter",
+            "label": "Gutter Only"
+          },
+          {
+            "value": "px-container-fullwidth",
+            "label": "Fullwidth"
+          }
+        ],
+        "label": "Container Spacing"
       },
-      "blocks": [
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Fatigue that won't lift",
-            "card_body": "<p>Low B12 and Vitamin D reduce energy at the cellular level.</p>"
+      {
+        "type": "header",
+        "content": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "headline",
+        "label": "Headline",
+        "default": "<p>Here's what the gaps look like in practice.</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "headline_color",
+        "label": "Headline color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "label": "Headline size — Desktop (px)",
+        "default": 40,
+        "min": 24,
+        "max": 80,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "label": "Headline size — Mobile (px)",
+        "default": 28,
+        "min": 18,
+        "max": 56,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Subtext"
+      },
+      {
+        "type": "richtext",
+        "id": "subtext",
+        "label": "Subtext",
+        "default": "<p>Eating less means fewer vitamins, minerals, and electrolytes. These are the gaps most people don't realize they have.</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "subtext_color",
+        "label": "Subtext color"
+      },
+      {
+        "type": "range",
+        "id": "subtext_size",
+        "label": "Subtext font size (px)",
+        "default": 16,
+        "min": 12,
+        "max": 24,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Lifestyle Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "lifestyle_image",
+        "label": "Lifestyle image"
+      },
+      {
+        "type": "range",
+        "id": "image_border_radius",
+        "label": "Image border radius (px)",
+        "default": 16,
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Card Styles"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "card_title_color",
+        "label": "Card title color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "card_body_color",
+        "label": "Card body color"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "card_bg",
+        "label": "Card background (optional)"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "CTA Button"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "Button text",
+        "default": "Get Restore →"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "Button URL"
+      },
+      {
+        "type": "color",
+        "id": "cta_bg",
+        "label": "Button background",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "cta_text_color",
+        "label": "Button text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Trust Badges"
+      },
+      {
+        "type": "text",
+        "id": "trust_1",
+        "label": "Trust badge 1",
+        "default": "30-day guarantee"
+      },
+      {
+        "type": "text",
+        "id": "trust_2",
+        "label": "Trust badge 2",
+        "default": "Free shipping on $50+"
+      },
+      {
+        "type": "image_picker",
+        "id": "trust_image",
+        "label": "Trust badge image (e.g. product shot)"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Section Globals"
+      },
+      {
+        "type": "range",
+        "id": "max_width_desktop",
+        "label": "Max width desktop (px)",
+        "min": 800,
+        "max": 1440,
+        "step": 20,
+        "default": 1240,
+        "unit": "px"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "background_color",
+        "label": "Section background",
+        "default": "#f5f0e8"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section ID (anchor)"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "symptom",
+        "name": "Symptom Card",
+        "limit": 6,
+        "settings": [
+          {
+            "type": "text",
+            "id": "card_title",
+            "label": "Symptom title",
+            "default": "Fatigue that won't lift"
+          },
+          {
+            "type": "richtext",
+            "id": "card_body",
+            "label": "Body copy",
+            "default": "<p>Low B12 and Vitamin D reduce energy at the cellular level.</p>"
           }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Symptom Grid",
+        "category": "Content",
+        "settings": {
+          "headline": "<p>Here's what the gaps look like in practice.</p>",
+          "subtext": "<p>Eating less means fewer vitamins, minerals, and electrolytes. These are the gaps most people don't realize they have.</p>",
+          "cta_text": "Get Restore →",
+          "trust_1": "30-day guarantee",
+          "trust_2": "Free shipping on $50+",
+          "background_color": "#f5f0e8",
+          "cta_bg": "#1a1a1a",
+          "cta_text_color": "#ffffff",
+          "headline_size_desktop": 40,
+          "headline_size_mobile": 28,
+          "subtext_size": 16,
+          "image_border_radius": 16
         },
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Brain fog and mood dips",
-            "card_body": "<p>Vitamin D supports serotonin. B vitamins support dopamine. Both decline when you eat less.</p>"
+        "blocks": [
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Fatigue that won't lift",
+              "card_body": "<p>Low B12 and Vitamin D reduce energy at the cellular level.</p>"
+            }
+          },
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Brain fog and mood dips",
+              "card_body": "<p>Vitamin D supports serotonin. B vitamins support dopamine. Both decline when you eat less.</p>"
+            }
+          },
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Dehydration and electrolyte gaps",
+              "card_body": "<p>Fewer calories means fewer electrolytes. Nausea and reduced thirst make it worse.</p>"
+            }
+          },
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Bone and joint concerns",
+              "card_body": "<p>Rapid weight reduction decreases bone mineral density without the right nutrients.</p>"
+            }
+          },
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Weakened immunity",
+              "card_body": "<p>Vitamin D deficiency increases susceptibility. Most people on caloric restriction are deficient.</p>"
+            }
+          },
+          {
+            "type": "symptom",
+            "settings": {
+              "card_title": "Hair thinning and brittle nails",
+              "card_body": "<p>Micronutrient deficiencies are the most common driver during caloric restriction.</p>"
+            }
           }
-        },
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Dehydration and electrolyte gaps",
-            "card_body": "<p>Fewer calories means fewer electrolytes. Nausea and reduced thirst make it worse.</p>"
-          }
-        },
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Bone and joint concerns",
-            "card_body": "<p>Rapid weight reduction decreases bone mineral density without the right nutrients.</p>"
-          }
-        },
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Weakened immunity",
-            "card_body": "<p>Vitamin D deficiency increases susceptibility. Most people on caloric restriction are deficient.</p>"
-          }
-        },
-        {
-          "type": "symptom",
-          "settings": {
-            "card_title": "Hair thinning and brittle nails",
-            "card_body": "<p>Micronutrient deficiencies are the most common driver during caloric restriction.</p>"
-          }
-        }
-      ]
-    }
-  ]
-}
-{% endschema %}
+        ]
+      }
+    ]
+  }
+  {% endschema %}
