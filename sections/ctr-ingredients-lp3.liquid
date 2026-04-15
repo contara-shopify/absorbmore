@@ -1,792 +1,792 @@
 {%- comment -%} Ingredients LP3 — "What's Inside. And Why It Matters." {%- endcomment -%}
 {%- liquid
-    assign headline             = section.settings.headline
-    assign headline_color       = section.settings.headline_color
-    assign headline_size_desk   = section.settings.headline_size_desktop
-    assign headline_size_mob    = section.settings.headline_size_mobile
-    assign subtext              = section.settings.subtext
-    assign subtext_color        = section.settings.subtext_color
-    assign subtext_size         = section.settings.subtext_size
-    assign enable_tabs          = section.settings.enable_tabs
-    assign tab_1_label          = section.settings.tab_1_label
-    assign tab_2_label          = section.settings.tab_2_label
-    assign tab_dot_1            = section.settings.tab_dot_color_1
-    assign tab_dot_2            = section.settings.tab_dot_color_2
-    assign card_bg              = section.settings.card_bg
-    assign card_border          = section.settings.card_border
-    assign card_border_radius   = section.settings.card_border_radius
-    assign image_border_radius  = section.settings.image_border_radius
-    assign stat_color           = section.settings.stat_color
-    assign background_color     = section.settings.background_color
-    assign custom_css           = section.settings.custom_css
-    assign section_id           = section.settings.section_id
-  -%}
-  
-  {% capture selector %}[data-li3-id="{{ section.id }}"]{% endcapture %}
-  
-  {% capture css %}
-    & {
-      width: 100%;
-      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
-    }
-  
+  assign headline             = section.settings.headline
+  assign headline_color       = section.settings.headline_color
+  assign headline_size_desk   = section.settings.headline_size_desktop
+  assign headline_size_mob    = section.settings.headline_size_mobile
+  assign subtext              = section.settings.subtext
+  assign subtext_color        = section.settings.subtext_color
+  assign subtext_size         = section.settings.subtext_size
+  assign enable_tabs          = section.settings.enable_tabs
+  assign tab_1_label          = section.settings.tab_1_label
+  assign tab_2_label          = section.settings.tab_2_label
+  assign tab_dot_1            = section.settings.tab_dot_color_1
+  assign tab_dot_2            = section.settings.tab_dot_color_2
+  assign card_bg              = section.settings.card_bg
+  assign card_border          = section.settings.card_border
+  assign card_border_radius   = section.settings.card_border_radius
+  assign image_border_radius  = section.settings.image_border_radius
+  assign stat_color           = section.settings.stat_color
+  assign background_color     = section.settings.background_color
+  assign custom_css           = section.settings.custom_css
+  assign section_id           = section.settings.section_id
+-%}
+
+{% capture selector %}[data-li3-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+  }
+
+  & .li3__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  /* ── Header ── */
+  & .li3__header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  & .li3__header-left {}
+
+  & .li3__headline {
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    font-size: {{ headline_size_mob }}px;
+    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+  }
+  & .li3__headline p { margin: 0; }
+
+  & .li3__header-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .li3__subtext {
+    line-height: 1.6;
+    margin: 0;
+    font-size: {{ subtext_size }}px;
+    max-width: 520px;
+    {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
+  }
+  & .li3__subtext p { margin: 0; }
+
+  /* ── Tab pills ── */
+  & .li3__tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  & .li3__tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+
+  & .li3__tab-btn.is-active {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  & .li3__tab-btn.is-active .li3__tab-dot {
+    background-color: #ffffff !important;
+  }
+
+  & .li3__tab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Grid ── */
+  & .li3__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  & .li3__grid[hidden] {
+    display: none !important;
+  }
+
+  /* ── Card ── */
+  & .li3__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 16px;
+    border-radius: {{ card_border_radius }}px;
+    {% if card_bg != blank %}background-color: {{ card_bg | append: '1a' }};{% endif %}
+    {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
+    transition: border-color 0.2s;
+  }
+
+  & .li3__card-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  & .li3__card-image-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 4px
+  }
+
+  & .li3__card-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ image_border_radius }}px {{ image_border_radius }}px 0 0;
+    display: block;
+  }
+
+  & .li3__card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e5e0d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 12px;
+  }
+
+  & .li3__card-body {
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  & .li3__card-name {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  & .li3__card-dosage {
+    font-size: 12px;
+    opacity: 0.55;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  & .li3__card-desc {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 6px 0 0;
+    opacity: 0.72;
+  }
+  & .li3__card-desc p { margin: 0; }
+
+  & .li3__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  & .li3__stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.4;
+    border-radius: 4px;
+    {% if stat_color != blank %}color: {{ stat_color }};{% endif %}
+  }
+
+  & .li3__stat-value {
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+    text-wrap: auto;
+  }
+
+  & .li3__stat-label {
+    opacity: 0.8;
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 768px) {
     & .li3__container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 48px 24px;
+      padding: 80px 48px;
     }
-  
-    /* ── Header ── */
+
     & .li3__header {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-bottom: 40px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+      margin-bottom: 48px;
     }
-  
-    & .li3__header-left {}
-  
+
+    & .li3__header-left {
+      flex-shrink: 0;
+      max-width: 380px;
+    }
+
     & .li3__headline {
-      font-weight: 700;
-      line-height: 1.1;
-      margin: 0;
-      font-size: {{ headline_size_mob }}px;
-      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+      font-size: {{ headline_size_desk }}px;
     }
-    & .li3__headline p { margin: 0; }
-  
+
     & .li3__header-right {
-      display: flex;
-      flex-direction: column;
+      max-width: 500px;
+    }
+
+    & .li3__grid {
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
-  
-    & .li3__subtext {
-      line-height: 1.6;
-      margin: 0;
-      font-size: {{ subtext_size }}px;
-      max-width: 520px;
-      {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
-    }
-    & .li3__subtext p { margin: 0; }
-  
-    /* ── Tab pills ── */
-    & .li3__tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-  
-    & .li3__tab-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 100px;
-      font-size: 14px;
-      font-weight: 500;
-      border: 1px solid #d1d5db;
-      background-color: #ffffff;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-  
-    & .li3__tab-btn.is-active {
-      background-color: #1a1a1a;
-      border-color: #1a1a1a;
-      color: #ffffff;
-    }
-  
-    & .li3__tab-btn.is-active .li3__tab-dot {
-      background-color: #ffffff !important;
-    }
-  
-    & .li3__tab-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-  
-    /* ── Grid ── */
-    & .li3__grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-  
-    & .li3__grid[hidden] {
-      display: none !important;
-    }
-  
-    /* ── Card ── */
-    & .li3__card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      padding: 16px;
-      border-radius: {{ card_border_radius }}px;
-      {% if card_bg != blank %}background-color: {{ card_bg | append: '1a' }};{% endif %}
-      {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
-      transition: border-color 0.2s;
-    }
-  
-    & .li3__card-dot {
-      position: absolute;
-      top: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-  
-    & .li3__card-image-wrap {
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      flex-shrink: 0;
-      border-radius: 4px
-    }
-  
-    & .li3__card-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: {{ image_border_radius }}px {{ image_border_radius }}px 0 0;
-      display: block;
-    }
-  
-    & .li3__card-image-placeholder {
-      width: 100%;
-      height: 100%;
-      background: #e5e0d8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 12px;
-    }
-  
+
     & .li3__card-body {
-      padding: 14px 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex: 1;
+      padding: 16px 16px 20px;
+      gap: 8px;
     }
-  
+
     & .li3__card-name {
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 1.25;
-      margin: 0;
+      font-size: 15px;
     }
-  
+
     & .li3__card-dosage {
-      font-size: 12px;
-      opacity: 0.55;
-      margin: 0;
-      line-height: 1.3;
+      font-size: 13px;
     }
-  
+
     & .li3__card-desc {
-      font-size: 12px;
-      line-height: 1.5;
-      margin: 6px 0 0;
-      opacity: 0.72;
+      font-size: 13px;
     }
-    & .li3__card-desc p { margin: 0; }
-  
-    & .li3__stats {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 10px;
-    }
-  
+
     & .li3__stat {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 5px;
-      font-size: 11px;
-      line-height: 1.4;
-      border-radius: 4px;
-      {% if stat_color != blank %}color: {{ stat_color }};{% endif %}
-    }
-  
-    & .li3__stat-value {
-      font-weight: 500;
       font-size: 12px;
-      white-space: nowrap;
-      text-wrap: auto;
     }
-  
-    & .li3__stat-label {
-      opacity: 0.8;
+
+    & .li3__stat-value {
+      font-size: 13px;
     }
-  
-    /* ── Desktop ── */
-    @media (min-width: 768px) {
-      & .li3__container {
-        padding: 80px 48px;
-      }
-  
-      & .li3__header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 48px;
-        margin-bottom: 48px;
-      }
-  
-      & .li3__header-left {
-        flex-shrink: 0;
-        max-width: 380px;
-      }
-  
-      & .li3__headline {
-        font-size: {{ headline_size_desk }}px;
-      }
-  
-      & .li3__header-right {
-        max-width: 500px;
-      }
-  
-      & .li3__grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-      }
-  
-      & .li3__card-body {
-        padding: 16px 16px 20px;
-        gap: 8px;
-      }
-  
-      & .li3__card-name {
-        font-size: 15px;
-      }
-  
-      & .li3__card-dosage {
-        font-size: 13px;
-      }
-  
-      & .li3__card-desc {
-        font-size: 13px;
-      }
-  
-      & .li3__stat {
-        font-size: 12px;
-      }
-  
-      & .li3__stat-value {
-        font-size: 13px;
-      }
-  
-      & .li3__stats {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 12px;
-      }
+
+    & .li3__stats {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
     }
-  {% endcapture %}
-  
-  {% capture section_content %}
-    <style>
-      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-    </style>
-  
-    <section
-      data-li3-id="{{ section.id }}"
-      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    >
-      <div class="li3__container">
-  
-        {%- comment -%} Header {%- endcomment -%}
-        <div class="li3__header">
-          <div class="li3__header-left">
-            {% if headline != blank %}
-              <h2 class="li3__headline">{{ headline }}</h2>
-            {% endif %}
-          </div>
-  
-          <div class="li3__header-right">
-            {% if subtext != blank %}
-              <div class="li3__subtext">{{ subtext }}</div>
-            {% endif %}
-  
-            {% if enable_tabs and tab_1_label != blank %}
-              <div class="li3__tabs" role="tablist">
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-li3-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="li3__container">
+
+      {%- comment -%} Header {%- endcomment -%}
+      <div class="li3__header">
+        <div class="li3__header-left">
+          {% if headline != blank %}
+            <h2 class="li3__headline">{{ headline }}</h2>
+          {% endif %}
+        </div>
+
+        <div class="li3__header-right">
+          {% if subtext != blank %}
+            <div class="li3__subtext">{{ subtext }}</div>
+          {% endif %}
+
+          {% if enable_tabs and tab_1_label != blank %}
+            <div class="li3__tabs" role="tablist">
+              <button
+                class="li3__tab-btn"
+                role="tab"
+                aria-selected="true"
+                data-li3-tab="{{ section.id }}"
+                data-tab="tab1"
+              >
+                {% if tab_dot_1 != blank %}
+                  <span class="li3__tab-dot" style="background-color: {{ tab_dot_1 }};"></span>
+                {% endif %}
+                {{ tab_1_label }}
+              </button>
+              {% if tab_2_label != blank %}
                 <button
                   class="li3__tab-btn"
                   role="tab"
-                  aria-selected="true"
+                  aria-selected="false"
                   data-li3-tab="{{ section.id }}"
-                  data-tab="tab1"
+                  data-tab="tab2"
                 >
-                  {% if tab_dot_1 != blank %}
-                    <span class="li3__tab-dot" style="background-color: {{ tab_dot_1 }};"></span>
+                  {% if tab_dot_2 != blank %}
+                    <span class="li3__tab-dot" style="background-color: {{ tab_dot_2 }};"></span>
                   {% endif %}
-                  {{ tab_1_label }}
+                  {{ tab_2_label }}
                 </button>
-                {% if tab_2_label != blank %}
-                  <button
-                    class="li3__tab-btn"
-                    role="tab"
-                    aria-selected="false"
-                    data-li3-tab="{{ section.id }}"
-                    data-tab="tab2"
-                  >
-                    {% if tab_dot_2 != blank %}
-                      <span class="li3__tab-dot" style="background-color: {{ tab_dot_2 }};"></span>
-                    {% endif %}
-                    {{ tab_2_label }}
-                  </button>
+              {% endif %}
+            </div>
+          {% elsif tab_1_label != blank %}
+            {%- comment -%} Single product label — non-interactive pill {%- endcomment -%}
+            <div class="li3__tabs">
+              <span class="li3__tab-btn" style="cursor:default;">
+                {% if tab_dot_1 != blank %}
+                  <span class="li3__tab-dot" style="background-color: {{ tab_dot_1 }};"></span>
                 {% endif %}
-              </div>
-            {% elsif tab_1_label != blank %}
-              {%- comment -%} Single product label — non-interactive pill {%- endcomment -%}
-              <div class="li3__tabs">
-                <span class="li3__tab-btn" style="cursor:default;">
-                  {% if tab_dot_1 != blank %}
-                    <span class="li3__tab-dot" style="background-color: {{ tab_dot_1 }};"></span>
-                  {% endif %}
-                  {{ tab_1_label }}
-                </span>
-              </div>
-            {% endif %}
-          </div>
+                {{ tab_1_label }}
+              </span>
+            </div>
+          {% endif %}
         </div>
-  
-        {%- comment -%} Grids {%- endcomment -%}
-  
-        {%- assign has_tab2_blocks = false -%}
-        {%- for block in section.blocks -%}
-          {%- if block.settings.tab_assignment == 'tab2' -%}{%- assign has_tab2_blocks = true -%}{%- endif -%}
-        {%- endfor -%}
-  
-        {% if enable_tabs and has_tab2_blocks %}
-          {%- comment -%} Tab 1 grid {%- endcomment -%}
-          <div
-            class="li3__grid"
-            id="li3-grid-tab1-{{ section.id }}"
-            role="tabpanel"
-          >
-            {% for block in section.blocks %}
-              {% if block.settings.tab_assignment == 'tab2' %}{% continue %}{% endif %}
-              {%- render 'li3-card', block: block, section: section -%}
-            {% endfor %}
-          </div>
-  
-          {%- comment -%} Tab 2 grid {%- endcomment -%}
-          <div
-            class="li3__grid"
-            id="li3-grid-tab2-{{ section.id }}"
-            role="tabpanel"
-            hidden
-          >
-            {% for block in section.blocks %}
-              {% unless block.settings.tab_assignment == 'tab2' %}{% continue %}{% endunless %}
-              {%- render 'li3-card', block: block, section: section -%}
-            {% endfor %}
-          </div>
-  
-        {% else %}
-          {%- comment -%} Single grid — all blocks {%- endcomment -%}
-          <div class="li3__grid" role="tabpanel">
-            {% for block in section.blocks %}
-              {%- render 'li3-card', block: block, section: section -%}
-            {% endfor %}
-          </div>
-        {% endif %}
-  
       </div>
-    </section>
-  
-    {% if enable_tabs %}
-      <script>
-        (function () {
-          var sid = {{ section.id | json }};
-          var btns = document.querySelectorAll('[data-li3-tab="' + sid + '"]');
-          btns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-              var tab = btn.getAttribute('data-tab');
-              btns.forEach(function (b) {
-                b.classList.remove('is-active');
-                b.setAttribute('aria-selected', 'false');
-              });
-              btn.classList.add('is-active');
-              btn.setAttribute('aria-selected', 'true');
-              ['tab1', 'tab2'].forEach(function (t) {
-                var grid = document.getElementById('li3-grid-' + t + '-' + sid);
-                if (!grid) return;
-                if (t === tab) { grid.removeAttribute('hidden'); }
-                else { grid.setAttribute('hidden', ''); }
-              });
+
+      {%- comment -%} Grids {%- endcomment -%}
+
+      {%- assign has_tab2_blocks = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.tab_assignment == 'tab2' -%}{%- assign has_tab2_blocks = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      {% if enable_tabs and has_tab2_blocks %}
+        {%- comment -%} Tab 1 grid {%- endcomment -%}
+        <div
+          class="li3__grid"
+          id="li3-grid-tab1-{{ section.id }}"
+          role="tabpanel"
+        >
+          {% for block in section.blocks %}
+            {% if block.settings.tab_assignment == 'tab2' %}{% continue %}{% endif %}
+            {%- render 'li3-card', block: block, section: section -%}
+          {% endfor %}
+        </div>
+
+        {%- comment -%} Tab 2 grid {%- endcomment -%}
+        <div
+          class="li3__grid"
+          id="li3-grid-tab2-{{ section.id }}"
+          role="tabpanel"
+          hidden
+        >
+          {% for block in section.blocks %}
+            {% unless block.settings.tab_assignment == 'tab2' %}{% continue %}{% endunless %}
+            {%- render 'li3-card', block: block, section: section -%}
+          {% endfor %}
+        </div>
+
+      {% else %}
+        {%- comment -%} Single grid — all blocks {%- endcomment -%}
+        <div class="li3__grid" role="tabpanel">
+          {% for block in section.blocks %}
+            {%- render 'li3-card', block: block, section: section -%}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  {% if enable_tabs %}
+    <script>
+      (function () {
+        var sid = {{ section.id | json }};
+        var btns = document.querySelectorAll('[data-li3-tab="' + sid + '"]');
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var tab = btn.getAttribute('data-tab');
+            btns.forEach(function (b) {
+              b.classList.remove('is-active');
+              b.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-selected', 'true');
+            ['tab1', 'tab2'].forEach(function (t) {
+              var grid = document.getElementById('li3-grid-' + t + '-' + sid);
+              if (!grid) return;
+              if (t === tab) { grid.removeAttribute('hidden'); }
+              else { grid.setAttribute('hidden', ''); }
             });
           });
-        })();
-      </script>
-    {% endif %}
-  {% endcapture %}
-  
-  {{ section_content }}
-  
-  {% schema %}
-  {
-    "name": "CTR Ingredients LP3",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Headline"
-      },
-      {
-        "type": "richtext",
-        "id": "headline",
-        "label": "Headline",
-        "default": "<p>What's inside.<br>And why it matters.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "headline_color",
-        "label": "Headline color",
-        "default": "#1a1a1a"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_desktop",
-        "label": "Headline size — Desktop (px)",
-        "default": 44,
-        "min": 24,
-        "max": 80,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_mobile",
-        "label": "Headline size — Mobile (px)",
-        "default": 30,
-        "min": 18,
-        "max": 56,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Subtext"
-      },
-      {
-        "type": "richtext",
-        "id": "subtext",
-        "label": "Subtext",
-        "default": "<p>We don't just use the right ingredients, we make sure your body can actually absorb them. Every active compound is clinically studied, precisely dosed, and rigorously third-party tested.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "subtext_color",
-        "label": "Subtext color"
-      },
-      {
-        "type": "range",
-        "id": "subtext_size",
-        "label": "Subtext font size (px)",
-        "default": 15,
-        "min": 12,
-        "max": 22,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Product Tabs"
-      },
-      {
-        "type": "checkbox",
-        "id": "enable_tabs",
-        "label": "Enable tab toggle",
-        "default": false,
-        "info": "When off, the Tab 1 label shows as a static pill and all cards display in one grid."
-      },
-      {
-        "type": "text",
-        "id": "tab_1_label",
-        "label": "Tab 1 label",
-        "default": "WLP-1™ — 2 capsules daily"
-      },
-      {
-        "type": "color",
-        "id": "tab_dot_color_1",
-        "label": "Tab 1 dot color",
-        "default": "#4f84c4"
-      },
-      {
-        "type": "text",
-        "id": "tab_2_label",
-        "label": "Tab 2 label (optional)"
-      },
-      {
-        "type": "color",
-        "id": "tab_dot_color_2",
-        "label": "Tab 2 dot color",
-        "default": "#e1225c"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Card Styles"
-      },
-      {
-        "type": "color",
-        "id": "card_bg",
-        "label": "Card background",
-        "default": "#ffffff"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "card_border",
-        "label": "Card border color",
-        "default": "#e5e0d8"
-      },
-      {
-        "type": "range",
-        "id": "card_border_radius",
-        "label": "Card border radius (px)",
-        "default": 12,
-        "min": 0,
-        "max": 32,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "image_border_radius",
-        "label": "Image border radius (px)",
-        "default": 0,
-        "min": 0,
-        "max": 24,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Stat Pill Styles"
-      },
-      {
-        "type": "color",
-        "id": "stat_color",
-        "label": "Stat pill text color",
-        "default": "#2563a8"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Section Globals"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "background_color",
-        "label": "Section background",
-        "default": "#f5f0e8"
-      },
-      {
-        "type": "textarea",
-        "id": "custom_css",
-        "label": "Custom CSS"
-      },
-      {
-        "type": "text",
-        "id": "section_id",
-        "label": "Section ID (anchor)"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "ingredient",
-        "name": "Ingredient Card",
-        "limit": 8,
-        "settings": [
-          {
-            "type": "header",
-            "content": "Content"
-          },
-          {
-            "type": "image_picker",
-            "id": "image",
-            "label": "Ingredient image"
-          },
-          {
-            "type": "text",
-            "id": "name",
-            "label": "Ingredient name",
-            "default": "IGOB131®"
-          },
-          {
-            "type": "text",
-            "id": "dosage",
-            "label": "Dosage / subtitle",
-            "default": "300mg · African Mango extract"
-          },
-          {
-            "type": "richtext",
-            "id": "description",
-            "label": "Description",
-            "default": "<p>Rebalances metabolism hormones for appetite control and fat loss. Targets leptin and adiponectin directly.</p>"
-          },
-          {
-            "type": "paragraph",
-            "content": "t:all.empty_char"
-          },
-          {
-            "type": "header",
-            "content": "Stat Pills (up to 3)"
-          },
-          {
-            "type": "text",
-            "id": "stat_1_value",
-            "label": "Stat 1 — value",
-            "default": "28.1 lbs lost"
-          },
-          {
-            "type": "text",
-            "id": "stat_2_value",
-            "label": "Stat 2 — value"
-          },
-          {
-            "type": "text",
-            "id": "stat_3_value",
-            "label": "Stat 3 — value"
-          },
-          {
-            "type": "text",
-            "id": "stat_4_value",
-            "label": "Stat 4 — value"
-          },
-          {
-            "type": "paragraph",
-            "content": "t:all.empty_char"
-          },
-          {
-            "type": "header",
-            "content": "Card Options"
-          },
-          {
-            "type": "color",
-            "id": "dot_color",
-            "label": "Top dot color",
-            "default": "#4f84c4"
-          },
-          {
-            "type": "select",
-            "id": "tab_assignment",
-            "label": "Assign to tab",
-            "default": "tab1",
-            "options": [
-              { "value": "tab1", "label": "Tab 1" },
-              { "value": "tab2", "label": "Tab 2" }
-            ]
-          }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "CTR Ingredients LP3",
-        "category": "Content",
-        "settings": {
-          "headline": "<p>What's inside.<br>And why it matters.</p>",
-          "subtext": "<p>We don't just use the right ingredients, we make sure your body can actually absorb them. Every active compound is clinically studied, precisely dosed, and rigorously third-party tested.</p>",
-          "tab_1_label": "WLP-1™ — 2 capsules daily",
-          "tab_dot_color_1": "#4f84c4",
-          "enable_tabs": false,
-          "card_bg": "#ffffff",
-          "card_border": "#e5e0d8",
-          "card_border_radius": 12,
-          "image_border_radius": 0,
-          "stat_color": "#2563a8",
-          "background_color": "#f5f0e8",
-          "headline_size_desktop": 44,
-          "headline_size_mobile": 30,
-          "subtext_size": 15
+        });
+      })();
+    </script>
+  {% endif %}
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Ingredients LP3",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>What's inside.<br>And why it matters.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 44,
+      "min": 24,
+      "max": 80,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 30,
+      "min": 18,
+      "max": 56,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Subtext"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>We don't just use the right ingredients, we make sure your body can actually absorb them. Every active compound is clinically studied, precisely dosed, and rigorously third-party tested.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "subtext_color",
+      "label": "Subtext color"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "label": "Subtext font size (px)",
+      "default": 15,
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Product Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tabs",
+      "label": "Enable tab toggle",
+      "default": false,
+      "info": "When off, the Tab 1 label shows as a static pill and all cards display in one grid."
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Tab 1 label",
+      "default": "WLP-1™ — 2 capsules daily"
+    },
+    {
+      "type": "color",
+      "id": "tab_dot_color_1",
+      "label": "Tab 1 dot color",
+      "default": "#4f84c4"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Tab 2 label (optional)"
+    },
+    {
+      "type": "color",
+      "id": "tab_dot_color_2",
+      "label": "Tab 2 dot color",
+      "default": "#e1225c"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Card Styles"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "card_border",
+      "label": "Card border color",
+      "default": "#e5e0d8"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius (px)",
+      "default": 12,
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius (px)",
+      "default": 0,
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Stat Pill Styles"
+    },
+    {
+      "type": "color",
+      "id": "stat_color",
+      "label": "Stat pill text color",
+      "default": "#2563a8"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID (anchor)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient Card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
         },
-        "blocks": [
-          {
-            "type": "ingredient",
-            "settings": {
-              "name": "IGOB131®",
-              "dosage": "300mg · African Mango extract",
-              "description": "<p>Rebalances metabolism hormones for appetite control and fat loss. Targets leptin and adiponectin directly.</p>",
-              "stat_1_value": "28.1 lbs lost",
-              "stat_2_value": "6.7\" off waist",
-              "stat_3_value": "48.6% leptin reduction",
-              "dot_color": "#4f84c4",
-              "tab_assignment": "tab1"
-            }
-          },
-          {
-            "type": "ingredient",
-            "settings": {
-              "name": "CQR-300®",
-              "dosage": "300mg · Cissus quadrangularis extract",
-              "description": "<p>Natural fat and carb blocker — inhibits lipase and amylase. Head-to-head with oral semaglutide showed comparable weight loss over 16 weeks.</p>",
-              "stat_1_value": "321% GLP-1 boost",
-              "stat_2_value": "17.8% DPP-4 reduction",
-              "dot_color": "#4f84c4",
-              "tab_assignment": "tab1"
-            }
-          },
-          {
-            "type": "ingredient",
-            "settings": {
-              "name": "Capsifen®",
-              "dosage": "200mg · Bioavailable capsaicin",
-              "description": "<p>Promotes thermogenesis without GI discomfort. Reduces appetite and cravings. 20x more absorbed than standard capsaicin.</p>",
-              "stat_1_value": "4 lbs lost in 4 weeks",
-              "stat_2_value": "No behavior change required",
-              "dot_color": "#4f84c4",
-              "tab_assignment": "tab1"
-            }
-          },
-          {
-            "type": "ingredient",
-            "settings": {
-              "name": "Body Ready™ Tripeptide",
-              "dosage": "Nanoemulsion peptide complex",
-              "description": "<p>Targets appetite suppression through the endocannabinoid system. Includes Grains of Paradise, Humulene nanoemulsion, and reduced Glutathione.</p>",
-              "stat_1_value": "28.1 lbs lost",
-              "stat_2_value": "6.7\" off waist",
-              "stat_3_value": "159% adiponectin increase",
-              "dot_color": "#4f84c4",
-              "tab_assignment": "tab1"
-            }
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Ingredient image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Ingredient name",
+          "default": "IGOB131®"
+        },
+        {
+          "type": "text",
+          "id": "dosage",
+          "label": "Dosage / subtitle",
+          "default": "300mg · African Mango extract"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Rebalances metabolism hormones for appetite control and fat loss. Targets leptin and adiponectin directly.</p>"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Stat Pills (up to 3)"
+        },
+        {
+          "type": "text",
+          "id": "stat_1_value",
+          "label": "Stat 1 — value",
+          "default": "28.1 lbs lost"
+        },
+        {
+          "type": "text",
+          "id": "stat_2_value",
+          "label": "Stat 2 — value"
+        },
+        {
+          "type": "text",
+          "id": "stat_3_value",
+          "label": "Stat 3 — value"
+        },
+        {
+          "type": "text",
+          "id": "stat_4_value",
+          "label": "Stat 4 — value"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Card Options"
+        },
+        {
+          "type": "color",
+          "id": "dot_color",
+          "label": "Top dot color",
+          "default": "#4f84c4"
+        },
+        {
+          "type": "select",
+          "id": "tab_assignment",
+          "label": "Assign to tab",
+          "default": "tab1",
+          "options": [
+            { "value": "tab1", "label": "Tab 1" },
+            { "value": "tab2", "label": "Tab 2" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Ingredients LP3",
+      "category": "Content",
+      "settings": {
+        "headline": "<p>What's inside.<br>And why it matters.</p>",
+        "subtext": "<p>We don't just use the right ingredients, we make sure your body can actually absorb them. Every active compound is clinically studied, precisely dosed, and rigorously third-party tested.</p>",
+        "tab_1_label": "WLP-1™ — 2 capsules daily",
+        "tab_dot_color_1": "#4f84c4",
+        "enable_tabs": false,
+        "card_bg": "#ffffff",
+        "card_border": "#e5e0d8",
+        "card_border_radius": 12,
+        "image_border_radius": 0,
+        "stat_color": "#2563a8",
+        "background_color": "#f5f0e8",
+        "headline_size_desktop": 44,
+        "headline_size_mobile": 30,
+        "subtext_size": 15
+      },
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "IGOB131®",
+            "dosage": "300mg · African Mango extract",
+            "description": "<p>Rebalances metabolism hormones for appetite control and fat loss. Targets leptin and adiponectin directly.</p>",
+            "stat_1_value": "28.1 lbs lost",
+            "stat_2_value": "6.7\" off waist",
+            "stat_3_value": "48.6% leptin reduction",
+            "dot_color": "#4f84c4",
+            "tab_assignment": "tab1"
           }
-        ]
-      }
-    ]
-  }
-  {% endschema %}
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "CQR-300®",
+            "dosage": "300mg · Cissus quadrangularis extract",
+            "description": "<p>Natural fat and carb blocker — inhibits lipase and amylase. Head-to-head with oral semaglutide showed comparable weight loss over 16 weeks.</p>",
+            "stat_1_value": "321% GLP-1 boost",
+            "stat_2_value": "17.8% DPP-4 reduction",
+            "dot_color": "#4f84c4",
+            "tab_assignment": "tab1"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Capsifen®",
+            "dosage": "200mg · Bioavailable capsaicin",
+            "description": "<p>Promotes thermogenesis without GI discomfort. Reduces appetite and cravings. 20x more absorbed than standard capsaicin.</p>",
+            "stat_1_value": "4 lbs lost in 4 weeks",
+            "stat_2_value": "No behavior change required",
+            "dot_color": "#4f84c4",
+            "tab_assignment": "tab1"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Body Ready™ Tripeptide",
+            "dosage": "Nanoemulsion peptide complex",
+            "description": "<p>Targets appetite suppression through the endocannabinoid system. Includes Grains of Paradise, Humulene nanoemulsion, and reduced Glutathione.</p>",
+            "stat_1_value": "28.1 lbs lost",
+            "stat_2_value": "6.7\" off waist",
+            "stat_3_value": "159% adiponectin increase",
+            "dot_color": "#4f84c4",
+            "tab_assignment": "tab1"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,582 +1,582 @@
 {%- comment -%} Subscription CTA Banner Section {%- endcomment -%}
 {%- liquid
-    assign selected_product = section.settings.product
-    assign section_bg = section.settings.section_bg
-    assign section_width = section.settings.section_width
-    assign headline = section.settings.headline
-    assign headline_color = section.settings.headline_color
-    assign headline_size_desktop = section.settings.headline_size_desktop
-    assign headline_size_mobile = section.settings.headline_size_mobile
-    assign pricing_text = section.settings.pricing_text
-    assign pricing_bg = section.settings.pricing_bg
-    assign pricing_color = section.settings.pricing_color
-    assign promo_headline = section.settings.promo_headline
-    assign promo_text = section.settings.promo_text
-    assign promo_link_text = section.settings.promo_link_text
-    assign promo_link_url = section.settings.promo_link_url
-    assign promo_image = section.settings.promo_image
-    if promo_image == blank and selected_product != blank
-      assign promo_image = selected_product.featured_image
-    endif
-    assign promo_bg = section.settings.promo_bg
-    assign promo_headline_color = section.settings.promo_headline_color
-    assign promo_text_color = section.settings.promo_text_color
-    assign promo_border_radius = section.settings.promo_border_radius
-    assign cta_label = section.settings.cta_label
-    if selected_product != blank
-      assign cta_link = selected_product.url
-    else
-      assign cta_link = section.settings.cta_url | default: '#'
-    endif
-    assign cta_bg = section.settings.cta_bg
-    assign cta_color = section.settings.cta_color
-    assign cta_border_radius = section.settings.cta_border_radius
-    assign trust_1 = section.settings.trust_1
-    assign trust_2 = section.settings.trust_2
-    assign trust_3 = section.settings.trust_3
-    assign trust_4 = section.settings.trust_4
-    assign trust_5 = section.settings.trust_5
-    assign trust_color = section.settings.trust_color
-    assign trust_check_color = section.settings.trust_check_color
-    assign container_width = section.settings.container_width
-    assign custom_css = section.settings.custom_css
-    assign section_id = section.settings.section_id
-  -%}
-  
-  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-  
-  {% capture css %}
+  assign selected_product = section.settings.product
+  assign section_bg = section.settings.section_bg
+  assign section_width = section.settings.section_width
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign pricing_text = section.settings.pricing_text
+  assign pricing_bg = section.settings.pricing_bg
+  assign pricing_color = section.settings.pricing_color
+  assign promo_headline = section.settings.promo_headline
+  assign promo_text = section.settings.promo_text
+  assign promo_link_text = section.settings.promo_link_text
+  assign promo_link_url = section.settings.promo_link_url
+  assign promo_image = section.settings.promo_image
+  if promo_image == blank and selected_product != blank
+    assign promo_image = selected_product.featured_image
+  endif
+  assign promo_bg = section.settings.promo_bg
+  assign promo_headline_color = section.settings.promo_headline_color
+  assign promo_text_color = section.settings.promo_text_color
+  assign promo_border_radius = section.settings.promo_border_radius
+  assign cta_label = section.settings.cta_label
+  if selected_product != blank
+    assign cta_link = selected_product.url
+  else
+    assign cta_link = section.settings.cta_url | default: '#'
+  endif
+  assign cta_bg = section.settings.cta_bg
+  assign cta_color = section.settings.cta_color
+  assign cta_border_radius = section.settings.cta_border_radius
+  assign trust_1 = section.settings.trust_1
+  assign trust_2 = section.settings.trust_2
+  assign trust_3 = section.settings.trust_3
+  assign trust_4 = section.settings.trust_4
+  assign trust_5 = section.settings.trust_5
+  assign trust_color = section.settings.trust_color
+  assign trust_check_color = section.settings.trust_check_color
+  assign container_width = section.settings.container_width
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    max-width: {{ section_width }}px;
+    margin-left: auto;
+    margin-right: auto;
+    {% if section_bg != blank %}background-color: {{ section_bg }};{% endif %}
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  & .sb__container {
+    max-width: {{ container_width }}px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+
+  & .sb__headline {
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0;
+    font-size: {{ headline_size_mobile }}px;
+    {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
+  }
+  & .sb__headline p { margin: 0; }
+
+  & .sb__pricing {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: -42px;
+    position: relative;
+    z-index: 2;
+    {% if pricing_bg != blank %}background-color: {{ pricing_bg }};{% endif %}
+    {% if pricing_color != blank %}color: {{ pricing_color }};{% endif %}
+  }
+
+  & .sb__promo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: {{ promo_border_radius }}px;
+    text-align: left;
+    {% if promo_bg != blank %}background-color: {{ promo_bg }};{% endif %}
+  }
+
+  & .sb__promo-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .sb__promo-headline {
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+    {% if promo_headline_color != blank %}color: {{ promo_headline_color }};{% endif %}
+  }
+
+  & .sb__promo-body {
+    font-size: 14px;
+    line-height: 1.4;
+    {% if promo_text_color != blank %}color: {{ promo_text_color }};{% endif %}
+  }
+  & .sb__promo-body a {
+    color: inherit;
+  }
+
+  & .sb__promo-image {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  & .sb__promo-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  & .sb__cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 15px 24px; 
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+    border: none;
+    border-radius: {{ cta_border_radius }}px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
+    {% if cta_color != blank %}color: {{ cta_color }};{% endif %}
+  }
+  & .sb__cta:hover {
+    opacity: 0.9;
+  }
+
+  & .sb__trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
+  }
+
+  & .sb__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  & .sb__trust-item svg {
+    flex-shrink: 0;
+    {% if trust_check_color != blank %}color: {{ trust_check_color }};{% endif %}
+  }
+
+  @media (min-width: 768px) {
     & {
-      width: 100%;
-      max-width: {{ section_width }}px;
-      margin-left: auto;
-      margin-right: auto;
-      {% if section_bg != blank %}background-color: {{ section_bg }};{% endif %}
-      padding: 24px;
-      border-radius: 16px;
+      padding: 24px 24px;
     }
-  
-    & .sb__container {
-      max-width: {{ container_width }}px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      text-align: center;
-    }
-  
     & .sb__headline {
-      font-weight: 900;
-      line-height: 1.1;
-      margin: 0;
-      font-size: {{ headline_size_mobile }}px;
-      {% if headline_color != blank %}color: {{ headline_color }};{% endif %}
+      font-size: {{ headline_size_desktop }}px;
     }
-    & .sb__headline p { margin: 0; }
-  
-    & .sb__pricing {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 16px;
-      margin-bottom: -42px;
-      position: relative;
-      z-index: 2;
-      {% if pricing_bg != blank %}background-color: {{ pricing_bg }};{% endif %}
-      {% if pricing_color != blank %}color: {{ pricing_color }};{% endif %}
-    }
-  
-    & .sb__promo {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      width: 100%;
-      padding: 16px 20px;
-      border-radius: {{ promo_border_radius }}px;
-      text-align: left;
-      {% if promo_bg != blank %}background-color: {{ promo_bg }};{% endif %}
-    }
-  
-    & .sb__promo-text {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-  
-    & .sb__promo-headline {
-      font-weight: 700;
-      font-size: 16px;
-      margin: 0;
-      {% if promo_headline_color != blank %}color: {{ promo_headline_color }};{% endif %}
-    }
-  
-    & .sb__promo-body {
-      font-size: 14px;
-      line-height: 1.4;
-      {% if promo_text_color != blank %}color: {{ promo_text_color }};{% endif %}
-    }
-    & .sb__promo-body a {
-      color: inherit;
-    }
-  
-    & .sb__promo-image {
-      flex-shrink: 0;
-      width: 56px;
-      height: 56px;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    & .sb__promo-image img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  
     & .sb__cta {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 15px 24px; 
-      font-weight: 700;
-      font-size: 18px;
-      text-decoration: none;
-      border: none;
-      border-radius: {{ cta_border_radius }}px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
-      {% if cta_color != blank %}color: {{ cta_color }};{% endif %}
+      {% comment %} width: auto; {% endcomment %}
     }
-    & .sb__cta:hover {
-      opacity: 0.9;
+    & .sb__promo {
+      {% comment %} max-width: 480px; {% endcomment %}
     }
-  
-    & .sb__trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
-    }
-  
-    & .sb__trust-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    & .sb__trust-item svg {
-      flex-shrink: 0;
-      {% if trust_check_color != blank %}color: {{ trust_check_color }};{% endif %}
-    }
-  
-    @media (min-width: 768px) {
-      & {
-        padding: 24px 24px;
-      }
-      & .sb__headline {
-        font-size: {{ headline_size_desktop }}px;
-      }
-      & .sb__cta {
-        {% comment %} width: auto; {% endcomment %}
-      }
-      & .sb__promo {
-        {% comment %} max-width: 480px; {% endcomment %}
-      }
-    }
-  {% endcapture %}
-  
-  {% capture section_content %}
-    <style>
-      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-    </style>
-  
-    <section
-      data-style-id="{{ section.id }}"
-      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    >
-      <div class="sb__container">
-  
-        {% if headline != blank %}
-          <h2 class="sb__headline">{{ headline }}</h2>
-        {% endif %}
-  
-        {% if pricing_text != blank %}
-          <span class="sb__pricing">{{ pricing_text }}</span>
-        {% endif %}
-  
-        {% if promo_headline != blank or promo_text != blank %}
-          <div class="sb__promo">
-            <div class="sb__promo-text">
-              {% if promo_headline != blank %}
-                <p class="sb__promo-headline">{{ promo_headline }}</p>
-              {% endif %}
-              {% if promo_text != blank %}
-                <div class="sb__promo-body">
-                  {{ promo_text }}
-                  {% if promo_link_text != blank %}
-                    <a href="{{ promo_link_url | default: '#' }}">{{ promo_link_text }}</a>
-                  {% endif %}
-                </div>
-              {% endif %}
-            </div>
-            {% if promo_image != blank %}
-              <div class="sb__promo-image">
-                <img
-                  src="{{ promo_image | image_url: width: 120 }}"
-                  alt="{{ promo_image.alt | default: '' }}"
-                  loading="lazy"
-                >
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="sb__container">
+
+      {% if headline != blank %}
+        <h2 class="sb__headline">{{ headline }}</h2>
+      {% endif %}
+
+      {% if pricing_text != blank %}
+        <span class="sb__pricing">{{ pricing_text }}</span>
+      {% endif %}
+
+      {% if promo_headline != blank or promo_text != blank %}
+        <div class="sb__promo">
+          <div class="sb__promo-text">
+            {% if promo_headline != blank %}
+              <p class="sb__promo-headline">{{ promo_headline }}</p>
+            {% endif %}
+            {% if promo_text != blank %}
+              <div class="sb__promo-body">
+                {{ promo_text }}
+                {% if promo_link_text != blank %}
+                  <a href="{{ promo_link_url | default: '#' }}">{{ promo_link_text }}</a>
+                {% endif %}
               </div>
             {% endif %}
           </div>
-        {% endif %}
-  
-        {% if cta_label != blank %}
-          <a href="{{ cta_link }}" class="sb__cta">{{ cta_label }}</a>
-        {% endif %}
-  
-        {%- liquid
-          assign trusts = ''
-          if trust_1 != blank
-            assign trusts = trusts | append: trust_1 | append: '||'
-          endif
-          if trust_2 != blank
-            assign trusts = trusts | append: trust_2 | append: '||'
-          endif
-          if trust_3 != blank
-            assign trusts = trusts | append: trust_3 | append: '||'
-          endif
-          if trust_4 != blank
-            assign trusts = trusts | append: trust_4 | append: '||'
-          endif
-          if trust_5 != blank
-            assign trusts = trusts | append: trust_5 | append: '||'
-          endif
-          assign trust_array = trusts | split: '||'
-        -%}
-  
-        {% if trust_array.size > 0 %}
-          <div class="sb__trust">
-            {% for item in trust_array %}
-              {% if item != blank %}
-                <span class="sb__trust-item">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  {{ item }}
-                </span>
-              {% endif %}
-            {% endfor %}
-          </div>
-        {% endif %}
-  
-      </div>
-    </section>
-  {% endcapture %}
-  
-  {{ section_content }}
-  
-  {% schema %}
-  {
-    "name": "CTR Subscription Banner",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Product"
-      },
-      {
-        "type": "product",
-        "id": "product",
-        "label": "Product",
-        "info": "CTA links to product page. If no promo image set, uses product featured image."
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Headline"
-      },
-      {
-        "type": "richtext",
-        "id": "headline",
-        "label": "Headline",
-        "default": "<p>Start your Metabolic Balance Stack. Save Up To 35% today.</p>"
-      },
-      {
-        "type": "color",
-        "id": "headline_color",
-        "label": "Headline color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_desktop",
-        "label": "Headline size — Desktop (px)",
-        "default": 42,
-        "min": 24,
-        "max": 72,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_mobile",
-        "label": "Headline size — Mobile (px)",
-        "default": 30,
-        "min": 20,
-        "max": 52,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Pricing Badge"
-      },
-      {
-        "type": "text",
-        "id": "pricing_text",
-        "label": "Pricing text",
-        "default": "$88.20/mo (30% off $126.00)"
-      },
-      {
-        "type": "color",
-        "id": "pricing_bg",
-        "label": "Badge background",
-        "default": "#e8345e"
-      },
-      {
-        "type": "color",
-        "id": "pricing_color",
-        "label": "Badge text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Promo Callout"
-      },
-      {
-        "type": "text",
-        "id": "promo_headline",
-        "label": "Promo headline",
-        "default": "Spring Special: FREE Gifts with Subscription"
-      },
-      {
-        "type": "text",
-        "id": "promo_text",
-        "label": "Promo text",
-        "default": "Gifts to elevate and complete your daily ritual."
-      },
-      {
-        "type": "text",
-        "id": "promo_link_text",
-        "label": "Promo link text",
-        "default": "See gifts"
-      },
-      {
-        "type": "url",
-        "id": "promo_link_url",
-        "label": "Promo link URL"
-      },
-      {
-        "type": "image_picker",
-        "id": "promo_image",
-        "label": "Promo image"
-      },
-      {
-        "type": "color",
-        "id": "promo_bg",
-        "label": "Promo background",
-        "default": "#ffffff"
-      },
-      {
-        "type": "color",
-        "id": "promo_headline_color",
-        "label": "Promo headline color",
-        "default": "#1a1a1a"
-      },
-      {
-        "type": "color",
-        "id": "promo_text_color",
-        "label": "Promo text color",
-        "default": "#666666"
-      },
-      {
-        "type": "range",
-        "id": "promo_border_radius",
-        "label": "Promo border radius (px)",
-        "default": 12,
-        "min": 0,
-        "max": 24,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "CTA Button"
-      },
-      {
-        "type": "text",
-        "id": "cta_label",
-        "label": "Button text",
-        "default": "Subscribe & Save Up To 35%"
-      },
-      {
-        "type": "url",
-        "id": "cta_url",
-        "label": "Button URL"
-      },
-      {
-        "type": "color",
-        "id": "cta_bg",
-        "label": "Button background",
-        "default": "#1a1a1a"
-      },
-      {
-        "type": "color",
-        "id": "cta_color",
-        "label": "Button text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "cta_border_radius",
-        "label": "Button border radius (px)",
-        "default": 12,
-        "min": 0,
-        "max": 30,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Trust Badges"
-      },
-      {
-        "type": "text",
-        "id": "trust_1",
-        "label": "Trust badge 1",
-        "default": "Free Shipping on $50+"
-      },
-      {
-        "type": "text",
-        "id": "trust_2",
-        "label": "Trust badge 2",
-        "default": "30-Day Money-Back Guarantee"
-      },
-      {
-        "type": "text",
-        "id": "trust_3",
-        "label": "Trust badge 3",
-        "default": "HSA/FSA Eligible"
-      },
-      {
-        "type": "text",
-        "id": "trust_4",
-        "label": "Trust badge 4",
-        "default": "Third-Party Tested"
-      },
-      {
-        "type": "text",
-        "id": "trust_5",
-        "label": "Trust badge 5",
-        "default": "Cancel Anytime"
-      },
-      {
-        "type": "color",
-        "id": "trust_color",
-        "label": "Trust text color",
-        "default": "#ffffffcc"
-      },
-      {
-        "type": "color",
-        "id": "trust_check_color",
-        "label": "Trust checkmark color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Layout"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "section_bg",
-        "label": "Section background",
-        "default": "#4f46e5"
-      },
-      {
-        "type": "range",
-        "id": "section_width",
-        "label": "Section width — Desktop (px)",
-        "default": 1200,
-        "min": 600,
-        "max": 1440,
-        "step": 20,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "container_width",
-        "label": "Content width — Desktop (px)",
-        "default": 660,
-        "min": 400,
-        "max": 900,
-        "step": 20,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Advanced"
-      },
-      {
-        "type": "textarea",
-        "id": "custom_css",
-        "label": "Custom CSS"
-      },
-      {
-        "type": "text",
-        "id": "section_id",
-        "label": "Section Id"
-      }
-    ],
-    "presets": [
-      {
-        "name": "CTR Subscription Banner",
-        "category": "CTA"
-      }
-    ]
-  }
-  {% endschema %}
+          {% if promo_image != blank %}
+            <div class="sb__promo-image">
+              <img
+                src="{{ promo_image | image_url: width: 120 }}"
+                alt="{{ promo_image.alt | default: '' }}"
+                loading="lazy"
+              >
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if cta_label != blank %}
+        <a href="{{ cta_link }}" class="sb__cta">{{ cta_label }}</a>
+      {% endif %}
+
+      {%- liquid
+        assign trusts = ''
+        if trust_1 != blank
+          assign trusts = trusts | append: trust_1 | append: '||'
+        endif
+        if trust_2 != blank
+          assign trusts = trusts | append: trust_2 | append: '||'
+        endif
+        if trust_3 != blank
+          assign trusts = trusts | append: trust_3 | append: '||'
+        endif
+        if trust_4 != blank
+          assign trusts = trusts | append: trust_4 | append: '||'
+        endif
+        if trust_5 != blank
+          assign trusts = trusts | append: trust_5 | append: '||'
+        endif
+        assign trust_array = trusts | split: '||'
+      -%}
+
+      {% if trust_array.size > 0 %}
+        <div class="sb__trust">
+          {% for item in trust_array %}
+            {% if item != blank %}
+              <span class="sb__trust-item">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M11.667 3.5L5.25 9.917 2.333 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ item }}
+              </span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Subscription Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "CTA links to product page. If no promo image set, uses product featured image."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Start your Metabolic Balance Stack. Save Up To 35% today.</p>"
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 42,
+      "min": 24,
+      "max": 72,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 30,
+      "min": 20,
+      "max": 52,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Pricing Badge"
+    },
+    {
+      "type": "text",
+      "id": "pricing_text",
+      "label": "Pricing text",
+      "default": "$88.20/mo (30% off $126.00)"
+    },
+    {
+      "type": "color",
+      "id": "pricing_bg",
+      "label": "Badge background",
+      "default": "#e8345e"
+    },
+    {
+      "type": "color",
+      "id": "pricing_color",
+      "label": "Badge text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Promo Callout"
+    },
+    {
+      "type": "text",
+      "id": "promo_headline",
+      "label": "Promo headline",
+      "default": "Spring Special: FREE Gifts with Subscription"
+    },
+    {
+      "type": "text",
+      "id": "promo_text",
+      "label": "Promo text",
+      "default": "Gifts to elevate and complete your daily ritual."
+    },
+    {
+      "type": "text",
+      "id": "promo_link_text",
+      "label": "Promo link text",
+      "default": "See gifts"
+    },
+    {
+      "type": "url",
+      "id": "promo_link_url",
+      "label": "Promo link URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Promo image"
+    },
+    {
+      "type": "color",
+      "id": "promo_bg",
+      "label": "Promo background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "promo_headline_color",
+      "label": "Promo headline color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "promo_text_color",
+      "label": "Promo text color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "promo_border_radius",
+      "label": "Promo border radius (px)",
+      "default": 12,
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Subscribe & Save Up To 35%"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "label": "Button border radius (px)",
+      "default": 12,
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Trust Badges"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust badge 1",
+      "default": "Free Shipping on $50+"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust badge 2",
+      "default": "30-Day Money-Back Guarantee"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Trust badge 3",
+      "default": "HSA/FSA Eligible"
+    },
+    {
+      "type": "text",
+      "id": "trust_4",
+      "label": "Trust badge 4",
+      "default": "Third-Party Tested"
+    },
+    {
+      "type": "text",
+      "id": "trust_5",
+      "label": "Trust badge 5",
+      "default": "Cancel Anytime"
+    },
+    {
+      "type": "color",
+      "id": "trust_color",
+      "label": "Trust text color",
+      "default": "#ffffffcc"
+    },
+    {
+      "type": "color",
+      "id": "trust_check_color",
+      "label": "Trust checkmark color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#4f46e5"
+    },
+    {
+      "type": "range",
+      "id": "section_width",
+      "label": "Section width — Desktop (px)",
+      "default": 1200,
+      "min": 600,
+      "max": 1440,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Content width — Desktop (px)",
+      "default": 660,
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Subscription Banner",
+      "category": "CTA"
+    }
+  ]
+}
+{% endschema %}
