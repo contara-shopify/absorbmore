@@ -3,8 +3,6 @@
   File: sections/wlp1-listicle.liquid
 {% endcomment %}
 
-{{ 'https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap' | stylesheet_tag }}
-
 {% style %}
   .listicle-lp *, .listicle-lp *::before, .listicle-lp *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,11 +17,22 @@
     --warm-white: #FFFDF9;
     --border: #E5E0D8;
     --green: #1A8917;
-    font-family: 'Inter', sans-serif;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
+
+  /* Body */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide header and footer */
+header,
+footer {
+  display: none;
+}
 
   /* ── STICKY HEADER ── */
   .listicle-lp .sticky-bar {
@@ -44,6 +53,66 @@
   }
   .listicle-lp .sticky-btn:hover { background: var(--blue-hover); }
 
+  /* ── BRAND HEADER ── */
+  .listicle-lp .brand-header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .listicle-lp .brand-logo {
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.2px;
+    text-decoration: none;
+  }
+  .listicle-lp .brand-logo-mark {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--blue);
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .listicle-lp .brand-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .listicle-lp .brand-nav a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-light);
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .listicle-lp .brand-nav a:hover { color: var(--blue); }
+  .listicle-lp .brand-nav .shop-link {
+    background: var(--ink);
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    transition: background 0.2s;
+  }
+  .listicle-lp .brand-nav .shop-link:hover {
+    background: var(--blue);
+    color: #fff;
+  }
+  @media (max-width: 600px) {
+    .listicle-lp .brand-header { padding: 14px 20px; }
+    .listicle-lp .brand-logo { font-size: 17px; }
+    .listicle-lp .brand-nav { gap: 16px; }
+    .listicle-lp .brand-nav .text-link { display: none; }
+  }
+
   /* ── HERO ── */
   .listicle-lp .hero {
     background: var(--cream);
@@ -57,7 +126,7 @@
     padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
   }
   .listicle-lp .hero h1 {
-    font-family: 'EB Garamond', serif;
+    
     font-size: clamp(32px, 6vw, 52px);
     font-weight: 500; line-height: 1.15; margin-bottom: 20px;
   }
@@ -107,7 +176,7 @@
     font-size: 15px; font-weight: 800; margin-bottom: 14px;
   }
   .listicle-lp .reason-card h2 {
-    font-family: 'EB Garamond', serif;
+    
     font-size: 26px; font-weight: 600; line-height: 1.25; margin-bottom: 14px;
   }
   .listicle-lp .reason-card .body-text {
@@ -173,7 +242,7 @@
     margin-bottom: 12px;
   }
   .listicle-lp .inline-cta h3 {
-    font-family: 'EB Garamond', serif; font-size: 28px; font-weight: 500;
+     font-size: 28px; font-weight: 500;
     margin-bottom: 8px; color: #fff; position: relative;
   }
   .listicle-lp .inline-cta p {
@@ -201,7 +270,7 @@
     text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
   }
   .listicle-lp .social-proof h2 {
-    font-family: 'EB Garamond', serif; font-size: 32px; font-weight: 500; margin-bottom: 40px;
+     font-size: 32px; font-weight: 500; margin-bottom: 40px;
   }
   .listicle-lp .testimonial-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: left; }
   .listicle-lp .testimonial {
@@ -209,7 +278,7 @@
     position: relative;
   }
   .listicle-lp .testimonial .quote-mark {
-    font-family: 'EB Garamond', serif;
+    
     font-size: 48px; line-height: 1; color: var(--blue); opacity: 0.2;
     position: absolute; top: 16px; left: 24px;
   }
@@ -239,7 +308,7 @@
   /* ── COMPARISON ── */
   .listicle-lp .comparison { max-width: 680px; margin: 0 auto; padding: 64px 24px; }
   .listicle-lp .comparison h2 {
-    font-family: 'EB Garamond', serif; font-size: 32px; font-weight: 500;
+     font-size: 32px; font-weight: 500;
     text-align: center; margin-bottom: 32px;
   }
   .listicle-lp .compare-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -268,7 +337,7 @@
     background: var(--ink); color: #fff; text-align: center; padding: 80px 24px;
   }
   .listicle-lp .final-cta h2 {
-    font-family: 'EB Garamond', serif;
+    
     font-size: clamp(28px, 5vw, 42px); font-weight: 500; line-height: 1.2;
     max-width: 540px; margin: 0 auto 12px;
   }
@@ -323,6 +392,22 @@
     <p>GLP-1 support in a pill. <span>No needles. No prescription.</span></p>
     <a href="{{ section.settings.cta_url }}" class="sticky-btn">{{ section.settings.cta_text }}</a>
   </div>
+
+  <!-- BRAND HEADER -->
+  <header class="brand-header">
+    <a href="{{ section.settings.brand_url | default: '/' }}" class="brand-logo">
+      <span class="brand-logo-mark"></span>{{ section.settings.brand_name }}
+    </a>
+    <nav class="brand-nav">
+      {% if section.settings.nav_link_1_text != blank %}
+        <a href="{{ section.settings.nav_link_1_url }}" class="text-link">{{ section.settings.nav_link_1_text }}</a>
+      {% endif %}
+      {% if section.settings.nav_link_2_text != blank %}
+        <a href="{{ section.settings.nav_link_2_url }}" class="text-link">{{ section.settings.nav_link_2_text }}</a>
+      {% endif %}
+      <a href="{{ section.settings.cta_url }}" class="shop-link">Shop</a>
+    </nav>
+  </header>
 
   <!-- HERO -->
   <section class="hero">
@@ -482,6 +567,47 @@
   "name": "WLP-1 Listicle",
   "tag": "section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Brand Header"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "The Absorption Company"
+    },
+    {
+      "type": "url",
+      "id": "brand_url",
+      "label": "Brand logo link"
+    },
+    {
+      "type": "text",
+      "id": "nav_link_1_text",
+      "label": "Nav link 1 text",
+      "default": "Science"
+    },
+    {
+      "type": "url",
+      "id": "nav_link_1_url",
+      "label": "Nav link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "nav_link_2_text",
+      "label": "Nav link 2 text",
+      "default": "About"
+    },
+    {
+      "type": "url",
+      "id": "nav_link_2_url",
+      "label": "Nav link 2 URL"
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
     {
       "type": "text",
       "id": "eyebrow",

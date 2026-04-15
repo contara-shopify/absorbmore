@@ -1,0 +1,193 @@
+{% comment %} Countdown Bar — standalone Shopify section {% endcomment %}
+
+<style>
+  #cdb-{{ section.id }}{
+    --cdb-bg: {{ section.settings.bg_color | default: '#EAE6DC' }};
+    --cdb-ink: {{ section.settings.text_color | default: '#1A1A18' }};
+    --cdb-ink-60: {{ section.settings.muted_color | default: 'rgba(26,26,24,.62)' }};
+    --cdb-ink-10: rgba(26,26,24,.1);
+    --cdb-accent: {{ section.settings.accent_color | default: '#8a2f3f' }};
+    --cdb-card: {{ section.settings.card_color | default: '#ffffff' }};
+    background: var(--cdb-bg);
+    border-bottom: 1px solid var(--cdb-ink-10);
+    padding: 18px 24px;
+    color: var(--cdb-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  #cdb-{{ section.id }} *{ box-sizing: border-box; }
+  #cdb-{{ section.id }} .cdb-inner{
+    max-width: 1120px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 24px;
+  }
+  #cdb-{{ section.id }} .cdb-label{
+    font-size: 12px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--cdb-ink-60);
+    text-align: right;
+  }
+  #cdb-{{ section.id }} .cdb-units{ display: flex; gap: 10px; }
+  #cdb-{{ section.id }} .cdb-unit{
+    background: var(--cdb-card); border: 1px solid var(--cdb-ink-10);
+    border-radius: 10px; padding: 8px 14px; min-width: 62px; text-align: center;
+  }
+  #cdb-{{ section.id }} .cdb-num{
+    font-size: 28px; font-weight: 600; line-height: 1;
+    color: var(--cdb-ink); font-variant-numeric: tabular-nums;
+  }
+  #cdb-{{ section.id }} .cdb-sub{
+    font-size: 9px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--cdb-ink-60); margin-top: 4px;
+  }
+  #cdb-{{ section.id }} .cdb-tag{
+    font-size: 12px; color: var(--cdb-accent); font-weight: 600;
+    text-align: left; max-width: 200px; line-height: 1.35;
+  }
+  #cdb-{{ section.id }}.cdb-hide{ display: none; }
+
+  @media (max-width: 820px){
+    #cdb-{{ section.id }}{ padding: 14px 16px; }
+    #cdb-{{ section.id }} .cdb-inner{
+      grid-template-columns: 1fr; gap: 10px; justify-items: center;
+    }
+    #cdb-{{ section.id }} .cdb-label,
+    #cdb-{{ section.id }} .cdb-tag{
+      max-width: none; text-align: center;
+      font-size: 11px;
+    }
+    #cdb-{{ section.id }} .cdb-num{ font-size: 22px; }
+    #cdb-{{ section.id }} .cdb-unit{ min-width: 56px; padding: 6px 10px; }
+    #cdb-{{ section.id }} .cdb-units{ gap: 8px; }
+  }
+</style>
+
+<div id="cdb-{{ section.id }}">
+  <div class="cdb-inner">
+    {% if section.settings.label != blank %}
+      <div class="cdb-label">{{ section.settings.label }}</div>
+    {% endif %}
+    <div class="cdb-units">
+      <div class="cdb-unit"><div class="cdb-num" data-cdb="d">00</div><div class="cdb-sub">Days</div></div>
+      <div class="cdb-unit"><div class="cdb-num" data-cdb="h">00</div><div class="cdb-sub">Hours</div></div>
+      <div class="cdb-unit"><div class="cdb-num" data-cdb="m">00</div><div class="cdb-sub">Min</div></div>
+      <div class="cdb-unit"><div class="cdb-num" data-cdb="s">00</div><div class="cdb-sub">Sec</div></div>
+    </div>
+    {% if section.settings.tagline != blank %}
+      <div class="cdb-tag">{{ section.settings.tagline }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById('cdb-{{ section.id }}');
+  if(!root) return;
+
+  var target = new Date("{{ section.settings.launch_datetime }}").getTime();
+  var fallbackHours = {{ section.settings.fallback_hours | default: 48 }};
+  if(!target || isNaN(target)){
+    target = Date.now() + (fallbackHours * 60 * 60 * 1000);
+  }
+
+  var hideOnZero = {{ section.settings.hide_when_expired | default: false }};
+  var timer;
+
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+
+  function tick(){
+    var diff = target - Date.now();
+    if(diff <= 0){
+      diff = 0;
+      if(hideOnZero){
+        root.classList.add('cdb-hide');
+        clearInterval(timer);
+      }
+    }
+    var d = Math.floor(diff / (1000*60*60*24));
+    var h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    var m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    var s = Math.floor((diff % (1000*60)) / 1000);
+    var map = { d: d, h: h, m: m, s: s };
+    root.querySelectorAll('[data-cdb]').forEach(function(el){
+      el.textContent = pad(map[el.getAttribute('data-cdb')]);
+    });
+  }
+
+  tick();
+  timer = setInterval(tick, 1000);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 Countdown Bar",
+  "tag": "section",
+  "class": "countdown-bar-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "launch_datetime",
+      "label": "Target date/time (ISO format)",
+      "info": "e.g. 2026-04-10T09:00:00-07:00. Leave blank to use fallback duration."
+    },
+    {
+      "type": "number",
+      "id": "fallback_hours",
+      "label": "Fallback duration (hours)",
+      "default": 48,
+      "info": "Used if no target date is set. Rolling countdown from page load."
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (left side)",
+      "default": "VIP early access ends in"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline (right side)",
+      "default": "Your VIP window closes when the clock hits zero"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_when_expired",
+      "label": "Hide bar when countdown hits zero",
+      "default": false
+    },
+    { "type": "header", "content": "Colors" },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#EAE6DC"
+    },
+    {
+      "type": "color",
+      "id": "card_color",
+      "label": "Unit card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Numbers / primary text",
+      "default": "#1A1A18"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Label / sub text",
+      "default": "#6a6a68"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Tagline accent",
+      "default": "#8a2f3f"
+    }
+  ],
+  "presets": [
+    { "name": "WLP-1 Countdown Bar" }
+  ]
+}
+{% endschema %}
