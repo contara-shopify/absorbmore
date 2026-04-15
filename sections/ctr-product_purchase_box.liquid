@@ -373,9 +373,10 @@
     font-weight: 700;
   }
 
+  /* CHANGED: grid-template-columns updated from fixed 52px to auto so 3 thumbnails fit */
   #shopify-section-{{ section.id }} .ctr-ppb__gift-card {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 52px;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
     align-items: center;
     padding: 14px 16px;
@@ -401,11 +402,20 @@
     text-underline-offset: 2px;
   }
 
+  /* NEW: wraps all 3 thumbnails in a flex row */
+  #shopify-section-{{ section.id }} .ctr-ppb__gift-images {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
   #shopify-section-{{ section.id }} .ctr-ppb__gift-image {
     border-radius: 12px;
     overflow: hidden;
     background: #f2f2f2;
     aspect-ratio: 1 / 1;
+    width: 52px;
+    min-width: 52px;
   }
 
   #shopify-section-{{ section.id }} .ctr-ppb__cta,
@@ -538,8 +548,14 @@
       font-size: 24px;
     }
 
+    /* CHANGED: mobile also uses auto so 3 thumbnails don't overflow */
     #shopify-section-{{ section.id }} .ctr-ppb__gift-card {
-      grid-template-columns: minmax(0, 1fr) 60px;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-ppb__gift-image {
+      width: 44px;
+      min-width: 44px;
     }
 
     #shopify-section-{{ section.id }} .ctr-ppb__trust-row {
@@ -785,21 +801,34 @@
           </ul>
         </div>
 
+        {%- comment -%} CHANGED: 3 gift thumbnails + modal trigger on "See gifts" link {%- endcomment -%}
         <div class="ctr-ppb__gift-card">
           <div>
             <p class="ctr-ppb__gift-heading">{{ section.settings.gift_callout_heading | escape }}</p>
             <p class="ctr-ppb__gift-copy">
               {{ section.settings.gift_callout_text | escape }}
-              {% if section.settings.gift_callout_link_text != blank and section.settings.gift_callout_link != blank %}
-                <a href="{{ section.settings.gift_callout_link }}">{{ section.settings.gift_callout_link_text | escape }}</a>
+              {% if section.settings.gift_callout_link_text != blank %}
+                <a href="#popup--gifts" @click.prevent="$modal.setId('popup--gifts')">{{ section.settings.gift_callout_link_text | escape }}</a>
               {% endif %}
             </p>
           </div>
-          {% if section.settings.gift_image != blank %}
-            <div class="ctr-ppb__gift-image">
-              {{ section.settings.gift_image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '72px', alt: section.settings.gift_callout_heading }}
-            </div>
-          {% endif %}
+          <div class="ctr-ppb__gift-images">
+            {% if section.settings.gift_image_1 != blank %}
+              <div class="ctr-ppb__gift-image">
+                {{ section.settings.gift_image_1 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+            {% if section.settings.gift_image_2 != blank %}
+              <div class="ctr-ppb__gift-image">
+                {{ section.settings.gift_image_2 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+            {% if section.settings.gift_image_3 != blank %}
+              <div class="ctr-ppb__gift-image">
+                {{ section.settings.gift_image_3 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+          </div>
         </div>
 
         <button
@@ -1084,14 +1113,19 @@
       "default": "See gifts"
     },
     {
-      "type": "url",
-      "id": "gift_callout_link",
-      "label": "Gift link"
+      "type": "image_picker",
+      "id": "gift_image_1",
+      "label": "Gift image 1"
     },
     {
       "type": "image_picker",
-      "id": "gift_image",
-      "label": "Gift image"
+      "id": "gift_image_2",
+      "label": "Gift image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_image_3",
+      "label": "Gift image 3"
     },
     {
       "type": "header",
