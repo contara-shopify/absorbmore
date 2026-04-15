@@ -1,0 +1,546 @@
+{%- comment -%} Benefits Grid — "Every Nutrient Accounted For" {%- endcomment -%}
+{%- liquid
+    assign headline            = section.settings.headline
+    assign headline_color      = section.settings.headline_color
+    assign headline_size_desk  = section.settings.headline_size_desktop
+    assign headline_size_mob   = section.settings.headline_size_mobile
+    assign lifestyle_image     = section.settings.lifestyle_image
+    assign image_border_radius = section.settings.image_border_radius
+    assign card_bg             = section.settings.card_bg
+    assign card_border         = section.settings.card_border
+    assign card_border_radius  = section.settings.card_border_radius
+    assign title_color         = section.settings.title_color
+    assign body_color          = section.settings.body_color
+    assign label_color         = section.settings.label_color
+    assign background_color    = section.settings.background_color
+    assign icon_size           = section.settings.icon_size
+    assign max_width_desktop   = section.settings.max_width_desktop
+    assign custom_css          = section.settings.custom_css
+    assign section_id          = section.settings.section_id
+  -%}
+  
+  {% capture selector %}[data-bg-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
+    & {
+      width: 100%;
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  
+    & .bg__container {
+      max-width: {{ max_width_desktop }}px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+  
+    /* ── Mobile: single column, image on top ── */
+    & .bg__layout {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+  
+    & .bg__image-wrap {
+      width: 100%;
+      flex-shrink: 0;
+    }
+  
+    & .bg__image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      border-radius: {{ image_border_radius }}px;
+      aspect-ratio: 1;
+    }
+  
+    & .bg__image-placeholder {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: #e8e3da;
+      border-radius: {{ image_border_radius }}px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+    }
+  
+    & .bg__content {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      min-width: 0;
+    }
+  
+    & .bg__headline {
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+      font-size: {{ headline_size_mob }}px;
+      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+    }
+    & .bg__headline p { margin: 0; }
+  
+    /* ── Cards: 2-col on mobile ── */
+    & .bg__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+  
+    & .bg__card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+      {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
+      {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
+      border-radius: {{ card_border_radius }}px;
+    }
+  
+    & .bg__card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: {{ icon_size }}px;
+      height: {{ icon_size }}px;
+      flex-shrink: 0;
+    }
+  
+    & .bg__card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+  
+    & .bg__card-icon svg {
+      width: {{ icon_size }}px;
+      height: {{ icon_size }}px;
+    }
+  
+    & .bg__card-title {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.25;
+      margin: 0;
+      {% if title_color != blank and title_color.alpha != 0 %}color: {{ title_color }};{% endif %}
+    }
+  
+    & .bg__card-body {
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0.75;
+      {% if body_color != blank and body_color.alpha != 0 %}color: {{ body_color }};opacity:1;{% endif %}
+    }
+    & .bg__card-body p { margin: 0; }
+  
+    & .bg__card-label {
+      font-size: 12px;
+      font-weight: 500;
+      margin: 0;
+      margin-top: auto;
+      opacity: 0.5;
+      {% if label_color != blank and label_color.alpha != 0 %}color: {{ label_color }};opacity:1;{% endif %}
+    }
+  
+    /* ── Desktop ── */
+    @media (min-width: 900px) {
+      & .bg__container {
+        padding: 80px 48px;
+      }
+  
+      & .bg__layout {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 56px;
+      }
+  
+      & .bg__image-wrap {
+        flex: 0 0 32%;
+        max-width: 252px;
+        position: sticky;
+        top: 40px;
+      }
+  
+      & .bg__content {
+        flex: 1 1 0;
+        gap: 32px;
+      }
+  
+      & .bg__headline {
+        font-size: {{ headline_size_desk }}px;
+      }
+  
+      & .bg__grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+  
+      & .bg__card {
+        padding: 20px;
+        gap: 12px;
+      }
+  
+      & .bg__card-title {
+        font-size: 15px;
+      }
+  
+      & .bg__image-wrap img {
+        aspect-ratio: unset;
+      }
+    }
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  
+    <section
+      data-bg-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+    >
+      <div class="bg__container">
+        <div class="bg__layout">
+  
+          {%- comment -%} Left: lifestyle image {%- endcomment -%}
+          <div class="bg__image-wrap">
+            {% if lifestyle_image != blank %}
+              {{
+                lifestyle_image
+                | image_url: width: 760
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '380, 560, 760',
+                  sizes: '(min-width: 900px) 380px, 100vw',
+                  alt: lifestyle_image.alt | default: ''
+              }}
+            {% else %}
+              <div class="bg__image-placeholder">
+                <span>Upload lifestyle image</span>
+              </div>
+            {% endif %}
+          </div>
+  
+          {%- comment -%} Right: headline + grid {%- endcomment -%}
+          <div class="bg__content">
+  
+            {% if headline != blank %}
+              <h2 class="bg__headline">{{ headline }}</h2>
+            {% endif %}
+  
+            {% if section.blocks.size > 0 %}
+              <div class="bg__grid">
+                {% for block in section.blocks %}
+                  {%- liquid
+                    assign icon_img   = block.settings.icon_image
+                    assign card_title = block.settings.card_title
+                    assign card_body  = block.settings.card_body
+                    assign card_label = block.settings.card_label
+                  -%}
+                  <div class="bg__card" {{ block.shopify_attributes }}>
+  
+                    {% if icon_img != blank %}
+                      <div class="bg__card-icon">
+                        {{
+                          icon_img
+                          | image_url: width: 64
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '32, 64',
+                            sizes: icon_size,
+                            alt: icon_img.alt | default: card_title
+                        }}
+                      </div>
+                    {% endif %}
+  
+                    {% if card_title != blank %}
+                      <p class="bg__card-title">{{ card_title }}</p>
+                    {% endif %}
+  
+                    {% if card_body != blank %}
+                      <div class="bg__card-body">{{ card_body }}</div>
+                    {% endif %}
+  
+                    {% if card_label != blank %}
+                      <p class="bg__card-label">{{ card_label }}</p>
+                    {% endif %}
+  
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+  
+          </div>
+  
+        </div>
+      </div>
+    </section>
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Benefits Grid",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "headline",
+        "label": "Headline",
+        "default": "<p>Every nutrient accounted for. Here's what each product covers.</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "headline_color",
+        "label": "Headline color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "label": "Headline size — Desktop (px)",
+        "default": 40,
+        "min": 24,
+        "max": 80,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "label": "Headline size — Mobile (px)",
+        "default": 28,
+        "min": 18,
+        "max": 56,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Lifestyle Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "lifestyle_image",
+        "label": "Lifestyle image"
+      },
+      {
+        "type": "range",
+        "id": "image_border_radius",
+        "label": "Image border radius (px)",
+        "default": 16,
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Card Styles"
+      },
+      {
+        "type": "color",
+        "id": "card_bg",
+        "label": "Card background",
+        "default": "#eeece8"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "card_border",
+        "label": "Card border color"
+      },
+      {
+        "type": "range",
+        "id": "card_border_radius",
+        "label": "Card border radius (px)",
+        "default": 12,
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "icon_size",
+        "label": "Icon size (px)",
+        "default": 24,
+        "min": 16,
+        "max": 56,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "title_color",
+        "label": "Card title color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "body_color",
+        "label": "Card body color"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "label_color",
+        "label": "Product label color"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Section Globals"
+      },
+      {
+        "type": "range",
+        "id": "max_width_desktop",
+        "label": "Max width desktop (px)",
+        "min": 800,
+        "max": 1440,
+        "step": 20,
+        "default": 1200,
+        "unit": "px"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "background_color",
+        "label": "Section background",
+        "default": "#f5f0e8"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section ID (anchor)"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "benefit",
+        "name": "Benefit Card",
+        "limit": 6,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "icon_image",
+            "label": "Icon image"
+          },
+          {
+            "type": "text",
+            "id": "card_title",
+            "label": "Title",
+            "default": "Steady energy"
+          },
+          {
+            "type": "richtext",
+            "id": "card_body",
+            "label": "Description",
+            "default": "<p>Methylated B vitamins support cellular energy production and reduce fatigue.</p>"
+          },
+          {
+            "type": "text",
+            "id": "card_label",
+            "label": "Product attribution label",
+            "default": "Restore"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Benefits Grid",
+        "category": "Content",
+        "settings": {
+          "headline": "<p>Every nutrient accounted for. Here's what each product covers.</p>",
+          "headline_color": "#1a1a1a",
+          "headline_size_desktop": 40,
+          "headline_size_mobile": 28,
+          "image_border_radius": 16,
+          "card_bg": "#eeece8",
+          "card_border_radius": 12,
+          "icon_size": 24,
+          "title_color": "#1a1a1a",
+          "background_color": "#f5f0e8"
+        },
+        "blocks": [
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Steady energy",
+              "card_body": "<p>Methylated B vitamins support cellular energy production and reduce fatigue.</p>",
+              "card_label": "Restore"
+            }
+          },
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Sharper focus, better mood",
+              "card_body": "<p>B vitamins support dopamine pathways and cognitive clarity.</p>",
+              "card_label": "Restore"
+            }
+          },
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Hydration from the inside",
+              "card_body": "<p>Electrolytes, liposomal glutathione, and Vitamin C replenish what eating less takes away.</p>",
+              "card_label": "Restore"
+            }
+          },
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Healthier hair, skin, nails",
+              "card_body": "<p>Micronutrient replenishment addresses the root cause, not just the symptoms.</p>",
+              "card_label": "Restore"
+            }
+          },
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Stronger bones",
+              "card_body": "<p>D3 increases calcium absorption. K2Vital® Delta directs it to bones, not arteries.</p>",
+              "card_label": "Vitamin D3+K2"
+            }
+          },
+          {
+            "type": "benefit",
+            "settings": {
+              "card_title": "Resilient immunity",
+              "card_body": "<p>1.9x more absorption with Capsoil® keeps immune support consistent.</p>",
+              "card_label": "Vitamin D3+K2"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  {% endschema %}

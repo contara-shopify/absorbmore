@@ -1,0 +1,557 @@
+{%- comment -%} Reviews Carousel Section {%- endcomment -%}
+{%- liquid
+    assign section_type = "reviews_carousel"
+    assign headline = section.settings.headline
+    assign headline_color = section.settings.headline_color
+    assign headline_size_desktop = section.settings.headline_size_desktop
+    assign headline_size_mobile = section.settings.headline_size_mobile
+    assign card_bg = section.settings.card_bg
+    assign card_border = section.settings.card_border
+    assign card_border_radius = section.settings.card_border_radius
+    assign star_color = section.settings.star_color
+    assign highlight_color = section.settings.highlight_color
+    assign verified_color = section.settings.verified_color
+    assign background_color = section.settings.background_color
+    assign auto_rotate = section.settings.auto_rotate
+    assign custom_css = section.settings.custom_css
+    assign section_id = section.settings.section_id
+  -%}
+  
+  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
+    & {
+      position: relative;
+      width: 100%;
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      overflow: hidden;
+      padding: 24px 0;
+    }
+  
+    & .rc__header,
+    & .rc__footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+  
+    & .rc__headline {
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 32px 0;
+      font-size: {{ headline_size_mobile }}px;
+      text-align: center;
+      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+    }
+    & .rc__headline p { margin: 0; }
+  
+    & .rc__track-wrapper {
+      position: relative;
+    }
+  
+    & .rc__track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 24px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0 0 0 24px;
+    }
+    & .rc__track::-webkit-scrollbar {
+      display: none;
+    }
+  
+    & .rc__card {
+      flex: 0 0 calc(100vw - 24px - 40px);
+      scroll-snap-align: start;
+      {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
+      {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
+      border-radius: {{ card_border_radius }}px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    & .rc__stars {
+      display: flex;
+      gap: 4px;
+    }
+    & .rc__stars svg {
+      width: 20px;
+      height: 20px;
+      {% if star_color != blank %}color: {{ star_color }};{% endif %}
+    }
+  
+    & .rc__card-title {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.25;
+      margin: 0;
+    }
+  
+    & .rc__card-quote {
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+      flex-grow: 1;
+    }
+    & .rc__card-quote p { margin: 0; }
+    & .rc__card-quote strong {
+      {% if highlight_color != blank %}color: {{ highlight_color }};{% endif %}
+    }
+  
+    & .rc__card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #e5e5e5;
+    }
+  
+    & .rc__author {
+      font-weight: 600;
+      font-size: 14px;
+    }
+  
+    & .rc__verified {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      {% if verified_color != blank %}color: {{ verified_color }};{% endif %}
+    }
+    & .rc__verified svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+  
+    & .rc__nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+    }
+  
+    & .rc__arrow {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    & .rc__arrow:hover {
+      opacity: 1;
+    }
+    & .rc__arrow svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+  
+    & .rc__dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    & .rc__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #d1d5db;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    & .rc__dot--active {
+      background-color: #1a1a1a;
+    }
+  
+    @media (min-width: 768px) {
+      & {
+        padding: 50px 0;
+      }
+      & .rc__header,
+      & .rc__footer {
+        padding: 0 48px;
+      }
+      & .rc__headline {
+        font-size: {{ headline_size_desktop }}px;
+        margin-bottom: 40px;
+      }
+      & .rc__track {
+        gap: 20px;
+        padding-left: 0;
+        padding-right: 0;
+        scroll-padding-left: max(48px, calc((100vw - 1200px) / 2 + 48px));
+      }
+      & .rc__card {
+        flex: 0 0 calc((1200px - 48px - 40px) / 3);
+        padding: 32px 28px;
+      }
+      & .rc__card:first-child {
+        margin-left: max(48px, calc((100vw - 1200px) / 2 + 48px));
+      }
+      & .rc__card:last-child {
+        margin-right: 20px;
+      }
+      & .rc__card-title {
+        font-size: 22px;
+      }
+      & .rc__card-quote {
+        font-size: 16px;
+      }
+      & .rc__nav {
+        padding-top: 32px;
+      }
+    }
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+    </style>
+  
+    <section
+      data-style-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      x-data="{
+        track: null,
+        totalCards: {{ section.blocks.size }},
+        activeIndex: 0,
+        scrollTo(idx) {
+          if (!this.track) return;
+          const card = this.track.children[idx];
+          if (card) {
+            this.track.scrollTo({ left: card.offsetLeft - this.track.offsetLeft, behavior: 'smooth' });
+          }
+        },
+        prev() { if (this.activeIndex > 0) { this.activeIndex--; this.scrollTo(this.activeIndex); } },
+        next() { if (this.activeIndex < this.totalCards - 1) { this.activeIndex++; this.scrollTo(this.activeIndex); } },
+        handleScroll() {
+          if (!this.track) return;
+          const cards = this.track.children;
+          let closest = 0;
+          let minDist = Infinity;
+          for (let i = 0; i < cards.length; i++) {
+            const dist = Math.abs(cards[i].offsetLeft - this.track.scrollLeft - this.track.offsetLeft);
+            if (dist < minDist) { minDist = dist; closest = i; }
+          }
+          this.activeIndex = closest;
+        },
+        init() { this.track = this.$refs.rcTrack; }
+      }"
+    >
+      <div class="rc__header">
+        {% if headline != blank %}
+          <h2 class="rc__headline">{{ headline }}</h2>
+        {% endif %}
+      </div>
+  
+      <div class="rc__track-wrapper">
+        <div
+          class="rc__track"
+          x-ref="rcTrack"
+          @scroll.debounce.100ms="handleScroll"
+        >
+          {% for block in section.blocks %}
+            {%- liquid
+              assign show_stars = block.settings.show_stars
+              assign card_title = block.settings.title
+              assign quote = block.settings.quote
+              assign author = block.settings.author
+              assign show_verified = block.settings.show_verified
+            -%}
+  
+            <div class="rc__card" {{ block.shopify_attributes }}>
+  
+              {% if show_stars %}
+                <div class="rc__stars">
+                  {% for i in (1..5) %}
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  {% endfor %}
+                </div>
+              {% endif %}
+  
+              {% if card_title != blank %}
+                <h3 class="rc__card-title">{{ card_title }}</h3>
+              {% endif %}
+  
+              {% if quote != blank %}
+                <div class="rc__card-quote">{{ quote }}</div>
+              {% endif %}
+  
+              <div class="rc__card-footer">
+                {% if author != blank %}
+                  <span class="rc__author">{{ author }}</span>
+                {% endif %}
+                {% if show_verified %}
+                  <span class="rc__verified">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    Verified Buyer
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+  
+      <div class="rc__footer">
+        <div class="rc__nav">
+          <button class="rc__arrow" @click="prev" aria-label="Previous review">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+  
+          <div class="rc__dots">
+            {% for block in section.blocks %}
+              <button
+                class="rc__dot"
+                :class="activeIndex === {{ forloop.index0 }} ? 'rc__dot--active' : ''"
+                @click="activeIndex = {{ forloop.index0 }}; scrollTo({{ forloop.index0 }})"
+                aria-label="Review {{ forloop.index }}"
+              ></button>
+            {% endfor %}
+          </div>
+  
+          <button class="rc__arrow" @click="next" aria-label="Next review">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Reviews Carousel",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "headline",
+        "label": "Headline",
+        "default": "<p>Real Results, Real Reviews</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "headline_color",
+        "label": "Headline color"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "label": "Headline size — Desktop (px)",
+        "default": 52,
+        "min": 20,
+        "max": 100,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "label": "Headline size — Mobile (px)",
+        "default": 36,
+        "min": 16,
+        "max": 72,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Card Style"
+      },
+      {
+        "type": "color",
+        "id": "card_bg",
+        "label": "Card background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "card_border",
+        "label": "Card border",
+        "default": "#e5e5e5"
+      },
+      {
+        "type": "range",
+        "id": "card_border_radius",
+        "label": "Card border radius (px)",
+        "default": 12,
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "color",
+        "id": "star_color",
+        "label": "Star color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight text color",
+        "default": "#4f46e5",
+        "info": "Color for bold/strong text in quotes."
+      },
+      {
+        "type": "color",
+        "id": "verified_color",
+        "label": "Verified badge color",
+        "default": "#3b82f6"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Section Globals"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "background_color",
+        "label": "Section background",
+        "default": "#f7f5f1"
+      },
+      {
+        "type": "range",
+        "id": "auto_rotate",
+        "label": "Auto rotate",
+        "default": 0,
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "s",
+        "info": "Set to 0 to disable."
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section Id"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "review",
+        "name": "Review Card",
+        "limit": 8,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_stars",
+            "label": "Show stars",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Review title",
+            "default": "My doctor actually recommended this brand"
+          },
+          {
+            "type": "richtext",
+            "id": "quote",
+            "label": "Quote text",
+            "default": "<p>\"My doctor actually recommended this brand specifically because of the absorption technology. <strong>I trust it more knowing it's backed by real science, not just marketing.</strong>\"</p>",
+            "info": "Use bold for highlighted text."
+          },
+          {
+            "type": "text",
+            "id": "author",
+            "label": "Author name",
+            "default": "Corrie"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_verified",
+            "label": "Show Verified Buyer",
+            "default": true
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Reviews Carousel",
+        "category": "Social Proof",
+        "blocks": [
+          {
+            "type": "review",
+            "settings": {
+              "show_stars": true,
+              "title": "Since my very first sip, I've been hooked.",
+              "quote": "<p>\"I no longer struggle with trying to keep myself hydrated during the day, it does wonders for cortisol levels, and it just plain works. <strong>There is ZERO grogginess. Just zen.</strong>\"</p>",
+              "author": "Kimara",
+              "show_verified": true
+            }
+          },
+          {
+            "type": "review",
+            "settings": {
+              "show_stars": true,
+              "title": "Absolutely amazing.",
+              "quote": "<p>\"A supplement that actually works and does what it says. <strong>10/10 for sure. I recommend to all my family and friends.</strong>\"</p>",
+              "author": "Julie",
+              "show_verified": true
+            }
+          },
+          {
+            "type": "review",
+            "settings": {
+              "show_stars": true,
+              "title": "My doctor actually recommended this brand",
+              "quote": "<p>\"My doctor actually recommended this brand specifically because of the absorption technology. <strong>I trust it more knowing it's backed by real science, not just marketing.</strong>\"</p>",
+              "author": "Corrie",
+              "show_verified": true
+            }
+          },
+          {
+            "type": "review",
+            "settings": {
+              "show_stars": true,
+              "title": "I never leave home without it!",
+              "quote": "<p>\"Since my very first sip, I've been hooked! <strong>I no longer struggle with trying to keep myself hydrated during the day</strong>, it does wonders for cortisol levels, and it just plain works! There is ZERO grogginess. Just zen!\"</p>",
+              "author": "Karen",
+              "show_verified": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+  {% endschema %}

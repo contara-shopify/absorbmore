@@ -1,0 +1,78 @@
+{%- liquid
+    assign img        = block.settings.image
+    assign name       = block.settings.name
+    assign dosage     = block.settings.dosage
+    assign desc       = block.settings.description
+    assign dot_color  = block.settings.dot_color
+    assign stat_1_v   = block.settings.stat_1_value
+    assign stat_1_l   = block.settings.stat_1_label
+    assign stat_2_v   = block.settings.stat_2_value
+    assign stat_2_l   = block.settings.stat_2_label
+    assign stat_3_v   = block.settings.stat_3_value
+    assign stat_3_l   = block.settings.stat_3_label
+  -%}
+  
+  <div class="li3__card" {{ block.shopify_attributes }}>
+  
+    {% if dot_color != blank %}
+      <span class="li3__card-dot" style="background-color: {{ dot_color }};"></span>
+    {% endif %}
+  
+    <div class="li3__card-image-wrap">
+      {% if img != blank %}
+        {{
+          img
+          | image_url: width: 600
+          | image_tag:
+            loading: 'lazy',
+            widths: '300, 400, 600',
+            sizes: '(min-width: 768px) 25vw, 50vw',
+            alt: img.alt | default: name
+        }}
+      {% else %}
+        <div class="li3__card-image-placeholder">
+          <span>Upload image</span>
+        </div>
+      {% endif %}
+    </div>
+  
+    <div class="li3__card-body">
+      {% if name != blank %}
+        <p class="li3__card-name">{{ name }}</p>
+      {% endif %}
+  
+      {% if dosage != blank %}
+        <p class="li3__card-dosage">{{ dosage }}</p>
+      {% endif %}
+  
+      {% if desc != blank %}
+        <div class="li3__card-desc">{{ desc }}</div>
+      {% endif %}
+  
+      {%- assign has_stats = false -%}
+      {%- if stat_1_v != blank or stat_2_v != blank or stat_3_v != blank -%}
+        {%- assign has_stats = true -%}
+      {%- endif -%}
+  
+      {% if has_stats %}
+        <div class="li3__stats">
+          {% if stat_1_v != blank or stat_2_v != blank or stat_3_v != blank %}
+            <span class="li3__stat">
+              <span class="li3__stat-value">
+                {% if stat_1_v != blank %}
+                  {{ stat_1_v }}
+                {% endif %}
+                {% if stat_2_v != blank %}
+                  {{ stat_2_v }}
+                {% endif %}
+                {% if stat_3_v != blank %}
+                  {{ stat_3_v }}
+                {% endif %}
+              </span>
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  
+  </div>

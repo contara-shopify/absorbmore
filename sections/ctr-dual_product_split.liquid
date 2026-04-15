@@ -1,0 +1,622 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.section_background }};
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split {
+    width: min(100%, {{ section.settings.max_width_desktop }}px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: {{ section.settings.padding_top_desktop }}px;
+    padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    color: {{ section.settings.text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__inner {
+    /* max-width: 780px; */
+    /* margin: 0 auto; */
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__heading {
+    margin: 0 auto 26px;
+    max-width: 640px;
+    text-align: center;
+    font-size: 36px;
+    line-height: 0.98;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card {
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__image-wrap {
+    margin-bottom: 22px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 18px;
+    /* padding: 20px 24px 16px; */
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__content {
+    padding-top: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card--left .ctr-dual-split__title {
+    color: {{ section.settings.left_accent_color }};
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card--left .ctr-dual-split__image-wrap {
+    /* box-shadow: inset 0 -4px 0 {{ section.settings.left_accent_color }}, inset 0 0 0 1px rgba(17, 17, 17, 0.04); */
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card--right .ctr-dual-split__title {
+    color: {{ section.settings.right_accent_color }};
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card--right .ctr-dual-split__image-wrap {
+    /* box-shadow: inset 0 -4px 0 {{ section.settings.right_accent_color }}, inset 0 0 0 1px rgba(17, 17, 17, 0.04); */
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__title {
+    margin: 0 0 15px;
+    font-size: 24px;
+    line-height: 1.02;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__intro {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.42;
+    color: rgba(17, 17, 17, 0.84);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__bullets {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 7px;
+    font-size: 14px;
+    line-height: 1.38;
+    font-weight: 600;
+    list-style-type: disc;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__bullets li {
+    
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card-cta {
+    min-width: 340px;
+    min-height: 50px;
+    padding: 0 28px;
+    background: {{ section.settings.button_background }};
+    color: {{ section.settings.button_text_color }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 20px;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__card-cta:hover {
+    opacity: 0.9;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__actions {
+    margin-top: 26px;
+    display: grid;
+    gap: 10px;
+    justify-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 10px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: rgba(17, 17, 17, 0.82);
+    margin-top: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-dual-split__meta-sep {
+    color: rgba(17, 17, 17, 0.4);
+  }
+
+  @media (max-width: 989px) {
+    #shopify-section-{{ section.id }} .ctr-dual-split {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__inner {
+      /* max-width: 420px; */
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__card {
+      padding: 0 20px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__heading {
+      margin-bottom: 18px;
+      max-width: 320px;
+      font-size: 28px;
+      line-height: 0.98;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__image-wrap {
+      border-radius: 14px;
+      /* aspect-ratio: 1.18 / 1; */
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__image-wrap img {
+      /* padding: 16px 18px 14px; */
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__content {
+      padding-top: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__title {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__intro {
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__bullets {
+      gap: 6px;
+      font-size: 10px;
+      line-height: 1.34;
+      padding-left: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__card-cta {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 0 20px;
+      font-size: 15px;
+      margin-top: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__actions {
+      margin-top: 18px;
+      justify-items: stretch;
+      padding: 0 20px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__meta {
+      gap: 4px 6px;
+      margin-top: 10px;
+      font-size: 9px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-dual-split__meta::-webkit-scrollbar {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<section class="ctr-dual-split">
+  <div class="ctr-dual-split__inner">
+    {% if section.settings.heading != blank %}
+      <h2 class="ctr-dual-split__heading">{{ section.settings.heading | escape }}</h2>
+    {% endif %}
+
+    <div class="ctr-dual-split__grid">
+      <article class="ctr-dual-split__card ctr-dual-split__card--left">
+        {% if section.settings.left_image != blank %}
+          <div class="ctr-dual-split__image-wrap">
+            {{ section.settings.left_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '320,480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: section.settings.left_title }}
+          </div>
+        {% endif %}
+
+        <div class="ctr-dual-split__content">
+          {% if section.settings.left_title != blank %}
+            <h3 class="ctr-dual-split__title">{{ section.settings.left_title | escape }}</h3>
+          {% endif %}
+          {% if section.settings.left_intro != blank %}
+            <p class="ctr-dual-split__intro">{{ section.settings.left_intro }}</p>
+          {% endif %}
+          <ul class="ctr-dual-split__bullets">
+            {% if section.settings.left_bullet_1 != blank %}<li>{{ section.settings.left_bullet_1 | escape }}</li>{% endif %}
+            {% if section.settings.left_bullet_2 != blank %}<li>{{ section.settings.left_bullet_2 | escape }}</li>{% endif %}
+            {% if section.settings.left_bullet_3 != blank %}<li>{{ section.settings.left_bullet_3 | escape }}</li>{% endif %}
+            {% if section.settings.left_bullet_4 != blank %}<li>{{ section.settings.left_bullet_4 | escape }}</li>{% endif %}
+            {% if section.settings.left_bullet_5 != blank %}<li>{{ section.settings.left_bullet_5 | escape }}</li>{% endif %}
+            {% if section.settings.left_bullet_6 != blank %}<li>{{ section.settings.left_bullet_6 | escape }}</li>{% endif %}
+          </ul>
+          {% if section.settings.left_cta_text != blank %}
+            <a class="ctr-dual-split__card-cta" href="{{ section.settings.left_cta_url | default: '#' }}">
+              {{ section.settings.left_cta_text | escape }}
+            </a>
+          {% endif %}
+          <div class="ctr-dual-split__meta">
+            {% if section.settings.left_urgency_1 != blank %}
+              <span>{{ section.settings.left_urgency_1 | escape }}</span>
+            {% endif %}
+            {% if section.settings.left_urgency_1 != blank and section.settings.left_urgency_2 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.left_urgency_2 != blank %}
+              <span>{{ section.settings.left_urgency_2 | escape }}</span>
+            {% endif %}
+            {% if section.settings.left_urgency_2 != blank and section.settings.left_urgency_3 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.left_urgency_3 != blank %}
+              <span>{{ section.settings.left_urgency_3 | escape }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+
+      <article class="ctr-dual-split__card ctr-dual-split__card--right">
+        {% if section.settings.right_image != blank %}
+          <div class="ctr-dual-split__image-wrap">
+            {{ section.settings.right_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '320,480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: section.settings.right_title }}
+          </div>
+        {% endif %}
+
+        <div class="ctr-dual-split__content">
+          {% if section.settings.right_title != blank %}
+            <h3 class="ctr-dual-split__title">{{ section.settings.right_title | escape }}</h3>
+          {% endif %}
+          {% if section.settings.right_intro != blank %}
+            <p class="ctr-dual-split__intro">{{ section.settings.right_intro }}</p>
+          {% endif %}
+          <ul class="ctr-dual-split__bullets">
+            {% if section.settings.right_bullet_1 != blank %}<li>{{ section.settings.right_bullet_1 | escape }}</li>{% endif %}
+            {% if section.settings.right_bullet_2 != blank %}<li>{{ section.settings.right_bullet_2 | escape }}</li>{% endif %}
+            {% if section.settings.right_bullet_3 != blank %}<li>{{ section.settings.right_bullet_3 | escape }}</li>{% endif %}
+            {% if section.settings.right_bullet_4 != blank %}<li>{{ section.settings.right_bullet_4 | escape }}</li>{% endif %}
+            {% if section.settings.right_bullet_5 != blank %}<li>{{ section.settings.right_bullet_5 | escape }}</li>{% endif %}
+            {% if section.settings.right_bullet_6 != blank %}<li>{{ section.settings.right_bullet_6 | escape }}</li>{% endif %}
+          </ul>
+          {% if section.settings.right_cta_text != blank %}
+            <a class="ctr-dual-split__card-cta" href="{{ section.settings.right_cta_url | default: '#' }}">
+              {{ section.settings.right_cta_text | escape }}
+            </a>
+          {% endif %}
+          <div class="ctr-dual-split__meta">
+            {% if section.settings.right_urgency_1 != blank %}
+              <span>{{ section.settings.right_urgency_1 | escape }}</span>
+            {% endif %}
+            {% if section.settings.right_urgency_1 != blank and section.settings.right_urgency_2 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.right_urgency_2 != blank %}
+              <span>{{ section.settings.right_urgency_2 | escape }}</span>
+            {% endif %}
+            {% if section.settings.right_urgency_2 != blank and section.settings.right_urgency_3 != blank %}
+              <span class="ctr-dual-split__meta-sep">·</span>
+            {% endif %}
+            {% if section.settings.right_urgency_3 != blank %}
+              <span>{{ section.settings.right_urgency_3 | escape }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Dual Product Split",
+  "settings": [
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#f8f3ec"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "max_width_desktop",
+      "label": "Max width desktop",
+      "min": 800,
+      "max": 1440,
+      "step": 20,
+      "default": 1240
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "One burns. One rebuilds. Together, nothing is left behind."
+    },
+    {
+      "type": "color",
+      "id": "left_accent_color",
+      "label": "Left accent color",
+      "default": "#5d8fda"
+    },
+    {
+      "type": "color",
+      "id": "right_accent_color",
+      "label": "Right accent color",
+      "default": "#9d3831"
+    },
+    {
+      "type": "header",
+      "content": "Left Product"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "text",
+      "id": "left_title",
+      "label": "Left headline",
+      "default": "WLP-1 handles appetite, cravings, and calorie burn."
+    },
+    {
+      "type": "textarea",
+      "id": "left_intro",
+      "label": "Left intro text",
+      "default": "GLP-1 support, appetite control, and thermogenesis through three clinically backed pathways. WLP-1 targets the systems that control how much you eat and how much you burn."
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_1",
+      "label": "Left bullet 1",
+      "default": "Boosts natural GLP-1 by up to 321% to signal fullness"
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_2",
+      "label": "Left bullet 2",
+      "default": "Rebalances hunger hormones to reduce cravings and emotional eating"
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_3",
+      "label": "Left bullet 3",
+      "default": "Burns more calories at rest with 20x absorbed capsaicin"
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_4",
+      "label": "Left bullet 4",
+      "default": "22.3% improvement in uncontrolled eating in clinical studies"
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_5",
+      "label": "Left bullet 5",
+      "default": "Up to 12% body weight reduction in 10 weeks"
+    },
+    {
+      "type": "text",
+      "id": "left_bullet_6",
+      "label": "Left bullet 6"
+    },
+    {
+      "type": "text",
+      "id": "left_cta_text",
+      "label": "Left button text",
+      "default": "Shop Restore"
+    },
+    {
+      "type": "url",
+      "id": "left_cta_url",
+      "label": "Left button URL"
+    },
+    {
+      "type": "header",
+      "content": "Right Product"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right image"
+    },
+    {
+      "type": "text",
+      "id": "right_title",
+      "label": "Right headline",
+      "default": "Berberine handles what's happening at the cellular level."
+    },
+    {
+      "type": "textarea",
+      "id": "right_intro",
+      "label": "Right intro text",
+      "default": "Most weight management products skip what's going on under the hood. Berberine activates AMPK, your body's master metabolic switch, so your cells actually use energy instead of storing it."
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_1",
+      "label": "Right bullet 1",
+      "default": "Activates AMPK to shift your body from fat storage to fat burning"
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_2",
+      "label": "Right bullet 2",
+      "default": "Improves insulin sensitivity so glucose becomes fuel, not fat"
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_3",
+      "label": "Right bullet 3",
+      "default": "Stabilizes blood sugar for steady energy, no spikes or crashes"
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_4",
+      "label": "Right bullet 4",
+      "default": "Supports healthier cholesterol, triglycerides, and LDL levels"
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_5",
+      "label": "Right bullet 5",
+      "default": "6.2x more absorption with FenuMat technology, gentle on the gut"
+    },
+    {
+      "type": "text",
+      "id": "right_bullet_6",
+      "label": "Right bullet 6"
+    },
+    {
+      "type": "text",
+      "id": "right_cta_text",
+      "label": "Right button text",
+      "default": "Shop Vitamin D3 + K2"
+    },
+    {
+      "type": "url",
+      "id": "right_cta_url",
+      "label": "Right button URL"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#1d1d1d"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Left Urgency Labels"
+    },
+    {
+      "type": "text",
+      "id": "left_urgency_1",
+      "label": "Left urgency 1",
+      "default": "Stock Alert: Running Low"
+    },
+    {
+      "type": "text",
+      "id": "left_urgency_2",
+      "label": "Left urgency 2",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "left_urgency_3",
+      "label": "Left urgency 3",
+      "default": "30-Day Money-Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Right Urgency Labels"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_1",
+      "label": "Right urgency 1",
+      "default": "Stock Alert: Running Low"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_2",
+      "label": "Right urgency 2",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "right_urgency_3",
+      "label": "Right urgency 3",
+      "default": "30-Day Money-Back Guarantee"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Dual Product Split"
+    }
+  ]
+}
+{% endschema %}

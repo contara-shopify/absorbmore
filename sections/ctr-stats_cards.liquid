@@ -1,0 +1,735 @@
+{%- comment -%} Stats Cards — Four Pathways Section {%- endcomment -%}
+{%- liquid
+    assign section_type = "stats_cards"
+    assign headline = section.settings.headline
+    assign headline_color = section.settings.headline_color
+    assign headline_size_desktop = section.settings.headline_size_desktop
+    assign headline_size_mobile = section.settings.headline_size_mobile
+    assign subheadline = section.settings.subheadline
+    assign subheadline_color = section.settings.subheadline_color
+    assign subheadline_size_desktop = section.settings.subheadline_size_desktop
+    assign subheadline_size_mobile = section.settings.subheadline_size_mobile
+    assign footer_text = section.settings.footer_text
+    assign footer_color = section.settings.footer_color
+    assign footer_size = section.settings.footer_size
+    assign background_color = section.settings.background_color
+    assign card_bg = section.settings.card_bg
+    assign card_border = section.settings.card_border
+    assign card_border_radius = section.settings.card_border_radius
+    assign custom_css = section.settings.custom_css
+    assign section_id = section.settings.section_id
+  -%}
+  
+  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+  
+  {% capture css %}
+    & {
+      position: relative;
+      width: 100%;
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    }
+  
+    & .sc__container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+  
+    & .sc__header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+  
+    & .sc__headline {
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 16px 0;
+      font-size: {{ headline_size_mobile }}px;
+      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+    }
+    & .sc__headline p { margin: 0; }
+  
+    & .sc__subheadline {
+      margin: 0;
+      line-height: 1.5;
+      font-size: {{ subheadline_size_mobile }}px;
+      {% if subheadline_color != blank and subheadline_color.alpha != 0 %}color: {{ subheadline_color }};{% endif %}
+    }
+    & .sc__subheadline p { margin: 0; }
+  
+    & .sc__grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    & .sc__card {
+      {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
+      {% if card_border != blank %}border: 1px solid {{ card_border }};{% endif %}
+      border-radius: {{ card_border_radius }}px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+  
+    & .sc__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      width: fit-content;
+      border: 1px solid;
+      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+  
+    & .sc__tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+  
+    & .sc__card-title {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.2;
+      margin: 0;
+    }
+  
+    & .sc__card-body {
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0.8;
+    }
+    & .sc__card-body p { margin: 0; }
+  
+    & .sc__stat-box {
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: auto;
+      border: 1px solid;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+  
+    & .sc__stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 6px 0;
+      transition: color 0.3s;
+    }
+  
+    & .sc__stat-label {
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0;
+      font-weight: 400;
+    }
+  
+    & .sc__stat-source {
+      font-size: 12px;
+      opacity: 0.5;
+      margin: 4px 0 0 0;
+    }
+  
+    & .sc__footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: {{ footer_size }}px;
+      {% if footer_color != blank and footer_color.alpha != 0 %}color: {{ footer_color }};{% endif %}
+    }
+    & .sc__footer strong {
+      color: #7D2D2E;
+    }
+    & .sc__footer p { margin: 0; }
+  
+    @media (min-width: 768px) {
+      & .sc__container {
+        padding: 80px 48px;
+      }
+      & .sc__headline {
+        font-size: {{ headline_size_desktop }}px;
+      }
+      & .sc__subheadline {
+        font-size: {{ subheadline_size_desktop }}px;
+      }
+      & .sc__grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+    }
+  {% endcapture %}
+  
+  {%- comment -%} Per-card styles {%- endcomment -%}
+  {% capture cards_css %}
+    {% for block in section.blocks %}
+      {%- liquid
+        assign accent = block.settings.accent_color
+        assign accent_hover = block.settings.accent_hover_color
+        assign stat_bg = block.settings.stat_bg
+        assign stat_border = block.settings.stat_border
+        assign stat_bg_hover = block.settings.stat_bg_hover
+        assign stat_border_hover = block.settings.stat_border_hover
+        assign stat_number_color = block.settings.stat_number_color
+        assign stat_number_color_hover = block.settings.stat_number_color_hover
+        assign tag_bg = block.settings.tag_bg
+        assign tag_border = block.settings.tag_border
+        assign tag_color = block.settings.tag_color
+        assign tag_bg_hover = block.settings.tag_bg_hover
+        assign tag_border_hover = block.settings.tag_border_hover
+        assign tag_color_hover = block.settings.tag_color_hover
+      -%}
+  
+      {% capture card_sel %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+  
+      {{ card_sel }} .sc__tag {
+        {% if tag_bg != blank %}background-color: {{ tag_bg }};{% endif %}
+        {% if tag_border != blank %}border-color: {{ tag_border }};{% endif %}
+        {% if tag_color != blank %}color: {{ tag_color }};{% endif %}
+      }
+      {{ card_sel }} .sc__tag-dot {
+        {% if accent != blank %}background-color: {{ accent }};{% endif %}
+      }
+      {{ card_sel }} .sc__stat-box {
+        {% if stat_bg != blank %}background-color: {{ stat_bg }};{% endif %}
+        {% if stat_border != blank %}border-color: {{ stat_border }};{% endif %}
+      }
+      {{ card_sel }} .sc__stat-number {
+        {% if stat_number_color != blank %}color: {{ stat_number_color }};{% endif %}
+      }
+  
+      {{ card_sel }}:hover .sc__tag {
+        {% if tag_bg_hover != blank %}background-color: {{ tag_bg_hover }};{% endif %}
+        {% if tag_border_hover != blank %}border-color: {{ tag_border_hover }};{% endif %}
+        {% if tag_color_hover != blank %}color: {{ tag_color_hover }};{% endif %}
+      }
+      {{ card_sel }}:hover .sc__tag-dot {
+        {% if accent_hover != blank %}background-color: {{ accent_hover }};{% endif %}
+      }
+      {{ card_sel }}:hover .sc__stat-box {
+        {% if stat_bg_hover != blank %}background-color: {{ stat_bg_hover }};{% endif %}
+        {% if stat_border_hover != blank %}border-color: {{ stat_border_hover }};{% endif %}
+      }
+      {{ card_sel }}:hover .sc__stat-number {
+        {% if stat_number_color_hover != blank %}color: {{ stat_number_color_hover }};{% endif %}
+      }
+    {% endfor %}
+  {% endcapture %}
+  
+  {% capture section_content %}
+    <style>
+      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+      {{ cards_css | strip_newlines }}
+    </style>
+  
+    <section
+      data-style-id="{{ section.id }}"
+      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+    >
+      <div class="sc__container">
+  
+        <div class="sc__header">
+          {% if headline != blank %}
+            <h2 class="sc__headline">{{ headline }}</h2>
+          {% endif %}
+          {% if subheadline != blank %}
+            <div class="sc__subheadline">{{ subheadline }}</div>
+          {% endif %}
+        </div>
+  
+        <div class="sc__grid">
+          {% for block in section.blocks %}
+            {%- liquid
+              assign tag_text = block.settings.tag_text
+              assign card_title = block.settings.card_title
+              assign card_body = block.settings.card_body
+              assign stat_number = block.settings.stat_number
+              assign stat_label = block.settings.stat_label
+              assign stat_source = block.settings.stat_source
+            -%}
+  
+            <div
+              class="sc__card"
+              data-style-id="{{ section.id }}--{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if tag_text != blank %}
+                <div class="sc__tag">
+                  <span class="sc__tag-dot"></span>
+                  {{ tag_text }}
+                </div>
+              {% endif %}
+  
+              {% if card_title != blank %}
+                <h3 class="sc__card-title">{{ card_title }}</h3>
+              {% endif %}
+  
+              {% if card_body != blank %}
+                <div class="sc__card-body">{{ card_body }}</div>
+              {% endif %}
+  
+              {% if stat_number != blank %}
+                <div class="sc__stat-box">
+                  <div class="sc__stat-number">{{ stat_number }}</div>
+                  {% if stat_label != blank %}
+                    <div class="sc__stat-label">{{ stat_label }}</div>
+                  {% endif %}
+                  {% if stat_source != blank %}
+                    <div class="sc__stat-source">{{ stat_source }}</div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+  
+        {% if footer_text != blank %}
+          <div class="sc__footer">{{ footer_text }}</div>
+        {% endif %}
+  
+      </div>
+    </section>
+  {% endcapture %}
+  
+  {{ section_content }}
+  
+  {% schema %}
+  {
+    "name": "CTR Stats Cards",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "headline",
+        "label": "Headline",
+        "default": "<p>Four pathways. Proven Results.</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "headline_color",
+        "label": "Headline color"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "label": "Headline size — Desktop (px)",
+        "default": 52,
+        "min": 20,
+        "max": 100,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "label": "Headline size — Mobile (px)",
+        "default": 36,
+        "min": 16,
+        "max": 72,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Subheadline"
+      },
+      {
+        "type": "richtext",
+        "id": "subheadline",
+        "label": "Subheadline",
+        "default": "<p>Most supplements target one. This stack covers all four simultaneously.</p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "subheadline_color",
+        "label": "Subheadline color"
+      },
+      {
+        "type": "range",
+        "id": "subheadline_size_desktop",
+        "label": "Subheadline size — Desktop (px)",
+        "default": 18,
+        "min": 12,
+        "max": 32,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "subheadline_size_mobile",
+        "label": "Subheadline size — Mobile (px)",
+        "default": 16,
+        "min": 12,
+        "max": 24,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Footer"
+      },
+      {
+        "type": "richtext",
+        "id": "footer_text",
+        "label": "Footer text",
+        "default": "<p>Pathways 1-3 are already active with WLP-1. <strong>Berberine adds that 4th.</strong></p>"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "footer_color",
+        "label": "Footer color"
+      },
+      {
+        "type": "range",
+        "id": "footer_size",
+        "label": "Footer font size (px)",
+        "default": 16,
+        "min": 12,
+        "max": 24,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Cards Global"
+      },
+      {
+        "type": "color",
+        "id": "card_bg",
+        "label": "Card background",
+        "default": "#eae6df"
+      },
+      {
+        "type": "color",
+        "id": "card_border",
+        "label": "Card border",
+        "default": "#ddd8cf"
+      },
+      {
+        "type": "range",
+        "id": "card_border_radius",
+        "label": "Card border radius (px)",
+        "default": 12,
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:all.empty_char"
+      },
+      {
+        "type": "header",
+        "content": "Section Globals"
+      },
+      {
+        "type": "color",
+        "alpha": true,
+        "id": "background_color",
+        "label": "Section background",
+        "default": "#f7f5f1"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section Id"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "card",
+        "name": "Pathway Card",
+        "limit": 4,
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "text",
+            "id": "tag_text",
+            "label": "Tag text",
+            "default": "WLP-1 – Pathway 1"
+          },
+          {
+            "type": "text",
+            "id": "card_title",
+            "label": "Title",
+            "default": "GLP-1 Activity"
+          },
+          {
+            "type": "richtext",
+            "id": "card_body",
+            "label": "Body",
+            "default": "<p>Boosts your body's natural GLP-1 and blocks the enzyme that breaks it down. Signals fullness, reduces food intake.</p>"
+          },
+          {
+            "type": "text",
+            "id": "stat_number",
+            "label": "Stat number",
+            "default": "321%"
+          },
+          {
+            "type": "text",
+            "id": "stat_label",
+            "label": "Stat label",
+            "default": "GLP-1 increase in clinical trial"
+          },
+          {
+            "type": "text",
+            "id": "stat_source",
+            "label": "Stat source",
+            "default": "CQR-300 clinical trial"
+          },
+          {
+            "type": "paragraph",
+            "content": "t:all.empty_char"
+          },
+          {
+            "type": "header",
+            "content": "Tag Colors"
+          },
+          {
+            "type": "color",
+            "id": "accent_color",
+            "label": "Dot color",
+            "default": "#3b82f6"
+          },
+          {
+            "type": "color",
+            "id": "tag_bg",
+            "label": "Tag background",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "tag_border",
+            "label": "Tag border",
+            "default": "#d1d5db"
+          },
+          {
+            "type": "color",
+            "id": "tag_color",
+            "label": "Tag text color",
+            "default": "#374151"
+          },
+          {
+            "type": "paragraph",
+            "content": "t:all.empty_char"
+          },
+          {
+            "type": "header",
+            "content": "Stat Box Colors"
+          },
+          {
+            "type": "color",
+            "id": "stat_number_color",
+            "label": "Stat number color",
+            "default": "#3b82f6"
+          },
+          {
+            "type": "color",
+            "id": "stat_bg",
+            "label": "Stat background",
+            "default": "#f0ede8"
+          },
+          {
+            "type": "color",
+            "id": "stat_border",
+            "label": "Stat border",
+            "default": "#bdd4f0"
+          },
+          {
+            "type": "paragraph",
+            "content": "t:all.empty_char"
+          },
+          {
+            "type": "header",
+            "content": "Hover Colors"
+          },
+          {
+            "type": "color",
+            "id": "accent_hover_color",
+            "label": "Dot color — hover",
+            "default": "#991b1b"
+          },
+          {
+            "type": "color",
+            "id": "tag_bg_hover",
+            "label": "Tag background — hover",
+            "default": "#fef2f2"
+          },
+          {
+            "type": "color",
+            "id": "tag_border_hover",
+            "label": "Tag border — hover",
+            "default": "#d4a0a0"
+          },
+          {
+            "type": "color",
+            "id": "tag_color_hover",
+            "label": "Tag text color — hover",
+            "default": "#7f1d1d"
+          },
+          {
+            "type": "color",
+            "id": "stat_number_color_hover",
+            "label": "Stat number color — hover",
+            "default": "#991b1b"
+          },
+          {
+            "type": "color",
+            "id": "stat_bg_hover",
+            "label": "Stat background — hover",
+            "default": "#f5e6e3"
+          },
+          {
+            "type": "color",
+            "id": "stat_border_hover",
+            "label": "Stat border — hover",
+            "default": "#d4a0a0"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTR Stats Cards",
+        "category": "Content",
+        "blocks": [
+          {
+            "type": "card",
+            "settings": {
+              "tag_text": "WLP-1 – Pathway 1",
+              "card_title": "GLP-1 Activity",
+              "card_body": "<p>Boosts your body's natural GLP-1 and blocks the enzyme that breaks it down. Signals fullness, reduces food intake.</p>",
+              "stat_number": "321%",
+              "stat_label": "GLP-1 increase in clinical trial",
+              "stat_source": "CQR-300 clinical trial",
+              "accent_color": "#3b82f6",
+              "tag_bg": "#ffffff",
+              "tag_border": "#d1d5db",
+              "tag_color": "#374151",
+              "stat_number_color": "#3b82f6",
+              "stat_bg": "#f0ede8",
+              "stat_border": "#bdd4f0",
+              "accent_hover_color": "#991b1b",
+              "tag_bg_hover": "#fef2f2",
+              "tag_border_hover": "#d4a0a0",
+              "tag_color_hover": "#7f1d1d",
+              "stat_number_color_hover": "#991b1b",
+              "stat_bg_hover": "#f5e6e3",
+              "stat_border_hover": "#d4a0a0"
+            }
+          },
+          {
+            "type": "card",
+            "settings": {
+              "tag_text": "WLP-1 – Pathway 2",
+              "card_title": "Appetite Signaling",
+              "card_body": "<p>Rebalances leptin and ghrelin. Reduces cravings, emotional eating, and late-night snacking - hormonally, not willpower.</p>",
+              "stat_number": "22.3%",
+              "stat_label": "Improvement in uncontrolled eating",
+              "stat_source": "IGOB131 + CQR-300 studies",
+              "accent_color": "#3b82f6",
+              "tag_bg": "#ffffff",
+              "tag_border": "#d1d5db",
+              "tag_color": "#374151",
+              "stat_number_color": "#3b82f6",
+              "stat_bg": "#f0ede8",
+              "stat_border": "#bdd4f0",
+              "accent_hover_color": "#991b1b",
+              "tag_bg_hover": "#fef2f2",
+              "tag_border_hover": "#d4a0a0",
+              "tag_color_hover": "#7f1d1d",
+              "stat_number_color_hover": "#991b1b",
+              "stat_bg_hover": "#f5e6e3",
+              "stat_border_hover": "#d4a0a0"
+            }
+          },
+          {
+            "type": "card",
+            "settings": {
+              "tag_text": "WLP-1 – Pathway 3",
+              "card_title": "Thermogenesis",
+              "card_body": "<p>Burns more calories at rest. No stimulants, no GI discomfort absorbed 20x better than standard capsaicin.</p>",
+              "stat_number": "4 lbs",
+              "stat_label": "lost in 4 weeks without behavior change",
+              "stat_source": "Capsifen clinical study",
+              "accent_color": "#3b82f6",
+              "tag_bg": "#ffffff",
+              "tag_border": "#d1d5db",
+              "tag_color": "#374151",
+              "stat_number_color": "#3b82f6",
+              "stat_bg": "#f0ede8",
+              "stat_border": "#bdd4f0",
+              "accent_hover_color": "#991b1b",
+              "tag_bg_hover": "#fef2f2",
+              "tag_border_hover": "#d4a0a0",
+              "tag_color_hover": "#7f1d1d",
+              "stat_number_color_hover": "#991b1b",
+              "stat_bg_hover": "#f5e6e3",
+              "stat_border_hover": "#d4a0a0"
+            }
+          },
+          {
+            "type": "card",
+            "settings": {
+              "tag_text": "WLP-1 – Pathway 4",
+              "card_title": "AMPK Activation",
+              "card_body": "<p>Flips your body's master metabolic switch. Cells burn glucose for energy instead of storing it as fat. Long-term reset.</p>",
+              "stat_number": "\u2193 LDL",
+              "stat_label": "Lower glucose, better insulin sensitivity, reduced triglycerides",
+              "stat_source": "Published berberine research",
+              "accent_color": "#991b1b",
+              "tag_bg": "#fef2f2",
+              "tag_border": "#d4a0a0",
+              "tag_color": "#7f1d1d",
+              "stat_number_color": "#991b1b",
+              "stat_bg": "#f5e6e3",
+              "stat_border": "#d4a0a0",
+              "accent_hover_color": "#3b82f6",
+              "tag_bg_hover": "#ffffff",
+              "tag_border_hover": "#bdd4f0",
+              "tag_color_hover": "#374151",
+              "stat_number_color_hover": "#3b82f6",
+              "stat_bg_hover": "#f0ede8",
+              "stat_border_hover": "#bdd4f0"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  {% endschema %}
