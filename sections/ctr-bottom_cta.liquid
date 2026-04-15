@@ -1,447 +1,447 @@
 {%- comment -%} Bottom CTA / Closing Section {%- endcomment -%}
 {%- liquid
-    assign headline = section.settings.headline
-    assign headline_color = section.settings.headline_color
-    assign headline_size_desktop = section.settings.headline_size_desktop
-    assign headline_size_mobile = section.settings.headline_size_mobile
-    assign selected_product = section.settings.product
-    if selected_product != blank
-      assign product_image = selected_product.featured_image
-      assign product_image_mobile = section.settings.product_image_mobile
-      assign cta_link = selected_product.url
-    else
-      assign product_image = section.settings.product_image
-      assign product_image_mobile = section.settings.product_image_mobile
-      assign cta_link = section.settings.cta_url | default: '#'
-    endif
-    assign badge_text = section.settings.badge_text
-    assign badge_bg = section.settings.badge_bg
-    assign badge_text_color = section.settings.badge_text_color
-    assign cta_text = section.settings.cta_text
-    assign cta_url = section.settings.cta_url
-    assign cta_bg = section.settings.cta_bg
-    assign cta_text_color = section.settings.cta_text_color
-    assign trust_1 = section.settings.trust_1
-    assign trust_2 = section.settings.trust_2
-    assign trust_3 = section.settings.trust_3
-    assign trust_color = section.settings.trust_color
-    assign background_color = section.settings.background_color
-    assign image_bg = section.settings.image_bg
-    assign image_border_radius = section.settings.image_border_radius
-    assign container_width = section.settings.container_width
-    assign custom_css = section.settings.custom_css
-    assign section_id = section.settings.section_id
-  -%}
-  
-  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-  
-  {% capture css %}
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign selected_product = section.settings.product
+  if selected_product != blank
+    assign product_image = selected_product.featured_image
+    assign product_image_mobile = section.settings.product_image_mobile
+    assign cta_link = selected_product.url
+  else
+    assign product_image = section.settings.product_image
+    assign product_image_mobile = section.settings.product_image_mobile
+    assign cta_link = section.settings.cta_url | default: '#'
+  endif
+  assign badge_text = section.settings.badge_text
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text_color = section.settings.badge_text_color
+  assign cta_text = section.settings.cta_text
+  assign cta_url = section.settings.cta_url
+  assign cta_bg = section.settings.cta_bg
+  assign cta_text_color = section.settings.cta_text_color
+  assign trust_1 = section.settings.trust_1
+  assign trust_2 = section.settings.trust_2
+  assign trust_3 = section.settings.trust_3
+  assign trust_color = section.settings.trust_color
+  assign background_color = section.settings.background_color
+  assign image_bg = section.settings.image_bg
+  assign image_border_radius = section.settings.image_border_radius
+  assign container_width = section.settings.container_width
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    padding: 48px 24px;
+  }
+
+  & .bcta__container {
+    max-width: {{ container_width }}px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  & .bcta__headline {
+    font-weight: 900;
+    {% comment %} font-style: italic; {% endcomment %}
+    line-height: 1.1;
+    text-align: center;
+    margin: 0;
+    font-size: {{ headline_size_mobile }}px;
+    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+  }
+  & .bcta__headline p { margin: 0; }
+
+  & .bcta__image-wrapper {
+    position: relative;
+    width: 100%;
+    {% comment %} max-width: 660px; {% endcomment %}
+    
+    
+    {% comment %} overflow: hidden; {% endcomment %}
+  }
+
+  & .bcta__image-wrapper picture {
+    display: block;
+    overflow: hidden;
+    border-radius: {{ image_border_radius }}px;
+    {% if image_bg != blank %}background-color: {{ image_bg }};{% endif %}
+  }
+
+  & .bcta__image-wrapper img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  & .bcta__badge {
+    position: absolute;
+    top: -12px;
+    right: -18px;
+    {% if badge_bg != blank %}background-color: {{ badge_bg }};{% endif %}
+    {% if badge_text_color != blank %}color: {{ badge_text_color }};{% endif %}
+    font-weight: 800;
+    {% comment %} font-style: italic; {% endcomment %}
+    font-size: 16px;
+    padding: 4px 12px;
+    border-radius: 24px;
+    transform: rotate(16deg);
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  & .bcta__cta-wrapper {
+    width: 100%;
+    {% comment %} max-width: 660px; {% endcomment %}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  & .bcta__cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 18px 32px;
+    font-weight: 700;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
+    {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
+  }
+  & .bcta__cta:hover {
+    opacity: 0.9;
+  }
+
+  & .bcta__trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 600;
+    {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
+  }
+
+  & .bcta__trust-sep {
+    opacity: 0.5;
+  }
+
+  @media (min-width: 768px) {
     & {
-      width: 100%;
-      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
-      padding: 48px 24px;
+      padding: 80px 48px;
     }
-  
-    & .bcta__container {
-      max-width: {{ container_width }}px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 32px;
-    }
-  
     & .bcta__headline {
-      font-weight: 900;
-      {% comment %} font-style: italic; {% endcomment %}
-      line-height: 1.1;
-      text-align: center;
-      margin: 0;
-      font-size: {{ headline_size_mobile }}px;
-      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+      font-size: {{ headline_size_desktop }}px;
     }
-    & .bcta__headline p { margin: 0; }
-  
-    & .bcta__image-wrapper {
-      position: relative;
-      width: 100%;
-      {% comment %} max-width: 660px; {% endcomment %}
-      
-      
-      {% comment %} overflow: hidden; {% endcomment %}
-    }
-  
-    & .bcta__image-wrapper picture {
-      display: block;
-      overflow: hidden;
-      border-radius: {{ image_border_radius }}px;
-      {% if image_bg != blank %}background-color: {{ image_bg }};{% endif %}
-    }
-  
-    & .bcta__image-wrapper img {
-      display: block;
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-    }
-  
     & .bcta__badge {
-      position: absolute;
-      top: -12px;
-      right: -18px;
-      {% if badge_bg != blank %}background-color: {{ badge_bg }};{% endif %}
-      {% if badge_text_color != blank %}color: {{ badge_text_color }};{% endif %}
-      font-weight: 800;
-      {% comment %} font-style: italic; {% endcomment %}
-      font-size: 16px;
-      padding: 4px 12px;
-      border-radius: 24px;
-      transform: rotate(16deg);
-      white-space: nowrap;
-      z-index: 2;
+      font-size: 22px;
+      padding: 12px 22px;
+      top: -8px;
+      right: -32px;
     }
-  
-    & .bcta__cta-wrapper {
-      width: 100%;
-      {% comment %} max-width: 660px; {% endcomment %}
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-  
-    & .bcta__cta {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 18px 32px;
-      font-weight: 700;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity 0.2s;
-      {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
-      {% if cta_text_color != blank %}color: {{ cta_text_color }};{% endif %}
-    }
-    & .bcta__cta:hover {
-      opacity: 0.9;
-    }
-  
-    & .bcta__trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 14px;
-      font-weight: 600;
-      {% if trust_color != blank %}color: {{ trust_color }};{% endif %}
-    }
-  
-    & .bcta__trust-sep {
-      opacity: 0.5;
-    }
-  
-    @media (min-width: 768px) {
-      & {
-        padding: 80px 48px;
-      }
-      & .bcta__headline {
-        font-size: {{ headline_size_desktop }}px;
-      }
-      & .bcta__badge {
-        font-size: 22px;
-        padding: 12px 22px;
-        top: -8px;
-        right: -32px;
-      }
-    }
-  {% endcapture %}
-  
-  {% capture section_content %}
-    <style>
-      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-    </style>
-  
-    <section
-      data-style-id="{{ section.id }}"
-      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    >
-      <div class="bcta__container">
-  
-        {% if headline != blank %}
-          <h2 class="bcta__headline">{{ headline }}</h2>
-        {% endif %}
-  
-        {% if product_image != blank %}
-          <div class="bcta__image-wrapper">
-            {% if badge_text != blank %}
-              <span class="bcta__badge">{{ badge_text }}</span>
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="bcta__container">
+
+      {% if headline != blank %}
+        <h2 class="bcta__headline">{{ headline }}</h2>
+      {% endif %}
+
+      {% if product_image != blank %}
+        <div class="bcta__image-wrapper">
+          {% if badge_text != blank %}
+            <span class="bcta__badge">{{ badge_text }}</span>
+          {% endif %}
+
+          <picture>
+            {% if product_image_mobile != blank %}
+              <source media="(max-width: 767px)" srcset="{{ product_image_mobile | image_url: width: 800 }}">
             {% endif %}
-  
-            <picture>
-              {% if product_image_mobile != blank %}
-                <source media="(max-width: 767px)" srcset="{{ product_image_mobile | image_url: width: 800 }}">
-              {% endif %}
-              <img
-                src="{{ product_image | image_url: width: 1200 }}"
-                alt="{{ product_image.alt | default: 'Product image' }}"
-                loading="lazy"
-                width="{{ product_image.width }}"
-                height="{{ product_image.height }}"
-              >
-            </picture>
+            <img
+              src="{{ product_image | image_url: width: 1200 }}"
+              alt="{{ product_image.alt | default: 'Product image' }}"
+              loading="lazy"
+              width="{{ product_image.width }}"
+              height="{{ product_image.height }}"
+            >
+          </picture>
+        </div>
+      {% endif %}
+
+      <div class="bcta__cta-wrapper">
+        {% if cta_text != blank %}
+          <a href="{{ cta_link }}" class="bcta__cta">{{ cta_text }}</a>
+        {% endif %}
+
+        {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
+          <div class="bcta__trust">
+            {% if trust_1 != blank %}
+              <span>{{ trust_1 }}</span>
+              {% if trust_2 != blank or trust_3 != blank %}<span class="bcta__trust-sep">·</span>{% endif %}
+            {% endif %}
+            {% if trust_2 != blank %}
+              <span>{{ trust_2 }}</span>
+              {% if trust_3 != blank %}<span class="bcta__trust-sep">·</span>{% endif %}
+            {% endif %}
+            {% if trust_3 != blank %}
+              <span>{{ trust_3 }}</span>
+            {% endif %}
           </div>
         {% endif %}
-  
-        <div class="bcta__cta-wrapper">
-          {% if cta_text != blank %}
-            <a href="{{ cta_link }}" class="bcta__cta">{{ cta_text }}</a>
-          {% endif %}
-  
-          {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
-            <div class="bcta__trust">
-              {% if trust_1 != blank %}
-                <span>{{ trust_1 }}</span>
-                {% if trust_2 != blank or trust_3 != blank %}<span class="bcta__trust-sep">·</span>{% endif %}
-              {% endif %}
-              {% if trust_2 != blank %}
-                <span>{{ trust_2 }}</span>
-                {% if trust_3 != blank %}<span class="bcta__trust-sep">·</span>{% endif %}
-              {% endif %}
-              {% if trust_3 != blank %}
-                <span>{{ trust_3 }}</span>
-              {% endif %}
-            </div>
-          {% endif %}
-        </div>
-  
       </div>
-    </section>
-  {% endcapture %}
-  
-  {{ section_content }}
-  
-  {% schema %}
-  {
-    "name": "CTR Bottom CTA",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Headline"
-      },
-      {
-        "type": "richtext",
-        "id": "headline",
-        "label": "Headline",
-        "default": "<p>Stop targeting one pathway when your metabolism runs on four. The WLP-1™ + Berberine Stack covers it all.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "headline_color",
-        "label": "Headline color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_desktop",
-        "label": "Headline size — Desktop (px)",
-        "default": 48,
-        "min": 24,
-        "max": 80,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_mobile",
-        "label": "Headline size — Mobile (px)",
-        "default": 32,
-        "min": 18,
-        "max": 60,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Product"
-      },
-      {
-        "type": "product",
-        "id": "product",
-        "label": "Product",
-        "info": "If selected, uses product featured image and links CTA to product page."
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Custom Image (if no product selected)"
-      },
-      {
-        "type": "image_picker",
-        "id": "product_image",
-        "label": "Product image — Desktop"
-      },
-      {
-        "type": "image_picker",
-        "id": "product_image_mobile",
-        "label": "Product image — Mobile (optional)"
-      },
-      {
-        "type": "color",
-        "id": "image_bg",
-        "label": "Image area background",
-        "default": "#e8e8e8"
-      },
-      {
-        "type": "range",
-        "id": "image_border_radius",
-        "label": "Image border radius (px)",
-        "default": 16,
-        "min": 0,
-        "max": 32,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Badge"
-      },
-      {
-        "type": "text",
-        "id": "badge_text",
-        "label": "Badge text",
-        "default": "82% Sold"
-      },
-      {
-        "type": "color",
-        "id": "badge_bg",
-        "label": "Badge background",
-        "default": "#e8345e"
-      },
-      {
-        "type": "color",
-        "id": "badge_text_color",
-        "label": "Badge text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "CTA Button"
-      },
-      {
-        "type": "text",
-        "id": "cta_text",
-        "label": "Button text",
-        "default": "Subscribe & Save Up To 35%"
-      },
-      {
-        "type": "url",
-        "id": "cta_url",
-        "label": "Button URL"
-      },
-      {
-        "type": "color",
-        "id": "cta_bg",
-        "label": "Button background",
-        "default": "#4f46e5"
-      },
-      {
-        "type": "color",
-        "id": "cta_text_color",
-        "label": "Button text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Trust Badges"
-      },
-      {
-        "type": "text",
-        "id": "trust_1",
-        "label": "Trust badge 1",
-        "default": "Stock Alert: Running Low"
-      },
-      {
-        "type": "text",
-        "id": "trust_2",
-        "label": "Trust badge 2",
-        "default": "Free Shipping"
-      },
-      {
-        "type": "text",
-        "id": "trust_3",
-        "label": "Trust badge 3",
-        "default": "30-Day Money-Back Guarantee"
-      },
-      {
-        "type": "color",
-        "id": "trust_color",
-        "label": "Trust text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Section"
-      },
-      {
-        "type": "color",
-        "id": "background_color",
-        "label": "Background color",
-        "default": "#1a1a1a"
-      },
-      {
-        "type": "range",
-        "id": "container_width",
-        "label": "Container width (px)",
-        "default": 720,
-        "min": 480,
-        "max": 1200,
-        "step": 20,
-        "unit": "px"
-      },
-      {
-        "type": "textarea",
-        "id": "custom_css",
-        "label": "Custom CSS"
-      },
-      {
-        "type": "text",
-        "id": "section_id",
-        "label": "Section Id"
-      }
-    ],
-    "presets": [
-      {
-        "name": "CTR Bottom CTA",
-        "category": "CTA"
-      }
-    ]
-  }
-  {% endschema %}
+
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Bottom CTA",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Stop targeting one pathway when your metabolism runs on four. The WLP-1™ + Berberine Stack covers it all.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 48,
+      "min": 24,
+      "max": 80,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 32,
+      "min": 18,
+      "max": 60,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "If selected, uses product featured image and links CTA to product page."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Custom Image (if no product selected)"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image — Desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_mobile",
+      "label": "Product image — Mobile (optional)"
+    },
+    {
+      "type": "color",
+      "id": "image_bg",
+      "label": "Image area background",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius (px)",
+      "default": 16,
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "82% Sold"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Badge background",
+      "default": "#e8345e"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Subscribe & Save Up To 35%"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#4f46e5"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Trust Badges"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust badge 1",
+      "default": "Stock Alert: Running Low"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust badge 2",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Trust badge 3",
+      "default": "30-Day Money-Back Guarantee"
+    },
+    {
+      "type": "color",
+      "id": "trust_color",
+      "label": "Trust text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width (px)",
+      "default": 720,
+      "min": 480,
+      "max": 1200,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Bottom CTA",
+      "category": "CTA"
+    }
+  ]
+}
+{% endschema %}

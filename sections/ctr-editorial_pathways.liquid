@@ -1,574 +1,574 @@
 {%- comment -%} Editorial Pathways Section {%- endcomment -%}
 {%- liquid
-    assign section_type = "editorial_pathways"
-    assign image = section.settings.image
-    assign image_mobile = section.settings.image_mobile
-    assign image_reverse = section.settings.image_reverse
-    assign image_border_radius = section.settings.image_border_radius
-    assign headline = section.settings.headline
-    assign headline_color = section.settings.headline_color
-    assign headline_size_desktop = section.settings.headline_size_desktop
-    assign headline_size_mobile = section.settings.headline_size_mobile
-    assign body_text_1 = section.settings.body_text_1
-    assign body_text_2 = section.settings.body_text_2
-    assign body_color = section.settings.body_color
-    assign body_size_desktop = section.settings.body_size_desktop
-    assign body_size_mobile = section.settings.body_size_mobile
-    assign callout_icon = section.settings.callout_icon
-    assign callout_text = section.settings.callout_text
-    assign callout_bg = section.settings.callout_bg
-    assign callout_border_color = section.settings.callout_border_color
-    assign pathway_1 = section.settings.pathway_1
-    assign pathway_2 = section.settings.pathway_2
-    assign pathway_3 = section.settings.pathway_3
-    assign pathway_4 = section.settings.pathway_4
-    assign pathway_accent_color = section.settings.pathway_accent_color
-    assign pathway_bg = section.settings.pathway_bg
-    assign pathway_border_color = section.settings.pathway_border_color
-    assign background_color = section.settings.background_color
-    assign text_color = section.settings.text_color
-    assign custom_css = section.settings.custom_css
-    assign section_id = section.settings.section_id
-  -%}
-  
-  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-  
-  {% capture css %}
-    & {
-      position: relative;
-      width: 100%;
-      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
-      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
-    }
-  
-    & .ep__container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 12px 24px;
-    }
-  
-    & .ep__grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-  
-    & .ep__image-col {
-      width: 100%;
-    }
-    & .ep__image-col img {
-      display: block;
-      width: 100%;
-      height: auto;
-      {% if image_border_radius != blank %}border-radius: {{ image_border_radius }}px;{% endif %}
-      object-fit: cover;
-    }
-  
-    & .ep__text-col {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 24px;
-  
-      @media (max-width: 767px) {
-        gap: 16px;
-      }
-    }
-  
-    & .ep__headline {
-      font-weight: 700;
-      line-height: 1.1;
-      margin: 0;
-      font-size: {{ headline_size_mobile }}px;
-      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
-    }
-    & .ep__headline p {
-      margin: 0;
-    }
-  
-    & .ep__body {
-      line-height: 1.6;
-      font-size: {{ body_size_mobile }}px;
-      {% if body_color != blank and body_color.alpha != 0 %}color: {{ body_color }};{% endif %}
-    }
-    & .ep__body p {
-      margin: 0;
-    }
-  
-    & .ep__callout {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      padding: 20px 24px;
-      border-radius: 12px;
-      {% if callout_bg != blank %}background-color: {{ callout_bg }};{% endif %}
-      {% if callout_border_color != blank %}border: 1px solid {{ callout_border_color }};{% endif %}
-  
-      @media (max-width: 767px) {
-        flex-direction: column;
-      }
-    }
-    & .ep__callout-icon {
-      flex-shrink: 0;
-      width: 80px;
-    }
-    & .ep__callout-icon img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-    & .ep__callout-text {
-      line-height: 1.5;
-      font-size: {{ body_size_mobile }}px;
-      color: #707070;
-    }
-    & .ep__callout-text p {
-      margin: 0;
-    }
-  
-    & .ep__pathways {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-  
-    & .ep__pathway {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      {% if pathway_bg != blank %}background-color: {{ pathway_bg }};{% endif %}
-      {% if pathway_border_color != blank %}border: 1px solid {{ pathway_border_color }};{% endif %}
-    }
-  
-    & .ep__pathway-number {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      font-weight: 600;
-      font-size: 12px;
-      flex-shrink: 0;
-      color: #5F92D4;
-      background-color: #cddaea;
-    }
-  
-    & .ep__pathway:last-child {
-      background-color: #ebe3de;
-      border-color: #7d2d2e;
-      color: #7d2d2e;
-    }
-  
-    & .ep__pathway:last-child .ep__pathway-label {
-      color: #7d2d2e;
-    }
-  
-    & .ep__pathway:last-child .ep__pathway-number {
-      background-color: #d5bebb;
-      color: #7d2d2e;
-    }
-  
-    & .ep__pathway-label {
-      font-weight: 600;
-      font-size: 15px;
-      {% if pathway_accent_color != blank and pathway_accent_color.alpha != 0 %}color: {{ pathway_accent_color }};{% endif %}
-    }
-  
-    @media (min-width: 768px) {
-      & .ep__container {
-        padding: 80px 48px;
-      }
-  
-      & .ep__grid {
-        flex-direction: {% if image_reverse %}row-reverse{% else %}row{% endif %};
-        align-items: center;
-        gap: 60px;
-      }
-  
-      & .ep__image-col {
-        width: 50%;
-        flex-shrink: 0;
-      }
-      & .ep__text-col {
-        width: 50%;
-      }
-  
-      & .ep__headline {
-        font-size: {{ headline_size_desktop }}px;
-      }
-  
-      & .ep__body {
-        font-size: {{ body_size_desktop }}px;
-      }
-  
-      & .ep__callout-text {
-        font-size: {{ body_size_desktop }}px;
-      }
-  
-      & .ep__pathways {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-    }
-  {% endcapture %}
-  
-  {% capture section_content %}
-    <style>
-      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-    </style>
-  
-    <section
-      data-style-id="{{ section.id }}"
-      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    >
-      <div class="ep__container">
-        <div class="ep__grid">
-  
-          {%- comment -%} Image column {%- endcomment -%}
-          <div class="ep__image-col">
-            {% if image != blank %}
-              <picture>
-                {% if image_mobile != blank %}
-                  <source media="(max-width: 767px)" srcset="{{ image_mobile | image_url: width: 800 }}">
-                {% endif %}
-                <img
-                  src="{{ image | image_url: width: 1200 }}"
-                  alt="{{ image.alt | default: '' }}"
-                  width="{{ image.width }}"
-                  height="{{ image.height }}"
-                  loading="lazy"
-                >
-              </picture>
-            {% endif %}
-          </div>
-  
-          {%- comment -%} Text column {%- endcomment -%}
-          <div class="ep__text-col">
-  
-            {% if headline != blank %}
-              <h2 class="ep__headline">{{ headline }}</h2>
-            {% endif %}
-  
-            {% if body_text_1 != blank %}
-              <div class="ep__body">{{ body_text_1 }}</div>
-            {% endif %}
-  
-            {% if callout_text != blank %}
-              <div class="ep__callout">
-                {% if callout_icon != blank %}
-                  <div class="ep__callout-icon">
-                    <img
-                      src="{{ callout_icon | image_url: width: 200 }}"
-                      alt=""
-                      width="{{ callout_icon.width }}"
-                      height="{{ callout_icon.height }}"
-                      loading="lazy"
-                    >
-                  </div>
-                {% endif %}
-                <div class="ep__callout-text">{{ callout_text }}</div>
-              </div>
-            {% endif %}
-  
-            {% if body_text_2 != blank %}
-              <div class="ep__body">{{ body_text_2 }}</div>
-            {% endif %}
-  
-            {% if pathway_1 != blank or pathway_2 != blank or pathway_3 != blank or pathway_4 != blank %}
-              <div class="ep__pathways">
-                {% if pathway_1 != blank %}
-                  <div class="ep__pathway">
-                    <span class="ep__pathway-number">1</span>
-                    <span class="ep__pathway-label">{{ pathway_1 }}</span>
-                  </div>
-                {% endif %}
-                {% if pathway_2 != blank %}
-                  <div class="ep__pathway">
-                    <span class="ep__pathway-number">2</span>
-                    <span class="ep__pathway-label">{{ pathway_2 }}</span>
-                  </div>
-                {% endif %}
-                {% if pathway_3 != blank %}
-                  <div class="ep__pathway">
-                    <span class="ep__pathway-number">3</span>
-                    <span class="ep__pathway-label">{{ pathway_3 }}</span>
-                  </div>
-                {% endif %}
-                {% if pathway_4 != blank %}
-                  <div class="ep__pathway">
-                    <span class="ep__pathway-number">4</span>
-                    <span class="ep__pathway-label">{{ pathway_4 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-            {% endif %}
-  
-          </div>
-  
-        </div>
-      </div>
-    </section>
-  {% endcapture %}
-  
-  {{ section_content }}
-  
-  {% schema %}
-  {
-    "name": "CTR Editorial Pathways",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Image"
-      },
-      {
-        "type": "image_picker",
-        "id": "image",
-        "label": "Image — Desktop"
-      },
-      {
-        "type": "image_picker",
-        "id": "image_mobile",
-        "label": "Image — Mobile",
-        "info": "Falls back to desktop image if empty."
-      },
-      {
-        "type": "range",
-        "id": "image_border_radius",
-        "label": "Image border radius (px)",
-        "default": 16,
-        "min": 0,
-        "max": 40,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "checkbox",
-        "id": "image_reverse",
-        "label": "Image on right (desktop)",
-        "default": false,
-        "info": "On mobile image is always on top."
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Headline"
-      },
-      {
-        "type": "richtext",
-        "id": "headline",
-        "label": "Headline",
-        "default": "<p>Four pathways.<br>One complete stack.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "headline_color",
-        "label": "Headline color"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_desktop",
-        "label": "Headline size — Desktop (px)",
-        "default": 48,
-        "min": 20,
-        "max": 100,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_mobile",
-        "label": "Headline size — Mobile (px)",
-        "default": 32,
-        "min": 16,
-        "max": 72,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Body Text"
-      },
-      {
-        "type": "richtext",
-        "id": "body_text_1",
-        "label": "Body text — above callout",
-        "default": "<p>WLP-1™ already works on three metabolic pathways — GLP-1 activity, appetite signaling, and thermogenesis. Berberine adds a completely separate 4th pathway: AMPK activation.</p>"
-      },
-      {
-        "type": "richtext",
-        "id": "body_text_2",
-        "label": "Body text — below callout",
-        "default": "<p>Berberine isn't just an add-on. It's a long-term metabolic reset — working over time to restore the natural bodily processes that make weight management truly sustainable.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "body_color",
-        "label": "Body text color"
-      },
-      {
-        "type": "range",
-        "id": "body_size_desktop",
-        "label": "Body size — Desktop (px)",
-        "default": 17,
-        "min": 12,
-        "max": 28,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "body_size_mobile",
-        "label": "Body size — Mobile (px)",
-        "default": 15,
-        "min": 12,
-        "max": 24,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Callout Box"
-      },
-      {
-        "type": "image_picker",
-        "id": "callout_icon",
-        "label": "Callout icon / image",
-        "info": "Small icon or illustration displayed next to callout text."
-      },
-      {
-        "type": "richtext",
-        "id": "callout_text",
-        "label": "Callout text",
-        "default": "<p>Think of it like going from a 3-lane highway to a 4-lane highway — more metabolic throughput, more results.</p>"
-      },
-      {
-        "type": "color",
-        "id": "callout_bg",
-        "label": "Callout background",
-        "default": "#f0ede8"
-      },
-      {
-        "type": "color",
-        "id": "callout_border_color",
-        "label": "Callout border color",
-        "default": "#e5e0d8"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Pathway Labels"
-      },
-      {
-        "type": "text",
-        "id": "pathway_1",
-        "label": "Pathway 1",
-        "default": "GLP-1 Activity"
-      },
-      {
-        "type": "text",
-        "id": "pathway_2",
-        "label": "Pathway 2",
-        "default": "Appetite Signaling"
-      },
-      {
-        "type": "text",
-        "id": "pathway_3",
-        "label": "Pathway 3",
-        "default": "Thermogenesis"
-      },
-      {
-        "type": "text",
-        "id": "pathway_4",
-        "label": "Pathway 4",
-        "default": "AMPK Activation"
-      },
-      {
-        "type": "color",
-        "id": "pathway_accent_color",
-        "label": "Pathway accent color",
-        "default": "#3b82f6",
-        "info": "Number badge background and label text color."
-      },
-      {
-        "type": "color",
-        "id": "pathway_bg",
-        "label": "Pathway card background",
-        "default": "#f7f5f1"
-      },
-      {
-        "type": "color",
-        "id": "pathway_border_color",
-        "label": "Pathway card border",
-        "default": "#e5e0d8"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Section Globals"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "background_color",
-        "label": "Background color",
-        "default": "#f7f5f1"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "text_color",
-        "label": "Text color"
-      },
-      {
-        "type": "textarea",
-        "id": "custom_css",
-        "label": "Custom CSS"
-      },
-      {
-        "type": "text",
-        "id": "section_id",
-        "label": "Section Id"
-      }
-    ],
-    "presets": [
-      {
-        "name": "CTR Editorial Pathways",
-        "category": "Content",
-        "settings": {
-          "headline": "<p>Four pathways.<br>One complete stack.</p>",
-          "body_text_1": "<p>WLP-1™ already works on three metabolic pathways — GLP-1 activity, appetite signaling, and thermogenesis. Berberine adds a completely separate 4th pathway: AMPK activation.</p>",
-          "body_text_2": "<p>Berberine isn't just an add-on. It's a long-term metabolic reset — working over time to restore the natural bodily processes that make weight management truly sustainable.</p>",
-          "callout_text": "<p>Think of it like going from a 3-lane highway to a 4-lane highway — more metabolic throughput, more results.</p>",
-          "pathway_1": "GLP-1 Activity",
-          "pathway_2": "Appetite Signaling",
-          "pathway_3": "Thermogenesis",
-          "pathway_4": "AMPK Activation"
-        }
-      }
-    ]
+  assign section_type = "editorial_pathways"
+  assign image = section.settings.image
+  assign image_mobile = section.settings.image_mobile
+  assign image_reverse = section.settings.image_reverse
+  assign image_border_radius = section.settings.image_border_radius
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign body_text_1 = section.settings.body_text_1
+  assign body_text_2 = section.settings.body_text_2
+  assign body_color = section.settings.body_color
+  assign body_size_desktop = section.settings.body_size_desktop
+  assign body_size_mobile = section.settings.body_size_mobile
+  assign callout_icon = section.settings.callout_icon
+  assign callout_text = section.settings.callout_text
+  assign callout_bg = section.settings.callout_bg
+  assign callout_border_color = section.settings.callout_border_color
+  assign pathway_1 = section.settings.pathway_1
+  assign pathway_2 = section.settings.pathway_2
+  assign pathway_3 = section.settings.pathway_3
+  assign pathway_4 = section.settings.pathway_4
+  assign pathway_accent_color = section.settings.pathway_accent_color
+  assign pathway_bg = section.settings.pathway_bg
+  assign pathway_border_color = section.settings.pathway_border_color
+  assign background_color = section.settings.background_color
+  assign text_color = section.settings.text_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    position: relative;
+    width: 100%;
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
   }
-  {% endschema %}
+
+  & .ep__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 12px 24px;
+  }
+
+  & .ep__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  & .ep__image-col {
+    width: 100%;
+  }
+  & .ep__image-col img {
+    display: block;
+    width: 100%;
+    height: auto;
+    {% if image_border_radius != blank %}border-radius: {{ image_border_radius }}px;{% endif %}
+    object-fit: cover;
+  }
+
+  & .ep__text-col {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+
+    @media (max-width: 767px) {
+      gap: 16px;
+    }
+  }
+
+  & .ep__headline {
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    font-size: {{ headline_size_mobile }}px;
+    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+  }
+  & .ep__headline p {
+    margin: 0;
+  }
+
+  & .ep__body {
+    line-height: 1.6;
+    font-size: {{ body_size_mobile }}px;
+    {% if body_color != blank and body_color.alpha != 0 %}color: {{ body_color }};{% endif %}
+  }
+  & .ep__body p {
+    margin: 0;
+  }
+
+  & .ep__callout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    border-radius: 12px;
+    {% if callout_bg != blank %}background-color: {{ callout_bg }};{% endif %}
+    {% if callout_border_color != blank %}border: 1px solid {{ callout_border_color }};{% endif %}
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
+  }
+  & .ep__callout-icon {
+    flex-shrink: 0;
+    width: 80px;
+  }
+  & .ep__callout-icon img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  & .ep__callout-text {
+    line-height: 1.5;
+    font-size: {{ body_size_mobile }}px;
+    color: #707070;
+  }
+  & .ep__callout-text p {
+    margin: 0;
+  }
+
+  & .ep__pathways {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .ep__pathway {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    {% if pathway_bg != blank %}background-color: {{ pathway_bg }};{% endif %}
+    {% if pathway_border_color != blank %}border: 1px solid {{ pathway_border_color }};{% endif %}
+  }
+
+  & .ep__pathway-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 12px;
+    flex-shrink: 0;
+    color: #5F92D4;
+    background-color: #cddaea;
+  }
+
+  & .ep__pathway:last-child {
+    background-color: #ebe3de;
+    border-color: #7d2d2e;
+    color: #7d2d2e;
+  }
+
+  & .ep__pathway:last-child .ep__pathway-label {
+    color: #7d2d2e;
+  }
+
+  & .ep__pathway:last-child .ep__pathway-number {
+    background-color: #d5bebb;
+    color: #7d2d2e;
+  }
+
+  & .ep__pathway-label {
+    font-weight: 600;
+    font-size: 15px;
+    {% if pathway_accent_color != blank and pathway_accent_color.alpha != 0 %}color: {{ pathway_accent_color }};{% endif %}
+  }
+
+  @media (min-width: 768px) {
+    & .ep__container {
+      padding: 80px 48px;
+    }
+
+    & .ep__grid {
+      flex-direction: {% if image_reverse %}row-reverse{% else %}row{% endif %};
+      align-items: center;
+      gap: 60px;
+    }
+
+    & .ep__image-col {
+      width: 50%;
+      flex-shrink: 0;
+    }
+    & .ep__text-col {
+      width: 50%;
+    }
+
+    & .ep__headline {
+      font-size: {{ headline_size_desktop }}px;
+    }
+
+    & .ep__body {
+      font-size: {{ body_size_desktop }}px;
+    }
+
+    & .ep__callout-text {
+      font-size: {{ body_size_desktop }}px;
+    }
+
+    & .ep__pathways {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="ep__container">
+      <div class="ep__grid">
+
+        {%- comment -%} Image column {%- endcomment -%}
+        <div class="ep__image-col">
+          {% if image != blank %}
+            <picture>
+              {% if image_mobile != blank %}
+                <source media="(max-width: 767px)" srcset="{{ image_mobile | image_url: width: 800 }}">
+              {% endif %}
+              <img
+                src="{{ image | image_url: width: 1200 }}"
+                alt="{{ image.alt | default: '' }}"
+                width="{{ image.width }}"
+                height="{{ image.height }}"
+                loading="lazy"
+              >
+            </picture>
+          {% endif %}
+        </div>
+
+        {%- comment -%} Text column {%- endcomment -%}
+        <div class="ep__text-col">
+
+          {% if headline != blank %}
+            <h2 class="ep__headline">{{ headline }}</h2>
+          {% endif %}
+
+          {% if body_text_1 != blank %}
+            <div class="ep__body">{{ body_text_1 }}</div>
+          {% endif %}
+
+          {% if callout_text != blank %}
+            <div class="ep__callout">
+              {% if callout_icon != blank %}
+                <div class="ep__callout-icon">
+                  <img
+                    src="{{ callout_icon | image_url: width: 200 }}"
+                    alt=""
+                    width="{{ callout_icon.width }}"
+                    height="{{ callout_icon.height }}"
+                    loading="lazy"
+                  >
+                </div>
+              {% endif %}
+              <div class="ep__callout-text">{{ callout_text }}</div>
+            </div>
+          {% endif %}
+
+          {% if body_text_2 != blank %}
+            <div class="ep__body">{{ body_text_2 }}</div>
+          {% endif %}
+
+          {% if pathway_1 != blank or pathway_2 != blank or pathway_3 != blank or pathway_4 != blank %}
+            <div class="ep__pathways">
+              {% if pathway_1 != blank %}
+                <div class="ep__pathway">
+                  <span class="ep__pathway-number">1</span>
+                  <span class="ep__pathway-label">{{ pathway_1 }}</span>
+                </div>
+              {% endif %}
+              {% if pathway_2 != blank %}
+                <div class="ep__pathway">
+                  <span class="ep__pathway-number">2</span>
+                  <span class="ep__pathway-label">{{ pathway_2 }}</span>
+                </div>
+              {% endif %}
+              {% if pathway_3 != blank %}
+                <div class="ep__pathway">
+                  <span class="ep__pathway-number">3</span>
+                  <span class="ep__pathway-label">{{ pathway_3 }}</span>
+                </div>
+              {% endif %}
+              {% if pathway_4 != blank %}
+                <div class="ep__pathway">
+                  <span class="ep__pathway-number">4</span>
+                  <span class="ep__pathway-label">{{ pathway_4 }}</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Editorial Pathways",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image — Desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image — Mobile",
+      "info": "Falls back to desktop image if empty."
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius (px)",
+      "default": 16,
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_reverse",
+      "label": "Image on right (desktop)",
+      "default": false,
+      "info": "On mobile image is always on top."
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Four pathways.<br>One complete stack.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 48,
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 32,
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Body Text"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text_1",
+      "label": "Body text — above callout",
+      "default": "<p>WLP-1™ already works on three metabolic pathways — GLP-1 activity, appetite signaling, and thermogenesis. Berberine adds a completely separate 4th pathway: AMPK activation.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text_2",
+      "label": "Body text — below callout",
+      "default": "<p>Berberine isn't just an add-on. It's a long-term metabolic reset — working over time to restore the natural bodily processes that make weight management truly sustainable.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "body_color",
+      "label": "Body text color"
+    },
+    {
+      "type": "range",
+      "id": "body_size_desktop",
+      "label": "Body size — Desktop (px)",
+      "default": 17,
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "body_size_mobile",
+      "label": "Body size — Mobile (px)",
+      "default": 15,
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Callout Box"
+    },
+    {
+      "type": "image_picker",
+      "id": "callout_icon",
+      "label": "Callout icon / image",
+      "info": "Small icon or illustration displayed next to callout text."
+    },
+    {
+      "type": "richtext",
+      "id": "callout_text",
+      "label": "Callout text",
+      "default": "<p>Think of it like going from a 3-lane highway to a 4-lane highway — more metabolic throughput, more results.</p>"
+    },
+    {
+      "type": "color",
+      "id": "callout_bg",
+      "label": "Callout background",
+      "default": "#f0ede8"
+    },
+    {
+      "type": "color",
+      "id": "callout_border_color",
+      "label": "Callout border color",
+      "default": "#e5e0d8"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Pathway Labels"
+    },
+    {
+      "type": "text",
+      "id": "pathway_1",
+      "label": "Pathway 1",
+      "default": "GLP-1 Activity"
+    },
+    {
+      "type": "text",
+      "id": "pathway_2",
+      "label": "Pathway 2",
+      "default": "Appetite Signaling"
+    },
+    {
+      "type": "text",
+      "id": "pathway_3",
+      "label": "Pathway 3",
+      "default": "Thermogenesis"
+    },
+    {
+      "type": "text",
+      "id": "pathway_4",
+      "label": "Pathway 4",
+      "default": "AMPK Activation"
+    },
+    {
+      "type": "color",
+      "id": "pathway_accent_color",
+      "label": "Pathway accent color",
+      "default": "#3b82f6",
+      "info": "Number badge background and label text color."
+    },
+    {
+      "type": "color",
+      "id": "pathway_bg",
+      "label": "Pathway card background",
+      "default": "#f7f5f1"
+    },
+    {
+      "type": "color",
+      "id": "pathway_border_color",
+      "label": "Pathway card border",
+      "default": "#e5e0d8"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f7f5f1"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Editorial Pathways",
+      "category": "Content",
+      "settings": {
+        "headline": "<p>Four pathways.<br>One complete stack.</p>",
+        "body_text_1": "<p>WLP-1™ already works on three metabolic pathways — GLP-1 activity, appetite signaling, and thermogenesis. Berberine adds a completely separate 4th pathway: AMPK activation.</p>",
+        "body_text_2": "<p>Berberine isn't just an add-on. It's a long-term metabolic reset — working over time to restore the natural bodily processes that make weight management truly sustainable.</p>",
+        "callout_text": "<p>Think of it like going from a 3-lane highway to a 4-lane highway — more metabolic throughput, more results.</p>",
+        "pathway_1": "GLP-1 Activity",
+        "pathway_2": "Appetite Signaling",
+        "pathway_3": "Thermogenesis",
+        "pathway_4": "AMPK Activation"
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,629 +1,629 @@
 {%- comment -%} Quiz CTA Banner Section {%- endcomment -%}
 {%- liquid
-    assign section_type = "quiz_banner"
-    assign image_left = section.settings.image_left
-    assign image_left_width = section.settings.image_left_width
-    assign image_left_offset = section.settings.image_left_offset
-    assign image_right = section.settings.image_right
-    assign image_right_width = section.settings.image_right_width
-    assign image_right_offset = section.settings.image_right_offset
-    assign section_bg = section.settings.section_bg
-    assign card_bg = section.settings.card_bg
-    assign card_border_radius = section.settings.card_border_radius
-    assign card_max_width = section.settings.card_max_width
-    assign card_padding_desktop = section.settings.card_padding_desktop
-    assign card_padding_mobile = section.settings.card_padding_mobile
-    assign eyebrow = section.settings.eyebrow
-    assign eyebrow_color = section.settings.eyebrow_color
-    assign eyebrow_size = section.settings.eyebrow_size
-    assign headline = section.settings.headline
-    assign headline_color = section.settings.headline_color
-    assign headline_size_desktop = section.settings.headline_size_desktop
-    assign headline_size_mobile = section.settings.headline_size_mobile
-    assign subtext = section.settings.subtext
-    assign subtext_color = section.settings.subtext_color
-    assign subtext_size_desktop = section.settings.subtext_size_desktop
-    assign subtext_size_mobile = section.settings.subtext_size_mobile
-    assign cta_label = section.settings.cta_label
-    assign cta_url = section.settings.cta_url
-    assign cta_bg = section.settings.cta_bg
-    assign cta_color = section.settings.cta_color
-    assign cta_border_radius = section.settings.cta_border_radius
-    assign trust_1 = section.settings.trust_1
-    assign trust_2 = section.settings.trust_2
-    assign trust_3 = section.settings.trust_3
-    assign trust_color = section.settings.trust_color
-    assign trust_dot_color = section.settings.trust_dot_color
-    assign min_height_desktop = section.settings.min_height_desktop
-    assign min_height_mobile = section.settings.min_height_mobile
-    assign custom_css = section.settings.custom_css
-    assign section_id = section.settings.section_id
-  -%}
-  
-  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
-  
-  {% capture css %}
-    & {
-      position: relative;
-      width: 100%;
-      {% if section_bg != blank %}background-color: {{ section_bg }};{% endif %}
-    }
-  
+  assign section_type = "quiz_banner"
+  assign image_left = section.settings.image_left
+  assign image_left_width = section.settings.image_left_width
+  assign image_left_offset = section.settings.image_left_offset
+  assign image_right = section.settings.image_right
+  assign image_right_width = section.settings.image_right_width
+  assign image_right_offset = section.settings.image_right_offset
+  assign section_bg = section.settings.section_bg
+  assign card_bg = section.settings.card_bg
+  assign card_border_radius = section.settings.card_border_radius
+  assign card_max_width = section.settings.card_max_width
+  assign card_padding_desktop = section.settings.card_padding_desktop
+  assign card_padding_mobile = section.settings.card_padding_mobile
+  assign eyebrow = section.settings.eyebrow
+  assign eyebrow_color = section.settings.eyebrow_color
+  assign eyebrow_size = section.settings.eyebrow_size
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign subtext = section.settings.subtext
+  assign subtext_color = section.settings.subtext_color
+  assign subtext_size_desktop = section.settings.subtext_size_desktop
+  assign subtext_size_mobile = section.settings.subtext_size_mobile
+  assign cta_label = section.settings.cta_label
+  assign cta_url = section.settings.cta_url
+  assign cta_bg = section.settings.cta_bg
+  assign cta_color = section.settings.cta_color
+  assign cta_border_radius = section.settings.cta_border_radius
+  assign trust_1 = section.settings.trust_1
+  assign trust_2 = section.settings.trust_2
+  assign trust_3 = section.settings.trust_3
+  assign trust_color = section.settings.trust_color
+  assign trust_dot_color = section.settings.trust_dot_color
+  assign min_height_desktop = section.settings.min_height_desktop
+  assign min_height_mobile = section.settings.min_height_mobile
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    position: relative;
+    width: 100%;
+    {% if section_bg != blank %}background-color: {{ section_bg }};{% endif %}
+  }
+
+  & .qb__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: {{ min_height_mobile }}px;
+  }
+
+  & .qb__image-left,
+  & .qb__image-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+    height: auto;
+    display: none;
+  }
+  & .qb__image-left {
+    left: -{{ image_left_offset }}%;
+    width: {{ image_left_width }}%;
+  }
+  & .qb__image-right {
+    right: -{{ image_right_offset }}%;
+    width: {{ image_right_width }}%;
+  }
+
+  & .qb__card {
+    position: relative;
+    z-index: 1;
+    {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
+    border-radius: {{ card_border_radius }}px;
+    padding: {{ card_padding_mobile }}px;
+    max-width: {{ card_max_width }}px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  & .qb__eyebrow {
+    font-size: {{ eyebrow_size }}px;
+    font-weight: 600;
+    {% if eyebrow_color != blank and eyebrow_color.alpha != 0 %}color: {{ eyebrow_color }};{% endif %}
+    margin: 0;
+  }
+
+  & .qb__headline {
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    font-size: {{ headline_size_mobile }}px;
+    {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+  }
+  & .qb__headline p { margin: 0; }
+
+  & .qb__subtext {
+    line-height: 1.6;
+    margin: 0;
+    font-size: {{ subtext_size_mobile }}px;
+    {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
+  }
+  & .qb__subtext p { margin: 0; }
+
+  & .qb__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 40px;
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: {{ cta_border_radius }}px;
+    transition: opacity 0.2s;
+    {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
+    {% if cta_color != blank %}color: {{ cta_color }};{% endif %}
+  }
+  & .qb__cta:hover {
+    opacity: 0.9;
+  }
+
+  & .qb__trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    {% if trust_color != blank and trust_color.alpha != 0 %}color: {{ trust_color }};{% endif %}
+  }
+
+  & .qb__trust-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    {% if trust_dot_color != blank %}background-color: {{ trust_dot_color }};{% endif %}
+  }
+
+  @media (min-width: 768px) {
     & .qb__container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 48px 24px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: {{ min_height_mobile }}px;
+      padding: 80px 48px;
+      min-height: {{ min_height_desktop }}px;
     }
-  
     & .qb__image-left,
     & .qb__image-right {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 0;
-      height: auto;
-      display: none;
+      display: block;
     }
-    & .qb__image-left {
-      left: -{{ image_left_offset }}%;
-      width: {{ image_left_width }}%;
-    }
-    & .qb__image-right {
-      right: -{{ image_right_offset }}%;
-      width: {{ image_right_width }}%;
-    }
-  
     & .qb__card {
-      position: relative;
-      z-index: 1;
-      {% if card_bg != blank %}background-color: {{ card_bg }};{% endif %}
-      border-radius: {{ card_border_radius }}px;
-      padding: {{ card_padding_mobile }}px;
-      max-width: {{ card_max_width }}px;
-      width: 100%;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+      padding: {{ card_padding_desktop }}px;
+      gap: 24px;
     }
-  
-    & .qb__eyebrow {
-      font-size: {{ eyebrow_size }}px;
-      font-weight: 600;
-      {% if eyebrow_color != blank and eyebrow_color.alpha != 0 %}color: {{ eyebrow_color }};{% endif %}
-      margin: 0;
-    }
-  
     & .qb__headline {
-      font-weight: 700;
-      line-height: 1.1;
-      margin: 0;
-      font-size: {{ headline_size_mobile }}px;
-      {% if headline_color != blank and headline_color.alpha != 0 %}color: {{ headline_color }};{% endif %}
+      font-size: {{ headline_size_desktop }}px;
     }
-    & .qb__headline p { margin: 0; }
-  
     & .qb__subtext {
-      line-height: 1.6;
-      margin: 0;
-      font-size: {{ subtext_size_mobile }}px;
-      {% if subtext_color != blank and subtext_color.alpha != 0 %}color: {{ subtext_color }};{% endif %}
+      font-size: {{ subtext_size_desktop }}px;
     }
-    & .qb__subtext p { margin: 0; }
-  
     & .qb__cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 18px 40px;
-      font-weight: 700;
-      font-size: 18px;
-      text-decoration: none;
-      border-radius: {{ cta_border_radius }}px;
-      transition: opacity 0.2s;
-      {% if cta_bg != blank %}background-color: {{ cta_bg }};{% endif %}
-      {% if cta_color != blank %}color: {{ cta_color }};{% endif %}
+      width: auto;
     }
-    & .qb__cta:hover {
-      opacity: 0.9;
-    }
-  
-    & .qb__trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      {% if trust_color != blank and trust_color.alpha != 0 %}color: {{ trust_color }};{% endif %}
-    }
-  
-    & .qb__trust-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      {% if trust_dot_color != blank %}background-color: {{ trust_dot_color }};{% endif %}
-    }
-  
-    @media (min-width: 768px) {
-      & .qb__container {
-        padding: 80px 48px;
-        min-height: {{ min_height_desktop }}px;
-      }
-      & .qb__image-left,
-      & .qb__image-right {
-        display: block;
-      }
-      & .qb__card {
-        padding: {{ card_padding_desktop }}px;
-        gap: 24px;
-      }
-      & .qb__headline {
-        font-size: {{ headline_size_desktop }}px;
-      }
-      & .qb__subtext {
-        font-size: {{ subtext_size_desktop }}px;
-      }
-      & .qb__cta {
-        width: auto;
-      }
-    }
-  {% endcapture %}
-  
-  {% capture section_content %}
-    <style>
-      {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
-    </style>
-  
-    <section
-      data-style-id="{{ section.id }}"
-      {% if section_id != blank %}id="{{ section_id }}"{% endif %}
-    >
-      <div class="qb__container">
-  
-        {% if image_left != blank %}
-          <img
-            class="qb__image-left"
-            src="{{ image_left | image_url: width: 800 }}"
-            alt="{{ image_left.alt | default: '' }}"
-            loading="lazy"
-            width="{{ image_left.width }}"
-            height="{{ image_left.height }}"
-          >
-        {% endif %}
-  
-        {% if image_right != blank %}
-          <img
-            class="qb__image-right"
-            src="{{ image_right | image_url: width: 800 }}"
-            alt="{{ image_right.alt | default: '' }}"
-            loading="lazy"
-            width="{{ image_right.width }}"
-            height="{{ image_right.height }}"
-          >
-        {% endif %}
-  
-        <div class="qb__card">
-  
-          {% if eyebrow != blank %}
-            <p class="qb__eyebrow">{{ eyebrow }}</p>
-          {% endif %}
-  
-          {% if headline != blank %}
-            <h2 class="qb__headline">{{ headline }}</h2>
-          {% endif %}
-  
-          {% if subtext != blank %}
-            <div class="qb__subtext">{{ subtext }}</div>
-          {% endif %}
-  
-          {% if cta_label != blank %}
-            <a href="{{ cta_url }}" class="qb__cta">{{ cta_label }}</a>
-          {% endif %}
-  
-          {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
-            <div class="qb__trust">
-              {% if trust_1 != blank %}
-                <span>{{ trust_1 }}</span>
-              {% endif %}
-              {% if trust_2 != blank %}
-                <span class="qb__trust-dot"></span>
-                <span>{{ trust_2 }}</span>
-              {% endif %}
-              {% if trust_3 != blank %}
-                <span class="qb__trust-dot"></span>
-                <span>{{ trust_3 }}</span>
-              {% endif %}
-            </div>
-          {% endif %}
-  
-        </div>
-  
-      </div>
-    </section>
-  {% endcapture %}
-  
-  {{ section_content }}
-  
-  {% schema %}
-  {
-    "name": "CTR Quiz Banner",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Background"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "section_bg",
-        "label": "Section background",
-        "default": "#f7f5f1"
-      },
-      {
-        "type": "image_picker",
-        "id": "image_left",
-        "label": "Left image",
-        "info": "Product image on the left side (desktop only)."
-      },
-      {
-        "type": "range",
-        "id": "image_left_width",
-        "label": "Left image width (%)",
-        "default": 25,
-        "min": 10,
-        "max": 100,
-        "step": 1,
-        "unit": "%"
-      },
-      {
-        "type": "range",
-        "id": "image_left_offset",
-        "label": "Left image offset (%)",
-        "default": 0,
-        "min": 0,
-        "max": 50,
-        "step": 1,
-        "unit": "%",
-        "info": "How far the image extends beyond the left edge."
-      },
-      {
-        "type": "image_picker",
-        "id": "image_right",
-        "label": "Right image",
-        "info": "Product image on the right side (desktop only)."
-      },
-      {
-        "type": "range",
-        "id": "image_right_width",
-        "label": "Right image width (%)",
-        "default": 25,
-        "min": 10,
-        "max": 100,
-        "step": 1,
-        "unit": "%"
-      },
-      {
-        "type": "range",
-        "id": "image_right_offset",
-        "label": "Right image offset (%)",
-        "default": 0,
-        "min": 0,
-        "max": 50,
-        "step": 1,
-        "unit": "%",
-        "info": "How far the image extends beyond the right edge."
-      },
-      {
-        "type": "range",
-        "id": "min_height_desktop",
-        "label": "Min height — Desktop (px)",
-        "default": 400,
-        "min": 200,
-        "max": 800,
-        "step": 10,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "min_height_mobile",
-        "label": "Min height — Mobile (px)",
-        "default": 300,
-        "min": 200,
-        "max": 700,
-        "step": 10,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Card"
-      },
-      {
-        "type": "color",
-        "id": "card_bg",
-        "label": "Card background",
-        "default": "#4f46e5"
-      },
-      {
-        "type": "range",
-        "id": "card_border_radius",
-        "label": "Card border radius (px)",
-        "default": 24,
-        "min": 0,
-        "max": 40,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "card_max_width",
-        "label": "Card max width (px)",
-        "default": 660,
-        "min": 400,
-        "max": 900,
-        "step": 10,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "card_padding_desktop",
-        "label": "Card padding — Desktop (px)",
-        "default": 56,
-        "min": 20,
-        "max": 80,
-        "step": 4,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "card_padding_mobile",
-        "label": "Card padding — Mobile (px)",
-        "default": 36,
-        "min": 16,
-        "max": 60,
-        "step": 4,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Eyebrow"
-      },
-      {
-        "type": "text",
-        "id": "eyebrow",
-        "label": "Eyebrow text",
-        "default": "The Weight Optimization Quiz"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "eyebrow_color",
-        "label": "Eyebrow color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "eyebrow_size",
-        "label": "Eyebrow font size (px)",
-        "default": 15,
-        "min": 10,
-        "max": 24,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Headline"
-      },
-      {
-        "type": "richtext",
-        "id": "headline",
-        "label": "Headline",
-        "default": "<p>Not sure what your metabolism actually needs?</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "headline_color",
-        "label": "Headline color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_desktop",
-        "label": "Headline size — Desktop (px)",
-        "default": 44,
-        "min": 20,
-        "max": 80,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "headline_size_mobile",
-        "label": "Headline size — Mobile (px)",
-        "default": 32,
-        "min": 16,
-        "max": 60,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Subtext"
-      },
-      {
-        "type": "richtext",
-        "id": "subtext",
-        "label": "Subtext",
-        "default": "<p>Answer 5 quick questions and we'll tell you exactly which stack targets your specific metabolic blockers. No guessing. No wasted money.</p>"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "subtext_color",
-        "label": "Subtext color",
-        "default": "#ffffffcc"
-      },
-      {
-        "type": "range",
-        "id": "subtext_size_desktop",
-        "label": "Subtext size — Desktop (px)",
-        "default": 17,
-        "min": 12,
-        "max": 24,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "subtext_size_mobile",
-        "label": "Subtext size — Mobile (px)",
-        "default": 15,
-        "min": 12,
-        "max": 22,
-        "step": 1,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "CTA Button"
-      },
-      {
-        "type": "text",
-        "id": "cta_label",
-        "label": "Button text",
-        "default": "Find My Stack"
-      },
-      {
-        "type": "url",
-        "id": "cta_url",
-        "label": "Button URL"
-      },
-      {
-        "type": "color",
-        "id": "cta_bg",
-        "label": "Button background",
-        "default": "#1a1a1a"
-      },
-      {
-        "type": "color",
-        "id": "cta_color",
-        "label": "Button text color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "range",
-        "id": "cta_border_radius",
-        "label": "Button border radius (px)",
-        "default": 12,
-        "min": 0,
-        "max": 30,
-        "step": 2,
-        "unit": "px"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Trust Labels"
-      },
-      {
-        "type": "text",
-        "id": "trust_1",
-        "label": "Trust label 1",
-        "default": "Takes 2 minutes"
-      },
-      {
-        "type": "text",
-        "id": "trust_2",
-        "label": "Trust label 2",
-        "default": "100% free"
-      },
-      {
-        "type": "text",
-        "id": "trust_3",
-        "label": "Trust label 3",
-        "default": "Personalized results"
-      },
-      {
-        "type": "color",
-        "alpha": true,
-        "id": "trust_color",
-        "label": "Trust text color",
-        "default": "#ffffffcc"
-      },
-      {
-        "type": "color",
-        "id": "trust_dot_color",
-        "label": "Trust dot color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "paragraph",
-        "content": "t:all.empty_char"
-      },
-      {
-        "type": "header",
-        "content": "Advanced"
-      },
-      {
-        "type": "textarea",
-        "id": "custom_css",
-        "label": "Custom CSS"
-      },
-      {
-        "type": "text",
-        "id": "section_id",
-        "label": "Section Id"
-      }
-    ],
-    "presets": [
-      {
-        "name": "CTR Quiz Banner",
-        "category": "Banner",
-        "settings": {
-          "section_bg": "#f7f5f1",
-          "card_bg": "#4f46e5",
-          "eyebrow": "The Weight Optimization Quiz",
-          "headline": "<p>Not sure what your metabolism actually needs?</p>",
-          "subtext": "<p>Answer 5 quick questions and we'll tell you exactly which stack targets your specific metabolic blockers. No guessing. No wasted money.</p>",
-          "cta_label": "Find My Stack",
-          "trust_1": "Takes 2 minutes",
-          "trust_2": "100% free",
-          "trust_3": "Personalized results"
-        }
-      }
-    ]
   }
-  {% endschema %}
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="qb__container">
+
+      {% if image_left != blank %}
+        <img
+          class="qb__image-left"
+          src="{{ image_left | image_url: width: 800 }}"
+          alt="{{ image_left.alt | default: '' }}"
+          loading="lazy"
+          width="{{ image_left.width }}"
+          height="{{ image_left.height }}"
+        >
+      {% endif %}
+
+      {% if image_right != blank %}
+        <img
+          class="qb__image-right"
+          src="{{ image_right | image_url: width: 800 }}"
+          alt="{{ image_right.alt | default: '' }}"
+          loading="lazy"
+          width="{{ image_right.width }}"
+          height="{{ image_right.height }}"
+        >
+      {% endif %}
+
+      <div class="qb__card">
+
+        {% if eyebrow != blank %}
+          <p class="qb__eyebrow">{{ eyebrow }}</p>
+        {% endif %}
+
+        {% if headline != blank %}
+          <h2 class="qb__headline">{{ headline }}</h2>
+        {% endif %}
+
+        {% if subtext != blank %}
+          <div class="qb__subtext">{{ subtext }}</div>
+        {% endif %}
+
+        {% if cta_label != blank %}
+          <a href="{{ cta_url }}" class="qb__cta">{{ cta_label }}</a>
+        {% endif %}
+
+        {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
+          <div class="qb__trust">
+            {% if trust_1 != blank %}
+              <span>{{ trust_1 }}</span>
+            {% endif %}
+            {% if trust_2 != blank %}
+              <span class="qb__trust-dot"></span>
+              <span>{{ trust_2 }}</span>
+            {% endif %}
+            {% if trust_3 != blank %}
+              <span class="qb__trust-dot"></span>
+              <span>{{ trust_3 }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Quiz Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#f7f5f1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_left",
+      "label": "Left image",
+      "info": "Product image on the left side (desktop only)."
+    },
+    {
+      "type": "range",
+      "id": "image_left_width",
+      "label": "Left image width (%)",
+      "default": 25,
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "image_left_offset",
+      "label": "Left image offset (%)",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "info": "How far the image extends beyond the left edge."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_right",
+      "label": "Right image",
+      "info": "Product image on the right side (desktop only)."
+    },
+    {
+      "type": "range",
+      "id": "image_right_width",
+      "label": "Right image width (%)",
+      "default": 25,
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "image_right_offset",
+      "label": "Right image offset (%)",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "info": "How far the image extends beyond the right edge."
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "label": "Min height — Desktop (px)",
+      "default": 400,
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "label": "Min height — Mobile (px)",
+      "default": 300,
+      "min": 200,
+      "max": 700,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#4f46e5"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius (px)",
+      "default": 24,
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "label": "Card max width (px)",
+      "default": 660,
+      "min": 400,
+      "max": 900,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_desktop",
+      "label": "Card padding — Desktop (px)",
+      "default": 56,
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_mobile",
+      "label": "Card padding — Mobile (px)",
+      "default": 36,
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "The Weight Optimization Quiz"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Eyebrow font size (px)",
+      "default": 15,
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Not sure what your metabolism actually needs?</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size — Desktop (px)",
+      "default": 44,
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size — Mobile (px)",
+      "default": 32,
+      "min": 16,
+      "max": 60,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Subtext"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Answer 5 quick questions and we'll tell you exactly which stack targets your specific metabolic blockers. No guessing. No wasted money.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "subtext_color",
+      "label": "Subtext color",
+      "default": "#ffffffcc"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size_desktop",
+      "label": "Subtext size — Desktop (px)",
+      "default": 17,
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size_mobile",
+      "label": "Subtext size — Mobile (px)",
+      "default": 15,
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Find My Stack"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "label": "Button border radius (px)",
+      "default": 12,
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Trust Labels"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust label 1",
+      "default": "Takes 2 minutes"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust label 2",
+      "default": "100% free"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Trust label 3",
+      "default": "Personalized results"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "trust_color",
+      "label": "Trust text color",
+      "default": "#ffffffcc"
+    },
+    {
+      "type": "color",
+      "id": "trust_dot_color",
+      "label": "Trust dot color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Quiz Banner",
+      "category": "Banner",
+      "settings": {
+        "section_bg": "#f7f5f1",
+        "card_bg": "#4f46e5",
+        "eyebrow": "The Weight Optimization Quiz",
+        "headline": "<p>Not sure what your metabolism actually needs?</p>",
+        "subtext": "<p>Answer 5 quick questions and we'll tell you exactly which stack targets your specific metabolic blockers. No guessing. No wasted money.</p>",
+        "cta_label": "Find My Stack",
+        "trust_1": "Takes 2 minutes",
+        "trust_2": "100% free",
+        "trust_3": "Personalized results"
+      }
+    }
+  ]
+}
+{% endschema %}
