@@ -458,6 +458,164 @@
     font-weight: 700;
   }
 
+  /* ── Gift Modal ── */
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal {
+    position: relative;
+    background: #f7f5f1;
+    border-radius: 16px;
+    max-width: Min(720px, 100vw - 72px);
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(17, 17, 17, 0.5);
+    transition: color 0.2s;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-close:hover {
+    color: #111;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-heading {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 8px;
+    padding-right: 24px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0 0 20px;
+    color: rgba(17, 17, 17, 0.72);
+  }
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-desc p { margin: 0; }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gifts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gifts--single {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f3f1ed;
+    border-radius: 8px;
+    padding: 0;
+    border: 1px solid #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px 0 0 8px;
+    display: block; 
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift-label {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift-label p { margin: 0; }
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift-label strong {
+    font-weight: 500;
+    font-size: 12px;
+    color: #6a6a6a;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-gift-label em {
+    font-style: normal;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0 0 16px;
+    color: #6A6A6E;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading em {
+    font-style: normal;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading p { margin: 0; }
+
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-footer {
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(17, 17, 17, 0.55);
+    margin-top: 20px;
+  }
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-footer p { margin: 0; }
+
+  @media (max-width: 767px) {
+    #shopify-section-{{ section.id }} .ctr-ppb__modal-overlay {
+      align-items: flex-end;
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-ppb__modal {
+      border-radius: 16px 16px 0 0;
+      max-height: 85vh;
+      padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
+    }
+
+    #shopify-section-{{ section.id }} .ctr-ppb__modal-gifts {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-ppb__modal-gift img {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
   #shopify-section-{{ section.id }} .ctr-ppb__sticky {
     position: fixed;
     left: 12px;
@@ -602,6 +760,7 @@
       x-data="{
         ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
         galleryIndex: 0,
+        giftModalOpen: false,
         mobileStickyVisible: false,
         selectedVariantId: +`{{ variant.id }}`,
         selectDefaultPlan() {
@@ -808,7 +967,7 @@
             <p class="ctr-ppb__gift-copy">
               {{ section.settings.gift_callout_text | escape }}
               {% if section.settings.gift_callout_link_text != blank %}
-                <a href="#popup--gifts" @click.prevent="$modal.setId('popup--gifts')">{{ section.settings.gift_callout_link_text | escape }}</a>
+                <a href="#" @click.prevent="giftModalOpen = true">{{ section.settings.gift_callout_link_text | escape }}</a>
               {% endif %}
             </p>
           </div>
@@ -852,6 +1011,103 @@
           {% if section.settings.trust_badge_3 != blank %}
             <span class="ctr-ppb__trust-item">{{ section.settings.trust_badge_3 | escape }}</span>
           {% endif %}
+        </div>
+
+        {%- comment -%} Gift Modal {%- endcomment -%}
+        <div
+          class="ctr-ppb__modal-overlay"
+          x-cloak
+          x-show="giftModalOpen"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          @click.self="giftModalOpen = false"
+          @keydown.escape.window="giftModalOpen = false"
+        >
+          <div class="ctr-ppb__modal">
+            <button type="button" class="ctr-ppb__modal-close" @click="giftModalOpen = false" aria-label="Close">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/>
+              </svg>
+            </button>
+
+            {% if section.settings.modal_heading != blank %}
+              <p class="ctr-ppb__modal-heading">{{ section.settings.modal_heading }}</p>
+            {% endif %}
+
+            {% if section.settings.modal_description != blank %}
+              <div class="ctr-ppb__modal-desc">{{ section.settings.modal_description }}</div>
+            {% endif %}
+
+            {% assign has_gift_1 = false %}
+            {% assign has_gift_2 = false %}
+            {% assign has_gift_3 = false %}
+            {% if section.settings.modal_gift_image_1 != blank or section.settings.modal_gift_label_1 != blank %}{% assign has_gift_1 = true %}{% endif %}
+            {% if section.settings.modal_gift_image_2 != blank or section.settings.modal_gift_label_2 != blank %}{% assign has_gift_2 = true %}{% endif %}
+            {% if section.settings.modal_gift_image_3 != blank or section.settings.modal_gift_label_3 != blank %}{% assign has_gift_3 = true %}{% endif %}
+
+            {% if has_gift_1 or has_gift_2 or has_gift_3 %}
+              <div class="ctr-ppb__modal-gifts">
+                {% if has_gift_1 %}
+                  <div class="ctr-ppb__modal-gift">
+                    {% if section.settings.modal_gift_image_1 != blank %}
+                      {{ section.settings.modal_gift_image_1 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                    {% endif %}
+                    {% if section.settings.modal_gift_label_1 != blank %}
+                      <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_1 }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if has_gift_2 %}
+                  <div class="ctr-ppb__modal-gift">
+                    {% if section.settings.modal_gift_image_2 != blank %}
+                      {{ section.settings.modal_gift_image_2 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                    {% endif %}
+                    {% if section.settings.modal_gift_label_2 != blank %}
+                      <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_2 }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if has_gift_3 %}
+                  <div class="ctr-ppb__modal-gift">
+                    {% if section.settings.modal_gift_image_3 != blank %}
+                      {{ section.settings.modal_gift_image_3 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                    {% endif %}
+                    {% if section.settings.modal_gift_label_3 != blank %}
+                      <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_3 }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            {% if section.settings.modal_subheading != blank %}
+              <div class="ctr-ppb__modal-subheading">{{ section.settings.modal_subheading }}</div>
+            {% endif %}
+
+            {% assign has_gift_4 = false %}
+            {% if section.settings.modal_gift_image_4 != blank or section.settings.modal_gift_label_4 != blank %}{% assign has_gift_4 = true %}{% endif %}
+
+            {% if has_gift_4 %}
+              <div class="ctr-ppb__modal-gifts ctr-ppb__modal-gifts--single">
+                <div class="ctr-ppb__modal-gift">
+                  {% if section.settings.modal_gift_image_4 != blank %}
+                    {{ section.settings.modal_gift_image_4 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                  {% endif %}
+                  {% if section.settings.modal_gift_label_4 != blank %}
+                    <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_4 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if section.settings.modal_footer != blank %}
+              <div class="ctr-ppb__modal-footer">{{ section.settings.modal_footer }}</div>
+            {% endif %}
+          </div>
         </div>
 
         <div class="ctr-ppb__sticky" x-cloak x-show="mobileStickyVisible">
@@ -1126,6 +1382,77 @@
       "type": "image_picker",
       "id": "gift_image_3",
       "label": "Gift image 3"
+    },
+    {
+      "type": "header",
+      "content": "Gift Modal"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_heading",
+      "label": "Modal heading",
+      "default": "<p><strong>Free Monthly Gifts ($55 value) with Subscriptions of $50+.</strong></p>"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_description",
+      "label": "Modal description",
+      "default": "<p>Subscribers unlock 2 exclusive gifts to help you stay consistent and maximize your benefits.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_1",
+      "label": "Gift 1 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_1",
+      "label": "Gift 1 label",
+      "default": "<p><strong>Order 2</strong><br><strong>Free Stainless-Steel Bottle</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_2",
+      "label": "Gift 2 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_2",
+      "label": "Gift 2 label",
+      "default": "<p><strong>Order 3</strong><br><strong>Free Everyday Carry-All Tote</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_3",
+      "label": "Gift 3 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_3",
+      "label": "Gift 3 label"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_subheading",
+      "label": "Modal subheading",
+      "default": "<p><strong>Subscriptions with 28+ serving powder receives a FREE frother today.</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_4",
+      "label": "Gift 4 image (below subheading)"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_4",
+      "label": "Gift 4 label",
+      "default": "<p><strong>Order 1</strong><br><strong>Free 3-Speed Frother</strong></p>"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_footer",
+      "label": "Modal footer text",
+      "default": "<p>*Offer available on subscriptions $50+ or 28+ servings of powdered solutions.</p>"
     },
     {
       "type": "header",
