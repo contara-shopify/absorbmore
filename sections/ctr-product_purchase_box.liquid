@@ -896,7 +896,11 @@
             <div class="ctr-ppb__purchase-title-wrap">
               <span class="ctr-ppb__purchase-title">{{ section.settings.subscription_title | escape }}</span>
               {% if section.settings.subscription_badge_text != blank %}
-                <span class="ctr-ppb__save-badge">{{ section.settings.subscription_badge_text | escape }}</span>
+                <span class="ctr-ppb__save-badge"
+                x-show="(pdp.selected_compare_at_price || 0) > (pdp.selected_price || 0)"
+                x-text="'Save ' + Math.round((1 - (pdp.selected_price || 0) / (pdp.selected_compare_at_price || 1)) * 100) + '%'">
+                {{ section.settings.subscription_badge_text | escape }}
+                </span>
               {% endif %}
             </div>
 
