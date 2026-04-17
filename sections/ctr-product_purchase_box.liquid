@@ -306,17 +306,47 @@
     background: {{ section.settings.subscription_badge_background }};
   }
 
+  /* Price wrap: column, right-aligned */
   #shopify-section-{{ section.id }} .ctr-ppb__price-wrap {
     margin-left: auto;
     display: flex;
+    flex-direction: column;
     align-items: flex-end;
-    gap: 10px;
+    gap: 4px;
     text-align: right;
   }
 
-  #shopify-section-{{ section.id }} .ctr-ppb__price-block {
-    display: grid;
-    gap: 3px;
+  /* /mo price — line 1, largest */
+  #shopify-section-{{ section.id }} .ctr-ppb__mo-price {
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  /* Second line: compare-at + regular side by side */
+  #shopify-section-{{ section.id }} .ctr-ppb__price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  /* Compare-at: 12px dark gray strikethrough */
+  #shopify-section-{{ section.id }} .ctr-ppb__compare-price {
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 400;
+    color: rgba(17, 17, 17, 0.48);
+    text-decoration: line-through;
+  }
+
+  /* Regular price: 14px black */
+  #shopify-section-{{ section.id }} .ctr-ppb__sale-price {
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 700;
+    color: #111111;
   }
 
   #shopify-section-{{ section.id }} .ctr-ppb__price-label {
@@ -325,19 +355,6 @@
     line-height: 1;
     text-transform: uppercase;
     color: rgba(17, 17, 17, 0.5);
-  }
-
-  #shopify-section-{{ section.id }} .ctr-ppb__compare-price {
-    font-size: 13px;
-    line-height: 1;
-    color: rgba(17, 17, 17, 0.42);
-    text-decoration: line-through;
-  }
-
-  #shopify-section-{{ section.id }} .ctr-ppb__sale-price {
-    font-size: 16px;
-    line-height: 1;
-    font-weight: 700;
   }
 
   #shopify-section-{{ section.id }} .ctr-ppb__plan-select {
@@ -373,7 +390,6 @@
     font-weight: 700;
   }
 
-  /* CHANGED: grid-template-columns updated from fixed 52px to auto so 3 thumbnails fit */
   #shopify-section-{{ section.id }} .ctr-ppb__gift-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -402,7 +418,6 @@
     text-underline-offset: 2px;
   }
 
-  /* NEW: wraps all 3 thumbnails in a flex row */
   #shopify-section-{{ section.id }} .ctr-ppb__gift-images {
     display: flex;
     gap: 6px;
@@ -550,7 +565,7 @@
     height: 64px;
     object-fit: cover;
     border-radius: 8px 0 0 8px;
-    display: block; 
+    display: block;
     flex-shrink: 0;
   }
 
@@ -564,7 +579,6 @@
     font-size: 12px;
     color: #6a6a6a;
   }
-
   #shopify-section-{{ section.id }} .ctr-ppb__modal-gift-label em {
     font-style: normal;
     font-weight: 700;
@@ -578,11 +592,7 @@
     margin: 0 0 16px;
     color: #6A6A6E;
   }
-
-  #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading em {
-    font-style: normal;
-  }
-
+  #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading em { font-style: normal; }
   #shopify-section-{{ section.id }} .ctr-ppb__modal-subheading p { margin: 0; }
 
   #shopify-section-{{ section.id }} .ctr-ppb__modal-footer {
@@ -598,18 +608,15 @@
       align-items: flex-end;
       padding: 0;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__modal {
       border-radius: 16px 16px 0 0;
       max-height: 85vh;
       padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__modal-gifts {
       grid-template-columns: 1fr;
       gap: 10px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__modal-gift img {
       width: 56px;
       height: 56px;
@@ -640,17 +647,14 @@
       padding-top: {{ section.settings.padding_top_mobile }}px;
       padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__inner {
       grid-template-columns: minmax(0, 1fr);
       gap: 22px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__gallery-layout {
       grid-template-columns: minmax(0, 1fr);
       gap: 12px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__thumbs {
       order: 2;
       flex-direction: row;
@@ -659,83 +663,46 @@
       padding-bottom: 4px;
       scrollbar-width: none;
     }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__thumbs::-webkit-scrollbar {
-      display: none;
-    }
-
+    #shopify-section-{{ section.id }} .ctr-ppb__thumbs::-webkit-scrollbar { display: none; }
     #shopify-section-{{ section.id }} .ctr-ppb__thumb {
       width: 64px;
       min-width: 64px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__hero-image {
       min-height: auto;
       aspect-ratio: 1 / 1;
       border-radius: 18px;
     }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__hero-image img {
-      padding: 18px;
-    }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__copy {
-      gap: 14px;
-    }
-
+    #shopify-section-{{ section.id }} .ctr-ppb__hero-image img { padding: 18px; }
+    #shopify-section-{{ section.id }} .ctr-ppb__copy { gap: 14px; }
     #shopify-section-{{ section.id }} .ctr-ppb__title {
       font-size: 36px;
       max-width: none;
     }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__description {
-      font-size: 15px;
-    }
-
+    #shopify-section-{{ section.id }} .ctr-ppb__description { font-size: 15px; }
     #shopify-section-{{ section.id }} .ctr-ppb__purchase-head {
-      align-items: start;
-      flex-wrap: wrap;
+      align-items: center;
+      flex-wrap: nowrap;
     }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__price-wrap {
-      width: 100%;
-      justify-content: flex-end;
-    }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__sale-price {
-      font-size: 24px;
-    }
-
-    /* CHANGED: mobile also uses auto so 3 thumbnails don't overflow */
+    #shopify-section-{{ section.id }} .ctr-ppb__mo-price { font-size: 22px; }
     #shopify-section-{{ section.id }} .ctr-ppb__gift-card {
       grid-template-columns: minmax(0, 1fr) auto;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__gift-image {
       width: 44px;
       min-width: 44px;
     }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__trust-row {
-      justify-content: start;
-    }
+    #shopify-section-{{ section.id }} .ctr-ppb__trust-row { justify-content: start; }
   }
 
   @media (max-width: 767px) {
     #shopify-section-{{ section.id }} .ctr-ppb__rating-row,
-    #shopify-section-{{ section.id }} .ctr-ppb__frontrow {
-      font-size: 14px;
-    }
-
-    #shopify-section-{{ section.id }} .ctr-ppb__benefits li {
-      font-size: 15px;
-    }
-
+    #shopify-section-{{ section.id }} .ctr-ppb__frontrow { font-size: 14px; }
+    #shopify-section-{{ section.id }} .ctr-ppb__benefits li { font-size: 15px; }
     #shopify-section-{{ section.id }} .ctr-ppb__purchase-card {
       gap: 14px;
       padding: 16px;
     }
-
     #shopify-section-{{ section.id }} .ctr-ppb__cta {
       min-height: 54px;
       font-size: 19px;
@@ -763,6 +730,19 @@
         giftModalOpen: false,
         mobileStickyVisible: false,
         selectedVariantId: +`{{ variant.id }}`,
+        moPrice: {
+          monthly: '{{ section.settings.mo_price_monthly | escape }}',
+          threeMonth: '{{ section.settings.mo_price_3month | escape }}',
+          sixMonth: '{{ section.settings.mo_price_6month | escape }}'
+        },
+        getManualMoPrice() {
+          const plan = this.pdp?.selected_selling_plan;
+          if (!plan) return null;
+          const title = (this.pdp?.selected_variant?.title || '').toLowerCase();
+          if (/6[\s-]*month/.test(title)) return this.moPrice.sixMonth || null;
+          if (/3[\s-]*month/.test(title)) return this.moPrice.threeMonth || null;
+          return this.moPrice.monthly || null;
+        },
         selectDefaultPlan() {
           const allocations = this.pdp?.selling_plan_allocations || [];
           const matchedPlan = allocations.find((allocation) => /60\s*day/i.test(allocation?.selling_plan?.name || ''));
@@ -790,7 +770,6 @@
             this.setSellingPlan(undefined);
             return;
           }
-
           this.selectDefaultPlan();
         },
         initPurchaseBox() {
@@ -920,15 +899,24 @@
                 <span class="ctr-ppb__save-badge">{{ section.settings.subscription_badge_text | escape }}</span>
               {% endif %}
             </div>
+
             <div class="ctr-ppb__price-wrap">
-              <div class="ctr-ppb__price-block" x-show="(pdp.selected_compare_at_price || 0) > (pdp.selected_price || 0)">
-                {% comment %} <span class="ctr-ppb__price-label">{{ section.settings.compare_at_label | escape }}</span> {% endcomment %}
-                <span class="ctr-ppb__compare-price" x-text="utils.formatMoney(pdp.selected_compare_at_price || 0)">{{ compare_at_price | money }}</span>
+
+              <!-- Line 1: /mo price (only when subscription active + override set) -->
+              <span class="ctr-ppb__mo-price"
+                x-cloak
+                x-show="!!pdp.selected_selling_plan?.id && !!getManualMoPrice()"
+                x-text="getManualMoPrice() + '/mo'"></span>
+
+              <!-- Line 2: compare-at strikethrough + regular price side by side -->
+              <div class="ctr-ppb__price-row">
+                <span class="ctr-ppb__compare-price"
+                  x-show="(pdp.selected_compare_at_price || 0) > (pdp.selected_price || 0)"
+                  x-text="utils.formatMoney(pdp.selected_compare_at_price || 0)">{{ compare_at_price | money }}</span>
+                <span class="ctr-ppb__sale-price"
+                  x-text="utils.formatMoney(pdp.selected_price || 0)">{{ variant.price | money }}</span>
               </div>
-              <div class="ctr-ppb__price-block">
-                {% comment %} <span class="ctr-ppb__price-label">{{ section.settings.sale_price_label | escape }}</span> {% endcomment %}
-                <span class="ctr-ppb__sale-price" x-text="utils.formatMoney(pdp.selected_price || 0)">{{ variant.price | money }}</span>
-              </div>
+
             </div>
           </div>
 
@@ -960,7 +948,6 @@
           </ul>
         </div>
 
-        {%- comment -%} CHANGED: 3 gift thumbnails + modal trigger on "See gifts" link {%- endcomment -%}
         <div class="ctr-ppb__gift-card">
           <div>
             <p class="ctr-ppb__gift-heading">{{ section.settings.gift_callout_heading | escape }}</p>
@@ -996,7 +983,9 @@
           x-ref="primaryCta"
           :disabled="pdp.isAdding || pdp.soldOut"
           @click="handleAddToCart($event)">
-          <span x-text="pdp.soldOut ? '{{ section.settings.sold_out_text | escape }}' : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0)">
+          <span x-text="pdp.soldOut
+            ? '{{ section.settings.sold_out_text | escape }}'
+            : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0) + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? ' (' + getManualMoPrice() + '/mo)' : '')">
             {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
           </span>
         </button>
@@ -1116,7 +1105,9 @@
             class="ctr-ppb__sticky-button"
             :disabled="pdp.isAdding || pdp.soldOut"
             @click="handleAddToCart($event)">
-            <span x-text="pdp.soldOut ? '{{ section.settings.sold_out_text | escape }}' : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0)">
+            <span x-text="pdp.soldOut
+              ? '{{ section.settings.sold_out_text | escape }}'
+              : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0) + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? ' (' + getManualMoPrice() + '/mo)' : '')">
               {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
             </span>
           </button>
@@ -1327,6 +1318,32 @@
       "id": "sale_price_label",
       "label": "Sale price label",
       "default": "Today"
+    },
+    {
+      "type": "header",
+      "content": "Per-Month Price Overrides"
+    },
+    {
+      "type": "text",
+      "id": "mo_price_monthly",
+      "label": "Monthly plan — /mo display price",
+      "info": "Leave blank to hide. E.g. $111"
+    },
+    {
+      "type": "text",
+      "id": "mo_price_3month",
+      "label": "3-Month plan — /mo display price",
+      "info": "Leave blank to hide. E.g. $99"
+    },
+    {
+      "type": "text",
+      "id": "mo_price_6month",
+      "label": "6-Month plan — /mo display price",
+      "info": "Leave blank to hide. E.g. $95"
+    },
+    {
+      "type": "header",
+      "content": "Subscription Perks"
     },
     {
       "type": "text",
