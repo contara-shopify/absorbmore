@@ -24,17 +24,16 @@
 {%- endcomment -%}
 
 <style>
-/* Body */
+/* Hide theme header/footer + reset body */
 body {
   margin: 0;
   padding: 0;
 }
-
-/* Hide header and footer */
 header,
 footer {
   display: none;
 }
+
 .wlp1ev {
   --blue: #5e91d5;
   --blue-hover: #4a7dbe;
@@ -104,6 +103,55 @@ footer {
 }
 .wlp1ev .announce:hover .announce-track {
   animation-play-state: paused;
+}
+
+/* ===== Logo bar ===== */
+.wlp1ev .logobar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+}
+.wlp1ev .logobar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.wlp1ev .logobar-logo {
+  display: inline-flex;
+  align-items: center;
+}
+.wlp1ev .logobar-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.wlp1ev .logobar-cta {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid var(--ink);
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.wlp1ev .logobar-cta:hover {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+@media (max-width: 520px) {
+  .wlp1ev .logobar { padding: 14px 0; }
+  .wlp1ev .logobar-logo img { height: 22px; }
+  .wlp1ev .logobar-cta {
+    font-size: 11px;
+    padding: 8px 14px;
+    letter-spacing: 0.12em;
+  }
 }
 
 /* ===== 1. HERO ===== */
@@ -923,6 +971,16 @@ footer {
       <span class="announce-dot">◆</span>
       <span class="announce-item">Fewer cravings · hunger hormone reduced by nearly 49%*</span>
       <span class="announce-dot">◆</span>
+    </div>
+  </div>
+
+  {%- comment -%} Logo bar {%- endcomment -%}
+  <div class="logobar">
+    <div class="container logobar-inner">
+      <a href="/" class="logobar-logo">
+        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/logo-2.svg?v=1761576529" alt="The Absorption Company" width="200" height="28">
+      </a>
+      <a href="/products/wlp-1" class="logobar-cta">Shop WLP-1™</a>
     </div>
   </div>
 
