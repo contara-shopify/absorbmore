@@ -1578,11 +1578,11 @@
               type: "item"
             }));
             const maxSlots = 5;
-            const placeholdersNeeded = Math.max(maxSlots - items.length, 0);
+            const hasAvailablePlaceholderSlot = items.length < maxSlots;
 
-            for (let index = 0; index < placeholdersNeeded; index += 1) {
+            if (hasAvailablePlaceholderSlot) {
               items.push({
-                key: `placeholder-${index}`,
+                key: `placeholder-${items.length}`,
                 type: "placeholder"
               });
             }
