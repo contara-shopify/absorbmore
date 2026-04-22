@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WLP-1™ — Fewer cravings. Steady energy.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #EAE6DC;
+    --cream-soft: #F8F5F2;
+    --paper: #F2EEE3;
+    --blue-tint: #E8EEF7;
+    --blue-tint-soft: #F0F4FA;
+    --ink: #1A1A18;
+    --ink-soft: #3A3834;
+    --muted: #6B6862;
+    --line: #CDC7BA;
+    --line-blue: #C4D3EA;
+    --brand: #5E91D5;
+    --brand-hover: #4A7DBE;
+    --brand-deep: #3B6AA8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.5;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { display: block; max-width: 100%; height: auto; }
+
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .container-narrow {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  h2 {
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    color: var(--ink);
+  }
+  h2 .highlight { color: var(--brand); }
+
+  .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-weight: 600;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+
+  .btn-primary {
+    background: var(--brand);
+    color: white;
+    padding: 16px 30px;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--brand-hover); }
+  .btn-primary .arrow { font-size: 16px; transition: transform 0.2s; }
+  .btn-primary:hover .arrow { transform: translateX(3px); }
+
+  .btn-secondary {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    font-size: 14.5px;
+    font-weight: 500;
+  }
+
+  /* ========== QUIZ BANNER (in-body) ========== */
+  .quiz-banner {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .quiz-banner::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -40px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(94,145,213,0.18) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .quiz-banner-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+  .quiz-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    min-width: 0;
+  }
+  .quiz-banner-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--brand);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+  }
+  .quiz-banner-text {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: rgba(234, 230, 220, 0.85);
+  }
+  .quiz-banner-text strong {
+    color: var(--cream);
+    font-weight: 700;
+    display: block;
+    font-size: 18px;
+    margin-bottom: 2px;
+    letter-spacing: -0.015em;
+  }
+  .quiz-banner-link {
+    background: var(--brand);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .quiz-banner-link:hover {
+    background: var(--brand-hover);
+  }
+  .quiz-banner-link .arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+  .quiz-banner-link:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  /* ========== NAV ========== */
+  .nav {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(234, 230, 220, 0.94);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .mark { color: var(--brand); }
+  .nav-cta {
+    font-size: 13px;
+    padding: 10px 20px;
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--cream); }
+
+  /* ========== HERO ========== */
+  .hero {
+    padding: 72px 0 96px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(94,145,213,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 72px;
+    align-items: center;
+  }
+  .hero-eyebrow { margin-bottom: 32px; }
+  .hero h1 {
+    font-size: clamp(46px, 6.4vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    margin-bottom: 28px;
+  }
+  .hero h1 .line { display: block; }
+  .hero h1 .highlight { color: var(--brand); }
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+  .hero-sub strong { color: var(--ink); font-weight: 600; }
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero-micro {
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .hero-micro span { display: inline-flex; align-items: center; gap: 7px; }
+  .hero-micro span::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--brand);
+  }
+  /* Real image hero */
+  .hero-image {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    border-radius: 2px;
+    max-width: 480px;
+    width: 100%;
+    justify-self: end;
+  }
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-image-tag {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: var(--cream);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-radius: 2px;
+  }
+  .hero-image-tag .highlight { color: var(--brand); }
+
+  /* ========== TRUST STRIP ========== */
+  .trust-strip {
+    padding: 22px 0;
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .trust-strip-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .trust-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+
+  /* ========== TRUTH TELL ========== */
+  .truth {
+    padding: 120px 0;
+  }
+  .truth-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .truth-eyebrow { margin-bottom: 24px; }
+  .truth h2 {
+    font-size: clamp(38px, 4.8vw, 60px);
+    margin-bottom: 20px;
+  }
+  .truth h2 .line { display: block; }
+  .truth-sub {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .truth-body {
+    padding-top: 8px;
+  }
+  .truth-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+  }
+  .truth-body p strong { color: var(--ink); font-weight: 600; }
+  .truth-image {
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .truth-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ========== 5 REASONS (warm paper with grid) ========== */
+  .reasons {
+    padding: 120px 0;
+    background:
+      linear-gradient(to bottom, var(--paper), var(--paper)),
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(26,26,24,0.04) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,26,24,0.04) 39px 40px);
+    background-blend-mode: multiply;
+    position: relative;
+  }
+  .reasons::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(26,26,24,0.035) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,26,24,0.035) 39px 40px);
+    pointer-events: none;
+  }
+  .reasons > .container { position: relative; z-index: 2; }
+  .reasons-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 64px;
+    align-items: end;
+  }
+  .reasons-head .eyebrow { margin-bottom: 24px; }
+  .reasons-head h2 {
+    font-size: clamp(42px, 5.6vw, 72px);
+  }
+  .reasons-head h2 .highlight { color: var(--brand); }
+  .reasons-head p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .reasons-head p strong { color: var(--ink); font-weight: 600; }
+
+  .reason-list {
+    border-top: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .reason {
+    display: grid;
+    grid-template-columns: 120px 1fr 1.6fr;
+    gap: 40px;
+    padding: 36px 20px;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+    transition: all 0.25s;
+  }
+  .reason:hover {
+    background: var(--cream);
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  .reason-num {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.85;
+    color: var(--brand);
+    font-feature-settings: "tnum";
+  }
+  .reason-h3 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+  .reason-h3 .highlight { color: var(--brand); }
+  .reason-body {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .reason-body strong { color: var(--ink); font-weight: 600; }
+
+  /* ========== CLINICAL STUDIES ========== */
+  .clinical {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 120px 0;
+  }
+  .clinical-head {
+    margin-bottom: 64px;
+    max-width: 800px;
+  }
+  .clinical-head .eyebrow { color: var(--cream); margin-bottom: 28px; }
+  .clinical-head h2 {
+    color: var(--cream);
+    font-size: clamp(42px, 5.6vw, 72px);
+    margin-bottom: 20px;
+  }
+  .clinical-head h2 .highlight { color: var(--brand); }
+  .clinical-head p {
+    font-size: 17px;
+    color: rgba(234, 230, 220, 0.7);
+    line-height: 1.55;
+    max-width: 600px;
+  }
+  .clinical-head p strong { color: var(--cream); font-weight: 600; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(234, 230, 220, 0.12);
+    border: 1px solid rgba(234, 230, 220, 0.12);
+    margin-bottom: 40px;
+  }
+  .stat {
+    background: var(--ink);
+    padding: 40px 28px 36px;
+  }
+  .stat-num {
+    font-size: clamp(52px, 5.5vw, 72px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--brand);
+    margin-bottom: 12px;
+  }
+  .stat-num .unit {
+    font-size: 0.42em;
+    color: rgba(234, 230, 220, 0.5);
+    margin-left: 2px;
+  }
+  .stat-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 8px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .stat-fine {
+    font-size: 12.5px;
+    color: rgba(234, 230, 220, 0.55);
+    line-height: 1.5;
+  }
+
+  .clinical-foot {
+    font-size: 11px;
+    color: rgba(234, 230, 220, 0.5);
+    line-height: 1.6;
+    max-width: 780px;
+  }
+  .clinical-foot strong { color: rgba(234, 230, 220, 0.75); font-weight: 600; }
+
+  /* ========== MECHANISM (DARK) ========== */
+  .mechanism {
+    padding: 120px 0;
+    background: var(--ink);
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .mechanism::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(94,145,213,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .mech-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 56px;
+    align-items: end;
+    position: relative;
+  }
+  .mech-head .eyebrow {
+    margin-bottom: 24px;
+    color: var(--cream);
+  }
+  .mech-head h2 {
+    font-size: clamp(38px, 5vw, 60px);
+    color: var(--cream);
+  }
+  .mech-head h2 .highlight { color: var(--brand); }
+  .mech-head p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(234, 230, 220, 0.7);
+  }
+  .mech-head p strong { color: var(--cream); font-weight: 600; }
+
+  .pathways {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    position: relative;
+  }
+  .pathway {
+    background: rgba(234, 230, 220, 0.04);
+    border: 1px solid rgba(234, 230, 220, 0.15);
+    padding: 32px 28px;
+    transition: all 0.25s;
+  }
+  .pathway:hover {
+    border-color: var(--brand);
+    transform: translateY(-3px);
+    background: rgba(94, 145, 213, 0.08);
+  }
+  .pathway-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .pathway-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    color: var(--cream);
+  }
+  .pathway-title .highlight { color: var(--brand); }
+  .pathway-desc {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: rgba(234, 230, 220, 0.7);
+  }
+  .pathway-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pathway-bullets li {
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: rgba(234, 230, 220, 0.7);
+    padding-left: 22px;
+    position: relative;
+  }
+  .pathway-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 10px;
+    height: 2px;
+    background: var(--brand);
+  }
+  .pathway-bullets li strong { color: var(--cream); font-weight: 600; }
+
+  /* ========== CLINICAL HIGHLIGHTS (paper) ========== */
+  .love {
+    background: var(--paper);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .love-head {
+    max-width: 800px;
+    margin-bottom: 56px;
+  }
+  .love-head .eyebrow { margin-bottom: 24px; }
+  .love-head h2 {
+    font-size: clamp(42px, 5.6vw, 68px);
+    margin-bottom: 20px;
+  }
+  .love-head h2 .highlight { color: var(--brand); }
+  .love-head p {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+
+  .love-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .love-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 36px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    transition: transform 0.25s, box-shadow 0.25s;
+    min-height: 320px;
+  }
+  .love-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px -20px rgba(26, 26, 24, 0.15);
+  }
+  .love-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 32px;
+    width: 36px;
+    height: 3px;
+    background: var(--brand);
+  }
+  .love-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--brand);
+  }
+  .love-quote {
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--ink);
+    flex: 1;
+  }
+  .love-quote strong {
+    font-weight: 800;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .love-proof {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .love-proof-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+  }
+  .love-proof-body {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .love-proof-body strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .love-meta {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+    text-transform: none;
+    padding-top: 0;
+    border-top: none;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  /* ========== IMAGE DIVIDER ========== */
+  .image-divider {
+    position: relative;
+    height: 44vh;
+    min-height: 360px;
+    overflow: hidden;
+  }
+  .image-divider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .image-divider-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(26,26,24,0.35) 0%, rgba(26,26,24,0) 60%);
+    display: flex;
+    align-items: center;
+  }
+  .image-divider-text {
+    color: white;
+    padding: 0 40px;
+    max-width: 640px;
+    font-size: clamp(28px, 3.4vw, 46px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+  .image-divider-text .highlight { color: var(--brand); }
+
+  /* ========== FAQ (cream-soft with sidebar) ========== */
+  .faq {
+    padding: 120px 0;
+    background: var(--cream-soft);
+    border-top: 1px solid var(--line);
+  }
+  .faq-inner {
+    display: grid;
+    grid-template-columns: 0.85fr 1.5fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .faq-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+  .faq-head {
+    max-width: 360px;
+    margin-bottom: 40px;
+  }
+  .faq-head .eyebrow { margin-bottom: 24px; }
+  .faq-head h2 { font-size: clamp(40px, 4.6vw, 56px); margin-bottom: 20px; }
+  .faq-head h2 .highlight { color: var(--brand); }
+  .faq-head p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .faq-badge {
+    display: inline-block;
+    padding: 14px 20px;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+  .faq-badge strong { color: var(--brand); font-weight: 700; }
+
+  .qa-list {
+    max-width: 100%;
+  }
+  .qa {
+    border-top: 1px solid var(--line);
+    padding: 26px 0;
+    display: block;
+  }
+  .qa:last-child { border-bottom: 1px solid var(--line); }
+  .qa-q {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .qa-a {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 680px;
+  }
+  .qa-a strong { color: var(--ink); font-weight: 600; }
+
+  /* ========== FINAL CTA ========== */
+  .final {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 120px 0;
+    text-align: center;
+  }
+  .final .eyebrow { color: var(--cream); margin-bottom: 28px; justify-content: center; }
+  .final h2 {
+    color: var(--cream);
+    font-size: clamp(48px, 6.4vw, 84px);
+    margin-bottom: 28px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .final h2 .highlight { color: var(--brand); }
+  .final p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: rgba(234, 230, 220, 0.7);
+    max-width: 500px;
+    margin: 0 auto 36px;
+  }
+  .final-price {
+    margin-top: 36px;
+    font-size: 13px;
+    color: rgba(234, 230, 220, 0.6);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .final-price strong { color: var(--cream); font-weight: 700; }
+
+  /* ========== CLOSE-UP DETAIL STRIP ========== */
+  .detail-strip {
+    height: 50vh;
+    min-height: 400px;
+    max-height: 560px;
+    overflow: hidden;
+    background: var(--cream-soft);
+  }
+  .detail-strip img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* ========== INLINE CTA BAR ========== */
+  .cta-bar {
+    background: var(--cream);
+    padding: 48px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .cta-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .cta-bar-text {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--ink);
+    max-width: 560px;
+  }
+  .cta-bar-text .highlight { color: var(--brand); }
+  .cta-bar-inline {
+    background: var(--paper);
+    padding: 48px 0;
+  }
+
+  /* ========== BUY PANEL ========== */
+  .buy-panel {
+    background: var(--cream);
+    padding: 120px 0;
+    position: relative;
+  }
+  .buy-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 72px;
+    align-items: center;
+  }
+  .buy-image {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #F5F4EE;
+    position: relative;
+  }
+  .buy-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .buy-image-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .buy-head { margin-bottom: 32px; }
+  .buy-head .eyebrow { margin-bottom: 20px; }
+  .buy-head h2 {
+    font-size: clamp(36px, 4.6vw, 54px);
+    margin-bottom: 16px;
+  }
+  .buy-head h2 .highlight { color: var(--brand); }
+  .buy-head p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 500px;
+  }
+
+  .tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .tier {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px 20px;
+    align-items: center;
+    position: relative;
+  }
+  .tier:hover { border-color: var(--ink); }
+  .tier.selected {
+    border-color: var(--brand);
+    background: linear-gradient(to right, rgba(94,145,213,0.06), rgba(94,145,213,0.02));
+    box-shadow: 0 0 0 1px var(--brand) inset;
+  }
+  .tier-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .tier.selected .tier-radio {
+    border-color: var(--brand);
+  }
+  .tier.selected .tier-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .tier-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tier-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tier-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    background: var(--ink);
+    padding: 4px 9px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tier-badge-blue {
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    background: var(--brand);
+    padding: 4px 9px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tier-sub {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .tier-sub-small {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .tier-price {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .tier-price-big {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .tier-price-big .unit {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .tier-price-total {
+    font-size: 12.5px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .tier-price-old {
+    color: var(--muted);
+    text-decoration: line-through;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .tier-savings {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--brand);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .buy-cta {
+    display: block;
+    width: 100%;
+    background: var(--brand);
+    color: white;
+    padding: 18px 30px;
+    border-radius: 2px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+  .buy-cta:hover { background: var(--brand-hover); }
+
+  .buy-trust {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .buy-trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .buy-trust span::before {
+    content: '✓';
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  /* ========== STICKY MOBILE CTA ========== */
+  .sticky-cta {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 14px 20px;
+    z-index: 100;
+    border-top: 1px solid rgba(234, 230, 220, 0.15);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+  }
+  .sticky-cta-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .sticky-cta-text {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .sticky-cta-text .price {
+    color: var(--brand);
+    font-weight: 700;
+  }
+  .sticky-cta-text small {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-top: 2px;
+    letter-spacing: 0.01em;
+  }
+  .sticky-cta-btn {
+    background: var(--brand);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .sticky-cta-btn:hover { background: var(--brand-hover); }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    padding: 48px 0;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    background: var(--cream);
+  }
+  .footer p { max-width: 720px; margin: 0 auto 8px; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .hero { padding: 48px 0 64px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+    .hero-image { justify-self: center; max-width: 360px; }
+    .truth-inner { grid-template-columns: 1fr; gap: 28px; }
+    .truth-image { max-width: 400px; aspect-ratio: 4/5;}
+    .mech-head, .reasons-head { grid-template-columns: 1fr; gap: 20px; }
+    .pathways, .love-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .faq-inner { grid-template-columns: 1fr; gap: 40px; }
+    .faq-sidebar { position: static; }
+    .faq-head { max-width: 100%; }
+    .reason { grid-template-columns: 72px 1fr; gap: 16px 24px; padding: 28px 16px; }
+    .reason-body { grid-column: 2; }
+    .reason-num { font-size: 52px; }
+    .reason:hover { padding-left: 16px; padding-right: 16px; }
+    .buy-inner { grid-template-columns: 1fr; gap: 40px; }
+    .buy-image { max-width: 400px; margin: 0 auto; aspect-ratio: 1/1; }
+    .cta-bar-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .sticky-cta { display: block; }
+    body { padding-bottom: 72px; }
+    .truth, .reasons, .clinical, .mechanism, .love, .faq, .final, .buy-panel { padding: 72px 0; }
+    .container, .container-narrow { padding: 0 24px; }
+    .trust-strip-inner { gap: 12px 18px; }
+    .image-divider { height: 34vh; min-height: 260px; }
+    .image-divider-text { padding: 0 24px; }
+    .detail-strip { height: 36vh; min-height: 280px; }
+  }
+
+  @media (max-width: 520px) {
+    .nav { padding: 16px 20px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .tier { grid-template-columns: auto 1fr; gap: 10px 14px; padding: 18px 18px; }
+    .tier-price { grid-column: 2; text-align: left; align-items: flex-start; flex-direction: row; gap: 8px; align-items: baseline; }
+    .tier-price-old { order: 2; }
+    .tier-savings { display: none; }
+    .quiz-banner { padding: 28px 0; }
+    .quiz-banner-inner { padding: 0 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
+    .quiz-banner-link { width: 100%; justify-content: center; }
+  }
+
+  /* Fade-ins */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeUp 0.7s ease both; }
+  .d-1 { animation-delay: 0.08s; }
+  .d-2 { animation-delay: 0.16s; }
+</style>
+</head>
+<body>
+
+<!-- ================ NAV ================ -->
+<nav class="nav">
+  <div class="nav-logo">The Absorption <span class="mark">Co.</span></div>
+  <a href="#buy" class="nav-cta">Shop WLP-1™</a>
+</nav>
+
+<!-- ================ HERO ================ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="fade-in">
+        <div class="eyebrow hero-eyebrow"><span class="dot"></span>New · WLP-1™ oral biomimetic</div>
+        <h1>
+          <span class="line">The weight that</span>
+          <span class="line"><span class="highlight">won't shift.</span></span>
+          <span class="line">Two capsules a day.</span>
+        </h1>
+        <p class="hero-sub">For women who've tried everything and are done running on empty. <strong>Clinically studied support for cravings, energy, and the metabolism that stopped meeting you halfway.</strong></p>
+        <div class="hero-ctas">
+          <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
+          <a href="#how" class="btn-secondary">How it works</a>
+        </div>
+        <div class="hero-micro">
+          <span>No injections</span>
+          <span>No stimulants</span>
+          <span>30-day money-back guarantee</span>
+        </div>
+      </div>
+
+      <div class="hero-image fade-in d-2">
+        <img src="images/hero-kitchen.jpg" alt="Woman in a sunlit kitchen holding a WLP-1 capsule" />
+        <div class="hero-image-tag"><span class="highlight">Actually absorbed.</span> &nbsp;Actually working.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ TRUST STRIP ================ -->
+<div class="trust-strip">
+  <div class="container">
+    <div class="trust-strip-inner">
+      <div class="trust-item">Clinically studied</div>
+      <div class="trust-item">Made for women 35+</div>
+      <div class="trust-item">No stimulants</div>
+      <div class="trust-item">No prescriptions</div>
+      <div class="trust-item">Third-party tested</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================ TRUTH TELL ================ -->
+<section class="truth">
+  <div class="container">
+    <div class="truth-inner">
+      <div>
+        <div class="eyebrow truth-eyebrow"><span class="dot"></span>The truth</div>
+        <h2>
+          <span class="line">Your metabolism</span>
+          <span class="line"><span class="highlight">isn't broken.</span></span>
+        </h2>
+        <p class="truth-sub">It's carrying more than its share. And the supplements you've tried weren't built to actually reach it.</p>
+      </div>
+      <div class="truth-body">
+        <p>By 40, women's metabolic signals, the ones that regulate appetite, energy, and how the body uses fuel, start to <strong>lose steam</strong>. Stress, perimenopause, and hormonal shifts stack on top.</p>
+        <p>The fix isn't another protocol. It's clinically studied support that your body <strong>actually absorbs</strong> and can put to work.</p>
+      </div>
+      <div class="truth-image">
+        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/woman-on-laptop-w-wlp-1.jpg?v=1776897893" alt="Woman working at her kitchen counter with WLP-1 nearby" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ QUIZ BANNER ================ -->
+<div class="quiz-banner">
+  <div class="quiz-banner-inner">
+    <div class="quiz-banner-left">
+      <div class="quiz-banner-icon">?</div>
+      <div class="quiz-banner-text">
+        <strong>Not sure if WLP-1™ is right for you?</strong>
+        Take our 2-minute Weight Optimization Quiz for a personalized recommendation.
+      </div>
+    </div>
+    <a href="https://www.absorbmore.com/pages/weight-optimization-quiz" class="quiz-banner-link">Take the quiz <span class="arrow">→</span></a>
+  </div>
+</div>
+
+<!-- ================ MECHANISM ================ -->
+<section class="mechanism" id="how">
+  <div class="container">
+    <div class="mech-head">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>How it works</div>
+        <h2>Two capsules. Three <span class="highlight">pathways.</span></h2>
+      </div>
+      <div>
+        <p>GLP-1 injections work on one pathway. WLP-1™ is the oral biomimetic alternative, with clinically studied ingredients that support <strong>three metabolic pathways</strong> your body already uses.</p>
+      </div>
+    </div>
+    <div class="pathways">
+      <div class="pathway">
+        <div class="pathway-num">Pathway 01</div>
+        <div class="pathway-title"><span class="highlight">GLP-1</span> Support</div>
+        <ul class="pathway-bullets">
+          <li>Supports your body's <strong>natural GLP-1 activity</strong></li>
+          <li>Helps signal <strong>fullness and satisfaction</strong></li>
+          <li>No injections, no prescription</li>
+        </ul>
+      </div>
+      <div class="pathway">
+        <div class="pathway-num">Pathway 02</div>
+        <div class="pathway-title"><span class="highlight">Appetite</span> Control</div>
+        <ul class="pathway-bullets">
+          <li>Helps <strong>quiet cravings</strong> before they hijack your day</li>
+          <li>Supports <strong>reduced food noise</strong> between meals</li>
+          <li>Works with stress-driven and emotional cravings</li>
+        </ul>
+      </div>
+      <div class="pathway">
+        <div class="pathway-num">Pathway 03</div>
+        <div class="pathway-title"><span class="highlight">Thermogenic</span> Support</div>
+        <ul class="pathway-bullets">
+          <li>Helps your body <strong>burn more calories at rest</strong></li>
+          <li>Powered by Grains of Paradise and Capsifen®</li>
+          <li>No stimulants, no caffeine, no jitters</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ 5 REASONS ================ -->
+<section class="reasons">
+  <div class="container">
+    <div class="reasons-head">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>Why you, specifically</div>
+        <h2>5 reasons WLP-1™ was <span class="highlight">built for you.</span></h2>
+      </div>
+      <div>
+        <p>If you're running the household, the classroom, or the carpool, you don't have time for another protocol to fail you. <strong>WLP-1™ was built for women exactly like you.</strong></p>
+      </div>
+    </div>
+
+    <div class="reason-list">
+      <div class="reason">
+        <div class="reason-num">01</div>
+        <div class="reason-h3">You've tried <span class="highlight">everything else.</span></div>
+        <div class="reason-body">Half-empty bottles. Meal plans that fizzled. Shots you looked at and passed on. <strong>WLP-1™ is what actually works when clinically studied ingredients reach your system.</strong></div>
+      </div>
+
+      <div class="reason">
+        <div class="reason-num">02</div>
+        <div class="reason-h3">You don't have time for a <span class="highlight">protocol.</span></div>
+        <div class="reason-body">Two capsules. Once a day. <strong>No stacking, no timing, no shakes.</strong> Built to slot into a life that's already full.</div>
+      </div>
+
+      <div class="reason">
+        <div class="reason-num">03</div>
+        <div class="reason-h3">You want to feel <span class="highlight">steady,</span> not wired.</div>
+        <div class="reason-body">No caffeine. No harsh stimulants. <strong>Metabolic energy that lasts from pickup through dinner</strong>, with no crash after.</div>
+      </div>
+
+      <div class="reason">
+        <div class="reason-num">04</div>
+        <div class="reason-h3">You're <span class="highlight">skeptical,</span> and you should be.</div>
+        <div class="reason-body">No proprietary blends. No before-and-afters. <strong>Just ingredients with published human clinical studies.</strong> The numbers are right below.</div>
+      </div>
+
+      <div class="reason">
+        <div class="reason-num">05</div>
+        <div class="reason-h3">You want to feel <span class="highlight">present,</span> not perfect.</div>
+        <div class="reason-body">Not chasing skinny. Chasing steady. <strong>Patience at 6pm. Clothes that fit.</strong> Room to be the person your people need, and a little of that person for yourself.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ CLOSE-UP DETAIL STRIP ================ -->
+<div class="detail-strip">
+  <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Wellness_Lifestyle_Shot_2026-03-16_12-46_1_d2dc844e-e939-4c5d-9fe3-b895397295e0.jpg?v=1776897893" alt="Hands holding WLP-1 jar, pouring a capsule" />
+</div>
+
+<!-- ================ CTA BAR 1 ================ -->
+<section class="cta-bar">
+  <div class="container">
+    <div class="cta-bar-inner">
+      <div class="cta-bar-text">Ready to quiet the cravings and <span class="highlight">get on with your day?</span></div>
+      <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================ IMAGE DIVIDER ================ -->
+<div class="image-divider">
+  <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Casual_Dining_Scene.jpg?v=1776897893" alt="Woman eating pasta in her kitchen, WLP-1 on counter" />
+  <div class="image-divider-overlay">
+    <div class="image-divider-text">Not chasing skinny. <span class="highlight">Chasing steady.</span></div>
+  </div>
+</div>
+
+<!-- ================ CLINICAL ================ -->
+<section class="clinical">
+  <div class="container">
+    <div class="clinical-head">
+      <div class="eyebrow"><span class="dot"></span>The clinical data</div>
+      <h2>The numbers we can <span class="highlight">actually show you.</span></h2>
+      <p>Across <strong>multiple randomized, double-blind, placebo-controlled human trials</strong>, the clinically studied ingredients inside WLP-1™ have been shown to support meaningful changes in body weight, body fat, cholesterol, and satiety signaling.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-num">12<span class="unit">%</span></div>
+        <div class="stat-label">Body weight reduction</div>
+        <div class="stat-fine">Up to 12% reduction in body weight over 10 weeks. IGOB131® + CQR300® clinical study.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">20<span class="unit">%</span></div>
+        <div class="stat-label">Body fat reduction</div>
+        <div class="stat-fine">Up to 20% reduction in body fat over the 10-week clinical trial period.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">44<span class="unit">%</span></div>
+        <div class="stat-label">Cholesterol reduction</div>
+        <div class="stat-fine">Up to 44% reduction in total cholesterol during the clinical study period.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">20<span class="unit">×</span></div>
+        <div class="stat-label">Better absorption</div>
+        <div class="stat-fine">Capsifen® delivery technology, up to 20× better absorption vs. standard capsaicin.</div>
+      </div>
+    </div>
+
+    <p class="clinical-foot"><strong>Study:</strong> Oben JE, Ngondi JL, et al. <em>Lipids in Health and Disease.</em> 2008;7:12. 72 participants, randomized, double-blind, placebo-controlled, 10-week duration. Mean BMI &gt; 26 kg/m². Results observed in populations with a BMI of 25+ and are not guaranteed for every individual.</p>
+  </div>
+</section>
+
+<!-- ================ CTA BAR 2 ================ -->
+<section class="cta-bar cta-bar-inline">
+  <div class="container">
+    <div class="cta-bar-inner">
+      <div class="cta-bar-text">You've seen the data. <span class="highlight">Now try it for yourself.</span></div>
+      <a href="#buy" class="btn-primary">Shop WLP-1™ <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================ WHY WOMEN LOVE ================ -->
+<section class="love">
+  <div class="container">
+    <div class="love-head">
+      <div class="eyebrow"><span class="dot"></span>Why women love it</div>
+      <h2>The quiet wins, <span class="highlight">backed by real studies.</span></h2>
+      <p>Every benefit women report is grounded in published human clinical research on the ingredients inside WLP-1™.</p>
+    </div>
+
+    <div class="love-grid">
+      <div class="love-card">
+        <div class="love-tag">The felt benefit</div>
+        <div class="love-quote">"My clothes fit differently. <strong>My waistline came back.</strong>"</div>
+        <div class="love-proof">
+          <div class="love-proof-label">The clinical study</div>
+          <div class="love-proof-body"><strong>28.1 lbs lost</strong> and <strong>6.7 inches</strong> off the waist, with no changes to diet or exercise required during the study.</div>
+          <div class="love-meta">IGOB131® clinical trial · Double-blind, placebo-controlled · BMI 26+</div>
+        </div>
+      </div>
+
+      <div class="love-card">
+        <div class="love-tag">The felt benefit</div>
+        <div class="love-quote">"The cravings <strong>just got quieter.</strong>"</div>
+        <div class="love-proof">
+          <div class="love-proof-label">The clinical study</div>
+          <div class="love-proof-body">Participants ate <strong>17.5% less</strong> at meals and reported feeling <strong>27.4% more full</strong> after eating.</div>
+          <div class="love-meta">CQR-300™ randomized controlled trial · Medicina, 2020</div>
+        </div>
+      </div>
+
+      <div class="love-card">
+        <div class="love-tag">The felt benefit</div>
+        <div class="love-quote">"It started working <strong>faster than I expected.</strong>"</div>
+        <div class="love-proof">
+          <div class="love-proof-label">The clinical study</div>
+          <div class="love-proof-body"><strong>4 lbs lost in just 4 weeks</strong>, with no serious adverse side effects reported across treatment groups.</div>
+          <div class="love-meta">Capsifen™ clinical study · Journal of Dietary Supplements</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ BUY PANEL ================ -->
+<section class="buy-panel" id="buy">
+  <div class="container">
+    <div class="buy-inner">
+      <div class="buy-image">
+        <div class="buy-image-tag">WLP-1™</div>
+        <img src="images/product-composition.jpg" alt="WLP-1 jar with refill pouch and capsules" />
+      </div>
+      <div>
+        <div class="buy-head">
+          <div class="eyebrow"><span class="dot"></span>Choose your plan</div>
+          <h2>Two capsules a day. <span class="highlight">Your choice</span> of how often.</h2>
+          <p>Every plan ships free. Pause, skip, or cancel anytime. Backed by our 30-day money-back guarantee.</p>
+        </div>
+
+        <div class="tiers" id="tiers">
+          <div class="tier" data-tier="monthly" onclick="selectTier(this)">
+            <div class="tier-radio"></div>
+            <div class="tier-detail">
+              <div class="tier-title">Monthly <span class="tier-badge">Save 20%</span></div>
+              <div class="tier-sub">A 1-month supply, delivered every month.</div>
+              <div class="tier-sub-small">Free shipping. Pause or cancel anytime.</div>
+            </div>
+            <div class="tier-price">
+              <div class="tier-price-big">$79<span class="unit">/mo</span></div>
+              <div class="tier-price-total"><span class="tier-price-old">$99.00</span> $79.00 total</div>
+              <div class="tier-savings">save $20.00</div>
+            </div>
+          </div>
+
+          <div class="tier selected" data-tier="3month" onclick="selectTier(this)">
+            <div class="tier-radio"></div>
+            <div class="tier-detail">
+              <div class="tier-title">3 Months <span class="tier-badge">Save 30%</span> <span class="tier-badge-blue">Most Popular</span></div>
+              <div class="tier-sub">A 3-month supply with refills delivered every 3 months.</div>
+              <div class="tier-sub-small">Free shipping. Pause or cancel anytime.</div>
+            </div>
+            <div class="tier-price">
+              <div class="tier-price-big">$69<span class="unit">/mo</span></div>
+              <div class="tier-price-total"><span class="tier-price-old">$297.00</span> $207.00 total</div>
+              <div class="tier-savings">save $90.00</div>
+            </div>
+          </div>
+
+          <div class="tier" data-tier="6month" onclick="selectTier(this)">
+            <div class="tier-radio"></div>
+            <div class="tier-detail">
+              <div class="tier-title">6 Months <span class="tier-badge">Save 35%</span> <span class="tier-badge-blue">Best Value</span></div>
+              <div class="tier-sub">A 6-month supply with refills delivered every 6 months.</div>
+              <div class="tier-sub-small">Free shipping. Pause or cancel anytime.</div>
+            </div>
+            <div class="tier-price">
+              <div class="tier-price-big">$64<span class="unit">/mo</span></div>
+              <div class="tier-price-total"><span class="tier-price-old">$594.00</span> $384.00 total</div>
+              <div class="tier-savings">save $210.00</div>
+            </div>
+          </div>
+        </div>
+
+        <a href="#" class="buy-cta">Add to Cart →</a>
+
+        <div class="buy-trust">
+          <span>Free shipping</span>
+          <span>30-day guarantee</span>
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ FAQ ================ -->
+<section class="faq">
+  <div class="container">
+    <div class="faq-inner">
+      <div class="faq-sidebar">
+        <div class="faq-head">
+          <div class="eyebrow"><span class="dot"></span>Questions you're asking</div>
+          <h2>What you want to know <span class="highlight">before</span> you buy.</h2>
+          <p>Straight answers. No fine print acrobatics.</p>
+        </div>
+        <div class="faq-badge">Still have questions? <strong>hello@absorbmore.com</strong></div>
+      </div>
+      <div class="qa-list">
+        <div class="qa">
+          <div class="qa-q">Is this like Ozempic?</div>
+          <div class="qa-a">No. WLP-1™ is an <strong>oral biomimetic</strong>, not a prescription. It uses clinically studied ingredients to support the same GLP-1 pathways your body already uses, without needles, without a prescription, without the side effects that come with injections.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">I've tried a shelf full of supplements. Why would this be different?</div>
+          <div class="qa-a">Because <strong>absorption is the whole game</strong>. Most supplements never reach the places they need to. Our absorption technology delivers up to 20× better bioavailability vs. standard ingredients, which is why WLP-1™ can actually do the job the others couldn't.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Will it make me jittery?</div>
+          <div class="qa-a"><strong>No stimulants. No caffeine. No jitters.</strong> The energy WLP-1™ supports is metabolic, not nervous. Steady, not spiked.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">How fast will I feel it?</div>
+          <div class="qa-a">Most women notice the <strong>appetite shift within the first one to two weeks</strong>. The full metabolic rhythm tends to settle in around the 30 day mark, which is why we back every bottle with a 30-day money-back guarantee.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">How complicated is the routine?</div>
+          <div class="qa-a"><strong>Two capsules. Once a day.</strong> With or without food. That's the whole protocol. We built WLP-1™ for real life, not for a lifestyle you don't have time to adopt.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Is it safe with perimenopause or menopause?</div>
+          <div class="qa-a">WLP-1™ was formulated with women 35+ in mind. It's non-hormonal, non-stimulant, and designed to support the metabolic shifts that come with this life stage. As with any supplement, consult your doctor if you're on medication.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ FINAL CTA ================ -->
+<section class="final">
+  <div class="container-narrow">
+    <div class="eyebrow"><span class="dot"></span>When you're ready</div>
+    <h2>Two capsules. <span class="highlight">Steadier days.</span></h2>
+    <p>Start with one bottle. If it's not the right fit, our 30-day money-back guarantee has you covered.</p>
+    <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
+    <div class="final-price">
+      <strong>From $64/month</strong> · Subscribe &amp; save · Free shipping on every order
+    </div>
+  </div>
+</section>
+
+<!-- ================ FOOTER ================ -->
+<footer class="footer">
+  <div class="container-narrow">
+    <p>WLP-1™ is a dietary supplement. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Clinical results observed in studies with participants having a BMI of 25+; individual results may vary.</p>
+    <p>© 2026 The Absorption Company. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ================ STICKY MOBILE CTA ================ -->
+<div class="sticky-cta">
+  <div class="sticky-cta-inner">
+    <div class="sticky-cta-text">
+      WLP-1™ · <span class="price">From $64/mo</span>
+      <small>Free shipping · 30-day guarantee</small>
+    </div>
+    <a href="#buy" class="sticky-cta-btn">Shop →</a>
+  </div>
+</div>
+
+<script>
+  function selectTier(el) {
+    document.querySelectorAll('.tier').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+
+</body>
+</html>
