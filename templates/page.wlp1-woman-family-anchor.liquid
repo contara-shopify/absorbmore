@@ -242,10 +242,10 @@
   }
   .hero-eyebrow { margin-bottom: 32px; }
   .hero h1 {
-    font-size: clamp(46px, 6.4vw, 80px);
+    font-size: clamp(36px, 4.8vw, 62px);
     font-weight: 800;
     letter-spacing: -0.035em;
-    line-height: 0.98;
+    line-height: 1.02;
     margin-bottom: 28px;
   }
   .hero h1 .line { display: block; }
@@ -349,29 +349,37 @@
   }
   .truth-inner {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr 1fr;
-    gap: 56px;
-    align-items: start;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 72px;
+    align-items: center;
   }
-  .truth-eyebrow { margin-bottom: 24px; }
+  .truth-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .truth-eyebrow { margin-bottom: 0; }
   .truth h2 {
-    font-size: clamp(38px, 4.8vw, 60px);
-    margin-bottom: 20px;
+    font-size: clamp(38px, 4.6vw, 56px);
+    margin-bottom: 0;
   }
   .truth h2 .line { display: block; }
   .truth-sub {
     font-size: 17px;
     line-height: 1.5;
     color: var(--ink-soft);
+    max-width: 540px;
   }
   .truth-body {
     padding-top: 8px;
+    border-top: 1px solid var(--line);
   }
   .truth-body p {
     font-size: 16px;
     line-height: 1.6;
     color: var(--ink-soft);
     margin-bottom: 16px;
+    max-width: 540px;
   }
   .truth-body p strong { color: var(--ink); font-weight: 600; }
   .truth-image {
@@ -886,19 +894,57 @@
   }
   .final-price strong { color: var(--cream); font-weight: 700; }
 
-  /* ========== CLOSE-UP DETAIL STRIP ========== */
-  .detail-strip {
-    height: 50vh;
-    min-height: 400px;
-    max-height: 560px;
+  /* ========== SPLIT CTA PANEL (image + cta side by side) ========== */
+  .split-cta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    background: var(--cream-soft);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    min-height: 480px;
+  }
+  .split-cta-image {
+    position: relative;
     overflow: hidden;
     background: var(--cream-soft);
+    min-height: 480px;
   }
-  .detail-strip img {
+  .split-cta-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 35%;
+  }
+  .split-cta-content {
+    padding: 80px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    max-width: 620px;
+  }
+  .split-cta-content .eyebrow { margin-bottom: 4px; }
+  .split-cta-content h2 {
+    font-size: clamp(32px, 3.6vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+  .split-cta-content h2 .highlight { color: var(--brand); }
+  .split-cta-content p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 460px;
+  }
+  .split-cta-ctas {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
   }
 
   /* ========== INLINE CTA BAR ========== */
@@ -1240,7 +1286,9 @@
     .trust-strip-inner { gap: 12px 18px; }
     .image-divider { height: 34vh; min-height: 260px; }
     .image-divider-text { padding: 0 24px; }
-    .detail-strip { height: 36vh; min-height: 280px; }
+    .split-cta { grid-template-columns: 1fr; min-height: 0; }
+    .split-cta-image { min-height: 360px; aspect-ratio: 4/5; }
+    .split-cta-content { padding: 56px 28px; }
   }
 
   @media (max-width: 520px) {
@@ -1313,20 +1361,20 @@
 <section class="truth">
   <div class="container">
     <div class="truth-inner">
-      <div>
+      <div class="truth-image">
+        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/woman-on-laptop-w-wlp-1.jpg?v=1776897893" alt="Woman working at her kitchen counter with WLP-1 nearby" />
+      </div>
+      <div class="truth-content">
         <div class="eyebrow truth-eyebrow"><span class="dot"></span>The truth</div>
         <h2>
           <span class="line">Your metabolism</span>
           <span class="line"><span class="highlight">isn't broken.</span></span>
         </h2>
         <p class="truth-sub">It's carrying more than its share. And the supplements you've tried weren't built to actually reach it.</p>
-      </div>
-      <div class="truth-body">
-        <p>By 40, women's metabolic signals, the ones that regulate appetite, energy, and how the body uses fuel, start to <strong>lose steam</strong>. Stress, perimenopause, and hormonal shifts stack on top.</p>
-        <p>The fix isn't another protocol. It's clinically studied support that your body <strong>actually absorbs</strong> and can put to work.</p>
-      </div>
-      <div class="truth-image">
-        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/woman-on-laptop-w-wlp-1.jpg?v=1776897893" alt="Woman working at her kitchen counter with WLP-1 nearby" />
+        <div class="truth-body">
+          <p>By 40, women's metabolic signals, the ones that regulate appetite, energy, and how the body uses fuel, start to <strong>lose steam</strong>. Stress, perimenopause, and hormonal shifts stack on top.</p>
+          <p>The fix isn't another protocol. It's clinically studied support that your body <strong>actually absorbs</strong> and can put to work.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1437,17 +1485,18 @@
   </div>
 </section>
 
-<!-- ================ CLOSE-UP DETAIL STRIP ================ -->
-<div class="detail-strip">
-  <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Wellness_Lifestyle_Shot_2026-03-16_12-46_1_d2dc844e-e939-4c5d-9fe3-b895397295e0.jpg?v=1776897893" alt="Hands holding WLP-1 jar, pouring a capsule" />
-</div>
-
-<!-- ================ CTA BAR 1 ================ -->
-<section class="cta-bar">
-  <div class="container">
-    <div class="cta-bar-inner">
-      <div class="cta-bar-text">Ready to quiet the cravings and <span class="highlight">get on with your day?</span></div>
+<!-- ================ SPLIT CTA PANEL ================ -->
+<section class="split-cta">
+  <div class="split-cta-image">
+    <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Wellness_Lifestyle_Shot_2026-03-16_12-46_1_d2dc844e-e939-4c5d-9fe3-b895397295e0.jpg?v=1776897893" alt="Hands holding WLP-1 jar, pouring a capsule" />
+  </div>
+  <div class="split-cta-content">
+    <div class="eyebrow"><span class="dot"></span>Ready when you are</div>
+    <h2>Ready to quiet the cravings and <span class="highlight">get on with your day?</span></h2>
+    <p>Two capsules. Once a day. Backed by a 30-day money-back guarantee.</p>
+    <div class="split-cta-ctas">
       <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
+      <a href="#how" class="btn-secondary">How it works</a>
     </div>
   </div>
 </section>
