@@ -1,0 +1,113 @@
+{%- liquid
+  assign group_handle = group_title | handleize
+  assign default_variant = product.selected_or_first_available_variant | default: product.variants.first
+-%}
+
+{%- if product != blank and product.available and default_variant != blank -%}
+  <script type="application/json"
+          data-ctr-product-json
+          data-product-handle="{{ product.handle }}">
+    {
+      "id": {{ product.id | json }},
+      "handle": {{ product.handle | json }},
+      "title": {{ product.title | json }},
+      "available": {{ product.available | json }},
+      "featured_image": {{ product.featured_image | image_url: width: 720 | json }},
+      "selected_variant_id": {{ default_variant.id | json }},
+      "variants": [
+        {% for variant in product.variants %}
+          {
+            "id": {{ variant.id | json }},
+            "title": {{ variant.title | json }},
+            "available": {{ variant.available | json }},
+            "price": {{ variant.price | json }},
+            "compare_at_price": {{ variant.compare_at_price | default: variant.price | json }},
+            "selling_plan_allocations": [
+              {% for allocation in variant.selling_plan_allocations %}
+                {
+                  "id": {{ allocation.selling_plan.id | json }},
+                  "name": {{ allocation.selling_plan.name | json }},
+                  "price": {{ allocation.per_delivery_price | default: variant.price | json }},
+                  "compare_at_price": {{ allocation.compare_at_list_price | default: variant.price | json }}
+                }{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ]
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  </script>
+
+  <article class="ctr-bundle-card"
+           data-ctr-product-card
+           data-product-handle="{{ product.handle }}"
+           data-group-handle="{{ group_handle }}"
+           x-cloak
+           x-show="isProductVisible('{{ product.handle }}', '{{ group_handle }}')">
+    <div class="ctr-bundle-card__image-wrap">
+      {% if product.metafields.custom.card_badge != blank %}
+        <div class="ctr-bundle-card__badges">
+          <span class="label-primary">{{ product.metafields.custom.card_badge.value | default: product.metafields.custom.card_badge }}</span>
+        </div>
+      {% endif %}
+      {% if product.featured_image != blank %}
+        <img class="ctr-bundle-card__image"
+             src="{{ product.featured_image | image_url: width: 720 }}"
+             alt="{{ product.featured_image.alt | default: product.title | escape }}"
+             loading="lazy"
+             width="360"
+             height="360">
+      {% else %}
+        <div class="ctr-bundle-card__image ctr-bundle-card__image--placeholder"></div>
+      {% endif %}
+    </div>
+
+    <div class="ctr-bundle-card__body">
+      <div class="ctr-bundle-card__meta">
+        <h3 class="ctr-bundle-card__title">{{ product.title }}</h3>
+        <div class="ctr-bundle-card__price-row" x-show="getProductState('{{ product.handle }}')">
+          <span class="ctr-bundle-card__price"
+                x-text="formatMoney(getDisplayUnitPrice('{{ product.handle }}'))"></span>
+          <span class="ctr-bundle-card__compare"
+                x-show="getDisplayComparePrice('{{ product.handle }}') > getDisplayUnitPrice('{{ product.handle }}')"
+                x-text="formatMoney(getDisplayComparePrice('{{ product.handle }}'))"></span>
+        </div>
+      </div>
+
+      <template x-if="getVariantChoices('{{ product.handle }}').length > 1">
+        <div class="ctr-bundle-card__variant-select-wrap">
+          <select class="ctr-bundle-card__variant-select"
+                  :value="getSelectedVariant('{{ product.handle }}')?.id || ''"
+                  @change="setVariant('{{ product.handle }}', $event.target.value)">
+            <template x-for="variant in getVariantChoices('{{ product.handle }}')" :key="variant.id">
+              <option :value="variant.id"
+                      :disabled="!variant.available"
+                      x-text="variant.title"></option>
+            </template>
+          </select>
+        </div>
+      </template>
+
+      <div class="ctr-bundle-card__actions">
+        <button type="button"
+                class="ctr-bundle-card__add"
+                x-show="getQuantity('{{ product.handle }}') < 1 && getSelectedVariant('{{ product.handle }}')?.available"
+                @click="increment('{{ product.handle }}')">
+          + Add To Stack
+        </button>
+
+        <div class="ctr-bundle-card__stepper"
+             x-show="getQuantity('{{ product.handle }}') > 0 && getSelectedVariant('{{ product.handle }}')?.available">
+          <button type="button" class="ctr-bundle-card__stepper-btn" @click="decrement('{{ product.handle }}')">-</button>
+          <span class="ctr-bundle-card__qty" x-text="getQuantity('{{ product.handle }}')"></span>
+          <button type="button" class="ctr-bundle-card__stepper-btn" @click="increment('{{ product.handle }}')">+</button>
+        </div>
+
+        <div class="ctr-bundle-card__soldout"
+             x-show="getSelectedVariant('{{ product.handle }}') && !getSelectedVariant('{{ product.handle }}')?.available">
+          Unavailable
+        </div>
+      </div>
+    </div>
+  </article>
+{%- endif -%}

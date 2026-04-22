@@ -1,0 +1,1291 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign container_width_desktop = section.settings.container_width_desktop | default: 1440
+  assign desktop_columns = section.settings.desktop_columns | default: 3
+  assign mobile_columns = section.settings.mobile_columns | default: 1
+  assign discount_property_key = section.settings.discount_property_key
+  assign gift_property_key = section.settings.gift_property_key
+  assign trigger_2_discount = section.settings.trigger_2_discount | default: 0
+  assign trigger_3_discount = section.settings.trigger_3_discount | default: 0
+  assign trigger_4_discount = section.settings.trigger_4_discount | default: 0
+  assign trigger_5_discount = section.settings.trigger_5_discount | default: 0
+-%}
+
+<style>
+  [data-ctr-bundle-builder] {
+    --ctr-border: #d9d9d9;
+    --ctr-ink: #111;
+    --ctr-soft: #7d7d7d;
+    --ctr-bg: #fff;
+    --ctr-accent: #3558f5;
+    --ctr-accent-soft: #e8edff;
+    --ctr-success: #e9fff2;
+  }
+
+  .ctr-bundle-builder__layout {
+    display: grid;
+    gap: 24px;
+  }
+
+  @media (min-width: 960px) {
+    .ctr-bundle-builder__layout {
+      grid-template-columns: minmax(0, 1.9fr) minmax(320px, 420px);
+      align-items: start;
+    }
+  }
+
+  .ctr-bundle-builder__filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .ctr-bundle-builder__filter {
+    border: 1px solid var(--ctr-border);
+    background: #f6f5f1;
+    color: var(--ctr-soft);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .ctr-bundle-builder__filter.is-active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+  }
+
+  .ctr-bundle-builder__grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(var(--ctr-mobile-columns, 1), minmax(0, 1fr));
+  }
+
+  @media (min-width: 960px) {
+    .ctr-bundle-builder__grid {
+      grid-template-columns: repeat(var(--ctr-desktop-columns, 3), minmax(0, 1fr));
+    }
+  }
+
+  .ctr-bundle-card {
+    border: 1px solid var(--ctr-border);
+    border-radius: 14px;
+    background: var(--ctr-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ctr-bundle-card__image-wrap {
+    aspect-ratio: 1 / 1;
+    background: #f7f6f3;
+    padding: 0;
+    position: relative;
+  }
+
+  .ctr-bundle-card__badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 3px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ctr-bundle-card__image,
+  .ctr-bundle-card__image--placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ctr-bundle-card__image--placeholder {
+    background: #efefef;
+  }
+
+  .ctr-bundle-card__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+
+  .ctr-bundle-card__meta {
+    flex-grow: 1;
+  }
+
+  .ctr-bundle-card__title {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .ctr-bundle-card__price-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-top: 6px;
+  }
+
+  .ctr-bundle-card__price {
+    font-weight: 700;
+  }
+
+  .ctr-bundle-card__compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+    font-size: 13px;
+  }
+
+  .ctr-bundle-card__variant-select-wrap {
+    width: 100%;
+  }
+
+  .ctr-bundle-card__variant-select {
+    width: 100%;
+    border: 1px solid var(--ctr-border);
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    background: #fff;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-card__add,
+  .ctr-bundle-builder__cta {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    padding: 8px 16px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-card__stepper {
+    display: grid;
+    grid-template-columns: 42px 1fr 42px;
+    align-items: center;
+    border: 1px solid var(--ctr-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .ctr-bundle-card__stepper-btn {
+    border: 0;
+    background: #111;
+    color: #fff;
+    min-height: 42px;
+    font-size: 18px;
+  }
+
+  .ctr-bundle-card__qty {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-card__soldout {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #efefef;
+    color: #666;
+    text-align: center;
+  }
+
+  .ctr-bundle-builder__panel {
+    border: 1px solid var(--ctr-border);
+    border-radius: 16px;
+    background: #fff;
+    padding: 18px;
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 24px;
+    margin-top: 56px;
+  }
+
+  .ctr-bundle-builder__headline {
+    display: grid;
+    gap: 10px;
+  }
+
+  .ctr-bundle-builder__headline h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .ctr-bundle-builder__progress-bar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .ctr-bundle-builder__progress-segment {
+    height: 8px;
+    background: #ececec;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+  }
+
+  .ctr-bundle-builder__progress-segment.is-active {
+    background: var(--ctr-accent);
+  }
+
+  .ctr-bundle-builder__summary-list,
+  .ctr-bundle-builder__empty {
+    border: 1px solid var(--ctr-border);
+    border-radius: 14px;
+    padding: 14px;
+    background: #fafafa;
+  }
+
+  .ctr-bundle-builder__empty {
+    text-align: center;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__summary-item {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ctr-border);
+  }
+
+  .ctr-bundle-builder__summary-item:last-child {
+    border-bottom: 0;
+  }
+
+  .ctr-bundle-builder__summary-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--ctr-border);
+  }
+
+  .ctr-bundle-builder__summary-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__summary-subtitle {
+    color: var(--ctr-soft);
+    font-size: 12px;
+  }
+
+  .ctr-bundle-builder__summary-price {
+    text-align: right;
+    font-size: 13px;
+  }
+
+  .ctr-bundle-builder__summary-compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+    display: block;
+  }
+
+  .ctr-bundle-builder__purchase-box {
+    border: 1px solid var(--ctr-border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .ctr-bundle-builder__purchase-option {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-bottom: 1px solid var(--ctr-border);
+  }
+
+  .ctr-bundle-builder__purchase-option:last-child {
+    border-bottom: 0;
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active {
+    background: var(--ctr-success);
+  }
+
+  .ctr-bundle-builder__purchase-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ctr-bundle-builder__radio {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #111;
+    border-radius: 999px;
+    position: relative;
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #111;
+    border-radius: 999px;
+  }
+
+  .ctr-bundle-builder__purchase-price {
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__purchase-copy {
+    color: var(--ctr-soft);
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__select {
+    width: 100%;
+    border: 1px solid var(--ctr-border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    background: #fff;
+  }
+
+  .ctr-bundle-builder__totals {
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__totals-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .ctr-bundle-builder__totals-row--grand {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    background: var(--ctr-accent-soft);
+    color: var(--ctr-accent);
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__helper {
+    color: var(--ctr-soft);
+    font-size: 13px;
+  }
+
+  .ctr-bundle-builder__helper.is-warning {
+    color: #9a6700;
+  }
+
+  .ctr-bundle-builder__gift {
+    border: 1px dashed var(--ctr-border);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 13px;
+  }
+</style>
+
+<section {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+         data-ctr-bundle-builder
+         data-section-settings="{{ section.settings | json | escape }}"
+         x-data="_sections.initCtrBundleBuilder($el)"
+         x-init="init()">
+  <div class="mx-auto w-full"
+       style="--ctr-desktop-columns: {{ desktop_columns }}; --ctr-mobile-columns: {{ mobile_columns }}; max-width: min(100%, {{ container_width_desktop }}px);">
+    <div class="ctr-bundle-builder__layout">
+      <div class="ctr-bundle-builder__main">
+        <div class="ctr-bundle-builder__filters">
+          <button type="button"
+                  class="ctr-bundle-builder__filter"
+                  :class="{ 'is-active': activeFilter === 'shop-all' }"
+                  @click="setFilter('shop-all')">
+            Shop All
+          </button>
+          {% for block in section.blocks %}
+            {% assign group_handle = block.settings.title | handleize %}
+            {% if block.type == 'product_group' and group_handle != blank %}
+              <button type="button"
+                      class="ctr-bundle-builder__filter"
+                      :class="{ 'is-active': activeFilter === '{{ group_handle }}' }"
+                      @click="setFilter('{{ group_handle }}')">
+                {{ block.settings.title }}
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="ctr-bundle-builder__grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'product_group' %}
+              {% for product in block.settings.products %}
+                {% render 'ctr_bundle_product_card', product: product, group_title: block.settings.title %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <aside class="ctr-bundle-builder__panel">
+    <div class="ctr-bundle-builder__headline">
+      <h2>{{ section.settings.heading | default: 'Your Product Bundle' }}</h2>
+      <div class="ctr-bundle-builder__progress-bar">
+        <template x-for="segment in 5" :key="segment">
+          <div class="ctr-bundle-builder__progress-segment"
+               :class="{ 'is-active': segment <= getFilledSegmentCount() }"></div>
+        </template>
+      </div>
+      <div class="ctr-bundle-builder__helper" x-text="getProgressCopy()"></div>
+      <div class="ctr-bundle-builder__badge" x-show="getActiveTier().discount > 0">
+        <span x-text="`${getActiveTier().discount}% OFF unlocked`"></span>
+      </div>
+      <div class="ctr-bundle-builder__helper is-warning"
+           x-show="purchaseMode === 'subscription' && !sellingPlans.length">
+        No shared subscription frequency is available for the current bundle.
+      </div>
+    </div>
+
+    <div class="ctr-bundle-builder__empty" x-show="getTotalItemCount() === 0">
+      {{ section.settings.empty_state_text | default: 'Add products to start building your bundle.' }}
+    </div>
+
+    <div class="ctr-bundle-builder__summary-list" x-show="getTotalItemCount() > 0">
+      <template x-for="item in getSelectedItems()" :key="item.key">
+        <div class="ctr-bundle-builder__summary-item">
+          <img class="ctr-bundle-builder__summary-thumb" :src="item.image" :alt="item.title">
+          <div>
+            <div class="ctr-bundle-builder__summary-title" x-text="item.title"></div>
+            <div class="ctr-bundle-builder__summary-subtitle" x-text="item.variantTitle"></div>
+            <div class="ctr-bundle-builder__summary-subtitle" x-text="`Qty ${item.quantity}`"></div>
+          </div>
+          <div class="ctr-bundle-builder__summary-price">
+            <span x-show="item.compareTotal > item.total"
+                  class="ctr-bundle-builder__summary-compare"
+                  x-text="formatMoney(item.compareTotal)"></span>
+            <span x-text="formatMoney(item.total)"></span>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="ctr-bundle-builder__gift" x-show="shouldApplyFreeGift() && freeGiftProducts.length > 0">
+      Free gift ready:
+      <strong x-text="freeGiftProducts.map((product) => product.title).join(', ')"></strong>
+    </div>
+
+    <div class="ctr-bundle-builder__purchase-box">
+      <div class="ctr-bundle-builder__purchase-option"
+           :class="{ 'is-active': purchaseMode === 'subscription' }"
+           @click="setPurchaseMode('subscription')">
+        <span class="ctr-bundle-builder__purchase-head">
+          <span class="ctr-bundle-builder__radio"></span>
+          <span>{{ section.settings.subscription_label | default: 'Subscribe & Save' }}</span>
+          <span class="ctr-bundle-builder__purchase-price" x-text="formatMoney(getFinalTotal())"></span>
+        </span>
+        <div class="ctr-bundle-builder__purchase-copy">
+          {{ section.settings.subscription_richtext }}
+        </div>
+        <select class="ctr-bundle-builder__select"
+                x-show="purchaseMode === 'subscription' && sellingPlans.length"
+                x-model="selectedSellingPlanId"
+                @click.stop
+                @change="emitAnalytics('frequency_changed', { sellingPlanId: selectedSellingPlanId })">
+          <template x-for="plan in sellingPlans" :key="plan.id">
+            <option :value="plan.id" x-text="plan.name"></option>
+          </template>
+        </select>
+      </div>
+
+      <div class="ctr-bundle-builder__purchase-option"
+           :class="{ 'is-active': purchaseMode === 'one-time' }"
+           @click="setPurchaseMode('one-time')">
+        <span class="ctr-bundle-builder__purchase-head">
+          <span class="ctr-bundle-builder__radio"></span>
+          <span>{{ section.settings.one_time_label | default: 'One-Time Purchase' }}</span>
+          <span class="ctr-bundle-builder__purchase-price" x-text="formatMoney(getFinalTotal())"></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="ctr-bundle-builder__totals">
+      <div class="ctr-bundle-builder__totals-row">
+        <span>Subtotal</span>
+        <span x-text="formatMoney(getSubtotal())"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row" x-show="getSubscriptionSavings() > 0">
+        <span>Subscription savings</span>
+        <span x-text="`-${formatMoney(getSubscriptionSavings())}`"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row" x-show="getBundleSavings() > 0">
+        <span>Bundle savings</span>
+        <span x-text="`-${formatMoney(getBundleSavings())}`"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row ctr-bundle-builder__totals-row--grand">
+        <span>Total</span>
+        <span x-text="formatMoney(getFinalTotal())"></span>
+      </div>
+    </div>
+
+    <button type="button"
+            class="ctr-bundle-builder__cta"
+            :disabled="isAdding || getTotalItemCount() < 1"
+            @click="addBundleToCart()">
+      <span x-text="isAdding ? 'Adding...' : '{{ section.settings.cta_text | default: 'Add Bundle To Cart' }}'"></span>
+    </button>
+      </aside>
+    </div>
+  </div>
+
+  <script type="application/json" data-ctr-free-gifts>
+    [
+      {% assign has_gift = false %}
+      {% if section.settings.free_gift_product_1 != blank and section.settings.free_gift_product_1.selected_or_first_available_variant != blank %}
+        {
+          "title": {{ section.settings.free_gift_product_1.title | json }},
+          "variantId": {{ section.settings.free_gift_product_1.selected_or_first_available_variant.id | json }}
+        }
+        {% assign has_gift = true %}
+      {% endif %}
+      {% if section.settings.free_gift_product_2 != blank and section.settings.free_gift_product_2.selected_or_first_available_variant != blank %}
+        {% if has_gift %},{% endif %}
+        {
+          "title": {{ section.settings.free_gift_product_2.title | json }},
+          "variantId": {{ section.settings.free_gift_product_2.selected_or_first_available_variant.id | json }}
+        }
+        {% assign has_gift = true %}
+      {% endif %}
+      {% if section.settings.free_gift_product_3 != blank and section.settings.free_gift_product_3.selected_or_first_available_variant != blank %}
+        {% if has_gift %},{% endif %}
+        {
+          "title": {{ section.settings.free_gift_product_3.title | json }},
+          "variantId": {{ section.settings.free_gift_product_3.selected_or_first_available_variant.id | json }}
+        }
+      {% endif %}
+    ]
+  </script>
+
+  <script type="application/json" data-ctr-subscription-product>
+    {% if section.settings.main_bundle_product != blank %}
+      {
+        "id": {{ section.settings.main_bundle_product.id | json }},
+        "handle": {{ section.settings.main_bundle_product.handle | json }},
+        "title": {{ section.settings.main_bundle_product.title | json }},
+        "available": {{ section.settings.main_bundle_product.available | json }},
+        "selected_variant_id": {{ section.settings.main_bundle_product.selected_or_first_available_variant.id | json }},
+        "variants": [
+          {% for variant in section.settings.main_bundle_product.variants %}
+            {
+              "id": {{ variant.id | json }},
+              "title": {{ variant.title | json }},
+              "available": {{ variant.available | json }},
+              "price": {{ variant.price | json }},
+              "compare_at_price": {{ variant.compare_at_price | default: variant.price | json }},
+              "selling_plan_allocations": [
+                {% for allocation in variant.selling_plan_allocations %}
+                  {
+                    "id": {{ allocation.selling_plan.id | json }},
+                    "name": {{ allocation.selling_plan.name | json }},
+                    "price": {{ allocation.per_delivery_price | default: variant.price | json }},
+                    "compare_at_price": {{ allocation.compare_at_list_price | default: variant.price | json }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      }
+    {% else %}
+      null
+    {% endif %}
+  </script>
+
+  <script>
+    if (!window._sections.initCtrBundleBuilder) {
+      window._sections.initCtrBundleBuilder = function ($el) {
+        const settings = JSON.parse($el.getAttribute("data-section-settings") || "{}");
+
+        return {
+          settings,
+          activeFilter: "shop-all",
+          purchaseMode: "subscription",
+          selectedSellingPlanId: "",
+          isAdding: false,
+          productMap: new Map(),
+          selectedMap: new Map(),
+          groupMap: new Map(),
+          sellingPlans: [],
+          freeGiftProducts: [],
+          subscriptionProduct: null,
+
+          init() {
+            const productScripts = [...$el.querySelectorAll("[data-ctr-product-json]")];
+            productScripts.forEach((scriptEl) => {
+              const product = JSON.parse(scriptEl.textContent || "{}");
+              if (!product.handle || this.productMap.has(product.handle)) return;
+
+              product.variants = (product.variants || []).filter(Boolean);
+              this.productMap.set(product.handle, product);
+            });
+
+            const cardEls = [...$el.querySelectorAll("[data-ctr-product-card]")];
+            cardEls.forEach((cardEl) => {
+              const handle = cardEl.getAttribute("data-product-handle");
+              const groupHandle = cardEl.getAttribute("data-group-handle");
+              if (!handle || !groupHandle) return;
+
+              if (!this.groupMap.has(groupHandle)) {
+                this.groupMap.set(groupHandle, []);
+              }
+
+              const handles = this.groupMap.get(groupHandle);
+              if (!handles.includes(handle)) {
+                handles.push(handle);
+              }
+            });
+
+            this.freeGiftProducts = this.parseFreeGiftProducts();
+            this.subscriptionProduct = this.parseSubscriptionProduct();
+            console.info("Subscription Product", this.subscriptionProduct);
+            this.refreshSellingPlans();
+          },
+
+          parseFreeGiftProducts() {
+            const script = $el.querySelector("[data-ctr-free-gifts]");
+            return script ? JSON.parse(script.textContent || "[]").filter(Boolean) : [];
+          },
+
+          parseSubscriptionProduct() {
+            const script = $el.querySelector("[data-ctr-subscription-product]");
+            return script ? JSON.parse(script.textContent || "null") : null;
+          },
+
+          collectSellingPlans() {
+            const plans = new Map();
+
+            (this.subscriptionProduct?.variants || []).forEach((variant) => {
+              (variant.selling_plan_allocations || []).forEach((allocation) => {
+                if (!allocation?.id) return;
+
+                const planId = String(allocation.id);
+                if (!plans.has(planId)) {
+                  plans.set(planId, {
+                    id: planId,
+                    name: allocation.name
+                  });
+                }
+              });
+            });
+
+            return [...plans.values()];
+          },
+
+          refreshSellingPlans() {
+            const nextPlans = this.collectSellingPlans();
+            const currentPlanStillValid = nextPlans.some((plan) => String(plan.id) === String(this.selectedSellingPlanId));
+
+            this.sellingPlans = nextPlans;
+            this.selectedSellingPlanId = currentPlanStillValid ? String(this.selectedSellingPlanId) : (nextPlans[0]?.id || "");
+
+            if (!nextPlans.length && this.purchaseMode === "subscription") {
+              this.purchaseMode = "one-time";
+            }
+          },
+
+          setFilter(filter) {
+            this.activeFilter = filter;
+            this.emitAnalytics("filter_changed", { filter });
+          },
+
+          isProductVisible(handle, groupHandle) {
+            if (this.activeFilter === "shop-all") return true;
+            return this.activeFilter === groupHandle;
+          },
+
+          getProductState(handle) {
+            return this.productMap.get(handle) || null;
+          },
+
+          getVariantChoices(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return [];
+
+            return product.variants.filter((variant) => variant.title !== "Default Title");
+          },
+
+          getSelectedVariant(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return null;
+
+            const selected = this.selectedMap.get(handle);
+            const selectedVariantId = selected?.variantId || product.selected_variant_id;
+            return product.variants.find((variant) => String(variant.id) === String(selectedVariantId)) || product.variants[0] || null;
+          },
+
+          setVariant(handle, variantId) {
+            const current = this.selectedMap.get(handle) || { quantity: 0 };
+            this.selectedMap.set(handle, { ...current, variantId: String(variantId) });
+            this.refreshSellingPlans();
+            this.emitAnalytics("variant_changed", { handle, variantId: String(variantId) });
+          },
+
+          getQuantity(handle) {
+            return this.selectedMap.get(handle)?.quantity || 0;
+          },
+
+          increment(handle) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant || !variant.available) return;
+
+            const current = this.selectedMap.get(handle) || { quantity: 0, variantId: String(variant.id) };
+            this.selectedMap.set(handle, {
+              quantity: current.quantity + 1,
+              variantId: current.variantId || String(variant.id)
+            });
+
+            this.refreshSellingPlans();
+            this.emitAnalytics("bundle_item_added", {
+              handle,
+              variantId: String(variant.id),
+              quantity: current.quantity + 1
+            });
+          },
+
+          decrement(handle) {
+            const current = this.selectedMap.get(handle);
+            if (!current) return;
+
+            const nextQty = Math.max(0, current.quantity - 1);
+            if (nextQty < 1) {
+              this.selectedMap.delete(handle);
+            } else {
+              this.selectedMap.set(handle, { ...current, quantity: nextQty });
+            }
+
+            this.refreshSellingPlans();
+            this.emitAnalytics("bundle_item_removed", {
+              handle,
+              quantity: nextQty
+            });
+          },
+
+          getTotalItemCount() {
+            let total = 0;
+            this.selectedMap.forEach((value) => {
+              total += value.quantity || 0;
+            });
+            return total;
+          },
+
+          getActiveTier() {
+            const count = this.getTotalItemCount();
+            const tiers = [
+              { count: 2, discount: Number(this.settings.trigger_2_discount || 0), propertyValue: this.settings.trigger_2_property_value || "" },
+              { count: 3, discount: Number(this.settings.trigger_3_discount || 0), propertyValue: this.settings.trigger_3_property_value || "" },
+              { count: 4, discount: Number(this.settings.trigger_4_discount || 0), propertyValue: this.settings.trigger_4_property_value || "" },
+              { count: 5, discount: Number(this.settings.trigger_5_discount || 0), propertyValue: this.settings.trigger_5_property_value || "" }
+            ];
+
+            const matched = tiers
+              .filter((tier) => count >= tier.count && tier.discount > 0)
+              .sort((a, b) => b.count - a.count)[0];
+
+            return matched || { count: 0, discount: 0, propertyValue: "" };
+          },
+
+          getNextTier() {
+            const count = this.getTotalItemCount();
+            const tiers = [2, 3, 4, 5].filter((tier) => Number(this.settings[`trigger_${tier}_discount`] || 0) > 0);
+            return tiers.find((tier) => count < tier) || null;
+          },
+
+          getFilledSegmentCount() {
+            return Math.min(this.getTotalItemCount(), 5);
+          },
+
+          getProgressCopy() {
+            const activeTier = this.getActiveTier();
+            const nextTier = this.getNextTier();
+
+            if (nextTier) {
+              const remaining = Math.max(nextTier - this.getTotalItemCount(), 0);
+              return `${activeTier.discount ? `${activeTier.discount}% OFF unlocked.` : "Bundle in progress."} Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${nextTier === 2 ? this.settings.trigger_2_discount : nextTier === 3 ? this.settings.trigger_3_discount : nextTier === 4 ? this.settings.trigger_4_discount : this.settings.trigger_5_discount}% OFF.`;
+            }
+
+            if (activeTier.discount) {
+              return `${activeTier.discount}% OFF unlocked. Highest tier reached.`;
+            }
+
+            return "Add products to unlock bundle discounts.";
+          },
+
+          getSelectedPlanAllocation(handle) {
+            if (this.purchaseMode !== "subscription") return null;
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return null;
+
+            const selectedPlanId = String(this.selectedSellingPlanId || "");
+            if (!selectedPlanId) {
+              return variant.selling_plan_allocations?.[0] || null;
+            }
+
+            return (variant.selling_plan_allocations || []).find((allocation) => String(allocation.id) === selectedPlanId) || null;
+          },
+
+          getDisplayUnitPrice(handle) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return 0;
+
+            const allocation = this.getSelectedPlanAllocation(handle);
+            return allocation?.price || variant.price || 0;
+          },
+
+          getDisplayComparePrice(handle) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return 0;
+
+            const allocation = this.getSelectedPlanAllocation(handle);
+            return allocation?.compare_at_price || variant.compare_at_price || variant.price || 0;
+          },
+
+          getSubtotal() {
+            let subtotal = 0;
+            this.selectedMap.forEach((value, handle) => {
+              subtotal += this.getDisplayUnitPrice(handle) * value.quantity;
+            });
+            return subtotal;
+          },
+
+          getSubscriptionCompareSubtotal() {
+            let subtotal = 0;
+            this.selectedMap.forEach((value, handle) => {
+              const variant = this.getSelectedVariant(handle);
+              if (!variant) return;
+              subtotal += (variant.compare_at_price || variant.price || 0) * value.quantity;
+            });
+            return subtotal;
+          },
+
+          getSubscriptionSavings() {
+            if (this.purchaseMode !== "subscription") return 0;
+            return Math.max(this.getSubscriptionCompareSubtotal() - this.getSubtotal(), 0);
+          },
+
+          getBundleSavings() {
+            const subtotal = this.getSubtotal();
+            const discount = this.getActiveTier().discount;
+            if (!subtotal || !discount) return 0;
+            return Math.round(subtotal * (discount / 100));
+          },
+
+          getFinalTotal() {
+            return Math.max(this.getSubtotal() - this.getBundleSavings(), 0);
+          },
+
+          getSelectedItems() {
+            const activeTier = this.getActiveTier();
+            return [...this.selectedMap.entries()].map(([handle, value]) => {
+              const product = this.getProductState(handle);
+              const variant = this.getSelectedVariant(handle);
+              const unitPrice = this.getDisplayUnitPrice(handle);
+              const comparePrice = this.getDisplayComparePrice(handle);
+              const lineSubtotal = unitPrice * value.quantity;
+              const lineCompare = comparePrice * value.quantity;
+              const discountFactor = activeTier.discount > 0 ? (1 - activeTier.discount / 100) : 1;
+
+              return {
+                key: `${handle}-${variant?.id || "product"}`,
+                handle,
+                title: product?.title || handle,
+                image: product?.featured_image || "",
+                variantTitle: variant?.title && variant.title !== "Default Title" ? variant.title : (this.purchaseMode === "subscription" ? "Subscription" : "One-time"),
+                quantity: value.quantity,
+                compareTotal: lineCompare,
+                total: Math.round(lineSubtotal * discountFactor)
+              };
+            });
+          },
+
+          setPurchaseMode(mode) {
+            this.refreshSellingPlans();
+            if (mode === "subscription" && !this.sellingPlans.length) return;
+            this.purchaseMode = mode;
+            this.emitAnalytics("purchase_mode_changed", {
+              mode,
+              sellingPlanMode: this.settings.selling_plan_mode || "all",
+              availableSellingPlanCount: this.sellingPlans.length
+            });
+          },
+
+          shouldApplyFreeGift() {
+            const trigger = Number(this.settings.free_gift_trigger_count || 0);
+            return trigger > 0 && this.getTotalItemCount() >= trigger;
+          },
+
+          buildDiscountProperties() {
+            const properties = {
+              _ctr_bundle_id: `${Date.now()}-${Math.round(Math.random() * 10000)}`,
+              _ctr_bundle_count: String(this.getTotalItemCount())
+            };
+
+            const tier = this.getActiveTier();
+            if (this.settings.discount_property_key && tier.propertyValue) {
+              properties[this.settings.discount_property_key] = tier.propertyValue;
+            }
+
+            return properties;
+          },
+
+          async addBundleToCart() {
+            if (this.isAdding || this.getTotalItemCount() < 1) return;
+
+            const properties = this.buildDiscountProperties();
+            const items = [];
+
+            this.selectedMap.forEach((value, handle) => {
+              const variant = this.getSelectedVariant(handle);
+              if (!variant) return;
+
+              const item = {
+                id: variant.id,
+                quantity: value.quantity,
+                properties: { ...properties }
+              };
+
+              const allocation = this.getSelectedPlanAllocation(handle);
+              if (this.purchaseMode === "subscription" && allocation?.id) {
+                item.selling_plan = allocation.id;
+              }
+
+              items.push(item);
+            });
+
+            if (this.shouldApplyFreeGift() && this.freeGiftProducts.length) {
+              this.freeGiftProducts.forEach((gift) => {
+                items.push({
+                  id: gift.variantId,
+                  quantity: 1,
+                  properties: {
+                    ...properties,
+                    _ctr_bundle_gift: "true",
+                    [this.settings.gift_property_key || "_ctr_bundle_gift_key"]: this.settings.gift_property_value || "free-gift",
+                    _ctr_bundle_discount_type: "gift"
+                  }
+                });
+              });
+            }
+
+            this.isAdding = true;
+            this.emitAnalytics("bundle_add_to_cart_started", {
+              itemCount: this.getTotalItemCount(),
+              purchaseMode: this.purchaseMode,
+              tier: this.getActiveTier().count,
+              discountPropertyKey: this.settings.discount_property_key || "",
+              discountPropertyValue: this.getActiveTier().propertyValue || "",
+              giftTriggered: this.shouldApplyFreeGift(),
+              giftVariantIds: this.freeGiftProducts.map((gift) => String(gift.variantId)),
+              sellingPlanId: this.purchaseMode === "subscription" ? String(this.selectedSellingPlanId || "") : "",
+              sellingPlanMode: this.settings.selling_plan_mode || "all"
+            });
+
+            try {
+              const data = await _cart.add({ items });
+              if (!data?.cart_error) {
+                this.emitAnalytics("bundle_add_to_cart_success", {
+                  itemCount: this.getTotalItemCount(),
+                  purchaseMode: this.purchaseMode,
+                  tier: this.getActiveTier().count,
+                  giftTriggered: this.shouldApplyFreeGift(),
+                  items: items.map((item) => ({
+                    id: String(item.id),
+                    quantity: item.quantity,
+                    sellingPlan: item.selling_plan ? String(item.selling_plan) : ""
+                  }))
+                });
+                _stores.modal.setId("modal--cart-drawer");
+              } else {
+                this.emitAnalytics("bundle_add_to_cart_failed", {
+                  itemCount: this.getTotalItemCount(),
+                  purchaseMode: this.purchaseMode,
+                  tier: this.getActiveTier().count
+                });
+                console.error("CTR Bundle cart error", data.cart_error);
+              }
+            } catch (error) {
+              this.emitAnalytics("bundle_add_to_cart_failed", {
+                itemCount: this.getTotalItemCount(),
+                purchaseMode: this.purchaseMode,
+                tier: this.getActiveTier().count,
+                message: error?.message || "unknown_error"
+              });
+              console.error("CTR Bundle add to cart failed", error);
+            } finally {
+              this.isAdding = false;
+            }
+          },
+
+          emitAnalytics(name, payload) {
+            const detail = { name, payload };
+            console.info("[CTR Bundle]", detail);
+            document.dispatchEvent(new CustomEvent("ctr:bundle", { detail }));
+          },
+
+          formatMoney(value) {
+            return utils.formatMoney(Number(value || 0));
+          }
+        };
+      };
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Bundle Builder",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID"
+    },
+    {
+      "type": "number",
+      "id": "container_width_desktop",
+      "label": "Desktop container width (px)",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "label": "Desktop product columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile product columns",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Product Bundle"
+    },
+    {
+      "type": "text",
+      "id": "empty_state_text",
+      "label": "Empty state text",
+      "default": "Add products to start building your bundle."
+    },
+    {
+      "type": "text",
+      "id": "subscription_label",
+      "label": "Subscription label",
+      "default": "Subscribe & Save"
+    },
+    {
+      "type": "richtext",
+      "id": "subscription_richtext",
+      "label": "Subscription rich text"
+    },
+    {
+      "type": "select",
+      "id": "selling_plan_mode",
+      "label": "Selling plan availability",
+      "default": "all",
+      "options": [
+        {
+          "value": "all",
+          "label": "All selling plans"
+        },
+        {
+          "value": "shared",
+          "label": "Only shared selling plans"
+        }
+      ]
+    },
+    {
+      "type": "product",
+      "id": "main_bundle_product",
+      "label": "Subscription Product"
+    },
+    {
+      "type": "text",
+      "id": "one_time_label",
+      "label": "One-time label",
+      "default": "One-Time Purchase"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Add Bundle To Cart"
+    },
+    {
+      "type": "header",
+      "content": "Discount Kit Properties"
+    },
+    {
+      "type": "text",
+      "id": "discount_property_key",
+      "label": "Discount property key",
+      "default": "_ctr_bundle_discount"
+    },
+    {
+      "type": "range",
+      "id": "trigger_2_discount",
+      "label": "2 items discount %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "trigger_2_property_value",
+      "label": "2 items property value",
+      "default": "discount-two-items"
+    },
+    {
+      "type": "range",
+      "id": "trigger_3_discount",
+      "label": "3 items discount %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "trigger_3_property_value",
+      "label": "3 items property value",
+      "default": "discount-three-items"
+    },
+    {
+      "type": "range",
+      "id": "trigger_4_discount",
+      "label": "4 items discount %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "trigger_4_property_value",
+      "label": "4 items property value",
+      "default": "discount-four-items"
+    },
+    {
+      "type": "range",
+      "id": "trigger_5_discount",
+      "label": "5 items discount %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "trigger_5_property_value",
+      "label": "5 items property value",
+      "default": "discount-five-items"
+    },
+    {
+      "type": "header",
+      "content": "Free Gift"
+    },
+    {
+      "type": "range",
+      "id": "free_gift_trigger_count",
+      "label": "Free gift trigger item count",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "gift_property_key",
+      "label": "Gift property key",
+      "default": "_ctr_bundle_gift"
+    },
+    {
+      "type": "text",
+      "id": "gift_property_value",
+      "label": "Gift property value",
+      "default": "free-gift"
+    },
+    {
+      "type": "product",
+      "id": "free_gift_product_1",
+      "label": "Free gift product 1"
+    },
+    {
+      "type": "product",
+      "id": "free_gift_product_2",
+      "label": "Free gift product 2"
+    },
+    {
+      "type": "product",
+      "id": "free_gift_product_3",
+      "label": "Free gift product 3"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_group",
+      "name": "Product Group",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Group title",
+          "default": "Powders"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Bundle Builder"
+    }
+  ]
+}
+{% endschema %}
