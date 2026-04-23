@@ -85,8 +85,8 @@
       <div class="inputs">
         <div class="slider-group">
           <div class="slider-top"><span class="slider-label">Current weight</span><div><span class="slider-val" id="wlp1DispW">180</span><span class="slider-unit" id="wlp1DispWU">lbs</span></div></div>
-          <input type="range" id="wlp1SlW" min="120" max="400" value="180" step="1" oninput="wlp1Calc()">
-          <div class="range-ends"><span id="wlp1WLo">120 lbs</span><span id="wlp1WHi">400 lbs</span></div>
+          <input type="range" id="wlp1SlW" min="100" max="400" value="180" step="1" oninput="wlp1Calc()">
+          <div class="range-ends"><span id="wlp1WLo">100 lbs</span><span id="wlp1WHi">400 lbs</span></div>
         </div>
         <div class="slider-group" id="wlp1HImpGroup">
           <div class="slider-top"><span class="slider-label">Height</span><div><span class="slider-val" id="wlp1DispH">5'8"</span></div></div>
@@ -172,9 +172,9 @@
       slGW.value=gwKg;document.getElementById('wlp1DispGWU').textContent='kg';
     }else{
       var kg2=parseInt(slW.value),lbs2=Math.round(kg2*2.20462);
-      slW.min=120;slW.max=400;slW.value=lbs2;
+      slW.min=100;slW.max=400;slW.value=lbs2;
       document.getElementById('wlp1DispWU').textContent='lbs';
-      document.getElementById('wlp1WLo').textContent='120 lbs';document.getElementById('wlp1WHi').textContent='400 lbs';
+      document.getElementById('wlp1WLo').textContent='100 lbs';document.getElementById('wlp1WHi').textContent='400 lbs';
       var gwKg2=parseInt(slGW.value),gwLbs2=Math.round(gwKg2*2.20462);
       slGW.value=gwLbs2;document.getElementById('wlp1DispGWU').textContent='lbs';
     }
@@ -259,8 +259,7 @@
   ],
   "presets": [
     {
-      "name": "WLP-1 Calculator",
-      "category": "Custom"
+      "name": "WLP-1 Calculator"
     }
   ]
 }
