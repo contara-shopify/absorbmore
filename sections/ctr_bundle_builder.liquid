@@ -4,7 +4,6 @@
   assign desktop_columns = section.settings.desktop_columns | default: 3
   assign mobile_columns = section.settings.mobile_columns | default: 1
   assign discount_property_key = section.settings.discount_property_key
-  assign gift_property_key = section.settings.gift_property_key
   assign trigger_2_discount = section.settings.trigger_2_discount | default: 0
   assign trigger_3_discount = section.settings.trigger_3_discount | default: 0
   assign trigger_4_discount = section.settings.trigger_4_discount | default: 0
@@ -213,12 +212,51 @@
 
   .ctr-bundle-card__meta {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .ctr-bundle-card__title {
     margin: 0;
     font-size: 12px;
     line-height: 1.3;
+  }
+
+  .ctr-bundle-card__subtitle {
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating-star {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0; 
+    background: #000000;
+    mask: var(--icon-star); 
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 14px 14px;
+    transform: translateY(-1px);
+  }
+
+  .ctr-bundle-card__rating-text {
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating-score {
+    font-weight: 700;
+    color: var(--ctr-ink);
   }
 
   .ctr-bundle-card__price-row {
@@ -475,20 +513,39 @@
     align-items: center;
   }
 
-  .ctr-bundle-builder__radio {
-    width: 18px;
-    height: 18px;
-    border: 1px solid #111;
+  .ctr-bundle-builder__purchase-toggle {
+    width: 60px;
+    height: 32px;
+    border: 0;
     border-radius: 999px;
-    position: relative;
+    background: #d0d5dd;
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
   }
 
-  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__radio::after {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    background: #111;
+  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__purchase-toggle {
+    background: #4f8b2c;
+  }
+
+  .ctr-bundle-builder__purchase-toggle-thumb {
+    width: 26px;
+    height: 26px;
     border-radius: 999px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    font-size: 14px;
+    font-weight: 700;
+    transform: translateX(0);
+    transition: transform 0.2s ease;
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__purchase-toggle-thumb {
+    transform: translateX(28px);
   }
 
   .ctr-bundle-builder__purchase-price {
@@ -541,19 +598,35 @@
     color: #707070;
   }
 
+  .ctr-bundle-builder__purchase-copy.is-one-time ul li {
+    text-decoration: line-through;
+  }
+
+  .ctr-bundle-builder__purchase-copy.is-one-time ul li::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M15 5L5 15M5 5L15 15' stroke='%23FF0000' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    background-color: transparent;
+  }
+
   .ctr-bundle-builder__purchase-copy ul li::before {
-    content: "✓";
+    content: "";
     display: flex;
     align-items: center;
     justify-content: center;
     width: 14px;
     height: 14px;
     border-radius: 999px;
-    background: var(--ctr-accent);
+    background-color: var(--ctr-accent);
     color: #ffffff;
-    font-size: 8px;
+    font-size: 8px; 
     font-weight: 700;
     transform: translateY(3px);
+    background-image: url('{{ "ctr-toggle-check.svg" | asset_url }}');
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: 7px 7px;
     {% comment %} margin-right: 14px; {% endcomment %}
   }
 
@@ -592,6 +665,7 @@
 
   .ctr-bundle-builder__badge {
     display: inline-flex;
+    display: none;
     align-items: center;
     gap: 6px;
     border-radius: 999px;
@@ -605,6 +679,11 @@
   .ctr-bundle-builder__helper {
     color: var(--ctr-soft);
     font-size: 13px;
+  }
+
+  .ctr-bundle-builder__helper-accent {
+    color: var(--ctr-accent);
+    font-weight: 700;
   }
 
   .ctr-bundle-builder__helper.is-warning {
@@ -715,7 +794,19 @@
 
               <div class="ctr-bundle-card__body">
                 <div class="ctr-bundle-card__meta">
+                  <div class="ctr-bundle-card__rating"
+                       x-show="getProductReviewCount(item.handle) > 0"
+                       x-cloak>
+                    <span class="ctr-bundle-card__rating-star"></span>
+                    <span class="ctr-bundle-card__rating-score"
+                          x-text="getProductRatingScore(item.handle)"></span>
+                    <span class="ctr-bundle-card__rating-text"
+                          x-text="`(${getProductReviewCount(item.handle)})`"></span>
+                  </div>
                   <h3 class="ctr-bundle-card__title" x-text="item.title"></h3>
+                  <div class="ctr-bundle-card__subtitle"
+                       x-show="getProductBadge(item.handle)"
+                       x-text="getProductBadge(item.handle)"></div>
                   <div class="ctr-bundle-card__price-row">
                     <span class="ctr-bundle-card__price"
                           x-text="formatMoney(getDisplayUnitPrice(item.handle))"></span>
@@ -774,7 +865,7 @@
                :class="{ 'is-active': segment <= getFilledSegmentCount() }"></div>
         </template>
       </div>
-      <div class="ctr-bundle-builder__helper" x-text="getProgressCopy()"></div>
+      <div class="ctr-bundle-builder__helper" x-html="getProgressCopy()"></div>
       <div class="ctr-bundle-builder__badge" x-show="getActiveTier().discount > 0">
         <span x-text="`${getActiveTier().discount}% OFF unlocked`"></span>
       </div>
@@ -828,31 +919,31 @@
       </template>
     </div>
 
-    <div class="ctr-bundle-builder__gift" x-show="shouldApplyFreeGift() && freeGiftProducts.length > 0">
-      Free gift ready:
-      <strong x-text="freeGiftProducts.map((product) => product.title).join(', ')"></strong>
-    </div>
-
     <div class="ctr-bundle-builder__purchase-box">
       <div class="ctr-bundle-builder__purchase-option"
-           :class="{ 'is-active': purchaseMode === 'subscription' }"
-           @click="setPurchaseMode('subscription')">
+           :class="{ 'is-active': purchaseMode === 'subscription' }">
         <span class="ctr-bundle-builder__purchase-head">
-          <span class="ctr-bundle-builder__radio"></span>
-          <span>{{ section.settings.subscription_label | default: 'Subscribe' }}</span>
+          <button type="button"
+                  class="ctr-bundle-builder__purchase-toggle"
+                  @click.stop="togglePurchaseMode()"
+                  :aria-pressed="purchaseMode === 'subscription' ? 'true' : 'false'"
+                  aria-label="Toggle subscription">
+            <span class="ctr-bundle-builder__purchase-toggle-thumb" x-text="purchaseMode === 'subscription' ? '' : ''"></span>
+          </button>
+          <span x-text="purchaseMode === 'subscription' ? '{{ section.settings.subscription_label | default: 'Subscribe' }}' : '{{ section.settings.one_time_label | default: 'One-Time Purchase' }}'"></span>
           <span class="ctr-bundle-builder__purchase-price-wrap">
             <span class="ctr-bundle-builder__purchase-saved"
-              x-show="getSubscriptionDiscountPercent() > 0"
+              x-show="purchaseMode === 'subscription' && getSubscriptionDiscountPercent() > 0"
               x-text="`Saved ${getSubscriptionDiscountPercent()}%`"></span>
             <span class="ctr-bundle-builder__purchase-price-compare"
-                  x-show="getOneTimeFinalTotal() > getSubscriptionFinalTotal()"
+                  x-show="purchaseMode === 'subscription' && getOneTimeFinalTotal() > getSubscriptionFinalTotal()"
                   x-text="formatMoney(getOneTimeFinalTotal())"></span>
                   
             <span class="ctr-bundle-builder__purchase-price"
-                  x-text="formatMoney(getSubscriptionFinalTotal())"></span>
+                  x-text="formatMoney(purchaseMode === 'subscription' ? getSubscriptionFinalTotal() : getOneTimeFinalTotal())"></span>
           </span>
         </span>
-        <div class="ctr-bundle-builder__purchase-copy">
+        <div class="ctr-bundle-builder__purchase-copy" :class="{ 'is-one-time': purchaseMode === 'one-time' }">
           {{ section.settings.subscription_richtext }}
         </div>
         <select class="ctr-bundle-builder__select"
@@ -864,17 +955,6 @@
             <option :value="plan.id" x-text="plan.name"></option>
           </template>
         </select>
-      </div>
-
-      <div class="ctr-bundle-builder__purchase-option"
-           :class="{ 'is-active': purchaseMode === 'one-time' }"
-           @click="setPurchaseMode('one-time')">
-        <span class="ctr-bundle-builder__purchase-head">
-          <span class="ctr-bundle-builder__radio"></span>
-          <span>{{ section.settings.one_time_label | default: 'One-Time Purchase' }}</span>
-          <span class="ctr-bundle-builder__purchase-price"
-                x-text="formatMoney(getOneTimeFinalTotal())"></span>
-        </span>
       </div>
     </div>
 
@@ -906,34 +986,6 @@
       </aside>
     </div>
   </div>
-
-  <script type="application/json" data-ctr-free-gifts>
-    [
-      {% assign has_gift = false %}
-      {% if section.settings.free_gift_product_1 != blank and section.settings.free_gift_product_1.selected_or_first_available_variant != blank %}
-        {
-          "title": {{ section.settings.free_gift_product_1.title | json }},
-          "variantId": {{ section.settings.free_gift_product_1.selected_or_first_available_variant.id | json }}
-        }
-        {% assign has_gift = true %}
-      {% endif %}
-      {% if section.settings.free_gift_product_2 != blank and section.settings.free_gift_product_2.selected_or_first_available_variant != blank %}
-        {% if has_gift %},{% endif %}
-        {
-          "title": {{ section.settings.free_gift_product_2.title | json }},
-          "variantId": {{ section.settings.free_gift_product_2.selected_or_first_available_variant.id | json }}
-        }
-        {% assign has_gift = true %}
-      {% endif %}
-      {% if section.settings.free_gift_product_3 != blank and section.settings.free_gift_product_3.selected_or_first_available_variant != blank %}
-        {% if has_gift %},{% endif %}
-        {
-          "title": {{ section.settings.free_gift_product_3.title | json }},
-          "variantId": {{ section.settings.free_gift_product_3.selected_or_first_available_variant.id | json }}
-        }
-      {% endif %}
-    ]
-  </script>
 
   <script type="application/json" data-ctr-subscription-product>
     {% if section.settings.main_bundle_product != blank %}
@@ -991,20 +1043,13 @@
           debugGroups: [],
           skioBox: null,
           sellingPlans: [],
-          freeGiftProducts: [],
           subscriptionProduct: null,
 
           async init() {
-            this.freeGiftProducts = this.parseFreeGiftProducts();
             this.subscriptionProduct = this.parseSubscriptionProduct();
             console.info("Subscription Product", this.subscriptionProduct);
             await this.loadBundleProducts();
             this.refreshSellingPlans();
-          },
-
-          parseFreeGiftProducts() {
-            const script = $el.querySelector("[data-ctr-free-gifts]");
-            return script ? JSON.parse(script.textContent || "[]").filter(Boolean) : [];
           },
 
           parseSubscriptionProduct() {
@@ -1090,8 +1135,11 @@
                   const skioVariant = skioVariantsById.get(String(variant.id));
                   return {
                     ...variant,
-                    price: Number(skioVariant?.price ?? variant.price ?? 0),
-                    compare_at_price: Number(skioVariant?.compareAtPrice ?? variant.compare_at_price ?? variant.price ?? 0),
+                    price: this.normalizeSkioMoney(skioVariant?.price, variant.price),
+                    compare_at_price: this.normalizeSkioMoney(
+                      skioVariant?.compareAtPrice,
+                      variant.compare_at_price ?? variant.price
+                    ),
                     skioVariant
                   };
                 });
@@ -1108,6 +1156,7 @@
                 featured_image: this.normalizeProductImage(shopifyProduct, skioProduct.productImageSrc),
                 selected_variant_id: defaultVariantId || shopifyProduct.selected_variant_id || variants[0]?.id,
                 variants,
+                reviews: shopifyProduct.reviews || {},
                 metafields: shopifyProduct.metafields || {},
                 skioProduct
               };
@@ -1286,6 +1335,48 @@
             return "";
           },
 
+          getProductRatingValue(handle) {
+            const product = this.getProductState(handle);
+            const directRating = Number(product?.reviews?.rating || 0);
+
+            if (directRating > 0) return directRating;
+
+            const ratingMetafield = product?.metafields?.smart?.rating;
+            const metafieldValue = ratingMetafield?.value?.rating ?? ratingMetafield?.value ?? ratingMetafield;
+            const rating = Number(metafieldValue || 0);
+
+            return rating > 0 ? rating : 0;
+          },
+
+          getProductReviewCount(handle) {
+            const product = this.getProductState(handle);
+            const directCount = Number(product?.reviews?.review_count || 0);
+
+            if (directCount > 0) return directCount;
+
+            const countMetafield = product?.metafields?.smart?.review_count;
+            const count = Number(countMetafield?.value ?? countMetafield ?? 0);
+
+            return count > 0 ? count : 0;
+          },
+
+          getProductRatingLabel(handle) {
+            const rating = this.getProductRatingValue(handle);
+            const count = this.getProductReviewCount(handle);
+
+            if (!count || !rating) return "";
+
+            return `${Number(rating).toFixed(1)} (${count})`;
+          },
+
+          getProductRatingScore(handle) {
+            const rating = this.getProductRatingValue(handle);
+
+            if (!rating) return "";
+
+            return `${Number(rating).toFixed(2)}/5`;
+          },
+
           setVariant(handle, variantId) {
             const current = this.selectedMap.get(handle) || { quantity: 0 };
             this.selectedMap.set(handle, { ...current, variantId: String(variantId) });
@@ -1399,16 +1490,17 @@
             this.selectionVersion;
             const activeTier = this.getActiveTier();
             const nextTier = this.getNextTier();
+            const highlightDiscount = (discount) => `<span class="ctr-bundle-builder__helper-accent">${discount}% OFF</span>`;
 
             if (nextTier) {
               const remaining = Math.max(nextTier.count - this.getTotalItemCount(), 0);
               return activeTier.discount
-                ? `${activeTier.discount}% OFF unlocked. Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${nextTier.discount}% OFF.`
-                : `Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${nextTier.discount}% OFF.`;
+                ? `${highlightDiscount(activeTier.discount)} unlocked. Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${highlightDiscount(nextTier.discount)}.`
+                : `Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${highlightDiscount(nextTier.discount)}.`;
             }
 
             if (activeTier.discount) {
-              return `${activeTier.discount}% OFF unlocked. Highest tier reached.`;
+              return `${highlightDiscount(activeTier.discount)} unlocked. Highest tier reached.`;
             }
 
             return "Add products to unlock bundle discounts.";
@@ -1439,6 +1531,18 @@
             return Number(this.getSelectedSellingPlanGroup()?.priceAdjustmentAmount || 0);
           },
 
+          normalizeSkioMoney(value, fallback = 0) {
+            if (typeof value === "number" && Number.isFinite(value)) {
+              return Math.round(value * 100);
+            }
+
+            if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) {
+              return Math.round(Number(value) * 100);
+            }
+
+            return Number(fallback || 0);
+          },
+
           getDisplayUnitPriceForMode(handle, mode) {
             const variant = this.getSelectedVariant(handle);
             if (!variant) return 0;
@@ -1448,8 +1552,8 @@
               if (selectedPlanGroup?.variantMapping) {
                 const variantGid = `gid://shopify/ProductVariant/${variant.id}`;
                 const adjustedPrice = selectedPlanGroup.variantMapping?.[variantGid]?.adjustedPrice;
-                if (typeof adjustedPrice === "number") {
-                  return adjustedPrice;
+                if (typeof adjustedPrice === "number" || typeof adjustedPrice === "string") {
+                  return this.normalizeSkioMoney(adjustedPrice, variant.price);
                 }
               }
 
@@ -1601,9 +1705,13 @@
             });
           },
 
-          shouldApplyFreeGift() {
-            const trigger = Number(this.settings.free_gift_trigger_count || 0);
-            return trigger > 0 && this.getTotalItemCount() >= trigger;
+          togglePurchaseMode() {
+            if (this.purchaseMode === "subscription") {
+              this.setPurchaseMode("one-time");
+              return;
+            }
+
+            this.setPurchaseMode("subscription");
           },
 
           buildDiscountProperties() {
@@ -1650,21 +1758,6 @@
               dynamicBoxIndex += 1;
             });
 
-            if (this.shouldApplyFreeGift() && this.freeGiftProducts.length) {
-              this.freeGiftProducts.forEach((gift) => {
-                items.push({
-                  id: gift.variantId,
-                  quantity: 1,
-                  properties: {
-                    ...properties,
-                    _ctr_bundle_gift: "true",
-                    [this.settings.gift_property_key || "_ctr_bundle_gift_key"]: this.settings.gift_property_value || "free-gift",
-                    _ctr_bundle_discount_type: "gift"
-                  }
-                });
-              });
-            }
-
             this.isAdding = true;
             this.emitAnalytics("bundle_add_to_cart_started", {
               itemCount: this.getTotalItemCount(),
@@ -1672,8 +1765,6 @@
               tier: this.getActiveTier().count,
               discountPropertyKey: this.settings.discount_property_key || "",
               discountPropertyValue: this.getActiveTier().propertyValue || "",
-              giftTriggered: this.shouldApplyFreeGift(),
-              giftVariantIds: this.freeGiftProducts.map((gift) => String(gift.variantId)),
               sellingPlanId: this.purchaseMode === "subscription" ? String(this.selectedSellingPlanId || "") : "",
               sellingPlanMode: this.settings.selling_plan_mode || "all"
             });
@@ -1685,7 +1776,6 @@
                   itemCount: this.getTotalItemCount(),
                   purchaseMode: this.purchaseMode,
                   tier: this.getActiveTier().count,
-                  giftTriggered: this.shouldApplyFreeGift(),
                   items: items.map((item) => ({
                     id: String(item.id),
                     quantity: item.quantity,
@@ -1825,46 +1915,6 @@
       "label": "CTA text",
       "default": "Add Bundle To Cart"
     },
-    {
-      "type": "header",
-      "content": "Free Gift"
-    },
-    {
-      "type": "range",
-      "id": "free_gift_trigger_count",
-      "label": "Free gift trigger item count",
-      "min": 0,
-      "max": 10,
-      "step": 1,
-      "default": 0
-    },
-    {
-      "type": "text",
-      "id": "gift_property_key",
-      "label": "Gift property key",
-      "default": "_ctr_bundle_gift"
-    },
-    {
-      "type": "text",
-      "id": "gift_property_value",
-      "label": "Gift property value",
-      "default": "free-gift"
-    },
-    {
-      "type": "product",
-      "id": "free_gift_product_1",
-      "label": "Free gift product 1"
-    },
-    {
-      "type": "product",
-      "id": "free_gift_product_2",
-      "label": "Free gift product 2"
-    },
-    {
-      "type": "product",
-      "id": "free_gift_product_3",
-      "label": "Free gift product 3"
-    }
   ],
   "blocks": [
     {
