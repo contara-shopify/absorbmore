@@ -280,6 +280,35 @@
     width: 100%;
   }
 
+  .ctr-bundle-card__option-toggle {
+    width: 100%;
+    display: flex;
+    padding: 4px;
+    border: 1px solid var(--ctr-border);
+    border-radius: 999px;
+    background: #fff;
+    gap: 4px;
+  }
+
+  .ctr-bundle-card__option-pill {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ctr-soft);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .ctr-bundle-card__option-pill.is-active {
+    background: #111;
+    color: #fff;
+  }
+
   .ctr-bundle-card__variant-select {
     width: 100%;
     border: 1px solid var(--ctr-border);
@@ -380,6 +409,115 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .ctr-bundle-builder__gift-card {
+    position: relative;
+    border: 1px solid var(--ctr-border);
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .ctr-bundle-builder__gift-card.is-unlocked {
+    border-color: #5dd6bf;
+    background: #f6fffc;
+  }
+
+  .ctr-bundle-builder__gift-card-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .ctr-bundle-builder__gift-card.is-locked .ctr-bundle-builder__gift-card-inner {
+    filter: blur(5px);
+    opacity: 0.7;
+  }
+
+  .ctr-bundle-builder__gift-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    border-radius: 999px;
+    background: #5dd6bf;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .ctr-bundle-builder__gift-card-media {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+  }
+
+  .ctr-bundle-builder__gift-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-builder__gift-card-title.is-accent {
+    color: var(--ctr-accent);
+  }
+
+  .ctr-bundle-builder__gift-card-subtitle {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__gift-card-price-row {
+    margin-top: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ctr-bundle-builder__gift-card-free {
+    color: var(--ctr-accent);
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__gift-card-compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+  }
+
+  .ctr-bundle-builder__gift-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .ctr-bundle-builder__gift-card-lock-copy {
+    color: var(--ctr-ink);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
+  .ctr-bundle-builder__gift-card-lock-copy .ctr-bundle-builder__helper-accent {
+    margin-left: 3px;
+  }
+
+  .ctr-bundle-builder__purchase-gift {
+    margin-top: 16px;
   }
 
   .ctr-bundle-builder__empty {
@@ -816,14 +954,25 @@
                   </div>
                 </div>
 
-                <template x-if="getVariantChoices(item.handle).length > 1">
+                <template x-if="getFirstOptionValues(item.handle).length > 1">
+                  <div class="ctr-bundle-card__option-toggle" role="tablist" aria-label="Product options">
+                    <template x-for="value in getFirstOptionValues(item.handle)" :key="`${item.handle}-${value}`">
+                      <button type="button"
+                              class="ctr-bundle-card__option-pill"
+                              :class="{ 'is-active': getActiveFirstOptionValue(item.handle) === value }"
+                              @click="setFirstOption(item.handle, value)"
+                              x-text="value"></button>
+                    </template>
+                  </div>
+                </template>
+
+                <template x-if="shouldShowVariantSelect(item.handle)">
                   <div class="ctr-bundle-card__variant-select-wrap">
                     <select class="ctr-bundle-card__variant-select"
                             :value="getSelectedVariant(item.handle)?.id || ''"
                             @change="setVariant(item.handle, $event.target.value)">
-                      <template x-for="variant in getVariantChoices(item.handle)" :key="variant.id">
+                      <template x-for="variant in getFilteredVariantChoices(item.handle)" :key="variant.id">
                         <option :value="variant.id"
-                                :disabled="!variant.available"
                                 x-text="variant.title"></option>
                       </template>
                     </select>
@@ -919,6 +1068,32 @@
       </template>
     </div>
 
+    <div class="ctr-bundle-builder__gift-card"
+         x-show="getGiftProduct()"
+         :class="{ 'is-unlocked': isGiftUnlocked(getGiftProduct()), 'is-locked': !isGiftUnlocked(getGiftProduct()) }">
+      <div class="ctr-bundle-builder__gift-card-badge" x-show="isGiftUnlocked(getGiftProduct())">FREE GIFT</div>
+      <div class="ctr-bundle-builder__gift-card-inner">
+        <img class="ctr-bundle-builder__gift-card-media"
+             :src="getGiftProduct()?.image || ''"
+             :alt="getGiftProduct()?.title || 'Free gift'"
+             loading="lazy"
+             width="62"
+             height="62">
+        <div>
+          <div class="ctr-bundle-builder__gift-card-title"
+               x-text="getGiftProduct()?.title || ''"></div>
+          <div class="ctr-bundle-builder__gift-card-price-row">
+            <span class="ctr-bundle-builder__gift-card-free" x-show="isGiftUnlocked(getGiftProduct())">FREE</span>
+            <span class="ctr-bundle-builder__gift-card-compare"
+                  x-text="formatMoney(getGiftComparePrice(getGiftProduct()))"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ctr-bundle-builder__gift-card-overlay" x-show="!isGiftUnlocked(getGiftProduct())">
+        <div class="ctr-bundle-builder__gift-card-lock-copy" x-html="getGiftUnlockCopy(getGiftProduct())"></div>
+      </div>
+    </div>
+
     <div class="ctr-bundle-builder__purchase-box">
       <div class="ctr-bundle-builder__purchase-option"
            :class="{ 'is-active': purchaseMode === 'subscription' }">
@@ -955,6 +1130,33 @@
             <option :value="plan.id" x-text="plan.name"></option>
           </template>
         </select>
+
+        <div class="ctr-bundle-builder__purchase-gift" x-show="purchaseMode === 'subscription'">
+          <div class="ctr-bundle-builder__gift-card"
+               x-show="getGiftProduct()"
+               :class="{ 'is-unlocked': isGiftUnlocked(getGiftProduct()), 'is-locked': !isGiftUnlocked(getGiftProduct()) }">
+            <div class="ctr-bundle-builder__gift-card-inner">
+              <img class="ctr-bundle-builder__gift-card-media"
+                   :src="getGiftProduct()?.image || ''"
+                   :alt="getGiftProduct()?.title || 'Free gift'"
+                   loading="lazy"
+                   width="62"
+                   height="62">
+              <div>
+                <div class="ctr-bundle-builder__gift-card-title is-accent"
+                     x-text="`FREE ${getGiftProduct()?.title || ''}`"></div>
+                <div class="ctr-bundle-builder__gift-card-subtitle">On First Order</div>
+                <div class="ctr-bundle-builder__gift-card-price-row">
+                  <span class="ctr-bundle-builder__gift-card-compare"
+                        x-text="formatMoney(getGiftComparePrice(getGiftProduct()))"></span>
+                </div>
+              </div>
+            </div>
+            <div class="ctr-bundle-builder__gift-card-overlay" x-show="!isGiftUnlocked(getGiftProduct())">
+              <div class="ctr-bundle-builder__gift-card-lock-copy" x-html="getGiftUnlockCopy(getGiftProduct())"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1022,6 +1224,37 @@
     {% endif %}
   </script>
 
+  <script type="application/json" data-ctr-gift-products>
+    [{% liquid
+      assign printed_gift = false
+      for block in section.blocks
+        if block.type == 'gift' and block.settings.product != blank
+          if printed_gift
+            echo ','
+          endif
+          assign printed_gift = true
+          echo '{"key":'
+          echo block.id | json
+          echo ',"title":'
+          echo block.settings.product.title | json
+          echo ',"handle":'
+          echo block.settings.product.handle | json
+          echo ',"image":'
+          echo block.settings.product.featured_image | image_url: width: 160 | json
+          echo ',"price":'
+          echo block.settings.product.selected_or_first_available_variant.price | json
+          echo ',"compare_at_price":'
+          echo block.settings.product.selected_or_first_available_variant.compare_at_price | default: block.settings.product.selected_or_first_available_variant.price | json
+          echo ',"unlock_count":'
+          echo block.settings.unlock_count | default: 2 | json
+          echo ',"property_value":'
+          echo block.settings.property_value | json
+          echo '}'
+        endif
+      endfor
+    %}]
+  </script>
+
   <script>
     if (!window._sections.initCtrBundleBuilder) {
       window._sections.initCtrBundleBuilder = function ($el) {
@@ -1044,9 +1277,11 @@
           skioBox: null,
           sellingPlans: [],
           subscriptionProduct: null,
+          giftProducts: [],
 
           async init() {
             this.subscriptionProduct = this.parseSubscriptionProduct();
+            this.giftProducts = this.parseGiftProducts();
             console.info("Subscription Product", this.subscriptionProduct);
             await this.loadBundleProducts();
             this.refreshSellingPlans();
@@ -1055,6 +1290,11 @@
           parseSubscriptionProduct() {
             const script = $el.querySelector("[data-ctr-subscription-product]");
             return script ? JSON.parse(script.textContent || "null") : null;
+          },
+
+          parseGiftProducts() {
+            const script = $el.querySelector("[data-ctr-gift-products]");
+            return script ? JSON.parse(script.textContent || "[]") : [];
           },
 
           getNumericIdFromGid(gid) {
@@ -1211,6 +1451,35 @@
             }));
           },
 
+          getGiftProducts() {
+            return [...(this.giftProducts || [])];
+          },
+
+          getGiftProduct() {
+            return this.getGiftProducts()[0] || null;
+          },
+
+          getGiftUnlockCount(gift) {
+            return Math.max(Number(gift?.unlock_count || 2), 1);
+          },
+
+          isGiftUnlocked(gift) {
+            return this.getTotalItemCount() >= this.getGiftUnlockCount(gift);
+          },
+
+          getGiftRemainingCount(gift) {
+            return Math.max(this.getGiftUnlockCount(gift) - this.getTotalItemCount(), 0);
+          },
+
+          getGiftComparePrice(gift) {
+            return Number(gift?.compare_at_price || gift?.price || 0);
+          },
+
+          getGiftUnlockCopy(gift) {
+            const remaining = this.getGiftRemainingCount(gift);
+            return `Add ${remaining} more product${remaining === 1 ? "" : "s"} to unlock <span class="ctr-bundle-builder__helper-accent">another free gift</span>.`;
+          },
+
           handleize(value) {
             return String(value || "")
               .trim()
@@ -1315,6 +1584,48 @@
             return variants.length ? variants : product.variants;
           },
 
+          getVariantFirstOptionValue(variant) {
+            return variant?.options?.[0] || variant?.option1 || "";
+          },
+
+          getFirstOptionValues(handle) {
+            const values = [];
+
+            this.getVariantChoices(handle).forEach((variant) => {
+              const value = this.getVariantFirstOptionValue(variant);
+              if (value && !values.includes(value)) {
+                values.push(value);
+              }
+            });
+
+            return values;
+          },
+
+          getActiveFirstOptionValue(handle) {
+            const selectedVariant = this.getSelectedVariant(handle);
+            const selectedValue = this.getVariantFirstOptionValue(selectedVariant);
+
+            if (selectedValue) return selectedValue;
+
+            return this.getFirstOptionValues(handle)[0] || "";
+          },
+
+          getFilteredVariantChoices(handle) {
+            const variants = this.getVariantChoices(handle);
+            const activeFirstOption = this.getActiveFirstOptionValue(handle);
+            const matchingVariants = activeFirstOption
+              ? variants.filter((variant) => this.getVariantFirstOptionValue(variant) === activeFirstOption)
+              : variants;
+            const availableVariants = matchingVariants.filter((variant) => variant.available);
+
+            return availableVariants.length ? availableVariants : matchingVariants;
+          },
+
+          shouldShowVariantSelect(handle) {
+            const availableVariants = this.getFilteredVariantChoices(handle).filter((variant) => variant.available);
+            return availableVariants.length > 1;
+          },
+
           getSelectedVariant(handle) {
             const product = this.getProductState(handle);
             if (!product) return null;
@@ -1322,6 +1633,33 @@
             const selected = this.selectedMap.get(handle);
             const selectedVariantId = selected?.variantId || product.selected_variant_id;
             return product.variants.find((variant) => String(variant.id) === String(selectedVariantId)) || product.variants[0] || null;
+          },
+
+          setFirstOption(handle, value) {
+            const current = this.selectedMap.get(handle) || { quantity: 0 };
+            const matchingVariants = this.getVariantChoices(handle).filter((variant) => {
+              return this.getVariantFirstOptionValue(variant) === value;
+            });
+
+            if (!matchingVariants.length) return;
+
+            const currentVariant = this.getSelectedVariant(handle);
+            const nextVariant = matchingVariants.find((variant) => {
+              return String(variant.id) === String(currentVariant?.id) && variant.available;
+            }) || matchingVariants.find((variant) => variant.available) || matchingVariants[0];
+
+            this.selectedMap.set(handle, {
+              ...current,
+              variantId: String(nextVariant.id)
+            });
+
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.emitAnalytics("variant_option_changed", {
+              handle,
+              optionValue: value,
+              variantId: String(nextVariant.id)
+            });
           },
 
           getProductBadge(handle) {
@@ -1653,7 +1991,9 @@
 
           getSelectedItems() {
             const activeTier = this.getActiveTier();
-            return [...this.selectedMap.entries()].map(([handle, value]) => {
+            return [...this.selectedMap.entries()]
+              .filter(([, value]) => Number(value?.quantity || 0) > 0)
+              .map(([handle, value]) => {
               const product = this.getProductState(handle);
               const variant = this.getSelectedVariant(handle);
               const unitPrice = this.getDisplayUnitPriceForMode(handle, this.purchaseMode);
@@ -1700,7 +2040,6 @@
             this.purchaseMode = mode;
             this.emitAnalytics("purchase_mode_changed", {
               mode,
-              sellingPlanMode: this.settings.selling_plan_mode || "all",
               availableSellingPlanCount: this.sellingPlans.length
             });
           },
@@ -1737,7 +2076,7 @@
 
             this.selectedMap.forEach((value, handle) => {
               const variant = this.getSelectedVariant(handle);
-              if (!variant) return;
+              if (!variant || Number(value?.quantity || 0) < 1) return;
 
               const item = {
                 id: variant.id,
@@ -1765,8 +2104,7 @@
               tier: this.getActiveTier().count,
               discountPropertyKey: this.settings.discount_property_key || "",
               discountPropertyValue: this.getActiveTier().propertyValue || "",
-              sellingPlanId: this.purchaseMode === "subscription" ? String(this.selectedSellingPlanId || "") : "",
-              sellingPlanMode: this.settings.selling_plan_mode || "all"
+              sellingPlanId: this.purchaseMode === "subscription" ? String(this.selectedSellingPlanId || "") : ""
             });
 
             try {
@@ -1822,6 +2160,7 @@
 {% schema %}
 {
   "name": "CTR Bundle Builder",
+  "max_blocks": 1,
   "settings": [
     {
       "type": "text",
@@ -1883,22 +2222,6 @@
       "label": "Subscription rich text"
     },
     {
-      "type": "select",
-      "id": "selling_plan_mode",
-      "label": "Selling plan availability",
-      "default": "all",
-      "options": [
-        {
-          "value": "all",
-          "label": "All selling plans"
-        },
-        {
-          "value": "shared",
-          "label": "Only shared selling plans"
-        }
-      ]
-    },
-    {
       "type": "product",
       "id": "main_bundle_product",
       "label": "Subscription Product"
@@ -1918,19 +2241,46 @@
   ],
   "blocks": [
     {
-      "type": "product_group",
-      "name": "Product Group",
+      "type": "gift",
+      "name": "Add Gift",
       "settings": [
         {
-          "type": "text",
-          "id": "title",
-          "label": "Group title",
-          "default": "Powders"
+          "type": "product",
+          "id": "product",
+          "label": "Gift product"
         },
         {
-          "type": "product_list",
-          "id": "products",
-          "label": "Products"
+          "type": "select",
+          "id": "unlock_count",
+          "label": "Unlock when bundle has",
+          "default": "2",
+          "options": [
+            {
+              "value": "1",
+              "label": "1 product"
+            },
+            {
+              "value": "2",
+              "label": "2 products"
+            },
+            {
+              "value": "3",
+              "label": "3 products"
+            },
+            {
+              "value": "4",
+              "label": "4 products"
+            },
+            {
+              "value": "5",
+              "label": "5 products"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "property_value",
+          "label": "Property value"
         }
       ]
     }
