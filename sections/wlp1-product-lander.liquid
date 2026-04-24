@@ -1,28 +1,20 @@
 {% comment %} WLP-1 Product Landing Page — evergreen, top-of-funnel {% endcomment %}
 
 <style>
-  /* Body */
-body {
-  margin: 0;
-  padding: 0;
-}
-
-/* Hide header and footer */
-header,
-footer {
-  display: none;
-}
   #wea-root{--cream:#EAE6DC;--page:#F8F5F2;--ink:#1A1A18;--ink-60:rgba(26,26,24,.62);--ink-40:rgba(26,26,24,.4);--ink-10:rgba(26,26,24,.1);--blue:#5e91d5;--blue-dk:#4a7dbe;--blue-tint:#e8f0fb;--maroon:#8a2f3f;--maroon-dk:#6f2433;--maroon-tint:#f5e9ec;--card:#ffffff;--radius:14px;--shadow:0 1px 2px rgba(26,26,24,.04),0 8px 24px rgba(26,26,24,.06);color:var(--ink);background:var(--page);line-height:1.55;-webkit-font-smoothing:antialiased}
   #wea-root *{box-sizing:border-box}
   #wea-root .serif{font-weight:500;letter-spacing:-.01em}
   #wea-root .eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
   #wea-root .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 
-  /* Trust bar */
-  #wea-root .trustbar{background:var(--ink);color:#fff;padding:12px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
-  #wea-root .tb-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap}
-  #wea-root .tb-item{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.82)}
-  #wea-root .tb-item svg{flex-shrink:0;color:var(--blue)}
+  /* Top bar */
+  #wea-root .topbar{background:var(--ink);color:#fff;padding:14px 24px}
+  #wea-root .topbar-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+  #wea-root .topbar-brand{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+  #wea-root .topbar-link{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+  #wea-root .topbar-link:hover{color:var(--blue)}
+  #wea-root .topbar-link svg{transition:transform .2s}
+  #wea-root .topbar-link:hover svg{transform:translateX(3px)}
 
   /* PDP section */
   #wea-root .pdp{background:var(--page);padding:72px 0 72px}
@@ -274,9 +266,8 @@ footer {
     #wea-root .calc-body{grid-template-columns:1fr}
     #wea-root .calc-inputs{border-right:0;border-bottom:1px solid var(--ink-10)}
     #wea-root .prod-grid{grid-template-columns:1fr}
-    #wea-root .trustbar{padding:10px 16px}
-    #wea-root .tb-inner{gap:18px}
-    #wea-root .tb-item{font-size:10px;letter-spacing:.06em}
+    #wea-root .topbar{padding:12px 16px}
+    #wea-root .topbar-brand{font-size:11px}
     #wea-root .pdp{padding:40px 0 48px}
     #wea-root .pdp-grid{grid-template-columns:1fr;gap:32px}
     #wea-root .pdp-title{font-size:32px}
@@ -286,32 +277,14 @@ footer {
 
 <div id="wea-root">
 
-  {% comment %} TRUST BAR {% endcomment %}
-  {%- capture tb_icon_shield -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z"/></svg>{%- endcapture -%}
-  {%- capture tb_icon_noneedle -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>{%- endcapture -%}
-  {%- capture tb_icon_check -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{%- endcapture -%}
-  {%- capture tb_icon_truck -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>{%- endcapture -%}
-  {%- capture tb_icon_leaf -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96c1.4 9.87-2.39 15.03-8.2 17.04z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>{%- endcapture -%}
-  {%- capture tb_icon_star -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{%- endcapture -%}
-  <div class="trustbar">
-    <div class="tb-inner">
-      {%- for i in (1..4) -%}
-        {%- assign icon_key = 'tb' | append: i | append: '_icon' -%}
-        {%- assign label_key = 'tb' | append: i | append: '_label' -%}
-        {%- case section.settings[icon_key] -%}
-          {%- when 'shield' -%}{%- assign icon_svg = tb_icon_shield -%}
-          {%- when 'noneedle' -%}{%- assign icon_svg = tb_icon_noneedle -%}
-          {%- when 'check' -%}{%- assign icon_svg = tb_icon_check -%}
-          {%- when 'truck' -%}{%- assign icon_svg = tb_icon_truck -%}
-          {%- when 'leaf' -%}{%- assign icon_svg = tb_icon_leaf -%}
-          {%- when 'star' -%}{%- assign icon_svg = tb_icon_star -%}
-          {%- else -%}{%- assign icon_svg = tb_icon_check -%}
-        {%- endcase -%}
-        {%- assign label_val = section.settings[label_key] -%}
-        {%- if label_val != blank -%}
-          <div class="tb-item">{{ icon_svg }}{{ label_val }}</div>
-        {%- endif -%}
-      {%- endfor -%}
+  {% comment %} TOP BAR {% endcomment %}
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">{{ section.settings.topbar_brand | default: 'The Absorption Company' }}</div>
+      <a href="{{ section.settings.topbar_link_url | default: '/products/wlp-1' }}" class="topbar-link">
+        {{ section.settings.topbar_link_text | default: 'Shop WLP-1™' }}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 
@@ -366,22 +339,64 @@ footer {
     </div>
   </section>
 
-  {% comment %} CLINICAL PROOF {% endcomment %}
-  <section class="sec proof">
+
+{% comment %} HOW IT WORKS / 3 PATHWAYS {% endcomment %}
+  {%- capture pw_icon_bolt -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>{%- endcapture -%}
+  {%- capture pw_icon_smile -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>{%- endcapture -%}
+  {%- capture pw_icon_flame -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>{%- endcapture -%}
+  {%- capture pw_icon_pulse -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>{%- endcapture -%}
+  {%- capture pw_icon_drop -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>{%- endcapture -%}
+  <section class="sec overview">
     <div class="wrap">
-      {%- if section.settings.proof_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.proof_eyebrow }}</div>{%- endif -%}
-      <h2 class="serif">{{ section.settings.proof_heading }}</h2>
-      {%- if section.settings.proof_lede != blank -%}<p class="lede">{{ section.settings.proof_lede }}</p>{%- endif -%}
-      <div class="proof-stack">
+      <div class="overview-head">
+        {%- if section.settings.ov_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.ov_eyebrow }}</div>{%- endif -%}
+        <h2 class="serif">{{ section.settings.ov_heading }}</h2>
+        {%- if section.settings.ov_lede != blank -%}<p class="lede">{{ section.settings.ov_lede }}</p>{%- endif -%}
+      </div>
+      <div class="pathways-grid">
         {%- for i in (1..3) -%}
-          {%- assign quote_key = 'proof' | append: i | append: '_quote' -%}
-          {%- assign source_key = 'proof' | append: i | append: '_source' -%}
-          {%- assign quote_val = section.settings[quote_key] -%}
-          {%- assign source_val = section.settings[source_key] -%}
-          {%- if quote_val != blank -%}
-            <div class="proof-card">
-              <p class="proof-quote">{{ quote_val }}</p>
-              {%- if source_val != blank -%}<div class="proof-source">{{ source_val }}</div>{%- endif -%}
+          {%- assign num_key = 'pw' | append: i | append: '_num' -%}
+          {%- assign icon_key = 'pw' | append: i | append: '_icon' -%}
+          {%- assign title_key = 'pw' | append: i | append: '_title' -%}
+          {%- assign desc_key = 'pw' | append: i | append: '_desc' -%}
+          {%- assign stat_num_key = 'pw' | append: i | append: '_stat_num' -%}
+          {%- assign stat_txt_key = 'pw' | append: i | append: '_stat_text' -%}
+          {%- case section.settings[icon_key] -%}
+            {%- when 'bolt' -%}{%- assign pw_icon = pw_icon_bolt -%}
+            {%- when 'smile' -%}{%- assign pw_icon = pw_icon_smile -%}
+            {%- when 'flame' -%}{%- assign pw_icon = pw_icon_flame -%}
+            {%- when 'pulse' -%}{%- assign pw_icon = pw_icon_pulse -%}
+            {%- when 'drop' -%}{%- assign pw_icon = pw_icon_drop -%}
+            {%- else -%}{%- assign pw_icon = pw_icon_bolt -%}
+          {%- endcase -%}
+          <div class="pw-card">
+            <div class="pw-num">{{ section.settings[num_key] }}</div>
+            <div class="pw-icon">{{ pw_icon }}</div>
+            <h3 class="pw-t serif">{{ section.settings[title_key] }}</h3>
+            <p class="pw-d">{{ section.settings[desc_key] }}</p>
+            <div class="pw-stat"><b>{{ section.settings[stat_num_key] }}</b>{{ section.settings[stat_txt_key] }}</div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+
+{% comment %} BEST FOR / IS THIS FOR YOU {% endcomment %}
+  <section class="sec bestfor">
+    <div class="wrap">
+      {%- if section.settings.bf_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.bf_eyebrow }}</div>{%- endif -%}
+      <h2 class="serif">{{ section.settings.bf_heading }}</h2>
+      {%- if section.settings.bf_lede != blank -%}<p class="lede">{{ section.settings.bf_lede }}</p>{%- endif -%}
+      <div class="bestfor-grid">
+        {%- for i in (1..6) -%}
+          {%- assign t_key = 'bf' | append: i | append: '_title' -%}
+          {%- assign d_key = 'bf' | append: i | append: '_desc' -%}
+          {%- assign t_val = section.settings[t_key] -%}
+          {%- if t_val != blank -%}
+            <div class="bf-card">
+              <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="bf-t">{{ t_val }}</div><div class="bf-d">{{ section.settings[d_key] }}</div></div>
             </div>
           {%- endif -%}
         {%- endfor -%}
@@ -389,7 +404,10 @@ footer {
     </div>
   </section>
 
-  {% comment %} PDP BUY BLOCK {% endcomment %}
+
+
+
+{% comment %} PDP BUY BLOCK {% endcomment %}
   <section class="pdp">
     <div class="wrap pdp-grid">
       <div class="pdp-gallery">
@@ -453,47 +471,30 @@ footer {
     </div>
   </section>
 
-
-  {% comment %} HOW IT WORKS / 3 PATHWAYS {% endcomment %}
-  {%- capture pw_icon_bolt -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>{%- endcapture -%}
-  {%- capture pw_icon_smile -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>{%- endcapture -%}
-  {%- capture pw_icon_flame -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>{%- endcapture -%}
-  {%- capture pw_icon_pulse -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>{%- endcapture -%}
-  {%- capture pw_icon_drop -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>{%- endcapture -%}
-  <section class="sec overview">
+{% comment %} CLINICAL PROOF {% endcomment %}
+  <section class="sec proof">
     <div class="wrap">
-      <div class="overview-head">
-        {%- if section.settings.ov_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.ov_eyebrow }}</div>{%- endif -%}
-        <h2 class="serif">{{ section.settings.ov_heading }}</h2>
-        {%- if section.settings.ov_lede != blank -%}<p class="lede">{{ section.settings.ov_lede }}</p>{%- endif -%}
-      </div>
-      <div class="pathways-grid">
+      {%- if section.settings.proof_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.proof_eyebrow }}</div>{%- endif -%}
+      <h2 class="serif">{{ section.settings.proof_heading }}</h2>
+      {%- if section.settings.proof_lede != blank -%}<p class="lede">{{ section.settings.proof_lede }}</p>{%- endif -%}
+      <div class="proof-stack">
         {%- for i in (1..3) -%}
-          {%- assign num_key = 'pw' | append: i | append: '_num' -%}
-          {%- assign icon_key = 'pw' | append: i | append: '_icon' -%}
-          {%- assign title_key = 'pw' | append: i | append: '_title' -%}
-          {%- assign desc_key = 'pw' | append: i | append: '_desc' -%}
-          {%- assign stat_num_key = 'pw' | append: i | append: '_stat_num' -%}
-          {%- assign stat_txt_key = 'pw' | append: i | append: '_stat_text' -%}
-          {%- case section.settings[icon_key] -%}
-            {%- when 'bolt' -%}{%- assign pw_icon = pw_icon_bolt -%}
-            {%- when 'smile' -%}{%- assign pw_icon = pw_icon_smile -%}
-            {%- when 'flame' -%}{%- assign pw_icon = pw_icon_flame -%}
-            {%- when 'pulse' -%}{%- assign pw_icon = pw_icon_pulse -%}
-            {%- when 'drop' -%}{%- assign pw_icon = pw_icon_drop -%}
-            {%- else -%}{%- assign pw_icon = pw_icon_bolt -%}
-          {%- endcase -%}
-          <div class="pw-card">
-            <div class="pw-num">{{ section.settings[num_key] }}</div>
-            <div class="pw-icon">{{ pw_icon }}</div>
-            <h3 class="pw-t serif">{{ section.settings[title_key] }}</h3>
-            <p class="pw-d">{{ section.settings[desc_key] }}</p>
-            <div class="pw-stat"><b>{{ section.settings[stat_num_key] }}</b>{{ section.settings[stat_txt_key] }}</div>
-          </div>
+          {%- assign quote_key = 'proof' | append: i | append: '_quote' -%}
+          {%- assign source_key = 'proof' | append: i | append: '_source' -%}
+          {%- assign quote_val = section.settings[quote_key] -%}
+          {%- assign source_val = section.settings[source_key] -%}
+          {%- if quote_val != blank -%}
+            <div class="proof-card">
+              <p class="proof-quote">{{ quote_val }}</p>
+              {%- if source_val != blank -%}<div class="proof-source">{{ source_val }}</div>{%- endif -%}
+            </div>
+          {%- endif -%}
         {%- endfor -%}
       </div>
     </div>
   </section>
+
+
 
   {% comment %} FOURTH PATHWAY / BERBERINE {% endcomment %}
   <section class="fourth">
@@ -529,28 +530,7 @@ footer {
     </div>
   </section>
 
-  {% comment %} BEST FOR / IS THIS FOR YOU {% endcomment %}
-  <section class="sec bestfor">
-    <div class="wrap">
-      {%- if section.settings.bf_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.bf_eyebrow }}</div>{%- endif -%}
-      <h2 class="serif">{{ section.settings.bf_heading }}</h2>
-      {%- if section.settings.bf_lede != blank -%}<p class="lede">{{ section.settings.bf_lede }}</p>{%- endif -%}
-      <div class="bestfor-grid">
-        {%- for i in (1..6) -%}
-          {%- assign t_key = 'bf' | append: i | append: '_title' -%}
-          {%- assign d_key = 'bf' | append: i | append: '_desc' -%}
-          {%- assign t_val = section.settings[t_key] -%}
-          {%- if t_val != blank -%}
-            <div class="bf-card">
-              <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <div><div class="bf-t">{{ t_val }}</div><div class="bf-d">{{ section.settings[d_key] }}</div></div>
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
-    </div>
-  </section>
-
+  
   {% comment %} TIMELINE / FIRST 90 DAYS {% endcomment %}
   <section class="sec timeline">
     <div class="wrap">
@@ -821,265 +801,1045 @@ footer {
 {
   "name": "WLP-1 Product Lander",
   "settings": [
-
-    { "type": "header", "content": "TRUST BAR" },
-    { "type": "paragraph", "content": "4 items shown above the hero. Leave label blank to hide an item." },
-    { "type": "select", "id": "tb1_icon", "label": "Item 1 icon", "default": "shield",
+    {
+      "type": "header",
+      "content": "TOP BAR"
+    },
+    {
+      "type": "text",
+      "id": "topbar_brand",
+      "label": "Brand name (left side)",
+      "default": "The Absorption Company"
+    },
+    {
+      "type": "text",
+      "id": "topbar_link_text",
+      "label": "Link text (right side)",
+      "default": "Shop WLP-1™"
+    },
+    {
+      "type": "url",
+      "id": "topbar_link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "PDP BUY BLOCK"
+    },
+    {
+      "type": "paragraph",
+      "content": "Main product card that sits after the clinical proof section. Upload 1–4 gallery images."
+    },
+    {
+      "type": "image_picker",
+      "id": "pdp_image_1",
+      "label": "Main image (also thumbnail 1)"
+    },
+    {
+      "type": "text",
+      "id": "pdp_thumb_1_label",
+      "label": "Thumbnail 1 label",
+      "default": "Bottle"
+    },
+    {
+      "type": "image_picker",
+      "id": "pdp_image_2",
+      "label": "Thumbnail 2 image"
+    },
+    {
+      "type": "text",
+      "id": "pdp_thumb_2_label",
+      "label": "Thumbnail 2 label",
+      "default": "Capsule"
+    },
+    {
+      "type": "image_picker",
+      "id": "pdp_image_3",
+      "label": "Thumbnail 3 image"
+    },
+    {
+      "type": "text",
+      "id": "pdp_thumb_3_label",
+      "label": "Thumbnail 3 label",
+      "default": "Facts"
+    },
+    {
+      "type": "image_picker",
+      "id": "pdp_image_4",
+      "label": "Thumbnail 4 image"
+    },
+    {
+      "type": "text",
+      "id": "pdp_thumb_4_label",
+      "label": "Thumbnail 4 label",
+      "default": "Lifestyle"
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_show_badge",
+      "label": "Show corner badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pdp_badge_text",
+      "label": "Corner badge text",
+      "default": "New"
+    },
+    {
+      "type": "text",
+      "id": "pdp_eyebrow",
+      "label": "Eyebrow",
+      "default": "The Absorption Company"
+    },
+    {
+      "type": "text",
+      "id": "pdp_title",
+      "label": "Product title",
+      "default": "WLP-1™"
+    },
+    {
+      "type": "textarea",
+      "id": "pdp_subtitle",
+      "label": "Subtitle",
+      "default": "Oral GLP-1 biomimetic for weight management. One capsule, three metabolic pathways."
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_show_rating",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pdp_rating_score",
+      "label": "Rating score",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "pdp_rating_count",
+      "label": "Review count text",
+      "default": "1,200+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "pdp_price",
+      "label": "Price",
+      "default": "$79"
+    },
+    {
+      "type": "text",
+      "id": "pdp_price_meta",
+      "label": "Price meta line",
+      "default": "30-day supply · One capsule daily"
+    },
+    {
+      "type": "text",
+      "id": "pdp_bullet_1",
+      "label": "Bullet 1",
+      "default": "Supports 3 metabolic pathways: GLP-1 activity, appetite signaling, and thermogenesis"
+    },
+    {
+      "type": "text",
+      "id": "pdp_bullet_2",
+      "label": "Bullet 2 — use <b>word</b> bold, <em>word</em> for stat",
+      "default": "Engineered with advanced absorption technology for 20x better bioavailability"
+    },
+    {
+      "type": "text",
+      "id": "pdp_bullet_3",
+      "label": "Bullet 3 — use <b>word</b> bold, <em>word</em> for stat",
+      "default": "Clinically backed ingredients including IGOB131®, CQR-300™, and Capsifen™"
+    },
+    {
+      "type": "text",
+      "id": "pdp_bullet_4",
+      "label": "Bullet 4",
+      "default": "No needles, no prescriptions, no harsh stimulants"
+    },
+    {
+      "type": "text",
+      "id": "pdp_cta_text",
+      "label": "CTA button text",
+      "default": "Shop WLP-1™"
+    },
+    {
+      "type": "url",
+      "id": "pdp_cta_url",
+      "label": "CTA button URL"
+    },
+    {
+      "type": "text",
+      "id": "pdp_assurance",
+      "label": "Assurance line (under CTA)",
+      "default": "Free shipping over $75 · 60-day money-back guarantee"
+    },
+    {
+      "type": "header",
+      "content": "EDITORIAL HERO"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "Introducing WLP-1™"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_heading",
+      "label": "Heading (use <em>word</em> for italic/blue)",
+      "default": "The GLP-1 support you've been waiting for, <em>in a capsule.</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_body",
+      "label": "Body copy",
+      "default": "An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_text",
+      "label": "CTA button text",
+      "default": "Shop WLP-1™"
+    },
+    {
+      "type": "url",
+      "id": "hero_cta_url",
+      "label": "CTA button URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_bullet_1",
+      "label": "Bullet 1 — use <b>word</b> bold, <em>word</em> for stat",
+      "default": "<b>Quiet cravings and feel full longer</b> <em>Clinically shown to reduce eating by 17.5%</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_bullet_2",
+      "label": "Bullet 2 — use <b>word</b> bold, <em>word</em> for stat",
+      "default": "<b>Lose without the needles or prescriptions</b> <em>Up to 321% increase in natural GLP-1</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_bullet_3",
+      "label": "Bullet 3 — use <b>word</b> bold, <em>word</em> for stat",
+      "default": "<b>Burn more, even at rest</b> <em>Up to 20% reduction in body fat in studies</em>"
+    },
+    {
+      "type": "checkbox",
+      "id": "hero_show_new_badge",
+      "label": "Show spinning 'NEW' badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_new_badge_text",
+      "label": "Badge text",
+      "default": "NEW"
+    },
+    {
+      "type": "header",
+      "content": "CLAIMS STRIP (black bar with 4 stats)"
+    },
+    {
+      "type": "text",
+      "id": "claim1_num",
+      "label": "Claim 1 number",
+      "default": "20x"
+    },
+    {
+      "type": "text",
+      "id": "claim1_text",
+      "label": "Claim 1 text",
+      "default": "Better absorption through our advanced delivery science"
+    },
+    {
+      "type": "text",
+      "id": "claim2_num",
+      "label": "Claim 2 number",
+      "default": "3"
+    },
+    {
+      "type": "text",
+      "id": "claim2_text",
+      "label": "Claim 2 text",
+      "default": "Metabolic pathways: cravings, fullness, calories burned"
+    },
+    {
+      "type": "text",
+      "id": "claim3_num",
+      "label": "Claim 3 number",
+      "default": "0"
+    },
+    {
+      "type": "text",
+      "id": "claim3_text",
+      "label": "Claim 3 text",
+      "default": "Needles, prescriptions, or harsh stimulants required"
+    },
+    {
+      "type": "text",
+      "id": "claim4_num",
+      "label": "Claim 4 number",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "claim4_text",
+      "label": "Claim 4 text",
+      "default": "Third-party tested and formulated to the highest quality standards"
+    },
+    {
+      "type": "header",
+      "content": "CLINICAL PROOF (3 study cards)"
+    },
+    {
+      "type": "text",
+      "id": "proof_eyebrow",
+      "label": "Eyebrow",
+      "default": "The Results"
+    },
+    {
+      "type": "text",
+      "id": "proof_heading",
+      "label": "Heading",
+      "default": "What the ingredient trials found"
+    },
+    {
+      "type": "textarea",
+      "id": "proof_lede",
+      "label": "Lede paragraph",
+      "default": "The ingredients used in WLP-1™ have been studied in human clinical trials. Here's what the research reported on those individual ingredients."
+    },
+    {
+      "type": "textarea",
+      "id": "proof1_quote",
+      "label": "Card 1 quote (HTML allowed — use <b>word</b> for bold)",
+      "default": "\"<b>28.1 lbs lost</b> and <b>6.7 inches</b> off the waist. No changes to diet or exercise were required during the study.\""
+    },
+    {
+      "type": "text",
+      "id": "proof1_source",
+      "label": "Card 1 source",
+      "default": "<b>IGOB131® clinical trial</b> · Double-blind, placebo-controlled. BMI 26+."
+    },
+    {
+      "type": "textarea",
+      "id": "proof2_quote",
+      "label": "Card 2 quote",
+      "default": "\"Participants ate <b>17.5% less</b> and reported feeling <b>27.4% more full</b> after meals.\""
+    },
+    {
+      "type": "text",
+      "id": "proof2_source",
+      "label": "Card 2 source",
+      "default": "<b>CQR-300™ randomized controlled trial</b> · Medicina, 2020."
+    },
+    {
+      "type": "textarea",
+      "id": "proof3_quote",
+      "label": "Card 3 quote",
+      "default": "\"<b>4 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups.\""
+    },
+    {
+      "type": "text",
+      "id": "proof3_source",
+      "label": "Card 3 source",
+      "default": "<b>Capsifen™ clinical study</b> · Journal of Dietary Supplements."
+    },
+    {
+      "type": "header",
+      "content": "HOW IT WORKS (3 pathway cards)"
+    },
+    {
+      "type": "text",
+      "id": "ov_eyebrow",
+      "label": "Eyebrow",
+      "default": "How It Works"
+    },
+    {
+      "type": "text",
+      "id": "ov_heading",
+      "label": "Heading",
+      "default": "Three metabolic pathways. One daily capsule."
+    },
+    {
+      "type": "textarea",
+      "id": "ov_lede",
+      "label": "Lede",
+      "default": "Most weight management products hit one lever. WLP-1™ supports three: the same biological systems targeted by injectable GLP-1 approaches, delivered orally through our proprietary absorption technology."
+    },
+    {
+      "type": "text",
+      "id": "pw1_num",
+      "label": "Card 1 category label",
+      "default": "01 / GLP-1"
+    },
+    {
+      "type": "select",
+      "id": "pw1_icon",
+      "label": "Card 1 icon",
+      "default": "bolt",
       "options": [
-        { "value": "shield", "label": "Shield / Tested" },
-        { "value": "noneedle", "label": "No Needle" },
-        { "value": "check", "label": "Checkmark" },
-        { "value": "truck", "label": "Shipping Truck" },
-        { "value": "leaf", "label": "Leaf / Natural" },
-        { "value": "star", "label": "Star / Rating" }
+        {
+          "value": "bolt",
+          "label": "Lightning Bolt"
+        },
+        {
+          "value": "smile",
+          "label": "Smile / Face"
+        },
+        {
+          "value": "flame",
+          "label": "Flame"
+        },
+        {
+          "value": "pulse",
+          "label": "Pulse / Heartbeat"
+        },
+        {
+          "value": "drop",
+          "label": "Water Drop"
+        }
       ]
     },
-    { "type": "text", "id": "tb1_label", "label": "Item 1 label", "default": "Third-Party Tested" },
-
-    { "type": "select", "id": "tb2_icon", "label": "Item 2 icon", "default": "noneedle",
+    {
+      "type": "text",
+      "id": "pw1_title",
+      "label": "Card 1 title",
+      "default": "Supports natural GLP-1 activity"
+    },
+    {
+      "type": "textarea",
+      "id": "pw1_desc",
+      "label": "Card 1 description",
+      "default": "Helps support the body's own fullness hormone. The same signal injectables target, engaged from within."
+    },
+    {
+      "type": "text",
+      "id": "pw1_stat_num",
+      "label": "Card 1 stat number",
+      "default": "Up to 321%"
+    },
+    {
+      "type": "text",
+      "id": "pw1_stat_text",
+      "label": "Card 1 stat text",
+      "default": "increase in GLP-1 levels in clinical research"
+    },
+    {
+      "type": "text",
+      "id": "pw2_num",
+      "label": "Card 2 category label",
+      "default": "02 / Appetite"
+    },
+    {
+      "type": "select",
+      "id": "pw2_icon",
+      "label": "Card 2 icon",
+      "default": "smile",
       "options": [
-        { "value": "shield", "label": "Shield / Tested" },
-        { "value": "noneedle", "label": "No Needle" },
-        { "value": "check", "label": "Checkmark" },
-        { "value": "truck", "label": "Shipping Truck" },
-        { "value": "leaf", "label": "Leaf / Natural" },
-        { "value": "star", "label": "Star / Rating" }
+        {
+          "value": "bolt",
+          "label": "Lightning Bolt"
+        },
+        {
+          "value": "smile",
+          "label": "Smile / Face"
+        },
+        {
+          "value": "flame",
+          "label": "Flame"
+        },
+        {
+          "value": "pulse",
+          "label": "Pulse / Heartbeat"
+        },
+        {
+          "value": "drop",
+          "label": "Water Drop"
+        }
       ]
     },
-    { "type": "text", "id": "tb2_label", "label": "Item 2 label", "default": "No Needles, No Stimulants" },
-
-    { "type": "select", "id": "tb3_icon", "label": "Item 3 icon", "default": "check",
+    {
+      "type": "text",
+      "id": "pw2_title",
+      "label": "Card 2 title",
+      "default": "Helps quiet appetite signaling"
+    },
+    {
+      "type": "textarea",
+      "id": "pw2_desc",
+      "label": "Card 2 description",
+      "default": "Supports appetite regulation and helps curb cravings, so food decisions feel easier, not forced."
+    },
+    {
+      "type": "text",
+      "id": "pw2_stat_num",
+      "label": "Card 2 stat number",
+      "default": "22.3%"
+    },
+    {
+      "type": "text",
+      "id": "pw2_stat_text",
+      "label": "Card 2 stat text",
+      "default": "improvement in eating control in studies"
+    },
+    {
+      "type": "text",
+      "id": "pw3_num",
+      "label": "Card 3 category label",
+      "default": "03 / Thermogenesis"
+    },
+    {
+      "type": "select",
+      "id": "pw3_icon",
+      "label": "Card 3 icon",
+      "default": "flame",
       "options": [
-        { "value": "shield", "label": "Shield / Tested" },
-        { "value": "noneedle", "label": "No Needle" },
-        { "value": "check", "label": "Checkmark" },
-        { "value": "truck", "label": "Shipping Truck" },
-        { "value": "leaf", "label": "Leaf / Natural" },
-        { "value": "star", "label": "Star / Rating" }
+        {
+          "value": "bolt",
+          "label": "Lightning Bolt"
+        },
+        {
+          "value": "smile",
+          "label": "Smile / Face"
+        },
+        {
+          "value": "flame",
+          "label": "Flame"
+        },
+        {
+          "value": "pulse",
+          "label": "Pulse / Heartbeat"
+        },
+        {
+          "value": "drop",
+          "label": "Water Drop"
+        }
       ]
     },
-    { "type": "text", "id": "tb3_label", "label": "Item 3 label", "default": "Clinically Backed Ingredients" },
-
-    { "type": "select", "id": "tb4_icon", "label": "Item 4 icon", "default": "truck",
-      "options": [
-        { "value": "shield", "label": "Shield / Tested" },
-        { "value": "noneedle", "label": "No Needle" },
-        { "value": "check", "label": "Checkmark" },
-        { "value": "truck", "label": "Shipping Truck" },
-        { "value": "leaf", "label": "Leaf / Natural" },
-        { "value": "star", "label": "Star / Rating" }
-      ]
+    {
+      "type": "text",
+      "id": "pw3_title",
+      "label": "Card 3 title",
+      "default": "Supports thermogenesis"
     },
-    { "type": "text", "id": "tb4_label", "label": "Item 4 label", "default": "Free Shipping Over $75" },
-
-    { "type": "header", "content": "PDP BUY BLOCK" },
-    { "type": "paragraph", "content": "Main product card that sits after the clinical proof section. Upload 1–4 gallery images." },
-    { "type": "image_picker", "id": "pdp_image_1", "label": "Main image (also thumbnail 1)" },
-    { "type": "text", "id": "pdp_thumb_1_label", "label": "Thumbnail 1 label", "default": "Bottle" },
-    { "type": "image_picker", "id": "pdp_image_2", "label": "Thumbnail 2 image" },
-    { "type": "text", "id": "pdp_thumb_2_label", "label": "Thumbnail 2 label", "default": "Capsule" },
-    { "type": "image_picker", "id": "pdp_image_3", "label": "Thumbnail 3 image" },
-    { "type": "text", "id": "pdp_thumb_3_label", "label": "Thumbnail 3 label", "default": "Facts" },
-    { "type": "image_picker", "id": "pdp_image_4", "label": "Thumbnail 4 image" },
-    { "type": "text", "id": "pdp_thumb_4_label", "label": "Thumbnail 4 label", "default": "Lifestyle" },
-    { "type": "checkbox", "id": "pdp_show_badge", "label": "Show corner badge", "default": true },
-    { "type": "text", "id": "pdp_badge_text", "label": "Corner badge text", "default": "New" },
-    { "type": "text", "id": "pdp_eyebrow", "label": "Eyebrow", "default": "The Absorption Company" },
-    { "type": "text", "id": "pdp_title", "label": "Product title", "default": "WLP-1™" },
-    { "type": "textarea", "id": "pdp_subtitle", "label": "Subtitle", "default": "Oral GLP-1 biomimetic for weight management. One capsule, three metabolic pathways." },
-    { "type": "checkbox", "id": "pdp_show_rating", "label": "Show star rating", "default": true },
-    { "type": "text", "id": "pdp_rating_score", "label": "Rating score", "default": "4.8" },
-    { "type": "text", "id": "pdp_rating_count", "label": "Review count text", "default": "1,200+ reviews" },
-    { "type": "text", "id": "pdp_price", "label": "Price", "default": "$79" },
-    { "type": "text", "id": "pdp_price_meta", "label": "Price meta line", "default": "30-day supply · One capsule daily" },
-    { "type": "text", "id": "pdp_bullet_1", "label": "Bullet 1", "default": "Supports 3 metabolic pathways: GLP-1 activity, appetite signaling, and thermogenesis" },
-    { "type": "text", "id": "pdp_bullet_2", "label": "Bullet 2 — use <b>word</b> bold, <em>word</em> for stat", "default": "Engineered with advanced absorption technology for 20x better bioavailability" },
-    { "type": "text", "id": "pdp_bullet_3", "label": "Bullet 3 — use <b>word</b> bold, <em>word</em> for stat", "default": "Clinically backed ingredients including IGOB131®, CQR-300™, and Capsifen™" },
-    { "type": "text", "id": "pdp_bullet_4", "label": "Bullet 4", "default": "No needles, no prescriptions, no harsh stimulants" },
-    { "type": "text", "id": "pdp_cta_text", "label": "CTA button text", "default": "Shop WLP-1™" },
-    { "type": "url", "id": "pdp_cta_url", "label": "CTA button URL" },
-    { "type": "text", "id": "pdp_assurance", "label": "Assurance line (under CTA)", "default": "Free shipping over $75 · 60-day money-back guarantee" },
-
-    { "type": "header", "content": "EDITORIAL HERO" },
-    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "Introducing WLP-1™" },
-    { "type": "textarea", "id": "hero_heading", "label": "Heading (use <em>word</em> for italic/blue)", "default": "The GLP-1 support you've been waiting for, <em>in a capsule.</em>" },
-    { "type": "textarea", "id": "hero_body", "label": "Body copy", "default": "An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants." },
-    { "type": "text", "id": "hero_cta_text", "label": "CTA button text", "default": "Shop WLP-1™" },
-    { "type": "url", "id": "hero_cta_url", "label": "CTA button URL" },
-    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
-    { "type": "textarea", "id": "hero_bullet_1", "label": "Bullet 1 — use <b>word</b> bold, <em>word</em> for stat", "default": "<b>Quiet cravings and feel full longer</b> <em>Clinically shown to reduce eating by 17.5%</em>" },
-    { "type": "textarea", "id": "hero_bullet_2", "label": "Bullet 2 — use <b>word</b> bold, <em>word</em> for stat", "default": "<b>Lose without the needles or prescriptions</b> <em>Up to 321% increase in natural GLP-1</em>" },
-    { "type": "textarea", "id": "hero_bullet_3", "label": "Bullet 3 — use <b>word</b> bold, <em>word</em> for stat", "default": "<b>Burn more, even at rest</b> <em>Up to 20% reduction in body fat in studies</em>" },
-    { "type": "checkbox", "id": "hero_show_new_badge", "label": "Show spinning 'NEW' badge", "default": true },
-    { "type": "text", "id": "hero_new_badge_text", "label": "Badge text", "default": "NEW" },
-
-    { "type": "header", "content": "CLAIMS STRIP (black bar with 4 stats)" },
-    { "type": "text", "id": "claim1_num", "label": "Claim 1 number", "default": "20x" },
-    { "type": "text", "id": "claim1_text", "label": "Claim 1 text", "default": "Better absorption through our advanced delivery science" },
-    { "type": "text", "id": "claim2_num", "label": "Claim 2 number", "default": "3" },
-    { "type": "text", "id": "claim2_text", "label": "Claim 2 text", "default": "Metabolic pathways: cravings, fullness, calories burned" },
-    { "type": "text", "id": "claim3_num", "label": "Claim 3 number", "default": "0" },
-    { "type": "text", "id": "claim3_text", "label": "Claim 3 text", "default": "Needles, prescriptions, or harsh stimulants required" },
-    { "type": "text", "id": "claim4_num", "label": "Claim 4 number", "default": "100%" },
-    { "type": "text", "id": "claim4_text", "label": "Claim 4 text", "default": "Third-party tested and formulated to the highest quality standards" },
-
-    { "type": "header", "content": "CLINICAL PROOF (3 study cards)" },
-    { "type": "text", "id": "proof_eyebrow", "label": "Eyebrow", "default": "The Results" },
-    { "type": "text", "id": "proof_heading", "label": "Heading", "default": "What the ingredient trials found" },
-    { "type": "textarea", "id": "proof_lede", "label": "Lede paragraph", "default": "The ingredients used in WLP-1™ have been studied in human clinical trials. Here's what the research reported on those individual ingredients." },
-    { "type": "textarea", "id": "proof1_quote", "label": "Card 1 quote (HTML allowed — use <b>word</b> for bold)", "default": "\"<b>28.1 lbs lost</b> and <b>6.7 inches</b> off the waist. No changes to diet or exercise were required during the study.\"" },
-    { "type": "text", "id": "proof1_source", "label": "Card 1 source", "default": "<b>IGOB131® clinical trial</b> · Double-blind, placebo-controlled. BMI 26+." },
-    { "type": "textarea", "id": "proof2_quote", "label": "Card 2 quote", "default": "\"Participants ate <b>17.5% less</b> and reported feeling <b>27.4% more full</b> after meals.\"" },
-    { "type": "text", "id": "proof2_source", "label": "Card 2 source", "default": "<b>CQR-300™ randomized controlled trial</b> · Medicina, 2020." },
-    { "type": "textarea", "id": "proof3_quote", "label": "Card 3 quote", "default": "\"<b>4 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups.\"" },
-    { "type": "text", "id": "proof3_source", "label": "Card 3 source", "default": "<b>Capsifen™ clinical study</b> · Journal of Dietary Supplements." },
-
-    { "type": "header", "content": "HOW IT WORKS (3 pathway cards)" },
-    { "type": "text", "id": "ov_eyebrow", "label": "Eyebrow", "default": "How It Works" },
-    { "type": "text", "id": "ov_heading", "label": "Heading", "default": "Three metabolic pathways. One daily capsule." },
-    { "type": "textarea", "id": "ov_lede", "label": "Lede", "default": "Most weight management products hit one lever. WLP-1™ supports three: the same biological systems targeted by injectable GLP-1 approaches, delivered orally through our proprietary absorption technology." },
-
-    { "type": "text", "id": "pw1_num", "label": "Card 1 category label", "default": "01 / GLP-1" },
-    { "type": "select", "id": "pw1_icon", "label": "Card 1 icon", "default": "bolt",
-      "options": [
-        { "value": "bolt", "label": "Lightning Bolt" },
-        { "value": "smile", "label": "Smile / Face" },
-        { "value": "flame", "label": "Flame" },
-        { "value": "pulse", "label": "Pulse / Heartbeat" },
-        { "value": "drop", "label": "Water Drop" }
-      ]
+    {
+      "type": "textarea",
+      "id": "pw3_desc",
+      "label": "Card 3 description",
+      "default": "Helps the body burn more calories at rest by supporting natural thermogenic pathways, without harsh stimulants."
     },
-    { "type": "text", "id": "pw1_title", "label": "Card 1 title", "default": "Supports natural GLP-1 activity" },
-    { "type": "textarea", "id": "pw1_desc", "label": "Card 1 description", "default": "Helps support the body's own fullness hormone. The same signal injectables target, engaged from within." },
-    { "type": "text", "id": "pw1_stat_num", "label": "Card 1 stat number", "default": "Up to 321%" },
-    { "type": "text", "id": "pw1_stat_text", "label": "Card 1 stat text", "default": "increase in GLP-1 levels in clinical research" },
-
-    { "type": "text", "id": "pw2_num", "label": "Card 2 category label", "default": "02 / Appetite" },
-    { "type": "select", "id": "pw2_icon", "label": "Card 2 icon", "default": "smile",
-      "options": [
-        { "value": "bolt", "label": "Lightning Bolt" },
-        { "value": "smile", "label": "Smile / Face" },
-        { "value": "flame", "label": "Flame" },
-        { "value": "pulse", "label": "Pulse / Heartbeat" },
-        { "value": "drop", "label": "Water Drop" }
-      ]
+    {
+      "type": "text",
+      "id": "pw3_stat_num",
+      "label": "Card 3 stat number",
+      "default": "Up to 20%"
     },
-    { "type": "text", "id": "pw2_title", "label": "Card 2 title", "default": "Helps quiet appetite signaling" },
-    { "type": "textarea", "id": "pw2_desc", "label": "Card 2 description", "default": "Supports appetite regulation and helps curb cravings, so food decisions feel easier, not forced." },
-    { "type": "text", "id": "pw2_stat_num", "label": "Card 2 stat number", "default": "22.3%" },
-    { "type": "text", "id": "pw2_stat_text", "label": "Card 2 stat text", "default": "improvement in eating control in studies" },
-
-    { "type": "text", "id": "pw3_num", "label": "Card 3 category label", "default": "03 / Thermogenesis" },
-    { "type": "select", "id": "pw3_icon", "label": "Card 3 icon", "default": "flame",
-      "options": [
-        { "value": "bolt", "label": "Lightning Bolt" },
-        { "value": "smile", "label": "Smile / Face" },
-        { "value": "flame", "label": "Flame" },
-        { "value": "pulse", "label": "Pulse / Heartbeat" },
-        { "value": "drop", "label": "Water Drop" }
-      ]
+    {
+      "type": "text",
+      "id": "pw3_stat_text",
+      "label": "Card 3 stat text",
+      "default": "reduction in body fat in studies"
     },
-    { "type": "text", "id": "pw3_title", "label": "Card 3 title", "default": "Supports thermogenesis" },
-    { "type": "textarea", "id": "pw3_desc", "label": "Card 3 description", "default": "Helps the body burn more calories at rest by supporting natural thermogenic pathways, without harsh stimulants." },
-    { "type": "text", "id": "pw3_stat_num", "label": "Card 3 stat number", "default": "Up to 20%" },
-    { "type": "text", "id": "pw3_stat_text", "label": "Card 3 stat text", "default": "reduction in body fat in studies" },
-
-    { "type": "header", "content": "4TH PATHWAY / BERBERINE" },
-    { "type": "text", "id": "fourth_eyebrow", "label": "Eyebrow", "default": "Add a 4th pathway" },
-    { "type": "textarea", "id": "fourth_heading", "label": "Heading (use <em>word</em> for italic/maroon)", "default": "Meet Berberine. <em>The 4th lane.</em>" },
-    { "type": "textarea", "id": "fourth_body", "label": "Body copy", "default": "WLP-1™ supports three metabolic pathways. Berberine adds a fourth: AMPK activation. Think of it like a four-lane highway instead of a three-lane one. More support, more momentum, more sustainable results." },
-    { "type": "text", "id": "fourth_feat_1", "label": "Feature 1", "default": "Supports insulin sensitivity so your body needs less insulin to clear sugar from the bloodstream" },
-    { "type": "text", "id": "fourth_feat_2", "label": "Feature 2", "default": "Helps regulate blood sugar for steadier energy and fewer cravings between meals" },
-    { "type": "text", "id": "fourth_feat_3", "label": "Feature 3", "default": "Supports a long-term metabolic reset that pairs naturally with WLP-1™'s daily support" },
-    { "type": "text", "id": "fourth_feat_4", "label": "Feature 4", "default": "6.2x better absorbed than standard berberine formulations" },
-    { "type": "text", "id": "fourth_cta_text", "label": "CTA text", "default": "Shop The Ultimate Stack" },
-    { "type": "url", "id": "fourth_cta_url", "label": "CTA URL" },
-    { "type": "text", "id": "lanes_title", "label": "Lanes visual title", "default": "The 4-lane highway" },
-    { "type": "text", "id": "lane_1_label", "label": "Lane 1 label", "default": "GLP-1 activity" },
-    { "type": "text", "id": "lane_2_label", "label": "Lane 2 label", "default": "Appetite control" },
-    { "type": "text", "id": "lane_3_label", "label": "Lane 3 label", "default": "Thermogenesis" },
-    { "type": "text", "id": "lane_4_label", "label": "Lane 4 label", "default": "AMPK activation" },
-
-    { "type": "header", "content": "IS THIS FOR YOU (6 bullet cards)" },
-    { "type": "text", "id": "bf_eyebrow", "label": "Eyebrow", "default": "Is This For You?" },
-    { "type": "text", "id": "bf_heading", "label": "Heading", "default": "WLP-1™ was made for people who…" },
-    { "type": "textarea", "id": "bf_lede", "label": "Lede", "default": "If any of these sound familiar, you're exactly who we built this for." },
-    { "type": "text", "id": "bf1_title", "label": "Card 1 title", "default": "Want the benefits without the needles" },
-    { "type": "textarea", "id": "bf1_desc", "label": "Card 1 description", "default": "You're curious about GLP-1 support but don't want injections, prescriptions, or weekly side effects." },
-    { "type": "text", "id": "bf2_title", "label": "Card 2 title", "default": "Are tired of supplements that don't work" },
-    { "type": "textarea", "id": "bf2_desc", "label": "Card 2 description", "default": "You're done with caffeine-loaded pills, fad blends, and products that promise everything and deliver nothing." },
-    { "type": "text", "id": "bf3_title", "label": "Card 3 title", "default": "Struggle with cravings and hunger cues" },
-    { "type": "textarea", "id": "bf3_desc", "label": "Card 3 description", "default": "You know discipline isn't the issue. Your body keeps pushing you toward food even when you're trying to be mindful." },
-    { "type": "text", "id": "bf4_title", "label": "Card 4 title", "default": "Care about what's in your supplements" },
-    { "type": "textarea", "id": "bf4_desc", "label": "Card 4 description", "default": "You want clinically backed ingredients, third-party testing, and real transparency, not proprietary blends." },
-    { "type": "text", "id": "bf5_title", "label": "Card 5 title", "default": "Have plateaued and need a reset" },
-    { "type": "textarea", "id": "bf5_desc", "label": "Card 5 description", "default": "You've done the work, seen progress, then hit a wall. WLP-1™ supports the metabolic pathways that often stall out." },
-    { "type": "text", "id": "bf6_title", "label": "Card 6 title", "default": "Want something sustainable, not extreme" },
-    { "type": "textarea", "id": "bf6_desc", "label": "Card 6 description", "default": "You want an approach that works with your body, not one that overrides it and leaves you rebounding when you stop." },
-
-    { "type": "header", "content": "TIMELINE / FIRST 90 DAYS" },
-    { "type": "paragraph", "content": "For bullets, put one item per line." },
-    { "type": "text", "id": "tl_eyebrow", "label": "Eyebrow", "default": "What To Expect" },
-    { "type": "text", "id": "tl_heading", "label": "Heading", "default": "Your first 90 days on WLP-1™" },
-    { "type": "textarea", "id": "tl_lede", "label": "Lede", "default": "Consistency is everything. Here's what research suggests you may notice as the ingredients build up in your system." },
-    { "type": "text", "id": "tl1_tag", "label": "Card 1 tag", "default": "Days 1 to 30" },
-    { "type": "text", "id": "tl1_title", "label": "Card 1 title", "default": "The early shift" },
-    { "type": "textarea", "id": "tl1_bullets", "label": "Card 1 bullets (one per line)", "default": "Cravings may start to feel quieter\nPortion sizes feel more natural\nLess mental noise about food between meals\nEarly studies showed measurable changes within 4 weeks" },
-    { "type": "text", "id": "tl2_tag", "label": "Card 2 tag", "default": "Days 31 to 60" },
-    { "type": "text", "id": "tl2_title", "label": "Card 2 title", "default": "The momentum" },
-    { "type": "textarea", "id": "tl2_bullets", "label": "Card 2 bullets (one per line)", "default": "Meal control may feel more automatic\nEnergy between meals often becomes steadier\nScale may begin to reflect day-to-day changes\nHabits start to lock in" },
-    { "type": "text", "id": "tl3_tag", "label": "Card 3 tag", "default": "Days 61 to 90" },
-    { "type": "text", "id": "tl3_title", "label": "Card 3 title", "default": "The compounding effect" },
-    { "type": "textarea", "id": "tl3_bullets", "label": "Card 3 bullets (one per line)", "default": "Most significant body composition changes observed in studies\nRelationship with food may feel recalibrated\nSupports steadier long-term metabolic patterns\nConsistency becomes the driver of results" },
-
-    { "type": "header", "content": "RESULTS CALCULATOR" },
-    { "type": "number", "id": "calc_pace_low", "label": "Weekly pace low (lbs/week)", "default": 1 },
-    { "type": "number", "id": "calc_pace_high", "label": "Weekly pace high (lbs/week)", "default": 2 },
-    { "type": "number", "id": "calc_months_cap", "label": "Months cap", "default": 12 },
-    { "type": "text", "id": "calc_eyebrow", "label": "Eyebrow", "default": "Personalized Estimate" },
-    { "type": "text", "id": "calc_heading", "label": "Heading", "default": "Your potential results" },
-    { "type": "textarea", "id": "calc_lede", "label": "Lede", "default": "Based on your height, weight, and goal, see what your 3-month trajectory could look like with WLP-1™." },
-    { "type": "text", "id": "calc_cta_text", "label": "CTA text", "default": "Shop WLP-1™" },
-    { "type": "url", "id": "calc_cta_url", "label": "CTA URL" },
-    { "type": "textarea", "id": "calc_disclaimer", "label": "Disclaimer", "default": "Estimates based on clinical study populations with BMI 26+. Individual results vary. Not medical advice. These statements have not been evaluated by the FDA. WLP-1™ is not intended to diagnose, treat, cure, or prevent any disease." },
-
-    { "type": "header", "content": "PRODUCT CARDS (WLP-1 vs STACK)" },
-    { "type": "text", "id": "prods_eyebrow", "label": "Eyebrow", "default": "Choose Your Formula" },
-    { "type": "text", "id": "prods_heading", "label": "Heading", "default": "Two ways to get started" },
-    { "type": "textarea", "id": "prods_lede", "label": "Lede", "default": "Start with WLP-1™ on its own, or unlock the 4th metabolic pathway with the full stack." },
-
-    { "type": "header", "content": "Product Card 1 — WLP-1" },
-    { "type": "image_picker", "id": "p1_image", "label": "Image" },
-    { "type": "text", "id": "p1_tag", "label": "Image tag", "default": "The Core Formula" },
-    { "type": "text", "id": "p1_title", "label": "Title", "default": "WLP-1™" },
-    { "type": "textarea", "id": "p1_desc", "label": "Description", "default": "Our oral GLP-1 biomimetic. One daily capsule supports three metabolic pathways: GLP-1 activity, appetite signaling, and thermogenesis. Engineered with 20x absorption science." },
-    { "type": "text", "id": "p1_feat_1", "label": "Feature 1", "default": "Supports GLP-1 activity, appetite regulation, and thermogenesis" },
-    { "type": "text", "id": "p1_feat_2", "label": "Feature 2", "default": "Clinically backed ingredients with human research" },
-    { "type": "text", "id": "p1_feat_3", "label": "Feature 3", "default": "No needles, no prescriptions, no stimulants" },
-    { "type": "text", "id": "p1_cta_text", "label": "CTA text", "default": "Shop WLP-1™" },
-    { "type": "url", "id": "p1_cta_url", "label": "CTA URL" },
-
-    { "type": "header", "content": "Product Card 2 — Stack" },
-    { "type": "image_picker", "id": "p2_image", "label": "Image" },
-    { "type": "text", "id": "p2_tag", "label": "Image tag", "default": "★ Best Value" },
-    { "type": "text", "id": "p2_chip", "label": "Chip above title", "default": "Unlocks the 4th pathway" },
-    { "type": "text", "id": "p2_title", "label": "Title", "default": "The Ultimate Weight Management Stack" },
-    { "type": "textarea", "id": "p2_desc", "label": "Description", "default": "WLP-1™ works on three metabolic pathways. Berberine adds a fourth: AMPK activation. It supports insulin sensitivity and blood sugar regulation. Think of it like a four-lane highway instead of three: more support, more momentum, more sustainable results." },
-    { "type": "text", "id": "p2_feat_1", "label": "Feature 1", "default": "All three pathways of WLP-1™, plus AMPK activation from Berberine" },
-    { "type": "text", "id": "p2_feat_2", "label": "Feature 2", "default": "Supports insulin sensitivity and steadier blood sugar for reduced cravings" },
-    { "type": "text", "id": "p2_feat_3", "label": "Feature 3", "default": "Berberine is 6.2x better absorbed than standard formulations" },
-    { "type": "text", "id": "p2_feat_4", "label": "Feature 4", "default": "Best choice for long-term metabolic recalibration" },
-    { "type": "text", "id": "p2_cta_text", "label": "CTA text", "default": "Shop The Stack" },
-    { "type": "url", "id": "p2_cta_url", "label": "CTA URL" },
-
-    { "type": "header", "content": "FOOTER DISCLAIMER" },
-    { "type": "text", "id": "foot_brand", "label": "Brand name", "default": "The Absorption Company" },
-    { "type": "textarea", "id": "foot_disc_1", "label": "Disclaimer paragraph 1", "default": "*WLP-1™ does not contain semaglutide and is not intended to diagnose, treat, cure, or prevent any disease. These statements have not been evaluated by the Food and Drug Administration." },
-    { "type": "textarea", "id": "foot_disc_2", "label": "Disclaimer paragraph 2", "default": "Clinical studies referenced were conducted on adults with a BMI of 26 or higher. Individual results vary. WLP-1™, IGOB131®, CQR-300™, and Capsifen™ are trademarks of their respective owners. Body Ready Tripeptide Complex is a proprietary formulation of The Absorption Company." }
-
+    {
+      "type": "header",
+      "content": "4TH PATHWAY / BERBERINE"
+    },
+    {
+      "type": "text",
+      "id": "fourth_eyebrow",
+      "label": "Eyebrow",
+      "default": "Add a 4th pathway"
+    },
+    {
+      "type": "textarea",
+      "id": "fourth_heading",
+      "label": "Heading (use <em>word</em> for italic/maroon)",
+      "default": "Meet Berberine. <em>The 4th lane.</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "fourth_body",
+      "label": "Body copy",
+      "default": "WLP-1™ supports three metabolic pathways. Berberine adds a fourth: AMPK activation. Think of it like a four-lane highway instead of a three-lane one. More support, more momentum, more sustainable results."
+    },
+    {
+      "type": "text",
+      "id": "fourth_feat_1",
+      "label": "Feature 1",
+      "default": "Supports insulin sensitivity so your body needs less insulin to clear sugar from the bloodstream"
+    },
+    {
+      "type": "text",
+      "id": "fourth_feat_2",
+      "label": "Feature 2",
+      "default": "Helps regulate blood sugar for steadier energy and fewer cravings between meals"
+    },
+    {
+      "type": "text",
+      "id": "fourth_feat_3",
+      "label": "Feature 3",
+      "default": "Supports a long-term metabolic reset that pairs naturally with WLP-1™'s daily support"
+    },
+    {
+      "type": "text",
+      "id": "fourth_feat_4",
+      "label": "Feature 4",
+      "default": "6.2x better absorbed than standard berberine formulations"
+    },
+    {
+      "type": "text",
+      "id": "fourth_cta_text",
+      "label": "CTA text",
+      "default": "Shop The Ultimate Stack"
+    },
+    {
+      "type": "url",
+      "id": "fourth_cta_url",
+      "label": "CTA URL"
+    },
+    {
+      "type": "text",
+      "id": "lanes_title",
+      "label": "Lanes visual title",
+      "default": "The 4-lane highway"
+    },
+    {
+      "type": "text",
+      "id": "lane_1_label",
+      "label": "Lane 1 label",
+      "default": "GLP-1 activity"
+    },
+    {
+      "type": "text",
+      "id": "lane_2_label",
+      "label": "Lane 2 label",
+      "default": "Appetite control"
+    },
+    {
+      "type": "text",
+      "id": "lane_3_label",
+      "label": "Lane 3 label",
+      "default": "Thermogenesis"
+    },
+    {
+      "type": "text",
+      "id": "lane_4_label",
+      "label": "Lane 4 label",
+      "default": "AMPK activation"
+    },
+    {
+      "type": "header",
+      "content": "IS THIS FOR YOU (6 bullet cards)"
+    },
+    {
+      "type": "text",
+      "id": "bf_eyebrow",
+      "label": "Eyebrow",
+      "default": "Is This For You?"
+    },
+    {
+      "type": "text",
+      "id": "bf_heading",
+      "label": "Heading",
+      "default": "WLP-1™ was made for people who…"
+    },
+    {
+      "type": "textarea",
+      "id": "bf_lede",
+      "label": "Lede",
+      "default": "If any of these sound familiar, you're exactly who we built this for."
+    },
+    {
+      "type": "text",
+      "id": "bf1_title",
+      "label": "Card 1 title",
+      "default": "Want the benefits without the needles"
+    },
+    {
+      "type": "textarea",
+      "id": "bf1_desc",
+      "label": "Card 1 description",
+      "default": "You're curious about GLP-1 support but don't want injections, prescriptions, or weekly side effects."
+    },
+    {
+      "type": "text",
+      "id": "bf2_title",
+      "label": "Card 2 title",
+      "default": "Are tired of supplements that don't work"
+    },
+    {
+      "type": "textarea",
+      "id": "bf2_desc",
+      "label": "Card 2 description",
+      "default": "You're done with caffeine-loaded pills, fad blends, and products that promise everything and deliver nothing."
+    },
+    {
+      "type": "text",
+      "id": "bf3_title",
+      "label": "Card 3 title",
+      "default": "Struggle with cravings and hunger cues"
+    },
+    {
+      "type": "textarea",
+      "id": "bf3_desc",
+      "label": "Card 3 description",
+      "default": "You know discipline isn't the issue. Your body keeps pushing you toward food even when you're trying to be mindful."
+    },
+    {
+      "type": "text",
+      "id": "bf4_title",
+      "label": "Card 4 title",
+      "default": "Care about what's in your supplements"
+    },
+    {
+      "type": "textarea",
+      "id": "bf4_desc",
+      "label": "Card 4 description",
+      "default": "You want clinically backed ingredients, third-party testing, and real transparency, not proprietary blends."
+    },
+    {
+      "type": "text",
+      "id": "bf5_title",
+      "label": "Card 5 title",
+      "default": "Have plateaued and need a reset"
+    },
+    {
+      "type": "textarea",
+      "id": "bf5_desc",
+      "label": "Card 5 description",
+      "default": "You've done the work, seen progress, then hit a wall. WLP-1™ supports the metabolic pathways that often stall out."
+    },
+    {
+      "type": "text",
+      "id": "bf6_title",
+      "label": "Card 6 title",
+      "default": "Want something sustainable, not extreme"
+    },
+    {
+      "type": "textarea",
+      "id": "bf6_desc",
+      "label": "Card 6 description",
+      "default": "You want an approach that works with your body, not one that overrides it and leaves you rebounding when you stop."
+    },
+    {
+      "type": "header",
+      "content": "TIMELINE / FIRST 90 DAYS"
+    },
+    {
+      "type": "paragraph",
+      "content": "For bullets, put one item per line."
+    },
+    {
+      "type": "text",
+      "id": "tl_eyebrow",
+      "label": "Eyebrow",
+      "default": "What To Expect"
+    },
+    {
+      "type": "text",
+      "id": "tl_heading",
+      "label": "Heading",
+      "default": "Your first 90 days on WLP-1™"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_lede",
+      "label": "Lede",
+      "default": "Consistency is everything. Here's what research suggests you may notice as the ingredients build up in your system."
+    },
+    {
+      "type": "text",
+      "id": "tl1_tag",
+      "label": "Card 1 tag",
+      "default": "Days 1 to 30"
+    },
+    {
+      "type": "text",
+      "id": "tl1_title",
+      "label": "Card 1 title",
+      "default": "The early shift"
+    },
+    {
+      "type": "textarea",
+      "id": "tl1_bullets",
+      "label": "Card 1 bullets (one per line)",
+      "default": "Cravings may start to feel quieter\nPortion sizes feel more natural\nLess mental noise about food between meals\nEarly studies showed measurable changes within 4 weeks"
+    },
+    {
+      "type": "text",
+      "id": "tl2_tag",
+      "label": "Card 2 tag",
+      "default": "Days 31 to 60"
+    },
+    {
+      "type": "text",
+      "id": "tl2_title",
+      "label": "Card 2 title",
+      "default": "The momentum"
+    },
+    {
+      "type": "textarea",
+      "id": "tl2_bullets",
+      "label": "Card 2 bullets (one per line)",
+      "default": "Meal control may feel more automatic\nEnergy between meals often becomes steadier\nScale may begin to reflect day-to-day changes\nHabits start to lock in"
+    },
+    {
+      "type": "text",
+      "id": "tl3_tag",
+      "label": "Card 3 tag",
+      "default": "Days 61 to 90"
+    },
+    {
+      "type": "text",
+      "id": "tl3_title",
+      "label": "Card 3 title",
+      "default": "The compounding effect"
+    },
+    {
+      "type": "textarea",
+      "id": "tl3_bullets",
+      "label": "Card 3 bullets (one per line)",
+      "default": "Most significant body composition changes observed in studies\nRelationship with food may feel recalibrated\nSupports steadier long-term metabolic patterns\nConsistency becomes the driver of results"
+    },
+    {
+      "type": "header",
+      "content": "RESULTS CALCULATOR"
+    },
+    {
+      "type": "number",
+      "id": "calc_pace_low",
+      "label": "Weekly pace low (lbs/week)",
+      "default": 1
+    },
+    {
+      "type": "number",
+      "id": "calc_pace_high",
+      "label": "Weekly pace high (lbs/week)",
+      "default": 2
+    },
+    {
+      "type": "number",
+      "id": "calc_months_cap",
+      "label": "Months cap",
+      "default": 12
+    },
+    {
+      "type": "text",
+      "id": "calc_eyebrow",
+      "label": "Eyebrow",
+      "default": "Personalized Estimate"
+    },
+    {
+      "type": "text",
+      "id": "calc_heading",
+      "label": "Heading",
+      "default": "Your potential results"
+    },
+    {
+      "type": "textarea",
+      "id": "calc_lede",
+      "label": "Lede",
+      "default": "Based on your height, weight, and goal, see what your 3-month trajectory could look like with WLP-1™."
+    },
+    {
+      "type": "text",
+      "id": "calc_cta_text",
+      "label": "CTA text",
+      "default": "Shop WLP-1™"
+    },
+    {
+      "type": "url",
+      "id": "calc_cta_url",
+      "label": "CTA URL"
+    },
+    {
+      "type": "textarea",
+      "id": "calc_disclaimer",
+      "label": "Disclaimer",
+      "default": "Estimates based on clinical study populations with BMI 26+. Individual results vary. Not medical advice. These statements have not been evaluated by the FDA. WLP-1™ is not intended to diagnose, treat, cure, or prevent any disease."
+    },
+    {
+      "type": "header",
+      "content": "PRODUCT CARDS (WLP-1 vs STACK)"
+    },
+    {
+      "type": "text",
+      "id": "prods_eyebrow",
+      "label": "Eyebrow",
+      "default": "Choose Your Formula"
+    },
+    {
+      "type": "text",
+      "id": "prods_heading",
+      "label": "Heading",
+      "default": "Two ways to get started"
+    },
+    {
+      "type": "textarea",
+      "id": "prods_lede",
+      "label": "Lede",
+      "default": "Start with WLP-1™ on its own, or unlock the 4th metabolic pathway with the full stack."
+    },
+    {
+      "type": "header",
+      "content": "Product Card 1 — WLP-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "p1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "p1_tag",
+      "label": "Image tag",
+      "default": "The Core Formula"
+    },
+    {
+      "type": "text",
+      "id": "p1_title",
+      "label": "Title",
+      "default": "WLP-1™"
+    },
+    {
+      "type": "textarea",
+      "id": "p1_desc",
+      "label": "Description",
+      "default": "Our oral GLP-1 biomimetic. One daily capsule supports three metabolic pathways: GLP-1 activity, appetite signaling, and thermogenesis. Engineered with 20x absorption science."
+    },
+    {
+      "type": "text",
+      "id": "p1_feat_1",
+      "label": "Feature 1",
+      "default": "Supports GLP-1 activity, appetite regulation, and thermogenesis"
+    },
+    {
+      "type": "text",
+      "id": "p1_feat_2",
+      "label": "Feature 2",
+      "default": "Clinically backed ingredients with human research"
+    },
+    {
+      "type": "text",
+      "id": "p1_feat_3",
+      "label": "Feature 3",
+      "default": "No needles, no prescriptions, no stimulants"
+    },
+    {
+      "type": "text",
+      "id": "p1_cta_text",
+      "label": "CTA text",
+      "default": "Shop WLP-1™"
+    },
+    {
+      "type": "url",
+      "id": "p1_cta_url",
+      "label": "CTA URL"
+    },
+    {
+      "type": "header",
+      "content": "Product Card 2 — Stack"
+    },
+    {
+      "type": "image_picker",
+      "id": "p2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "p2_tag",
+      "label": "Image tag",
+      "default": "★ Best Value"
+    },
+    {
+      "type": "text",
+      "id": "p2_chip",
+      "label": "Chip above title",
+      "default": "Unlocks the 4th pathway"
+    },
+    {
+      "type": "text",
+      "id": "p2_title",
+      "label": "Title",
+      "default": "The Ultimate Weight Management Stack"
+    },
+    {
+      "type": "textarea",
+      "id": "p2_desc",
+      "label": "Description",
+      "default": "WLP-1™ works on three metabolic pathways. Berberine adds a fourth: AMPK activation. It supports insulin sensitivity and blood sugar regulation. Think of it like a four-lane highway instead of three: more support, more momentum, more sustainable results."
+    },
+    {
+      "type": "text",
+      "id": "p2_feat_1",
+      "label": "Feature 1",
+      "default": "All three pathways of WLP-1™, plus AMPK activation from Berberine"
+    },
+    {
+      "type": "text",
+      "id": "p2_feat_2",
+      "label": "Feature 2",
+      "default": "Supports insulin sensitivity and steadier blood sugar for reduced cravings"
+    },
+    {
+      "type": "text",
+      "id": "p2_feat_3",
+      "label": "Feature 3",
+      "default": "Berberine is 6.2x better absorbed than standard formulations"
+    },
+    {
+      "type": "text",
+      "id": "p2_feat_4",
+      "label": "Feature 4",
+      "default": "Best choice for long-term metabolic recalibration"
+    },
+    {
+      "type": "text",
+      "id": "p2_cta_text",
+      "label": "CTA text",
+      "default": "Shop The Stack"
+    },
+    {
+      "type": "url",
+      "id": "p2_cta_url",
+      "label": "CTA URL"
+    },
+    {
+      "type": "header",
+      "content": "FOOTER DISCLAIMER"
+    },
+    {
+      "type": "text",
+      "id": "foot_brand",
+      "label": "Brand name",
+      "default": "The Absorption Company"
+    },
+    {
+      "type": "textarea",
+      "id": "foot_disc_1",
+      "label": "Disclaimer paragraph 1",
+      "default": "*WLP-1™ does not contain semaglutide and is not intended to diagnose, treat, cure, or prevent any disease. These statements have not been evaluated by the Food and Drug Administration."
+    },
+    {
+      "type": "textarea",
+      "id": "foot_disc_2",
+      "label": "Disclaimer paragraph 2",
+      "default": "Clinical studies referenced were conducted on adults with a BMI of 26 or higher. Individual results vary. WLP-1™, IGOB131®, CQR-300™, and Capsifen™ are trademarks of their respective owners. Body Ready Tripeptide Complex is a proprietary formulation of The Absorption Company."
+    }
   ],
   "presets": [
-    { "name": "WLP-1 Product Lander" }
+    {
+      "name": "WLP-1 Product Lander"
+    }
   ]
 }
 {% endschema %}
