@@ -986,10 +986,10 @@
           :disabled="pdp.isAdding || pdp.soldOut"
           @click="handleAddToCart($event)">
           <span x-text="pdp.soldOut
-            ? '{{ section.settings.sold_out_text | escape }}'
-            : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0) + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? ' (' + getManualMoPrice() + '/mo)' : '')">
-            {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
-          </span>
+          ? '{{ section.settings.sold_out_text | escape }}'
+          : '{{ section.settings.cta_text | escape }} - ' + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? getManualMoPrice() + '/mo' : utils.formatMoney(pdp.selected_price || 0))">
+          {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
+        </span>
         </button>
 
         <div class="ctr-ppb__trust-row">
