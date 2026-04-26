@@ -162,7 +162,7 @@ footer {
   align-items: center;
   gap: 36px;
   padding-left: 36px;
-  animation: wlp1ev-announce-scroll 48s linear infinite;
+  animation: wlp1ev-announce-scroll 120s linear infinite;
   will-change: transform;
 }
 .wlp1ev .announce-item {
@@ -191,8 +191,7 @@ footer {
 .wlp1ev .logobar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: center;
 }
 .wlp1ev .logobar-logo {
   display: inline-flex;
@@ -308,6 +307,37 @@ footer {
   height: 14px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'><path d='M2 7.5L5.5 11L12 3' stroke='%235e91d5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat;
+}
+.wlp1ev .hero-price-anchor {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: var(--ink);
+}
+.wlp1ev .hero-price-anchor strong {
+  font-size: 20px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.wlp1ev .anchor-divider {
+  color: var(--line);
+  font-weight: 400;
+}
+.wlp1ev .anchor-label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.wlp1ev .anchor-strike {
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: line-through;
 }
 .wlp1ev .hero-cta {
   display: inline-block;
@@ -1012,7 +1042,8 @@ footer {
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   .wlp1ev .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-  .wlp1ev .hero-image { max-width: 400px; margin: 0 auto; width: 100%; }
+  .wlp1ev .hero-image { max-width: 320px; margin: 0 auto; width: 100%; order: 2; }
+  .wlp1ev .hero-copy { order: 1; }
   .wlp1ev .transform-steps { grid-template-columns: 1fr; gap: 40px; }
   .wlp1ev .transform-steps::before { display: none; }
   .wlp1ev .benefit-row { grid-template-columns: 1fr; gap: 30px; margin-bottom: 60px; }
@@ -1032,6 +1063,53 @@ footer {
   .wlp1ev .hero { padding: 40px 0 20px; }
   .wlp1ev .stat-pair { flex-direction: column; gap: 10px; }
   .wlp1ev .stat-block { max-width: 100%; }
+}
+
+/* ===== Sticky mobile CTA ===== */
+.wlp1ev .sticky-cta {
+  display: none;
+}
+@media (max-width: 900px) {
+  .wlp1ev .sticky-cta {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--cream);
+    border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+  }
+  .wlp1ev .sticky-cta.visible {
+    transform: translateY(0);
+  }
+  .wlp1ev .sticky-cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+    color: var(--white);
+    text-align: center;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    font-family: inherit;
+  }
+  .wlp1ev .sticky-cta-btn:hover {
+    background: var(--blue-hover);
+    color: var(--white);
+  }
+  /* Add bottom padding to body so sticky doesn't cover content */
+  .wlp1ev .finalcta {
+    padding-bottom: 130px;
+  }
 }
 </style>
 
@@ -1065,7 +1143,6 @@ footer {
       <a href="/" class="logobar-logo">
         <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/logo-2.svg?v=1761576529" alt="The Absorption Company" width="200" height="28">
       </a>
-      <a href="/products/wlp-1" class="logobar-cta">Shop WLP-1™</a>
     </div>
   </div>
 
@@ -1079,14 +1156,21 @@ footer {
         <div class="hero-copy">
           <div class="eyebrow">Oral GLP-1 Support</div>
           <h1>Less hungry. Fewer cravings. <em>More calories burned at rest.*</em></h1>
-          <p class="hero-sub">The daily pill that helps quiet hunger, steady your energy, and support real weight change. No injections, no stimulants, no willpower battles.</p>
+          <p class="hero-sub">The first oral GLP-1 biomimetic.* No needles. No stimulants. No willpower required.</p>
           <ul class="hero-bullets">
+            <li>Up to 12% body weight reduction in 10 weeks (BMI 25+)*</li>
             <li>Feel full sooner and stay satisfied longer between meals</li>
             <li>Quiet food noise and emotional cravings throughout the day</li>
             <li>Burn more calories at rest, even without changing your routine</li>
-            <li>Support up to 12% body weight reduction in 10 weeks (BMI 25+)*</li>
           </ul>
-          <a href="/products/wlp-1" class="hero-cta">Shop WLP-1™ · As low as $64/month</a>
+          <div class="hero-price-anchor">
+            <span><strong>$64</strong>/mo</span>
+            <span class="anchor-divider">·</span>
+            <span class="anchor-label">Subscribe &amp; save</span>
+            <span class="anchor-divider">·</span>
+            <span class="anchor-strike">$79 one-time</span>
+          </div>
+          <a href="/products/wlp-1" class="hero-cta">Shop WLP-1™</a>
           <div class="hero-stars">
             <span class="stars">◆</span>
             <span>Formulated with clinically studied ingredients</span>
@@ -1133,7 +1217,7 @@ footer {
     <div class="container">
       <div class="section-label">Benefits</div>
       <h2 class="section-title">What you can actually expect.</h2>
-      <p class="section-intro">Specificity over promises. Here's what the research on WLP-1™'s clinically studied ingredients shows.</p>
+      <p class="section-intro">What clinical research shows.*</p>
 
       <div class="benefit-row">
         <div class="benefit-media">
@@ -1155,7 +1239,6 @@ footer {
               <div class="stat-plain">fat-burning hormone</div>
             </div>
           </div>
-          <a href="/products/wlp-1" class="micro-cta">Shop WLP-1™</a>
         </div>
       </div>
 
@@ -1179,7 +1262,6 @@ footer {
               <div class="stat-plain">the enzyme that breaks it down</div>
             </div>
           </div>
-          <a href="/products/wlp-1" class="micro-cta">Shop WLP-1™</a>
         </div>
       </div>
 
@@ -1203,7 +1285,6 @@ footer {
               <div class="stat-plain">clinical study, BMI 25+</div>
             </div>
           </div>
-          <a href="/products/wlp-1" class="micro-cta">Shop WLP-1™</a>
         </div>
       </div>
 
@@ -1233,13 +1314,92 @@ footer {
     </div>
   </section>
 
-  {%- comment -%} Inline CTA 1 — after Benefits {%- endcomment -%}
-  <section class="benefits">
+  {%- comment -%} 5. MID-PAGE CTA (moved up — high engagement after Benefits) {%- endcomment -%}
+  <section class="midcta">
+    <div class="container-narrow">
+      <div class="midcta-stars">◆</div>
+      <div class="midcta-rating">Formulated with clinically studied ingredients</div>
+      <h2>The first oral GLP-1 biomimetic.* <em>No injection required.</em></h2>
+      <a href="/products/wlp-1" class="midcta-cta">Start With WLP-1™ · $64/mo</a>
+      <div class="midcta-trust">
+        <span>◆ Free shipping</span>
+        <span>◆ 30-day money-back guarantee</span>
+        <span>◆ Third-party tested</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 9. COMPARISON (moved up — decision moment hits at engagement peak) {%- endcomment -%}
+  <section class="section compare">
+    <div class="container">
+      <div class="section-label">Side By Side</div>
+      <h2 class="section-title">How WLP-1™ compares.</h2>
+      <p class="section-intro">No fluff. Just the categories people actually ask us about.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="us">WLP-1™</th>
+            <th>GLP-1 Injections</th>
+            <th>Standard Weight Supplements</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="compare-row-header">Supports natural GLP-1 activity</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Oral delivery</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">No stimulants</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Clinically studied ingredients</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">No prescription required</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Third-party tested</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Supports three metabolic pathways</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {%- comment -%} Inline CTA — after Comparison {%- endcomment -%}
+  <section class="compare">
     <div class="container inline-cta">
-      <div class="inline-cta-micro">Ready when you are</div>
-      <h3 class="inline-cta-title">Start supporting your metabolism today.</h3>
-      <a href="/products/wlp-1" class="inline-cta-btn">Shop WLP-1™ · As low as $64/month</a>
-      <div class="inline-cta-sub">30-day money-back guarantee · Free shipping</div>
+      <div class="inline-cta-micro">The clear choice</div>
+      <h3 class="inline-cta-title">Why more people are switching to WLP-1™.</h3>
+      <a href="/products/wlp-1" class="inline-cta-btn">Start With WLP-1™</a>
+      <div class="inline-cta-sub">30-day money-back guarantee · Third-party tested</div>
     </div>
   </section>
 
@@ -1318,21 +1478,6 @@ footer {
     </div>
   </section>
 
-  {%- comment -%} 5. MID-PAGE CTA {%- endcomment -%}
-  <section class="midcta">
-    <div class="container-narrow">
-      <div class="midcta-stars">◆</div>
-      <div class="midcta-rating">Formulated with clinically studied ingredients</div>
-      <h2>Support the metabolism people seek from GLP-1. <em>Without overriding it.</em></h2>
-      <a href="/products/wlp-1" class="midcta-cta">Start With WLP-1™</a>
-      <div class="midcta-trust">
-        <span>◆ Free shipping</span>
-        <span>◆ 30-day money-back guarantee</span>
-        <span>◆ Third-party tested</span>
-      </div>
-    </div>
-  </section>
-
   {%- comment -%} 6. WHAT'S INCLUDED {%- endcomment -%}
   <section class="section included">
     <div class="container">
@@ -1386,152 +1531,6 @@ footer {
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  {%- comment -%} 7. CLINICAL STUDIES {%- endcomment -%}
-  <section class="section social">
-    <div class="container">
-      <div class="section-label">Clinically Studied</div>
-      <h2 class="section-title">The research behind the results.</h2>
-      <p class="section-intro">Built on clinically studied ingredients. Here's what the research shows.*</p>
-
-      <div class="reviews-grid">
-        <div class="review">
-          <div class="study-badge">Study 01</div>
-          <h4 class="review-title">Appetite &amp; hormone rebalancing</h4>
-          <p class="review-body">In a randomized study of adults with BMI 25+, IGOB131® reduced circulating leptin (the hunger hormone) by 48.6% and increased adiponectin (the fat-burning hormone) by 159% over 10 weeks.</p>
-          <div class="study-stat">
-            <strong>−48.6%*</strong> Leptin · <strong>+159%*</strong> Adiponectin
-          </div>
-          <div class="review-author">Ingredient: IGOB131® <span>Published clinical trial · BMI 25+</span></div>
-        </div>
-        <div class="review">
-          <div class="study-badge">Study 02</div>
-          <h4 class="review-title">GLP-1 activation over 16 weeks</h4>
-          <p class="review-body">In a 16-week randomized controlled trial, CQR300® increased circulating GLP-1 (the natural fullness signal) by over 300% while reducing DPP-4, the enzyme that breaks it down, by 17.8%.</p>
-          <div class="study-stat">
-            <strong>+321%*</strong> GLP-1 · <strong>−17.8%*</strong> DPP-4
-          </div>
-          <div class="review-author">Ingredient: CQR300® <span>Published in Medicina · BMI 25+</span></div>
-        </div>
-        <div class="review">
-          <div class="study-badge">Study 03</div>
-          <h4 class="review-title">Thermogenesis &amp; weight change</h4>
-          <p class="review-body">Participants taking Capsifen® lost an average of 4 pounds in 4 weeks of consistent use. The nano-beadlet delivery produces up to 20x the absorption of standard capsaicin, without GI discomfort.</p>
-          <div class="study-stat">
-            <strong>4 lbs*</strong> in 4 weeks · <strong>Up to 20x*</strong> absorption
-          </div>
-          <div class="review-author">Ingredient: Capsifen® <span>Journal of Dietary Supplements · BMI 25+</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {%- comment -%} 8. THREE PATHWAYS {%- endcomment -%}
-  <section class="ugc">
-    <div class="container">
-      <div class="section-label">How It Works</div>
-      <h2 class="section-title">Three pathways. One capsule.</h2>
-      <p class="section-intro">Most supplements target one system and hope it's enough. WLP-1™ works on three at once.</p>
-
-      <div class="pathway-grid">
-        <div class="pathway-card">
-          <div class="pathway-num">i.</div>
-          <h3 class="pathway-title">GLP-1 Activity</h3>
-          <p class="pathway-body">Supports your body's natural fullness signal so meals feel complete and snacking loses its grip.</p>
-          <div class="pathway-stat">+321%* GLP-1 increase</div>
-          <div class="pathway-ingredient">Powered by CQR300®</div>
-        </div>
-        <div class="pathway-card">
-          <div class="pathway-num">ii.</div>
-          <h3 class="pathway-title">Appetite Control</h3>
-          <p class="pathway-body">Rebalances the hormones that drive hunger and cravings so the "still hungry" signal quiets down.</p>
-          <div class="pathway-stat">−48.6%* hunger hormone</div>
-          <div class="pathway-ingredient">Powered by IGOB131®</div>
-        </div>
-        <div class="pathway-card">
-          <div class="pathway-num">iii.</div>
-          <h3 class="pathway-title">Thermogenesis</h3>
-          <p class="pathway-body">Raises the calories your body burns at rest so your metabolism works harder in the background.</p>
-          <div class="pathway-stat">Up to 20x* absorption</div>
-          <div class="pathway-ingredient">Powered by Capsifen®</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {%- comment -%} 9. COMPARISON {%- endcomment -%}
-  <section class="section compare">
-    <div class="container">
-      <div class="section-label">Side By Side</div>
-      <h2 class="section-title">How WLP-1™ compares.</h2>
-      <p class="section-intro">No fluff. Just the categories people actually ask us about.</p>
-
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="us">WLP-1™</th>
-            <th>GLP-1 Injections</th>
-            <th>Standard Weight Supplements</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="compare-row-header">Supports natural GLP-1 activity</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">Oral delivery</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">No stimulants</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">Clinically studied ingredients</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">No prescription required</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">Third-party tested</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-          </tr>
-          <tr>
-            <td class="compare-row-header">Supports three metabolic pathways</td>
-            <td class="us"><span class="check">✓</span></td>
-            <td><span class="xmark">✕</span></td>
-            <td><span class="xmark">✕</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  {%- comment -%} Inline CTA 2 — after Comparison {%- endcomment -%}
-  <section class="compare">
-    <div class="container inline-cta">
-      <div class="inline-cta-micro">The clear choice</div>
-      <h3 class="inline-cta-title">Why more people are switching to WLP-1™.</h3>
-      <a href="/products/wlp-1" class="inline-cta-btn">Start With WLP-1™</a>
-      <div class="inline-cta-sub">30-day money-back guarantee · Third-party tested</div>
     </div>
   </section>
 
@@ -1621,15 +1620,43 @@ footer {
     </div>
   </div>
 
+  {%- comment -%} Sticky mobile CTA bar (appears after hero scrolls out) {%- endcomment -%}
+  <div class="sticky-cta" id="wlp1ev-sticky">
+    <a href="/products/wlp-1" class="sticky-cta-btn">Shop WLP-1™ · $64/mo →</a>
+  </div>
+
 </div>
 
 <script>
 (function() {
+  // FAQ accordion
   var faqItems = document.querySelectorAll('.wlp1ev .faq-q');
   for (var i = 0; i < faqItems.length; i++) {
     faqItems[i].addEventListener('click', function() {
       this.parentElement.classList.toggle('open');
     });
+  }
+
+  // Sticky mobile CTA — show after hero leaves view
+  var stickyEl = document.getElementById('wlp1ev-sticky');
+  var heroEl = document.querySelector('.wlp1ev .hero');
+  if (stickyEl && heroEl) {
+    var ticking = false;
+    function updateSticky() {
+      var heroBottom = heroEl.getBoundingClientRect().bottom;
+      if (heroBottom < 0) {
+        stickyEl.classList.add('visible');
+      } else {
+        stickyEl.classList.remove('visible');
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(updateSticky);
+        ticking = true;
+      }
+    }, { passive: true });
   }
 })();
 </script>
