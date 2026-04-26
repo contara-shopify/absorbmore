@@ -715,8 +715,8 @@ footer {
   margin-top: 14px;
 }
 
-/* ===== 7. CLINICAL STUDIES ===== */
-.wlp1ev .social { background: var(--white); }
+/* ===== REVIEWS ===== */
+.wlp1ev .reviews-section { background: var(--white); }
 .wlp1ev .reviews-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -730,17 +730,14 @@ footer {
   display: flex;
   flex-direction: column;
 }
-.wlp1ev .study-badge {
-  display: inline-block;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+.wlp1ev .review-stars {
   color: var(--blue);
-  font-weight: 600;
+  letter-spacing: 3px;
   margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--line);
-  align-self: flex-start;
+  font-size: 16px;
+}
+.wlp1ev .star-empty {
+  color: var(--line);
 }
 .wlp1ev .review-title {
   font-size: 22px;
@@ -756,20 +753,6 @@ footer {
   line-height: 1.6;
   margin: 0 0 18px;
   flex: 1;
-}
-.wlp1ev .study-stat {
-  background: var(--white);
-  border: 1px solid var(--line);
-  padding: 12px 14px;
-  font-size: 13px;
-  color: var(--ink);
-  margin-bottom: 18px;
-  font-weight: 500;
-}
-.wlp1ev .study-stat strong {
-  color: var(--blue);
-  font-size: 18px;
-  font-weight: 600;
 }
 .wlp1ev .review-author {
   font-size: 12px;
@@ -790,67 +773,7 @@ footer {
   margin-top: 4px;
 }
 
-/* ===== 8. THREE PATHWAYS ===== */
-.wlp1ev .ugc { background: var(--ink); color: var(--cream); padding: 90px 0; }
-.wlp1ev .ugc .section-label { color: var(--blue); }
-.wlp1ev .ugc .section-title { color: var(--cream); }
-.wlp1ev .ugc .section-intro { color: var(--cream-alt); }
-.wlp1ev .pathway-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 40px;
-}
-.wlp1ev .pathway-card {
-  background: #22221f;
-  border: 1px solid #2a2a26;
-  padding: 40px 32px;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s, border-color 0.3s;
-  border-radius: 4px;
-}
-.wlp1ev .pathway-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--blue);
-}
-.wlp1ev .pathway-num {
-  font-style: italic;
-  font-size: 28px;
-  color: var(--blue);
-  margin-bottom: 28px;
-}
-.wlp1ev .pathway-title {
-  font-size: 26px;
-  font-weight: 500;
-  color: var(--cream);
-  margin: 0 0 14px;
-  letter-spacing: -0.01em;
-}
-.wlp1ev .pathway-body {
-  font-size: 15px;
-  color: var(--cream-alt);
-  line-height: 1.6;
-  margin: 0 0 24px;
-  flex: 1;
-}
-.wlp1ev .pathway-stat {
-  font-size: 22px;
-  color: var(--blue);
-  font-weight: 500;
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
-}
-.wlp1ev .pathway-ingredient {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--cream-alt);
-  padding-top: 18px;
-  border-top: 1px solid #2a2a26;
-}
-
-/* ===== 9. COMPARISON ===== */
+/* ===== COMPARISON ===== */
 .wlp1ev .compare { background: var(--cream); }
 .wlp1ev .compare-table {
   margin-top: 20px;
@@ -1051,7 +974,6 @@ footer {
   .wlp1ev .features-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
   .wlp1ev .included-grid { grid-template-columns: 1fr; gap: 30px; }
   .wlp1ev .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
-  .wlp1ev .pathway-grid { grid-template-columns: 1fr; gap: 16px; }
   .wlp1ev .compare-table th,
   .wlp1ev .compare-table td { padding: 14px 8px; font-size: 12px; }
   .wlp1ev .strip-inner { grid-template-columns: repeat(3, 1fr); }
@@ -1529,6 +1451,36 @@ footer {
             <a href="/products/wlp-1" class="inline-cta-btn">Shop WLP-1™ · As low as $64/month</a>
             <div class="inline-cta-sub">30-day money-back guarantee · Free shipping</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} REVIEWS — between What's Included and FAQ {%- endcomment -%}
+  <section class="section reviews-section">
+    <div class="container">
+      <div class="section-label">Verified Buyers</div>
+      <h2 class="section-title">What people are saying.</h2>
+      <p class="section-intro">Real reviews from real customers.</p>
+
+      <div class="reviews-grid">
+        <div class="review">
+          <div class="review-stars">★★★★<span class="star-empty">★</span></div>
+          <h4 class="review-title">Works!</h4>
+          <p class="review-body">I am definitely losing weight in just my first week. I have had some mild stomach discomfort, but hopefully it will resolve in the next week or so!</p>
+          <div class="review-author">anon <span>Verified buyer</span></div>
+        </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-title">WLP-1</h4>
+          <p class="review-body">I have noticed a change in my appetite. I don't get as hungry and I don't eat as much.</p>
+          <div class="review-author">Tiffany L. <span>Verified buyer</span></div>
+        </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-title">Wow!</h4>
+          <p class="review-body">About a week in and I can already tell the difference.</p>
+          <div class="review-author">TF <span>Verified buyer</span></div>
         </div>
       </div>
     </div>
