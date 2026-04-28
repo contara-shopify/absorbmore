@@ -31,7 +31,8 @@
 <div data-style-id="{{ block.id | split: "__" | last }}" {{ block.shopify_attributes }}
      x-ignore
      x-show="$editor.select_block_id === `{{ block.id }}` || $data.showConditionally('{{ show_conditionally }}', $data?.bundle)"
-     class="inline-flex gap-2 {{ text_alignment | prepend: 'text-' }}">
+ {% assign align_class = text_alignment | prepend: 'text-' %}                                                  
+    class="inline-flex flex-wrap items-baseline gap-x-2 gap-y-0 {{ align_class }}">
   <span class="{{ css_class }}"
         :class="(({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) || (p_card?.selected_variant?.compare_at_price || 0) > (({{ show_subscription_price | default: false }} && p_card?.selected_price && p_card.selected_price < p_card?.selected_variant?.price) ? p_card.selected_price : p_card?.selected_variant?.price)) ? 'discounted-price' : ''"
       {% if price_calculation == 'normal' %}

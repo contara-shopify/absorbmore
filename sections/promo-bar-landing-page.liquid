@@ -1,0 +1,245 @@
+{% comment %}
+  ============================================================
+  TAC UNIVERSAL PROMO BAR
+  File: sections/tac-promo-bar.liquid
+
+  USAGE:
+    1. Save as sections/tac-promo-bar.liquid in your theme
+    2. Add to a template:  {% section 'tac-promo-bar' %}
+    3. Or include via theme.liquid above your <header>
+    4. Edit messages, colors, speed in Theme Customizer →
+       the section appears as "Promo Bar"
+
+  Inherits the host page font by default. To force a specific
+  font, change --tac-promo-font below.
+  ============================================================
+{% endcomment %}
+
+<style>
+  #tac-promo-{{ section.id }} {
+    --tac-promo-bg: {{ section.settings.bg_color }};
+    --tac-promo-fg: {{ section.settings.text_color }};
+    --tac-promo-link: {{ section.settings.link_color }};
+    --tac-promo-accent: {{ section.settings.accent_color }};
+    --tac-promo-height: {{ section.settings.bar_height }}px;
+    --tac-promo-font-size: {{ section.settings.font_size }}px;
+    --tac-promo-font: inherit;
+
+    position: relative;
+    z-index: 9999;
+    width: 100%;
+    height: var(--tac-promo-height);
+    background: var(--tac-promo-bg);
+    color: var(--tac-promo-fg);
+    font-family: var(--tac-promo-font);
+    font-size: var(--tac-promo-font-size);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    {% if section.settings.uppercase %}text-transform: uppercase;{% endif %}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  #tac-promo-{{ section.id }} .tac-promo__track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  #tac-promo-{{ section.id }} .tac-promo__slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+  }
+
+  #tac-promo-{{ section.id }} .tac-promo__slide.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  #tac-promo-{{ section.id }} a {
+    color: var(--tac-promo-link);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s ease;
+  }
+
+  #tac-promo-{{ section.id }} a:hover {
+    border-bottom-color: var(--tac-promo-accent);
+  }
+
+  @media (max-width: 600px) {
+    #tac-promo-{{ section.id }} {
+      font-size: {{ section.settings.font_size | minus: 1 }}px;
+      padding: 0 12px;
+    }
+  }
+</style>
+
+<div id="tac-promo-{{ section.id }}" class="tac-promo" role="region" aria-label="Site promotions">
+  <div class="tac-promo__track">
+    {% for block in section.blocks %}
+      <div class="tac-promo__slide {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }}>
+        {% if block.settings.link != blank %}
+          <a href="{{ block.settings.link }}">{{ block.settings.message }}</a>
+        {% else %}
+          <span>{{ block.settings.message }}</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if section.blocks.size > 1 %}
+<script>
+  (function () {
+    var bar = document.getElementById('tac-promo-{{ section.id }}');
+    if (!bar) return;
+    var slides = bar.querySelectorAll('.tac-promo__slide');
+    var i = 0;
+    setInterval(function () {
+      slides[i].classList.remove('is-active');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('is-active');
+    }, {{ section.settings.rotation_speed }});
+  })();
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Promo Bar",
+  "tag": "section",
+  "class": "tac-promo-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Hover underline",
+      "default": "#5B6BF5"
+    },
+    {
+      "type": "header",
+      "content": "Sizing"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar height",
+      "min": 28,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "Uppercase text",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "range",
+      "id": "rotation_speed",
+      "label": "Rotation speed",
+      "min": 2000,
+      "max": 5000,
+      "step": 500,
+      "unit": "ms",
+      "default": 4000
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "message",
+          "label": "Text",
+          "default": "Up to 35% Off First Subscription + Free Shipping on $50+"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Promo Bar",
+      "blocks": [
+        {
+          "type": "message",
+          "settings": {
+            "message": "Up to 35% Off First Subscription + Free Shipping on $50+"
+          }
+        },
+        {
+          "type": "message",
+          "settings": {
+            "message": "New: WLP-1™ Oral GLP-1 Support · 20x Better Absorption →"
+          }
+        },
+        {
+          "type": "message",
+          "settings": {
+            "message": "Backed by 900+ Clinicians on FrontrowMD"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

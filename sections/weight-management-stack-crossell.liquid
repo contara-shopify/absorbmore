@@ -1,0 +1,433 @@
+{% comment %}
+  Section: Fourth Pathway / Berberine Cross-sell (Variant 2)
+  For: WLP-1™ PDP
+  Directs users to The Ultimate Weight Management Stack
+{% endcomment %}
+
+<section class="fp-section">
+  <div class="fp-wrap">
+    <div class="fp-card">
+      <div class="fp-grid">
+
+        {% comment %} LEFT: Copy {% endcomment %}
+        <div class="fp-copy">
+          <div class="fp-eyebrow">{{ section.settings.eyebrow }}</div>
+
+          <h2 class="fp-heading">
+            Why stop at <em>3 metabolic pathways?</em>
+          </h2>
+
+          <p class="fp-body">
+            Berberine doesn't just add a 4th pathway. It makes the other three hit harder. By activating AMPK, your body's master metabolic switch, it improves insulin sensitivity and stabilizes blood sugar so every benefit of WLP-1<sup>™</sup> compounds.
+          </p>
+
+          <ul class="fp-checks">
+            <li>
+              <span class="fp-check-icon">
+                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>
+                <span class="fp-check-pathway">GLP-1 activity</span>
+                <span class="fp-check-tag">WLP-1<sup>™</sup></span>
+              </span>
+            </li>
+            <li>
+              <span class="fp-check-icon">
+                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>
+                <span class="fp-check-pathway">Appetite control</span>
+                <span class="fp-check-tag">WLP-1<sup>™</sup></span>
+              </span>
+            </li>
+            <li>
+              <span class="fp-check-icon">
+                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>
+                <span class="fp-check-pathway">Thermogenesis</span>
+                <span class="fp-check-tag">WLP-1<sup>™</sup></span>
+              </span>
+            </li>
+            <li class="fp-is-unlock">
+              <span class="fp-check-icon">
+                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>
+                <span class="fp-check-pathway">AMPK activation</span>
+                <span class="fp-check-tag">Unlocked with Berberine</span>
+                <span class="fp-check-helper">Your cells' master switch for burning energy instead of storing it.</span>
+              </span>
+            </li>
+          </ul>
+
+          <a href="{{ section.settings.cta_url }}" class="fp-cta">
+            <span>{{ section.settings.cta_text }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+
+        {% comment %} RIGHT: Two-product stack visual {% endcomment %}
+        <div class="fp-stack">
+          <div class="fp-stack-label">{{ section.settings.stack_label }}</div>
+          <div class="fp-products">
+            <div class="fp-product">
+              <div class="fp-product-img">
+                {% if section.settings.wlp_image != blank %}
+                  <img src="{{ section.settings.wlp_image | image_url: width: 240 }}" alt="WLP-1™" loading="lazy">
+                {% endif %}
+              </div>
+              <div class="fp-product-name">WLP-1<sup>™</sup></div>
+              <div class="fp-product-pathways">3 pathways</div>
+            </div>
+            <div class="fp-plus" aria-hidden="true">+</div>
+            <div class="fp-product">
+              <div class="fp-product-img">
+                {% if section.settings.berberine_image != blank %}
+                  <img src="{{ section.settings.berberine_image | image_url: width: 240 }}" alt="Berberine" loading="lazy">
+                {% endif %}
+              </div>
+              <div class="fp-product-name">Berberine</div>
+              <div class="fp-product-pathways">+1 pathway</div>
+            </div>
+          </div>
+          <div class="fp-stack-tally">Together: <strong>4 metabolic pathways</strong></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fp-section {
+    --fp-ink: #1A1A18;
+    --fp-ink-soft: #5a5a55;
+    --fp-ink-mute: #8a8a82;
+    --fp-rule: #e8e6e0;
+    --fp-page: #f5f1ec;
+    --fp-card: #ffffff;
+    --fp-blue-deep: #4a7dbe;
+    --fp-red: #8a2a2a;
+    --fp-red-tint: rgba(138, 42, 42, 0.06);
+
+    background: var(--fp-page);
+    padding: 60px 24px;
+    font-family: inherit;
+    color: var(--fp-ink);
+  }
+
+  .fp-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .fp-card {
+    background: var(--fp-card);
+    border-radius: 20px;
+    padding: 56px 64px;
+    border: 1px solid var(--fp-rule);
+  }
+
+  .fp-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  /* Eyebrow */
+  .fp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--fp-red-tint);
+    color: var(--fp-red);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+  }
+  .fp-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fp-red);
+  }
+
+  /* Heading */
+  .fp-heading {
+    font-size: clamp(28px, 3.4vw, 42px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+    color: var(--fp-ink);
+  }
+  .fp-heading em {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--fp-red);
+  }
+
+  /* Body */
+  .fp-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fp-ink-soft);
+    margin: 0 0 24px;
+    max-width: 520px;
+  }
+  .fp-body sup { font-size: 0.65em; }
+
+  /* Checks */
+  .fp-checks {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fp-checks li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fp-ink);
+  }
+  .fp-check-pathway {
+    font-weight: 600;
+    color: var(--fp-ink);
+  }
+  .fp-check-tag {
+    color: var(--fp-ink-mute);
+    font-weight: 500;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+  .fp-check-tag sup { font-size: 0.7em; }
+  .fp-checks li.fp-is-unlock .fp-check-tag {
+    color: var(--fp-red);
+    font-weight: 600;
+  }
+  .fp-checks li.fp-is-unlock {
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--fp-rule);
+  }
+  .fp-check-helper {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--fp-ink-mute);
+    font-weight: 400;
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .fp-check-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--fp-red-tint);
+    color: var(--fp-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .fp-check-icon svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* CTA */
+  .fp-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--fp-red);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 16px 28px;
+    border-radius: 999px;
+    transition: background 0.2s ease;
+  }
+  .fp-cta:hover {
+    background: #6f2020;
+    color: #fff;
+  }
+
+  /* Two-product stack */
+  .fp-stack {
+    background: #faf8f4;
+    border: 1px solid var(--fp-rule);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .fp-stack-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fp-ink-mute);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .fp-products {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .fp-product {
+    flex: 1;
+    max-width: 130px;
+  }
+  .fp-product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #fff;
+    border: 1px solid var(--fp-rule);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .fp-product-img img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+  }
+  .fp-product-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fp-ink);
+  }
+  .fp-product-name sup { font-size: 0.7em; }
+  .fp-product-pathways {
+    font-size: 10px;
+    color: var(--fp-ink-mute);
+    margin-top: 2px;
+  }
+  .fp-plus {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--fp-ink);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 400;
+    flex-shrink: 0;
+    margin-bottom: 28px;
+  }
+  .fp-stack-tally {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--fp-rule);
+    font-size: 12px;
+    color: var(--fp-ink-soft);
+  }
+  .fp-stack-tally strong {
+    color: var(--fp-red);
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 820px) {
+    .fp-section {
+      padding: 40px 16px;
+    }
+    .fp-card {
+      padding: 36px 24px;
+      border-radius: 16px;
+    }
+    .fp-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .fp-heading {
+      font-size: 28px;
+    }
+    .fp-body {
+      font-size: 14px;
+    }
+    .fp-cta {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "4th Pathway / Berb",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Add a 4th pathway"
+    },
+    {
+      "type": "text",
+      "id": "stack_label",
+      "label": "Stack visual label",
+      "default": "The Ultimate Stack"
+    },
+    {
+      "type": "image_picker",
+      "id": "wlp_image",
+      "label": "WLP-1™ product image"
+    },
+    {
+      "type": "image_picker",
+      "id": "berberine_image",
+      "label": "Berberine product image"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Shop The Ultimate Stack"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "4th Pathway / Berb"
+    }
+  ]
+}
+{% endschema %}
