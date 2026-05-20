@@ -608,21 +608,60 @@
         ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
         galleryIndex: 0,
         mobileStickyVisible: false,
+        lp3DiscountConfig: window.ctrDiscountDisplay?.parseConfig({{ product.metafields.custom.ctr_discount_config.value | json }}) ?? null,
         lp3PlanPrices: {{ lp3_plan_prices }},
         lp3ComparePrices: {{ lp3_compare_prices }},
         lp3SelectedPlanId: {{ default_allocation.selling_plan.id | default: 'null' }},
+        get lp3CurrentAllocation() {
+          return (this.pdp?.selling_plan_allocations || []).find((a) => a?.selling_plan?.id === this.lp3SelectedPlanId) || null;
+        },
+        get lp3CurrentResolved() {
+          const variant = this.pdp?.selected_variant;
+          const compareAt = Math.max(variant?.compare_at_price || 0, variant?.price || 0);
+          if (!this.lp3SelectedPlanId || !this.lp3CurrentAllocation) {
+            return {
+              price: this.pdp?.selected_price ?? {{ variant.price }},
+              compareAt: compareAt || {{ compare_at_price }},
+              percent: 0
+            };
+          }
+
+          return window.ctrDiscountDisplay?.resolveSubscriptionDisplay(
+            this.lp3SelectedPlanId,
+            this.lp3DiscountConfig,
+            this.lp3CurrentAllocation,
+            variant,
+            compareAt
+          ) || {
+            price: this.lp3PlanPrices[this.lp3SelectedPlanId] ?? this.pdp?.selected_price ?? {{ variant.price }},
+            compareAt: compareAt || this.lp3ComparePrices[this.lp3SelectedPlanId] || {{ compare_at_price }},
+            percent: 0
+          };
+        },
         get lp3CurrentPrice() {
-          return this.lp3PlanPrices[this.lp3SelectedPlanId]
+          return this.lp3CurrentResolved?.price
+            ?? this.lp3PlanPrices[this.lp3SelectedPlanId]
             ?? this.pdp?.selected_price
             ?? {{ variant.price }};
         },
         get lp3CurrentComparePrice() {
-          return this.lp3ComparePrices[this.lp3SelectedPlanId]
+          return this.lp3CurrentResolved?.compareAt
+            ?? this.lp3ComparePrices[this.lp3SelectedPlanId]
             ?? this.pdp?.selected_compare_at_price
             ?? {{ compare_at_price }};
         },
+        get lp3SaveBadgeText() {
+          const p = Math.round(this.lp3CurrentResolved?.percent || 0);
+          return p > 0 ? `Save ${p}%` : `{{ section.settings.subscription_badge_text | escape }}`;
+        },
         selectDefaultPlan() {
           const allocations = this.pdp?.selling_plan_allocations || [];
+          const existingId = this.pdp?.selected_selling_plan?.id;
+          const existingPlan = allocations.find((a) => String(a?.selling_plan?.id) === String(existingId));
+          if (existingPlan?.selling_plan?.id) {
+            this.lp3SelectedPlanId = existingPlan.selling_plan.id;
+            return;
+          }
           const targetPlan = allocations[0]?.selling_plan;
           if (targetPlan?.id) {
             this.lp3SelectedPlanId = targetPlan.id;
@@ -763,7 +802,7 @@
             <div class="ctr-ppb__purchase-title-wrap">
               <span class="ctr-ppb__purchase-title">{{ section.settings.subscription_title | escape }}</span>
               {% if section.settings.subscription_badge_text != blank %}
-                <span class="ctr-ppb__save-badge">{{ section.settings.subscription_badge_text | escape }}</span>
+                <span class="ctr-ppb__save-badge" x-text="lp3SaveBadgeText">{{ section.settings.subscription_badge_text | escape }}</span>
               {% endif %}
             </div>
             <div class="ctr-ppb__price-wrap">
@@ -784,7 +823,9 @@
             @change="lp3SelectedPlanId = +$el.value; setSellingPlan(+$el.value)"
             :value="lp3SelectedPlanId">
             {% for allocation in variant.selling_plan_allocations %}
-              <option value="{{ allocation.selling_plan.id }}">{{ allocation.selling_plan.name }}</option>
+              <option value="{{ allocation.selling_plan.id }}">
+                {{ allocation.selling_plan.name }}{% if product.metafields.custom.ctr_discount_config.value != blank %}{% assign config_entries = product.metafields.custom.ctr_discount_config.value %}{% for cfg in config_entries %}{% assign cfg_plan_id = cfg.selling_plan_id | default: cfg.selling_planId %}{% if cfg_plan_id == allocation.selling_plan.id and cfg.display_percent != blank %} - {{ cfg.display_percent }}% OFF{% break %}{% endif %}{% endfor %}{% endif %}
+              </option>
             {% endfor %}
           </select>
 
