@@ -1,0 +1,366 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture check_svg -%}
+<svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+  <path d="M3 8.5l3 3 7-7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  & .ctr-timeline__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  /* Outer rounded container */
+  & .ctr-timeline__box {
+    background: {{ section.settings.container_bg }};
+    border-radius: {{ section.settings.container_radius }}px;
+    padding: {{ section.settings.container_padding }}px;
+  }
+
+  /* Header */
+  & .ctr-timeline__header {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto {{ section.settings.header_gap }}px;
+  }
+
+  & .ctr-timeline__heading {
+    margin: 0;
+    font-size: {{ section.settings.heading_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  & .ctr-timeline__heading p { margin: 0; }
+
+  & .ctr-timeline__subheading {
+    margin-top: {{ section.settings.subheading_gap }}px;
+    font-size: {{ section.settings.subheading_size_desktop }}px;
+    line-height: 1.4;
+    color: {{ section.settings.subheading_color }};
+  }
+
+  & .ctr-timeline__subheading p { margin: 0; }
+
+  /* Cards grid */
+  & .ctr-timeline__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ section.settings.card_gap }}px;
+  }
+
+  & .ctr-timeline__card {
+    background: {{ section.settings.card_bg }};
+    border-radius: {{ section.settings.card_radius }}px;
+    padding: {{ section.settings.card_padding }}px;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.card_inner_gap }}px;
+  }
+
+  & .ctr-timeline__pill {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: {{ section.settings.pill_bg }};
+    color: {{ section.settings.pill_text_color }};
+    font-size: {{ section.settings.pill_size_desktop }}px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  & .ctr-timeline__card-title {
+    margin: 0;
+    font-size: {{ section.settings.title_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  & .ctr-timeline__bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.bullet_gap }}px;
+  }
+
+  & .ctr-timeline__bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: {{ section.settings.bullet_size_desktop }}px;
+    line-height: 1.4;
+    color: {{ section.settings.bullet_color }};
+  }
+
+  & .ctr-timeline__bullet-check {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    color: {{ section.settings.check_color }};
+    margin-top: 2px;
+  }
+
+  & .ctr-timeline__bullet-check svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @media (max-width: 1023px) {
+    & {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    & .ctr-timeline__box {
+      padding: {{ section.settings.container_padding_mobile }}px;
+      border-radius: {{ section.settings.container_radius_mobile }}px;
+    }
+
+    & .ctr-timeline__header {
+      margin-bottom: {{ section.settings.header_gap_mobile }}px;
+    }
+
+    & .ctr-timeline__heading {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+
+    & .ctr-timeline__subheading {
+      margin-top: {{ section.settings.subheading_gap_mobile }}px;
+      font-size: {{ section.settings.subheading_size_mobile }}px;
+    }
+
+    & .ctr-timeline__grid {
+      grid-template-columns: 1fr;
+      gap: {{ section.settings.card_gap_mobile }}px;
+    }
+
+    & .ctr-timeline__card {
+      padding: {{ section.settings.card_padding_mobile }}px;
+      border-radius: {{ section.settings.card_radius_mobile }}px;
+      gap: {{ section.settings.card_inner_gap_mobile }}px;
+    }
+
+    & .ctr-timeline__pill {
+      font-size: {{ section.settings.pill_size_mobile }}px;
+    }
+
+    & .ctr-timeline__card-title {
+      font-size: {{ section.settings.title_size_mobile }}px;
+    }
+
+    & .ctr-timeline__bullet {
+      font-size: {{ section.settings.bullet_size_mobile }}px;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_90_day_timeline"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-timeline {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-timeline__inner">
+    <div class="ctr-timeline__box">
+      {% if section.settings.heading != blank or section.settings.subheading != blank %}
+        <div class="ctr-timeline__header">
+          {% if section.settings.heading != blank %}
+            <div class="ctr-timeline__heading">{{ section.settings.heading }}</div>
+          {% endif %}
+          {% if section.settings.subheading != blank %}
+            <div class="ctr-timeline__subheading">{{ section.settings.subheading }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="ctr-timeline__grid">
+        {% for block in section.blocks %}
+          <article class="ctr-timeline__card" {{ block.shopify_attributes }}>
+            {% if block.settings.pill_label != blank %}
+              <span class="ctr-timeline__pill">{{ block.settings.pill_label | escape }}</span>
+            {% endif %}
+
+            {% if block.settings.title != blank %}
+              <h3 class="ctr-timeline__card-title">{{ block.settings.title | escape }}</h3>
+            {% endif %}
+
+            {% if block.settings.bullets != blank %}
+              {%- assign bullets = block.settings.bullets | newline_to_br | split: '<br />' -%}
+              <ul class="ctr-timeline__bullets">
+                {% for bullet in bullets %}
+                  {%- assign bullet_text = bullet | strip -%}
+                  {% if bullet_text != blank %}
+                    <li class="ctr-timeline__bullet">
+                      <span class="ctr-timeline__bullet-check" aria-hidden="true">{{ check_svg }}</span>
+                      <span>{{ bullet_text }}</span>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR 90 Day Timeline",
+  "tag": "section",
+  "class": "shopify_section__ctr_90_day_timeline",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1440, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "color", "id": "background_color", "label": "Section background (full width)", "default": "#f0ede7" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#202020" },
+    { "type": "range", "id": "padding_top", "label": "Padding top - desktop", "default": 64, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom - desktop", "default": 96, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top - mobile", "default": 40, "min": 0, "max": 140, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom - mobile", "default": 56, "min": 0, "max": 140, "step": 4, "unit": "px" },
+
+    { "type": "header", "content": "Outer rounded container" },
+    { "type": "color", "id": "container_bg", "label": "Container background", "default": "#e8e4da" },
+    { "type": "range", "id": "container_radius", "label": "Container radius - desktop", "default": 28, "min": 0, "max": 60, "step": 1, "unit": "px" },
+    { "type": "range", "id": "container_radius_mobile", "label": "Container radius - mobile", "default": 20, "min": 0, "max": 50, "step": 1, "unit": "px" },
+    { "type": "range", "id": "container_padding", "label": "Container padding - desktop", "default": 56, "min": 16, "max": 120, "step": 2, "unit": "px" },
+    { "type": "range", "id": "container_padding_mobile", "label": "Container padding - mobile", "default": 24, "min": 12, "max": 80, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Header" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>What to expect over 90 days</p>" },
+    { "type": "richtext", "id": "subheading", "label": "Subheading", "default": "<p>Results don't happen overnight. But with the right daily routine, they do happen. Here's what to expect.</p>" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading color", "default": "#6a6a6a" },
+    { "type": "range", "id": "heading_size_desktop", "label": "Heading size - desktop", "default": 52, "min": 24, "max": 88, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size - mobile", "default": 32, "min": 22, "max": 56, "step": 1, "unit": "px" },
+    { "type": "range", "id": "subheading_size_desktop", "label": "Subheading size - desktop", "default": 17, "min": 13, "max": 26, "step": 1, "unit": "px" },
+    { "type": "range", "id": "subheading_size_mobile", "label": "Subheading size - mobile", "default": 15, "min": 13, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "subheading_gap", "label": "Gap between heading and sub - desktop", "default": 16, "min": 4, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "subheading_gap_mobile", "label": "Gap between heading and sub - mobile", "default": 12, "min": 4, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "header_gap", "label": "Gap below header - desktop", "default": 48, "min": 12, "max": 120, "step": 2, "unit": "px" },
+    { "type": "range", "id": "header_gap_mobile", "label": "Gap below header - mobile", "default": 32, "min": 12, "max": 80, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Cards grid" },
+    { "type": "range", "id": "card_gap", "label": "Gap between cards - desktop", "default": 20, "min": 0, "max": 80, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_gap_mobile", "label": "Gap between cards - mobile", "default": 16, "min": 0, "max": 60, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Card" },
+    { "type": "color", "id": "card_bg", "label": "Card background", "default": "#ffffff" },
+    { "type": "range", "id": "card_radius", "label": "Card radius - desktop", "default": 16, "min": 0, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_radius_mobile", "label": "Card radius - mobile", "default": 14, "min": 0, "max": 32, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_padding", "label": "Card padding - desktop", "default": 24, "min": 12, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_padding_mobile", "label": "Card padding - mobile", "default": 20, "min": 10, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_inner_gap", "label": "Gap between pill / title / bullets - desktop", "default": 20, "min": 6, "max": 50, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_inner_gap_mobile", "label": "Gap between pill / title / bullets - mobile", "default": 16, "min": 6, "max": 40, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Pill" },
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#4353ff" },
+    { "type": "color", "id": "pill_text_color", "label": "Pill text color", "default": "#ffffff" },
+    { "type": "range", "id": "pill_size_desktop", "label": "Pill text size - desktop", "default": 13, "min": 10, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "pill_size_mobile", "label": "Pill text size - mobile", "default": 12, "min": 10, "max": 18, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Card title" },
+    { "type": "range", "id": "title_size_desktop", "label": "Title size - desktop", "default": 20, "min": 14, "max": 36, "step": 1, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile", "label": "Title size - mobile", "default": 18, "min": 14, "max": 28, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Bullets" },
+    { "type": "color", "id": "bullet_color", "label": "Bullet text color", "default": "#5a5a5a" },
+    { "type": "color", "id": "check_color", "label": "Checkmark color", "default": "#49a091" },
+    { "type": "range", "id": "bullet_size_desktop", "label": "Bullet size - desktop", "default": 16, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "bullet_size_mobile", "label": "Bullet size - mobile", "default": 15, "min": 12, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "bullet_gap", "label": "Gap between bullets", "default": 10, "min": 2, "max": 30, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "month",
+      "name": "Month card",
+      "settings": [
+        { "type": "text", "id": "pill_label", "label": "Pill label", "default": "MONTH 1" },
+        { "type": "text", "id": "title", "label": "Card title", "default": "Cravings Quiet Down" },
+        { "type": "textarea", "id": "bullets", "label": "Bullets (one per line)", "default": "Fewer energy crashes\nCalmer days\nLess bloating" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR 90 Day Timeline",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "month",
+          "settings": {
+            "pill_label": "MONTH 1",
+            "title": "Cravings Quiet Down",
+            "bullets": "Fewer energy crashes\nCalmer days\nLess bloating"
+          }
+        },
+        {
+          "type": "month",
+          "settings": {
+            "pill_label": "MONTH 2",
+            "title": "Energy Levels Out",
+            "bullets": "More even energy\nBetter stress tolerance\nDeeper sleep"
+          }
+        },
+        {
+          "type": "month",
+          "settings": {
+            "pill_label": "MONTH 3",
+            "title": "Metabolic Foundation",
+            "bullets": "Steady all-day energy\nBalanced mood\nMore self-control"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

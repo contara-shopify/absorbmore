@@ -173,10 +173,10 @@
     <label class="w-full group overflow-hidden {% if default_selection == 'subscription' %}active{% endif %} {{ layout_order }}"
            x-effect="() => { $el.classList?.toggle('active', !!pdp.selected_selling_plan); $el.classList?.toggle('cursor-pointer', !pdp.selected_selling_plan); }"
            aria-label="{{ value }}"
-           {% if default_selection == 'subscription' %}x-init="$data.setSellingPlan(+`{{ selected_subscription_id }}`)"{% endif %}>
+           {% if default_selection == 'subscription' %}x-init="$data.setSellingPlan(pdp.selling_plan_allocations?.some((p) => p.selling_plan?.id === +`{{ selected_subscription_id }}`) ? +`{{ selected_subscription_id }}` : pdp.selling_plan_allocations?.[0]?.selling_plan?.id)"{% endif %}>
       <input type="radio"
              class="sr-only"
-             @change="$data.setSellingPlan(pdp.selected_selling_plan?.id ?? pdp.last_selected_selling_plan?.id ?? pdp.selling_plan_allocations?.[0]?.selling_plan?.id ?? +$el.value)"
+             @change="$data.setSellingPlan(pdp.selected_selling_plan?.id ?? (pdp.selling_plan_allocations?.some((p) => p.selling_plan?.id === pdp.last_selected_selling_plan?.id) ? pdp.last_selected_selling_plan?.id : pdp.selling_plan_allocations?.[0]?.selling_plan?.id) ?? +$el.value)"
              name="{{ block.id }}"
              value="{{ selected_subscription_id }}">
       <span class="flex items-center gap-1 sm:gap-3">

@@ -73,6 +73,7 @@
     or metafield.type == "variant_reference"
     or metafield.type == "list.color"
     or metafield.type == "boolean"
+    or metafield.type == "json"
     or metafield.type == "number_decimal"
     or metafield.type == "list.number_decimal"
     or metafield.type == "number_integer"
@@ -83,7 +84,7 @@
     {%- elsif metafield.type == null and metafield.size < 500 -%}
       "{{- metafield | escape -}}"
     {%- else -%}
-      {%- if metafield.value.size < 500 or metafield.value contains '<svg' -%}{{- metafield.value | json -}}{%- else -%}null{%- endif -%}
+      {%- if metafield.value contains '<svg' -%}null{%- else -%}{{- metafield.value | json -}}{%- endif -%}
     {%- endif -%}
   {%- endfor -%}
   }

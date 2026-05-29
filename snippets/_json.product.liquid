@@ -59,6 +59,7 @@
   "compare_at_price_varies": {{ product.compare_at_price_varies | json }},
   "options_with_values": {{ product.options_with_values | json }},
   "title": {{ product.title | json }},
+  "ctr_smart_bullet_points": {{ product.metafields.custom.smart_bullet_points.value | json }},
   "type": {{ product.type | json }},
   "featured_media": {{ product.featured_media | json }},
   "featured_image": {{ product.featured_image | json }},
@@ -92,7 +93,7 @@
     {% if settings.data__product__load_metafields %}
       {%- for namespace in product_namespaces -%}
         {% assign meta_keys = null %}
-        {% if card %}
+        {% if card and namespace != 'custom' %}
           {% assign meta_keys = settings.data__product__restrict_product_card_metafield_keys | strip %}
           {% if meta_keys != blank %}
             {% assign replacer = namespace | append: '.' %}
@@ -159,7 +160,7 @@
   {% if settings.data__product__load_metafields and skip_variant_metafields != true %}
     {%- for namespace in variant_namespaces -%}
       {% assign meta_keys = null %}
-      {% if card %}
+      {% if card and namespace != 'custom' %}
         {% assign meta_keys = settings.data__product__restrict_product_card_metafield_keys | strip %}
         {% if meta_keys != blank %}
           {% assign replacer = 'variant.' | append: namespace | append: '.' %}

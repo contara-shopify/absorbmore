@@ -1,0 +1,863 @@
+{%- comment -%}
+  PFD1 — Advertorial listicle for WLP-1. Top-of-funnel, Meta cold paid traffic.
+  Hook: "5 Things We're Sorry About" — consequence-shaped flexes, not benefit-shaped.
+  Audience: female 35-55, GLP-1 curious, needle-averse. Editorial feel, soft product reveal at bottom.
+  Brand voice: declarative, no em dashes, no exclamation points, ~prefix on weight numbers, * on s/f claims.
+  Never reference Ozempic by name. Always "GLP-1 injections."
+{%- endcomment -%}
+
+{%- liquid
+  assign hero_img      = section.settings.hero_img      | default: 'https://www.absorbmore.com/cdn/shop/files/lifestyle-image-1-wlp-1.jpg?v=1775677645'
+  assign product_img   = section.settings.product_img   | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?crop=center&height=1200&v=1774483977&width=1200'
+  assign img_1         = section.settings.img_1         | default: 'https://www.absorbmore.com/cdn/shop/files/lifestyle-image-1-wlp-1.jpg?v=1775677645'
+  assign img_2         = section.settings.img_2         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?crop=center&height=1200&v=1774483977&width=1200'
+  assign img_3         = section.settings.img_3         | default: 'https://www.absorbmore.com/cdn/shop/files/lifestyle-image-1-wlp-1.jpg?v=1775677645'
+  assign img_4         = section.settings.img_4         | default: 'https://www.absorbmore.com/cdn/shop/files/lifestyle-image-1-wlp-1.jpg?v=1775677645'
+  assign img_5         = section.settings.img_5         | default: 'https://www.absorbmore.com/cdn/shop/files/lifestyle-image-1-wlp-1.jpg?v=1775677645'
+  assign cart_1mo      = section.settings.cart_1mo      | default: '/cart/52472821121313:1?selling_plan=691162546465'
+  assign cart_3mo      = section.settings.cart_3mo      | default: '/cart/52472821154081:1?selling_plan=691162579233'
+  assign cart_6mo      = section.settings.cart_6mo      | default: '/cart/52472821186849:1?selling_plan=691166544161'
+  assign price_1mo_per   = section.settings.price_1mo_per   | default: '$79.20/mo'
+  assign price_1mo_was   = section.settings.price_1mo_was   | default: '$99.00'
+  assign price_1mo_total = section.settings.price_1mo_total | default: '$79.20 total'
+  assign price_1mo_save  = section.settings.price_1mo_save  | default: 'save $19.80'
+  assign discount_1mo    = section.settings.discount_1mo    | default: '20'
+  assign price_3mo_per   = section.settings.price_3mo_per   | default: '$69.30/mo'
+  assign price_3mo_was   = section.settings.price_3mo_was   | default: '$297.00'
+  assign price_3mo_total = section.settings.price_3mo_total | default: '$207.90 total'
+  assign price_3mo_save  = section.settings.price_3mo_save  | default: 'save $89.10'
+  assign discount_3mo    = section.settings.discount_3mo    | default: '30'
+  assign price_6mo_per   = section.settings.price_6mo_per   | default: '$64.35/mo'
+  assign price_6mo_was   = section.settings.price_6mo_was   | default: '$594.00'
+  assign price_6mo_total = section.settings.price_6mo_total | default: '$386.10 total'
+  assign price_6mo_save  = section.settings.price_6mo_save  | default: 'save $207.90'
+  assign discount_6mo    = section.settings.discount_6mo    | default: '35'
+  assign rating        = section.settings.rating        | default: '4.5'
+  assign review_count  = section.settings.review_count  | default: '1,200+'
+  assign byline        = section.settings.byline        | default: 'By The Absorption Company Editorial'
+  assign pub_date      = section.settings.pub_date      | default: 'May 2026'
+  assign read_time     = section.settings.read_time     | default: '6 min read'
+
+  comment
+    Hero copy. Schema-editable so the H1 can be swapped to message-match each ad creative
+    without a code change. HTML allowed in headline/dek so you can italicize the highlight phrase.
+  endcomment
+  assign kicker_text   = section.settings.kicker_text   | default: 'Read Before You Try GLP-1 Injections'
+  assign headline_html = section.settings.headline_html | default: "We're Sorry In Advance: 5 Things Nobody Warned You About <em>WLP-1</em>."
+  assign dek_html      = section.settings.dek_html      | default: 'The natural oral GLP-1 support helping women 35 to 55 drop <b>~9 lbs in 4 weeks</b><sup>*</sup>. No needles, no prescription. Here is what nobody warned us about.'
+  assign lede_text     = section.settings.lede_text     | default: 'Before you start WLP-1, we owe you five honest warnings about what tends to happen once the weight starts coming off.'
+  assign hero_cta_text = section.settings.hero_cta_text | default: 'See WLP-1 plans'
+
+  comment
+    Optional asset slots. All render hide-if-empty so the page still works pre-asset.
+  endcomment
+  assign ugc_video_url     = section.settings.ugc_video_url
+  assign ugc_video_poster  = section.settings.ugc_video_poster
+  assign ugc_video_caption = section.settings.ugc_video_caption | default: 'Watch: real customer, 6 weeks in.'
+  assign founder_name      = section.settings.founder_name
+  assign founder_title     = section.settings.founder_title     | default: 'Founder, The Absorption Company'
+  assign founder_quote     = section.settings.founder_quote
+  assign founder_img       = section.settings.founder_img
+
+  comment
+    Klaviyo native client subscription endpoint. Requires public company_id + list_id.
+  endcomment
+  assign klaviyo_company_id = section.settings.klaviyo_company_id
+  assign klaviyo_list_id    = section.settings.klaviyo_list_id
+  assign email_head         = section.settings.email_head    | default: 'Not ready yet?'
+  assign email_sub          = section.settings.email_sub     | default: 'Get the WLP-1 ingredient brief plus the 5-Sorrys recap in your inbox. No discount-spam, just the science.'
+  assign email_cta          = section.settings.email_cta     | default: 'Send it to me'
+-%}
+
+<style>
+  .pfd1 { --ink:#0B1220; --paper:#FBFAF6; --cream:#F4EFE4; --line:#E4DFD2; --blue:#4659FF; --blue-deep:#2C3FD9; --red:#E1225C; --gold:#C99A33; --mute:#5E6470;
+    color:var(--ink); background:var(--paper);  -webkit-font-smoothing:antialiased; line-height:1.55; font-size:17px; }
+  .pfd1 *{box-sizing:border-box}
+  .pfd1 img{max-width:100%;display:block;height:auto}
+  .pfd1 a{color:inherit;text-decoration:none}
+  .pfd1 .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+  .pfd1 .wrap-wide{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- DISCLOSURE BAR ---------- */
+  .pfd1-disc{background:#0B1220;color:#fff;font-size:12px;text-align:center;padding:8px 16px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+  .pfd1-disc span{opacity:.7;margin-right:8px}
+
+  /* ---------- MASTHEAD ---------- */
+  .pfd1-mast{background:#fff;border-bottom:1px solid var(--line);padding:14px 0}
+  .pfd1-mast__row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .pfd1-mast__logo{font-weight:700;font-size:18px;letter-spacing:.01em;color:var(--ink)}
+  .pfd1-mast__tag{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);font-weight:600}
+
+  /* ---------- ARTICLE HEAD ---------- */
+  .pfd1-art{padding:36px 0 24px}
+  .pfd1-art__kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 14px}
+  .pfd1-art h1{font-weight:700;font-size:clamp(30px,5.6vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink)}
+  .pfd1-art h1 em{font-style:italic;color:var(--blue)}
+  .pfd1-art__dek{font-size:clamp(17px,2.2vw,20px);line-height:1.45;color:#2D3340;margin:0 0 22px;font-weight:400}
+  .pfd1-art__dek b{color:var(--ink);font-weight:600}
+  .pfd1-art__meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:var(--mute);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin:0 0 24px}
+  .pfd1-art__meta b{color:var(--ink);font-weight:600}
+  .pfd1-art__meta span{display:flex;align-items:center;gap:6px}
+
+  /* ---------- HERO IMAGE ---------- */
+  .pfd1-heroimg{margin:0 0 28px;border-radius:6px;overflow:hidden;background:var(--cream)}
+  .pfd1-heroimg img{width:100%;aspect-ratio:16/10;object-fit:cover}
+  .pfd1-heroimg figcaption{font-size:13px;color:var(--mute);padding:10px 4px 0;line-height:1.4}
+  .pfd1-heroimg figcaption b{color:var(--ink);font-weight:600}
+
+  /* ---------- BODY ---------- */
+  .pfd1-body{padding:0 0 16px}
+  .pfd1-body p{margin:0 0 18px;font-size:17px;line-height:1.65;color:#1E2330}
+  .pfd1-body p.lede{font-size:19px;line-height:1.55;color:var(--ink);font-weight:500}
+  .pfd1-body p.lede::first-letter{font-size:54px;font-weight:700;float:left;line-height:.9;padding:6px 10px 0 0;color:var(--blue)}
+  .pfd1-body strong{font-weight:700;color:var(--ink)}
+
+  /* ---------- SECTION IMAGE ---------- */
+  .pfd1-secimg{margin:8px 0 22px;border-radius:6px;overflow:hidden;background:var(--cream)}
+  .pfd1-secimg img{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .pfd1-secimg figcaption{font-size:12px;color:var(--mute);padding:8px 4px 0;line-height:1.4;font-style:italic}
+
+  /* ---------- NUMBERED SORRY BLOCKS ---------- */
+  .pfd1-sorry{padding:28px 0 28px;border-top:1px solid var(--line)}
+  .pfd1-sorry__num{font-size:64px;font-weight:700;line-height:1;color:var(--blue);margin:0 0 6px;letter-spacing:-.03em}
+  .pfd1-sorry__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--mute);font-weight:700;margin:0 0 6px}
+  .pfd1-sorry h2{font-weight:700;font-size:clamp(24px,4vw,32px);line-height:1.15;letter-spacing:-.01em;margin:0 0 18px;color:var(--ink)}
+  .pfd1-sorry h2 em{font-style:italic;color:var(--blue)}
+  .pfd1-sorry p{margin:0 0 16px;font-size:17px;line-height:1.65;color:#1E2330}
+  .pfd1-sorry__pull{border-left:4px solid var(--blue);background:var(--cream);padding:16px 18px;margin:18px 0;font-size:16px;line-height:1.5;color:var(--ink);border-radius:0 4px 4px 0}
+  .pfd1-sorry__pull b{font-weight:700;color:var(--blue-deep)}
+  .pfd1-sorry__pull .stat{display:block;font-size:28px;font-weight:700;color:var(--blue-deep);line-height:1;margin:0 0 4px}
+
+  /* ---------- INLINE CTA (after sorry #3) ---------- */
+  .pfd1-inline-cta{background:var(--ink);color:#fff;border-radius:8px;padding:24px 22px;margin:24px 0;text-align:center}
+  .pfd1-inline-cta p{margin:0 0 14px;font-size:16px;line-height:1.45;color:#E8ECF4}
+  .pfd1-inline-cta p b{color:#fff;font-weight:700}
+  .pfd1-inline-cta a{display:inline-block;background:var(--blue);color:#fff;padding:13px 24px;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ---------- PRODUCT REVEAL ---------- */
+  .pfd1-reveal{background:var(--cream);padding:48px 0;border-top:1px solid var(--line);margin-top:32px}
+  .pfd1-reveal__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 12px;text-align:center}
+  .pfd1-reveal h2{font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink);text-align:center}
+  .pfd1-reveal h2 em{font-style:italic;color:var(--blue)}
+  .pfd1-reveal__sub{text-align:center;font-size:17px;line-height:1.55;color:#2D3340;max-width:560px;margin:0 auto 28px}
+  .pfd1-reveal__three{display:grid;grid-template-columns:1fr;gap:14px;max-width:640px;margin:0 auto 0}
+  @media(min-width:680px){.pfd1-reveal__three{grid-template-columns:repeat(3,1fr)}}
+  .pfd1-reveal__card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 16px;text-align:center}
+  .pfd1-reveal__card b{display:block;font-size:26px;font-weight:700;color:var(--blue);line-height:1;margin:0 0 6px}
+  .pfd1-reveal__card span{display:block;font-size:13px;color:var(--mute);line-height:1.4;font-weight:500}
+
+  /* ---------- BUYBOX (live PDP pattern) ---------- */
+  .pfd1-buy{padding:48px 0;background:#fff}
+  .pfd1-buy__head{text-align:center;margin:0 0 22px}
+  .pfd1-buy__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 10px}
+  .pfd1-buy h2{font-weight:700;font-size:clamp(26px,4.6vw,36px);line-height:1.1;margin:0 0 8px;color:var(--ink)}
+  .pfd1-buy__sub{font-size:15px;color:var(--mute);margin:0 auto;max-width:520px}
+  .pfd1-buy__label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);font-weight:700;max-width:720px;margin:0 auto 10px;padding:0 4px}
+
+  .pfd1-buy__list{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .pfd1-row{position:relative;display:block;padding:18px 18px 16px;border-bottom:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s ease}
+  .pfd1-row:last-child{border-bottom:0}
+  .pfd1-row:hover{background:#FBFAF6}
+  .pfd1-row--best{background:#F4EFE4}
+  .pfd1-row--best:hover{background:#EDE6D4}
+
+  .pfd1-row__top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 6px}
+  .pfd1-row__left{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .pfd1-row__namerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pfd1-row__radio{width:18px;height:18px;border:2px solid #B7BBC4;border-radius:999px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:#fff;margin-right:2px}
+  .pfd1-row--best .pfd1-row__radio{border-color:var(--ink)}
+  .pfd1-row--best .pfd1-row__radio:after{content:"";width:9px;height:9px;background:var(--ink);border-radius:999px;display:block}
+  .pfd1-row__name{font-size:19px;font-weight:700;color:var(--ink);line-height:1.1}
+  .pfd1-row__pill{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;padding:4px 9px;border-radius:4px;line-height:1}
+  .pfd1-row__pill--save{background:var(--red);color:#fff}
+  .pfd1-row__pill--pop{background:#4E78D1;color:#fff}
+  .pfd1-row__pill--best{background:#4E78D1;color:#fff}
+  .pfd1-row__desc{font-size:14px;line-height:1.4;color:#3D4452;max-width:380px;margin:0}
+  .pfd1-row__assure{font-size:13px;line-height:1.4;color:var(--mute);margin:0}
+
+  .pfd1-row__right{text-align:right;flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:120px}
+  .pfd1-row__per{font-size:22px;font-weight:700;color:var(--ink);line-height:1.1;white-space:nowrap}
+  .pfd1-row__totline{font-size:13px;color:#3D4452;white-space:nowrap}
+  .pfd1-row__was{text-decoration:line-through;color:var(--mute);margin-right:4px}
+  .pfd1-row__save{font-size:13px;color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+  .pfd1-row__cta{display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;padding:11px 18px;border-radius:6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:10px}
+  .pfd1-row--best .pfd1-row__cta{background:var(--blue)}
+  .pfd1-row__cta:after{content:" →";margin-left:6px}
+
+  @media(max-width:480px){
+    .pfd1-row__top{flex-direction:column;align-items:stretch}
+    .pfd1-row__right{align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;gap:6px 12px}
+    .pfd1-row__per{font-size:20px}
+  }
+
+  .pfd1-buy__assure{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:center;align-items:center;font-size:13px;color:var(--mute);margin:16px auto 0;max-width:720px}
+  .pfd1-buy__assure span{display:inline-flex;align-items:center;gap:6px}
+  .pfd1-buy__assure svg{width:16px;height:16px;color:var(--blue)}
+
+  /* ---------- REVIEWS BAND ---------- */
+  .pfd1-rev{padding:44px 0;background:var(--cream);border-top:1px solid var(--line)}
+  .pfd1-rev__head{text-align:center;margin:0 0 24px}
+  .pfd1-rev__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 6px}
+  .pfd1-rev h2{font-size:clamp(22px,3.6vw,28px);font-weight:700;margin:0 0 6px;color:var(--ink)}
+  .pfd1-rev__stars-row{display:flex;justify-content:center;align-items:center;gap:8px;font-size:14px;color:var(--mute)}
+  .pfd1-stars{display:inline-block;color:var(--gold);letter-spacing:1px;font-size:16px}
+  .pfd1-stars:before{content:"★★★★★"}
+  .pfd1-rev__grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:1000px;margin:0 auto}
+  @media(min-width:720px){.pfd1-rev__grid{grid-template-columns:repeat(3,1fr)}}
+  .pfd1-quote{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 18px}
+  .pfd1-quote__stars{margin:0 0 8px}
+  .pfd1-quote p{font-size:16px;line-height:1.55;color:#1E2330;margin:0 0 12px}
+  .pfd1-quote__name{font-size:13px;font-weight:700;color:var(--ink)}
+  .pfd1-quote__verif{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:4px;margin-top:2px}
+  .pfd1-quote__verif svg{width:13px;height:13px;color:var(--blue)}
+
+  /* ---------- FAQ ---------- */
+  .pfd1-faq{padding:48px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd1-faq__head{text-align:center;margin:0 0 24px}
+  .pfd1-faq h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0;color:var(--ink)}
+  .pfd1-faq__list{max-width:720px;margin:0 auto}
+  .pfd1-faq__item{border-bottom:1px solid var(--line)}
+  .pfd1-faq__item summary{list-style:none;cursor:pointer;padding:18px 36px 18px 0;font-size:16px;font-weight:600;color:var(--ink);position:relative}
+  .pfd1-faq__item summary::-webkit-details-marker{display:none}
+  .pfd1-faq__item summary:after{content:"+";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--blue);font-weight:700;line-height:1}
+  .pfd1-faq__item[open] summary:after{content:"–"}
+  .pfd1-faq__item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:#2D3340}
+
+  /* ---------- CLOSE / FINAL CTA ---------- */
+  .pfd1-close{padding:56px 0;background:var(--ink);color:#fff;text-align:center}
+  .pfd1-close__kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:#A4B0CF;font-weight:700;margin:0 0 10px}
+  .pfd1-close h2{font-size:clamp(28px,5vw,40px);font-weight:700;margin:0 0 12px;color:#fff;line-height:1.1}
+  .pfd1-close h2 em{font-style:italic;color:#9EA9FF}
+  .pfd1-close p{font-size:16px;color:#C9D1E2;max-width:520px;margin:0 auto 22px;line-height:1.5}
+  .pfd1-close a{display:inline-flex;align-items:center;background:var(--blue);color:#fff;padding:15px 28px;border-radius:8px;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.05em}
+  .pfd1-close a:after{content:" →";margin-left:6px}
+
+  /* ---------- DISCLAIMER ---------- */
+  .pfd1-disclaim{padding:24px 0 80px;background:#fff;border-top:1px solid var(--line)}
+  .pfd1-disclaim p{font-size:12px;line-height:1.55;color:var(--mute);max-width:720px;margin:0 auto 10px}
+  .pfd1-disclaim a{color:var(--blue-deep);text-decoration:underline}
+
+  /* ---------- HERO ABOVE-FOLD RATING + CTA ROW ---------- */
+  .pfd1-hero-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:0 0 18px}
+  .pfd1-hero-row__rating{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+  .pfd1-hero-row__rating b{color:var(--ink);font-weight:700}
+  .pfd1 a.pfd1-hero-row__cta{display:inline-flex;align-items:center;background:var(--blue);color:#fff;padding:11px 18px;border-radius:6px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;min-height:44px}
+  .pfd1 a.pfd1-hero-row__cta:after{content:" ↓";margin-left:6px}
+  .pfd1 a.pfd1-hero-row__cta:hover{background:var(--blue-deep);color:#fff}
+
+  /* ---------- UGC VIDEO ---------- */
+  .pfd1-ugc{margin:0 0 28px;border-radius:6px;overflow:hidden;background:#0B1220;position:relative}
+  .pfd1-ugc video{width:100%;display:block;aspect-ratio:9/16;max-height:640px;object-fit:cover;background:#0B1220}
+  @media(min-width:680px){.pfd1-ugc video{aspect-ratio:4/5;max-height:720px}}
+  .pfd1-ugc figcaption{font-size:13px;color:var(--mute);padding:10px 4px 0;line-height:1.4}
+  .pfd1-ugc figcaption b{color:var(--ink);font-weight:600}
+
+  /* ---------- FOUNDER BAND ---------- */
+  .pfd1-founder{margin:28px 0;padding:22px;background:var(--cream);border-radius:8px;border:1px solid var(--line);display:flex;gap:18px;align-items:center}
+  .pfd1-founder img{width:84px;height:84px;border-radius:999px;object-fit:cover;flex:0 0 auto;border:2px solid #fff;box-shadow:0 1px 4px rgba(11,18,32,.08)}
+  .pfd1-founder__copy{flex:1;min-width:0}
+  .pfd1-founder__quote{font-size:16px;line-height:1.45;color:var(--ink);font-style:italic;margin:0 0 8px;font-weight:500}
+  .pfd1-founder__name{font-size:13px;color:var(--ink);font-weight:700;line-height:1.2}
+  .pfd1-founder__title{font-size:12px;color:var(--mute);line-height:1.3}
+  @media(max-width:520px){.pfd1-founder{flex-direction:column;text-align:center;gap:14px}.pfd1-founder img{width:72px;height:72px}}
+
+  /* ---------- INLINE CTA PRICE LINE ---------- */
+  .pfd1-inline-cta__price{display:block;font-size:12px;color:#9AA4BC;margin-top:8px;letter-spacing:.04em}
+  .pfd1-inline-cta__price b{color:#fff;font-weight:700}
+
+  /* ---------- INGREDIENT TRANSPARENCY ---------- */
+  .pfd1-ingr{padding:44px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd1-ingr__head{text-align:center;margin:0 0 24px}
+  .pfd1-ingr__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd1-ingr h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0 0 8px;color:var(--ink);line-height:1.15}
+  .pfd1-ingr__sub{font-size:15px;color:#3D4452;max-width:520px;margin:0 auto}
+  .pfd1-ingr__grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:880px;margin:0 auto}
+  @media(min-width:720px){.pfd1-ingr__grid{grid-template-columns:repeat(3,1fr)}}
+  .pfd1-ingr__card{border:1px solid var(--line);border-radius:8px;padding:20px 18px;background:#fff;display:flex;flex-direction:column;gap:8px}
+  .pfd1-ingr__name{font-size:18px;font-weight:700;color:var(--ink);line-height:1.15;letter-spacing:-.005em}
+  .pfd1-ingr__name span{display:block;font-size:11px;font-weight:700;color:var(--blue-deep);text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
+  .pfd1-ingr__dose{font-size:13px;color:var(--mute);font-weight:600}
+  .pfd1-ingr__what{font-size:14px;line-height:1.5;color:#1E2330;margin:0}
+
+  /* ---------- TIMELINE ---------- */
+  .pfd1-time{padding:44px 0;background:var(--cream);border-top:1px solid var(--line)}
+  .pfd1-time__head{text-align:center;margin:0 0 26px}
+  .pfd1-time__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd1-time h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0;color:var(--ink);line-height:1.15}
+  .pfd1-time__grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:880px;margin:0 auto;position:relative}
+  @media(min-width:720px){.pfd1-time__grid{grid-template-columns:repeat(3,1fr)}}
+  .pfd1-time__card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px 18px;position:relative}
+  .pfd1-time__when{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep);margin:0 0 6px}
+  .pfd1-time__what{font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;margin:0 0 8px;letter-spacing:-.005em}
+  .pfd1-time__detail{font-size:14px;line-height:1.55;color:#1E2330;margin:0}
+  .pfd1-time__detail sup{font-size:9px}
+
+  /* ---------- EMAIL CAPTURE ---------- */
+  .pfd1-email{padding:44px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd1-email__inner{max-width:560px;margin:0 auto;text-align:center}
+  .pfd1-email__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd1-email h2{font-size:clamp(22px,3.6vw,28px);font-weight:700;margin:0 0 8px;color:var(--ink);line-height:1.2}
+  .pfd1-email p{font-size:15px;color:#3D4452;margin:0 0 18px;line-height:1.5}
+  .pfd1-email__form{display:flex;flex-direction:column;gap:8px;max-width:440px;margin:0 auto}
+  @media(min-width:520px){.pfd1-email__form{flex-direction:row}}
+  .pfd1-email__input{flex:1;min-height:48px;padding:0 14px;font-size:16px;border:1px solid #C9CFDA;border-radius:6px;color:var(--ink);background:#fff;font-family:inherit}
+  .pfd1-email__input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(70,89,255,.18)}
+  .pfd1-email__btn{min-height:48px;padding:0 22px;background:var(--ink);color:#fff;border:0;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font-family:inherit}
+  .pfd1-email__btn:hover{background:var(--blue-deep)}
+  .pfd1-email__legal{font-size:11px;color:var(--mute);margin:12px 0 0;line-height:1.4}
+  .pfd1-email__msg{display:none;font-size:14px;margin:14px 0 0;padding:10px 14px;border-radius:6px;line-height:1.4}
+  .pfd1-email__msg--ok{display:block;color:#0B5E2E;background:#E6F4EC;border:1px solid #B6DDC6}
+  .pfd1-email__msg--err{display:block;color:#962040;background:#FBE6EC;border:1px solid #F3B9C7}
+
+  /* ---------- STICKY MOBILE CTA ---------- */
+  .pfd1-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px env(safe-area-inset-bottom);z-index:90;box-shadow:0 -6px 18px rgba(11,18,32,.08);display:flex;align-items:center;gap:10px}
+  .pfd1-sticky__copy{flex:1;min-width:0}
+  .pfd1-sticky__copy b{display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.2}
+  .pfd1-sticky__copy span{display:block;font-size:11px;color:var(--mute);line-height:1.3}
+  .pfd1-sticky a{flex:0 0 auto;background:var(--blue);color:#fff;padding:14px 20px;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;min-height:48px;display:inline-flex;align-items:center}
+  @media(min-width:880px){.pfd1-sticky{display:none}}
+  .pfd1{padding-bottom:88px}
+  @media(min-width:880px){.pfd1{padding-bottom:0}}
+</style>
+
+<div class="pfd1">
+
+  <!-- ARTICLE HEAD -->
+  <article class="pfd1-art">
+    <div class="wrap">
+      <p class="pfd1-art__kicker">{{ kicker_text }}</p>
+      <h1>{{ headline_html }}</h1>
+      <p class="pfd1-art__dek">{{ dek_html }}</p>
+
+      <!-- Above-fold rating + skip-to-plans (playbook: social proof + CTA before the fold) -->
+      <div class="pfd1-hero-row">
+        <div class="pfd1-hero-row__rating">
+          <span class="pfd1-stars"></span>
+          <span><b>{{ rating }}</b> average rating{% if review_count != blank %} · {{ review_count }} reviews{% endif %}</span>
+        </div>
+        <a class="pfd1-hero-row__cta" href="#buy">{{ hero_cta_text }}</a>
+      </div>
+
+      <div class="pfd1-art__meta">
+        {%- if byline != blank -%}<span><b>{{ byline }}</b></span>{%- endif -%}
+        <span>Updated {{ pub_date }}</span>
+        <span>{{ read_time }}</span>
+      </div>
+
+      <figure class="pfd1-heroimg">
+        <img src="{{ hero_img }}" alt="A woman ties her running shoes on a kitchen counter in morning light." loading="eager" fetchpriority="high" decoding="async" width="1200" height="750">
+        <figcaption><b>Above:</b> Results have consequences. Most of them are good. All of them are annoying.</figcaption>
+      </figure>
+
+      {%- if ugc_video_url != blank -%}
+      <figure class="pfd1-ugc">
+        <video
+          src="{{ ugc_video_url }}"
+          {%- if ugc_video_poster != blank %} poster="{{ ugc_video_poster }}"{% endif -%}
+          controls playsinline preload="metadata"
+          aria-label="Customer testimonial video"></video>
+        <figcaption><b>Watch:</b> {{ ugc_video_caption }}</figcaption>
+      </figure>
+      {%- endif -%}
+
+      <div class="pfd1-body">
+        <p class="lede">{{ lede_text }}</p>
+      </div>
+    </div>
+
+    <!-- ============ #1 WARDROBE ============ -->
+    <div class="wrap">
+      <section class="pfd1-sorry">
+        <div class="pfd1-sorry__num">01</div>
+        <h2>Sorry, you are going to need a <em>new wardrobe</em>.</h2>
+        <figure class="pfd1-secimg">
+          <img src="{{ img_1 }}" alt="A woman holding up too-large jeans in front of a mirror." loading="lazy" width="900" height="675">
+        </figure>
+        <p>Clinical research shows <strong>~9 lbs lost in the first four weeks</strong>,<sup>*</sup> with some seeing <strong>~12.5% of body weight</strong> over ten weeks.<sup>*</sup></p>
+        <p>Your favorite jeans become a costume. The belt rides on its last notch and still feels loose.</p>
+        <p>And one morning you reach into the back of the closet for the dress you have not been able to zip in years, and it slides on without a fight.</p>
+        <p>Sorry in advance. You are either buying a new wardrobe or rediscovering the one you stopped believing you would fit into again.</p>
+        <div class="pfd1-sorry__pull">
+          <span class="stat">~9 lbs in 4 weeks<sup>*</sup></span>
+          <b>Roughly ~1.7 lbs a week</b> without changing diet or routine.
+        </div>
+      </section>
+
+      <!-- ============ #2 GLP-1 INJECTIONS ============ -->
+      <section class="pfd1-sorry">
+        <div class="pfd1-sorry__num">02</div>
+        <h2>Sorry, you'll keep explaining you are <em>not on GLP-1 injections</em>.</h2>
+        <figure class="pfd1-secimg">
+          <img src="{{ img_2 }}" alt="WLP-1 supplement bottle on a clean countertop." loading="lazy" width="900" height="675">
+        </figure>
+        <p>Someone leans in at brunch and asks, <em>"are you on the shots?"</em> You say no, but the results look close enough that nobody quite believes you.</p>
+        <p>WLP-1 is not an injection. It is two pills a day on the same natural GLP-1 pathway the shots target,<sup>*</sup> plus two more pathways the shots do not touch.</p>
+        <p>No needles, no prescription, no monthly trip to a clinic.</p>
+        <p>You will get used to explaining it. Or you can stop explaining and let the change in your jeans do the talking.</p>
+        <div class="pfd1-sorry__pull">
+          <b>Triple-pathway, not single-pathway.</b> Appetite, metabolic rate, and thermogenesis at once.<sup>*</sup>
+        </div>
+      </section>
+
+      {%- if founder_quote != blank -%}
+      <!-- FOUNDER BAND (optional) -->
+      <aside class="pfd1-founder">
+        {%- if founder_img != blank -%}
+          <img src="{{ founder_img }}" alt="{{ founder_name }}, {{ founder_title }}" loading="lazy" width="84" height="84">
+        {%- endif -%}
+        <div class="pfd1-founder__copy">
+          <p class="pfd1-founder__quote">"{{ founder_quote }}"</p>
+          <div class="pfd1-founder__name">{{ founder_name }}</div>
+          <div class="pfd1-founder__title">{{ founder_title }}</div>
+        </div>
+      </aside>
+      {%- endif -%}
+
+      <!-- ============ #3 LONGER WORKOUTS ============ -->
+      <section class="pfd1-sorry">
+        <div class="pfd1-sorry__num">03</div>
+        <h2>Sorry, your workouts are <em>fifteen minutes longer</em> now.</h2>
+        <figure class="pfd1-secimg">
+          <img src="{{ img_3 }}" alt="A woman walking on a treadmill in morning sunlight." loading="lazy" width="900" height="675">
+        </figure>
+        <p>You finish thirty minutes on the treadmill and the watch tells you to keep going. Your legs feel fresh, your breathing is even, and you go another fifteen before you feel anything.</p>
+        <p>WLP-1 helps the body burn up to <strong>500 more calories a day</strong> without changing behavior.<sup>*</sup> When you actually move, thermogenic activity can climb up to <strong>150% in the hour after a dose</strong>.<sup>*</sup></p>
+        <p>The workouts have not gotten easier. Your engine has gotten bigger.</p>
+        <div class="pfd1-sorry__pull">
+          <span class="stat">+500 cal/day<sup>*</sup></span>
+          <b>Without changing behavior.</b> Up to 150% post-dose with movement layered on.<sup>*</sup>
+        </div>
+      </section>
+
+      <!-- INLINE CTA -->
+      <div class="pfd1-inline-cta">
+        <p><b>Two more apologies to go.</b> Or skip ahead.</p>
+        <a href="#buy">See WLP-1 plans</a>
+        <span class="pfd1-inline-cta__price">From <b>{{ price_6mo_per }}</b> · <b>{{ discount_6mo }}% off</b> · Free shipping on 3 &amp; 6-month plans</span>
+      </div>
+
+      <!-- ============ #4 MIRROR ============ -->
+      <section class="pfd1-sorry">
+        <div class="pfd1-sorry__num">04</div>
+        <h2>Sorry, you keep getting <em>caught staring at yourself</em>.</h2>
+        <figure class="pfd1-secimg">
+          <img src="{{ img_4 }}" alt="A woman catches her reflection in a storefront window." loading="lazy" width="900" height="675">
+        </figure>
+        <p>You will walk past the bathroom mirror at work and stop.</p>
+        <p>You will catch your reflection in a storefront window on a Saturday and not recognize the person standing there for half a second. Your face looks the way it did before the last two or three years happened.</p>
+        <p>There is a small vanity that comes with seeing real results in your own body. We are sorry, you are going to feel it. It is earned.</p>
+        <div class="pfd1-sorry__pull">
+          <b>Uncontrolled eating scores improved 22.3%</b> in the clinical study.<sup>*</sup>
+        </div>
+      </section>
+
+      <!-- ============ #5 SNACK DRAWER ============ -->
+      <section class="pfd1-sorry">
+        <div class="pfd1-sorry__num">05</div>
+        <h2>Sorry, the <em>snack drawer</em> has been collecting dust.</h2>
+        <figure class="pfd1-secimg">
+          <img src="{{ img_5 }}" alt="A nearly empty kitchen snack drawer." loading="lazy" width="900" height="675">
+        </figure>
+        <p>WLP-1 does not erase hunger. It quiets the noise around it.</p>
+        <p>The 3pm pull toward the vending machine softens. The Sunday-night graze through the pantry slows down.</p>
+        <p>In clinical research, scores for uncontrolled eating dropped <strong>22.3%</strong>,<sup>*</sup> and most customers feel it inside the first week.</p>
+        <p>The food is still in the cabinet. You just stop hearing it call your name.</p>
+        <div class="pfd1-sorry__pull">
+          <span class="stat">22.3% drop in uncontrolled eating<sup>*</sup></span>
+          <b>Food noise, quieter.</b> Not absent. You will still notice the cookies. You will walk past them.
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <!-- ============ PRODUCT REVEAL ============ -->
+  <section class="pfd1-reveal">
+    <div class="wrap">
+      <p class="pfd1-reveal__kicker">So, what is WLP-1.</p>
+      <h2>A natural <em>GLP-1 boost</em>. In a pill.</h2>
+      <p class="pfd1-reveal__sub">WLP-1 works on the same biological pathway the GLP-1 injections target,<sup>*</sup> just delivered as a daily pill instead of a weekly shot.</p>
+      <p class="pfd1-reveal__sub">No needles, no prescription, no side effects to schedule your day around, no monthly trip to a clinic.</p>
+      <p class="pfd1-reveal__sub">Two pills a day, formulated for <b>up to 20x more absorption</b>, so the active dose actually reaches the parts of the body that need it.</p>
+      <div class="pfd1-reveal__three">
+        <div class="pfd1-reveal__card"><b>~9 lbs</b><span>in 4 weeks, clinical study<sup>*</sup></span></div>
+        <div class="pfd1-reveal__card"><b>+500 cal</b><span>burned per day, no behavior change<sup>*</sup></span></div>
+        <div class="pfd1-reveal__card"><b>22.3%</b><span>drop in uncontrolled eating scores<sup>*</sup></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INGREDIENT TRANSPARENCY ============ -->
+  <section class="pfd1-ingr">
+    <div class="wrap-wide">
+      <div class="pfd1-ingr__head">
+        <p class="pfd1-ingr__kicker">What is actually in the pill</p>
+        <h2>Three clinically studied actives. No filler.</h2>
+        <p class="pfd1-ingr__sub">Each ingredient is dosed to clinical study levels. Delivered in our absorption-enhanced format, which can deliver up to 20x more of the active dose where the body needs it.</p>
+      </div>
+      <div class="pfd1-ingr__grid">
+        <div class="pfd1-ingr__card">
+          <div class="pfd1-ingr__name">Irvingia gabonensis<span>IGOB131</span></div>
+          <div class="pfd1-ingr__dose">150 mg, twice daily</div>
+          <p class="pfd1-ingr__what">African mango seed extract. Studied for supporting healthy weight, waistline, and blood sugar regulation.<sup>*</sup></p>
+        </div>
+        <div class="pfd1-ingr__card">
+          <div class="pfd1-ingr__name">Cissus quadrangularis<span>CQR300</span></div>
+          <div class="pfd1-ingr__dose">300 mg, daily</div>
+          <p class="pfd1-ingr__what">Studied for supporting body composition, appetite regulation, and reduced sugar cravings.<sup>*</sup></p>
+        </div>
+        <div class="pfd1-ingr__card">
+          <div class="pfd1-ingr__name">Grains of Paradise<span>Aframomum melegueta</span></div>
+          <div class="pfd1-ingr__dose">40 mg, daily</div>
+          <p class="pfd1-ingr__what">Studied for activating brown adipose tissue and increasing daily calorie burn by up to 500 cal.<sup>*</sup></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHAT TO EXPECT TIMELINE ============ -->
+  <section class="pfd1-time">
+    <div class="wrap-wide">
+      <div class="pfd1-time__head">
+        <p class="pfd1-time__kicker">What to expect</p>
+        <h2>Week 1 to Month 3, by the clinical data.</h2>
+      </div>
+      <div class="pfd1-time__grid">
+        <div class="pfd1-time__card">
+          <p class="pfd1-time__when">Week 1</p>
+          <p class="pfd1-time__what">Food noise gets quieter.</p>
+          <p class="pfd1-time__detail">Cravings ease first. Most customers notice the 3pm snack drawer pull weakens within five to seven days.<sup>*</sup></p>
+        </div>
+        <div class="pfd1-time__card">
+          <p class="pfd1-time__when">Week 4</p>
+          <p class="pfd1-time__what">Clothes fit differently.</p>
+          <p class="pfd1-time__detail">Clinical results show ~9 lbs lost on average by week four, with no required diet or exercise change.<sup>*</sup></p>
+        </div>
+        <div class="pfd1-time__card">
+          <p class="pfd1-time__when">Month 3</p>
+          <p class="pfd1-time__what">Composition shift.</p>
+          <p class="pfd1-time__detail">Ten-week studies show ~12.5% of body weight lost on average. This is when most customers reach for a new wardrobe.<sup>*</sup></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUYBOX ============ -->
+  <section class="pfd1-buy" id="buy">
+    <div class="wrap-wide">
+      <div class="pfd1-buy__head">
+        <p class="pfd1-buy__kicker">Choose your supply</p>
+        <h2>Start the apology process.</h2>
+        <p class="pfd1-buy__sub">Subscribe and save. Skip, swap, or cancel anytime. 30-day money-back guarantee on every order.</p>
+      </div>
+
+      <p class="pfd1-buy__label">Subscribe and save · up to {{ discount_6mo }}% off every order</p>
+      <div class="pfd1-buy__list">
+
+        <a class="pfd1-row" href="{{ cart_1mo }}">
+          <div class="pfd1-row__top">
+            <div class="pfd1-row__left">
+              <div class="pfd1-row__namerow">
+                <span class="pfd1-row__radio"></span>
+                <span class="pfd1-row__name">Monthly</span>
+                <span class="pfd1-row__pill pfd1-row__pill--save">Save {{ discount_1mo }}%</span>
+              </div>
+              <p class="pfd1-row__desc">A 1-month supply, delivered every month.<br>Free shipping. Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd1-row__right">
+              <span class="pfd1-row__per">{{ price_1mo_per }}</span>
+              <span class="pfd1-row__totline"><span class="pfd1-row__was">{{ price_1mo_was }}</span>{{ price_1mo_total }}</span>
+              <span class="pfd1-row__save">{{ price_1mo_save }}</span>
+            </div>
+          </div>
+          <span class="pfd1-row__cta">Start Monthly</span>
+        </a>
+
+        <a class="pfd1-row pfd1-row--best" href="{{ cart_3mo }}">
+          <div class="pfd1-row__top">
+            <div class="pfd1-row__left">
+              <div class="pfd1-row__namerow">
+                <span class="pfd1-row__radio"></span>
+                <span class="pfd1-row__name">3 Months</span>
+                <span class="pfd1-row__pill pfd1-row__pill--pop">Most Popular</span>
+                <span class="pfd1-row__pill pfd1-row__pill--save">Save {{ discount_3mo }}%</span>
+              </div>
+              <p class="pfd1-row__desc">A 3-month supply, delivered every 3 months.<br>Free shipping. Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd1-row__right">
+              <span class="pfd1-row__per">{{ price_3mo_per }}</span>
+              <span class="pfd1-row__totline"><span class="pfd1-row__was">{{ price_3mo_was }}</span>{{ price_3mo_total }}</span>
+              <span class="pfd1-row__save">{{ price_3mo_save }}</span>
+            </div>
+          </div>
+          <span class="pfd1-row__cta">Start 3-Month Plan</span>
+        </a>
+
+        <a class="pfd1-row" href="{{ cart_6mo }}">
+          <div class="pfd1-row__top">
+            <div class="pfd1-row__left">
+              <div class="pfd1-row__namerow">
+                <span class="pfd1-row__radio"></span>
+                <span class="pfd1-row__name">6 Months</span>
+                <span class="pfd1-row__pill pfd1-row__pill--best">Best Value</span>
+                <span class="pfd1-row__pill pfd1-row__pill--save">Save {{ discount_6mo }}%</span>
+              </div>
+              <p class="pfd1-row__desc">A 6-month supply, delivered every 6 months.<br>Free shipping. Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd1-row__right">
+              <span class="pfd1-row__per">{{ price_6mo_per }}</span>
+              <span class="pfd1-row__totline"><span class="pfd1-row__was">{{ price_6mo_was }}</span>{{ price_6mo_total }}</span>
+              <span class="pfd1-row__save">{{ price_6mo_save }}</span>
+            </div>
+          </div>
+          <span class="pfd1-row__cta">Start 6-Month Plan</span>
+        </a>
+
+      </div>
+
+      <div class="pfd1-buy__assure">
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v7c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg> 30-day money-back guarantee</span>
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7h13l5 5v5h-2a3 3 0 11-6 0H10a3 3 0 11-6 0H3V7zm14 3v3h2l-2-3z"/></svg> Free expedited shipping on 3 & 6-mo plans</span>
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Made in the USA, third-party tested</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="pfd1-rev">
+    <div class="wrap-wide">
+      <div class="pfd1-rev__head">
+        <p class="pfd1-rev__kicker">Verified customers</p>
+        <h2>Real people. Real apologies.</h2>
+        <div class="pfd1-rev__stars-row">
+          <span class="pfd1-stars"></span>
+          <span>{{ rating }} stars{% if review_count != blank %} · {{ review_count }} reviews{% endif %}</span>
+        </div>
+      </div>
+      <div class="pfd1-rev__grid">
+        <div class="pfd1-quote">
+          <div class="pfd1-quote__stars pfd1-stars"></div>
+          <p>"I had tried the other GLP-1 pills that were super expensive. I stayed sick on my stomach all day. This is so much better. Curbs my appetite. I don't want to snack between meals."</p>
+          <div class="pfd1-quote__name">Kim E.</div>
+          <div class="pfd1-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="pfd1-quote">
+          <div class="pfd1-quote__stars pfd1-stars"></div>
+          <p>"I have lost over 5 pounds in the first month. Feel like I am eating less and no longer have cravings to snack."</p>
+          <div class="pfd1-quote__name">Nicole S.</div>
+          <div class="pfd1-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="pfd1-quote">
+          <div class="pfd1-quote__stars pfd1-stars"></div>
+          <p>"Noticed a difference in one month. Less food cravings. Appetite has decreased. I no longer feel hungry all the time."</p>
+          <div class="pfd1-quote__name">Meredith N.</div>
+          <div class="pfd1-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- if klaviyo_company_id != blank and klaviyo_list_id != blank -%}
+  <!-- ============ EMAIL CAPTURE (Klaviyo native client subscriptions) ============ -->
+  <section class="pfd1-email" id="email">
+    <div class="wrap">
+      <div class="pfd1-email__inner">
+        <p class="pfd1-email__kicker">Stay close</p>
+        <h2>{{ email_head }}</h2>
+        <p>{{ email_sub }}</p>
+        <form class="pfd1-email__form" id="pfd1-email-form" novalidate>
+          <label for="pfd1-email-input" style="position:absolute;left:-9999px">Email address</label>
+          <input class="pfd1-email__input" id="pfd1-email-input" type="email" name="email" required autocomplete="email" placeholder="you@email.com">
+          <button class="pfd1-email__btn" type="submit">{{ email_cta }}</button>
+        </form>
+        <p class="pfd1-email__msg" id="pfd1-email-ok" role="status" style="display:none">Thanks. The ingredient brief is on its way.</p>
+        <p class="pfd1-email__msg pfd1-email__msg--err" id="pfd1-email-err" role="alert" style="display:none">Could not subscribe. Please check your email and try again.</p>
+        <p class="pfd1-email__legal">We email roughly once a week. Unsubscribe anytime. Your address is never sold.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var form = document.getElementById('pfd1-email-form');
+      if (!form) return;
+      var ok = document.getElementById('pfd1-email-ok');
+      var err = document.getElementById('pfd1-email-err');
+      var btn = form.querySelector('button[type="submit"]');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        ok.style.display = 'none';
+        err.style.display = 'none';
+        var email = form.querySelector('input[name="email"]').value.trim();
+        if (!email || email.indexOf('@') === -1) {
+          err.textContent = 'Please enter a valid email address.';
+          err.style.display = 'block';
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        fetch('https://a.klaviyo.com/client/subscriptions/?company_id={{ klaviyo_company_id }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'revision': '2024-10-15'
+          },
+          body: JSON.stringify({
+            data: {
+              type: 'subscription',
+              attributes: {
+                profile: { data: { type: 'profile', attributes: { email: email } } },
+                custom_source: 'PFD1 Sorrys Advertorial'
+              },
+              relationships: { list: { data: { type: 'list', id: '{{ klaviyo_list_id }}' } } }
+            }
+          })
+        }).then(function(r){
+          btn.disabled = false;
+          btn.textContent = '{{ email_cta }}';
+          if (r.ok || r.status === 202) {
+            form.style.display = 'none';
+            ok.style.display = 'block';
+          } else {
+            err.style.display = 'block';
+          }
+        }).catch(function(){
+          btn.disabled = false;
+          btn.textContent = '{{ email_cta }}';
+          err.style.display = 'block';
+        });
+      });
+    })();
+  </script>
+  {%- endif -%}
+
+  <!-- ============ FAQ ============ -->
+  <section class="pfd1-faq">
+    <div class="wrap">
+      <div class="pfd1-faq__head">
+        <h2>Questions, honestly answered.</h2>
+      </div>
+      <div class="pfd1-faq__list">
+        <details class="pfd1-faq__item">
+          <summary>How is WLP-1 different from GLP-1 injections?</summary>
+          <p>WLP-1 is a daily oral supplement, not a prescription drug. It supports the body's own natural GLP-1 signaling pathway using clinically studied botanical ingredients<sup>*</sup>, which means no needles, no prescription, and no scheduled side effects. GLP-1 injections work on a single pathway. WLP-1 supports three: appetite, metabolism, and thermogenesis.<sup>*</sup></p>
+        </details>
+        <details class="pfd1-faq__item">
+          <summary>Are there side effects?</summary>
+          <p>WLP-1 is formulated with food-derived botanicals (Irvingia gabonensis, CQR300, Grains of Paradise) and is safe for consistent daily use. Most customers report no side effects. As with any supplement, talk to your doctor before starting if you are pregnant, nursing, or on prescription medication.</p>
+        </details>
+        <details class="pfd1-faq__item">
+          <summary>When do I see results?</summary>
+          <p>Most customers notice reduced cravings and a quieter appetite within the first one to two weeks. Visible body composition changes typically appear at the four-week mark, in line with clinical research on the active ingredients (~9 lbs in 4 weeks on average<sup>*</sup>).</p>
+        </details>
+        <details class="pfd1-faq__item">
+          <summary>What is actually in it?</summary>
+          <p>Three clinically studied actives: <b>IGOB131</b> (Irvingia gabonensis), <b>CQR300</b>, and <b>Grains of Paradise</b>. All delivered in our absorption-enhanced format, which our internal testing shows can deliver up to <b>20x more absorption</b> than standard supplement formats. Made in the USA, third-party tested.</p>
+        </details>
+        <details class="pfd1-faq__item">
+          <summary>Is there a money-back guarantee?</summary>
+          <p>Every WLP-1 order is backed by a <b>30-day money-back guarantee</b>. If you are not satisfied for any reason, email us within 30 days of delivery and we will refund your order.</p>
+        </details>
+        <details class="pfd1-faq__item">
+          <summary>Can I take WLP-1 alongside GLP-1 injections?</summary>
+          <p>Many customers use WLP-1 to support and extend the effects of a GLP-1 injection regimen, since WLP-1 is working through complementary metabolic pathways.<sup>*</sup> Talk to your prescribing physician before combining.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="pfd1-close">
+    <div class="wrap">
+      <p class="pfd1-close__kicker">Last apology</p>
+      <h2>You have been <em>warned</em>.</h2>
+      <p>If new pants, longer workouts, and a quieter snack drawer sound like problems you can live with, WLP-1 is two pills a day, no prescription, no needles. Most customers start with the 3-month plan, because that is when the second- and third-month changes really start showing up in the mirror.</p>
+      <a href="#buy">Get WLP-1</a>
+    </div>
+  </section>
+
+  <!-- ============ DISCLAIMER ============ -->
+  <div class="pfd1-disclaim">
+    <div class="wrap">
+      <p><sup>*</sup> These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Individual results vary. Clinical results referenced are from independent published studies on the active botanical ingredients (Irvingia gabonensis, CQR300, Grains of Paradise) used in WLP-1, not on the finished product. Weight loss figures are averages from those studies and are not guaranteed.</p>
+      <p>WLP-1 is not a GLP-1 receptor agonist drug and is not a substitute for prescription medication. Talk to your healthcare provider before starting any new supplement, particularly if you are pregnant, nursing, or taking prescription medication.</p>
+    </div>
+  </div>
+
+  <!-- ============ STICKY MOBILE CTA ============ -->
+  <div class="pfd1-sticky">
+    <div class="pfd1-sticky__copy">
+      <b>WLP-1 · 3-Month Plan</b>
+      <span>{{ price_3mo_per }} · {{ price_3mo_save }} · Free shipping</span>
+    </div>
+    <a href="#buy">Choose plan</a>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "PFD1 Sorrys Advertorial",
+  "tag": "section",
+  "class": "pfd1-section",
+  "settings": [
+    { "type": "header", "content": "Hero copy (swap to message-match each ad)" },
+    { "type": "text",     "id": "kicker_text",   "label": "Kicker (small red eyebrow)",   "default": "Read Before You Try GLP-1 Injections" },
+    { "type": "richtext", "id": "headline_html", "label": "H1 headline (HTML allowed)",   "default": "<p>We're Sorry In Advance: 5 Things Nobody Warned You About <em>WLP-1</em>.</p>" },
+    { "type": "richtext", "id": "dek_html",      "label": "Dek / sub-headline (HTML)",    "default": "<p>The natural oral GLP-1 support helping women 35 to 55 drop <b>~9 lbs in 4 weeks</b>. No needles, no prescription. Here is what nobody warned us about.</p>" },
+    { "type": "text",     "id": "lede_text",     "label": "Lede paragraph (drop-cap)",    "default": "Before you start WLP-1, we owe you five honest warnings about what tends to happen once the weight starts coming off." },
+    { "type": "text",     "id": "hero_cta_text", "label": "Above-fold CTA label",         "default": "See WLP-1 plans" },
+    { "type": "header", "content": "Article meta" },
+    { "type": "text", "id": "byline",    "label": "Byline",        "default": "By The Absorption Company Editorial" },
+    { "type": "text", "id": "pub_date",  "label": "Publish date",  "default": "May 2026" },
+    { "type": "text", "id": "read_time", "label": "Read time",     "default": "6 min read" },
+    { "type": "header", "content": "UGC video (optional, hides if empty)" },
+    { "type": "url",  "id": "ugc_video_url",     "label": "Customer video URL (mp4)" },
+    { "type": "url",  "id": "ugc_video_poster",  "label": "Video poster image" },
+    { "type": "text", "id": "ugc_video_caption", "label": "Video caption",  "default": "Real customer, 6 weeks in." },
+    { "type": "header", "content": "Founder band (optional, hides if empty)" },
+    { "type": "text", "id": "founder_name",  "label": "Founder name" },
+    { "type": "text", "id": "founder_title", "label": "Founder title", "default": "Founder, The Absorption Company" },
+    { "type": "textarea", "id": "founder_quote", "label": "Founder quote (no quotes needed)" },
+    { "type": "url",  "id": "founder_img",   "label": "Founder headshot" },
+    { "type": "header", "content": "Imagery" },
+    { "type": "url",  "id": "hero_img",    "label": "Hero image (article)" },
+    { "type": "url",  "id": "product_img", "label": "Product image" },
+    { "type": "url",  "id": "img_1",       "label": "Sorry #1 — Wardrobe image" },
+    { "type": "url",  "id": "img_2",       "label": "Sorry #2 — GLP-1 / product image" },
+    { "type": "url",  "id": "img_3",       "label": "Sorry #3 — Workout image" },
+    { "type": "url",  "id": "img_4",       "label": "Sorry #4 — Mirror image" },
+    { "type": "url",  "id": "img_5",       "label": "Sorry #5 — Snack drawer image" },
+    { "type": "header", "content": "Buybox links + prices" },
+    { "type": "url",  "id": "cart_1mo",     "label": "1-mo sub cart URL" },
+    { "type": "url",  "id": "cart_3mo",     "label": "3-mo sub cart URL" },
+    { "type": "url",  "id": "cart_6mo",     "label": "6-mo sub cart URL" },
+    { "type": "text", "id": "discount_1mo",      "label": "1-mo discount %",          "default": "20" },
+    { "type": "text", "id": "price_1mo_per",     "label": "1-mo per-month price",     "default": "$79.20/mo" },
+    { "type": "text", "id": "price_1mo_was",     "label": "1-mo was-price",           "default": "$99.00" },
+    { "type": "text", "id": "price_1mo_total",   "label": "1-mo total line",          "default": "$79.20 total" },
+    { "type": "text", "id": "price_1mo_save",    "label": "1-mo save callout",        "default": "save $19.80" },
+    { "type": "text", "id": "discount_3mo",      "label": "3-mo discount %",          "default": "30" },
+    { "type": "text", "id": "price_3mo_per",     "label": "3-mo per-month price",     "default": "$69.30/mo" },
+    { "type": "text", "id": "price_3mo_was",     "label": "3-mo was-price",           "default": "$297.00" },
+    { "type": "text", "id": "price_3mo_total",   "label": "3-mo total line",          "default": "$207.90 total" },
+    { "type": "text", "id": "price_3mo_save",    "label": "3-mo save callout",        "default": "save $89.10" },
+    { "type": "text", "id": "discount_6mo",      "label": "6-mo discount %",          "default": "35" },
+    { "type": "text", "id": "price_6mo_per",     "label": "6-mo per-month price",     "default": "$64.35/mo" },
+    { "type": "text", "id": "price_6mo_was",     "label": "6-mo was-price",           "default": "$594.00" },
+    { "type": "text", "id": "price_6mo_total",   "label": "6-mo total line",          "default": "$386.10 total" },
+    { "type": "text", "id": "price_6mo_save",    "label": "6-mo save callout",        "default": "save $207.90" },
+    { "type": "header", "content": "Social proof" },
+    { "type": "text", "id": "rating",       "label": "Star rating",   "default": "4.5" },
+    { "type": "text", "id": "review_count", "label": "Review count",  "default": "1,200+" },
+    { "type": "header", "content": "Email capture (Klaviyo, optional)" },
+    { "type": "paragraph", "content": "Get the public company_id from Klaviyo > Account > Public API Key, and the list_id from Lists > [list] > Settings. Block hides until both are filled." },
+    { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo public company_id" },
+    { "type": "text", "id": "klaviyo_list_id",    "label": "Klaviyo list_id (target list)" },
+    { "type": "text", "id": "email_head",         "label": "Capture headline", "default": "Not ready yet?" },
+    { "type": "textarea", "id": "email_sub",      "label": "Capture sub-copy", "default": "Get the WLP-1 ingredient brief plus the 5-Sorrys recap in your inbox. No discount-spam, just the science." },
+    { "type": "text", "id": "email_cta",          "label": "Capture button label", "default": "Send it to me" }
+  ],
+  "presets": [{ "name": "PFD1 Advertorial" }]
+}
+{% endschema %}

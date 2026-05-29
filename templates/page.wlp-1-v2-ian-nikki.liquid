@@ -1,0 +1,2381 @@
+{% layout 'theme' %}
+
+{%- comment -%}
+  WLP-1 Founder Story Landing Page
+  Template: page.wlp1-founder.liquid
+  Variant of evergreen v2, anchored on Ian Somerhalder + Nikki Reed
+  Driven by paid ads using "Nature's Ozempic" angle (compliant on-site)
+{%- endcomment -%}
+
+<style>
+    /* Hide theme header/footer + reset body */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    header,
+    footer {
+      display: none;
+    }
+
+    .wlp1ev {
+      --blue: #5e91d5;
+      --blue-hover: #4a7dbe;
+      --cream: #f8f5f2;
+      --cream-alt: #eae6dc;
+      --ink: #1a1a18;
+      --ink-soft: #4a4a46;
+      --line: #d9d4c8;
+      --white: #ffffff;
+
+      color: var(--ink);
+      background: var(--cream);
+      font-family: inherit;
+      line-height: 1.5;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wlp1ev *,
+    .wlp1ev *::before,
+    .wlp1ev *::after {
+      box-sizing: border-box;
+    }
+
+    .wlp1ev img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .wlp1ev .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .wlp1ev .container-narrow {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== Inline CTA (between sections) ===== */
+    .wlp1ev .inline-cta {
+      text-align: center;
+      padding: 60px 0 20px;
+    }
+    .wlp1ev .inline-cta-micro {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .wlp1ev .inline-cta-title {
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 0 0 24px;
+      color: var(--ink);
+      line-height: 1.25;
+      font-style: italic;
+    }
+    .wlp1ev .inline-cta-btn {
+      display: inline-block;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 16px 44px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .wlp1ev .inline-cta-btn:hover {
+      background: var(--blue-hover);
+      color: var(--white);
+    }
+    .wlp1ev .inline-cta-sub {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== Micro-CTA (inside benefit rows / included section) ===== */
+    .wlp1ev .micro-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 22px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-decoration: none;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--blue);
+      transition: gap 0.2s, color 0.2s, border-color 0.2s;
+      font-family: inherit;
+    }
+    .wlp1ev .micro-cta:hover {
+      color: var(--blue-hover);
+      border-color: var(--blue-hover);
+      gap: 12px;
+    }
+    .wlp1ev .micro-cta::after {
+      content: '→';
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    /* ===== Announcement bar ===== */
+    .wlp1ev .announce {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 11px 0;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .wlp1ev .announce-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 36px;
+      padding-left: 36px;
+      animation: wlp1ev-announce-scroll 120s linear infinite;
+      will-change: transform;
+    }
+    .wlp1ev .announce-item {
+      display: inline-block;
+      font-weight: 500;
+    }
+    .wlp1ev .announce-dot {
+      color: var(--blue);
+      font-size: 9px;
+      opacity: 0.8;
+    }
+    @keyframes wlp1ev-announce-scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+    .wlp1ev .announce:hover .announce-track {
+      animation-play-state: paused;
+    }
+
+    /* ===== Buy Box ===== */
+  .wlp1ev .buybox {
+    background: var(--cream-alt);
+    padding: 100px 0;
+    scroll-margin-top: 20px;
+  }
+  .wlp1ev .buybox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 60px;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .wlp1ev .buybox-image {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .wlp1ev .buybox-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .wlp1ev .buybox-image-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+  .wlp1ev .buybox-title {
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    color: var(--ink);
+  }
+  .wlp1ev .buybox-title em {
+    color: var(--blue);
+    font-style: normal;
+  }
+  .wlp1ev .buybox-sub {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0 0 28px;
+    max-width: 520px;
+  }
+  .wlp1ev .buybox-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .wlp1ev .tier {
+    background: var(--white);
+    border: 2px solid var(--white);
+    border-radius: 8px;
+    padding: 22px 24px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 16px;
+    align-items: start;
+  }
+  .wlp1ev .tier:hover {
+    border-color: var(--blue);
+  }
+  .wlp1ev .tier.selected {
+    border-color: var(--blue);
+    background: var(--cream-alt);
+  }
+  .wlp1ev .tier-radio {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #c8c2b4;
+    border-radius: 50%;
+    background: var(--white);
+    position: relative;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+    margin-top: 2px;
+  }
+  .wlp1ev .tier.selected .tier-radio {
+    border-color: var(--blue);
+  }
+  .wlp1ev .tier.selected .tier-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: var(--blue);
+    border-radius: 50%;
+  }
+  .wlp1ev .tier-info {
+    min-width: 0;
+  }
+  .wlp1ev .tier-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .wlp1ev .tier-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .wlp1ev .tier-save {
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .wlp1ev .tier-pill {
+    background: var(--blue);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .wlp1ev .tier-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin-bottom: 6px;
+  }
+  .wlp1ev .tier-meta {
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  .wlp1ev .tier-price {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .wlp1ev .tier-price-now {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .wlp1ev .tier-price-now span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .wlp1ev .tier-price-line {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  .wlp1ev .tier-price-line s {
+    color: var(--ink-soft);
+    margin-right: 4px;
+  }
+  .wlp1ev .tier-savings {
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .wlp1ev .buybox-cta {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    padding: 22px 24px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+    font-family: inherit;
+    border-radius: 8px;
+  }
+  .wlp1ev .buybox-cta:hover {
+    background: var(--blue-hover);
+  }
+  .wlp1ev .buybox-cta:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* ===== Logo bar ===== */
+    .wlp1ev .logobar {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+    }
+    .wlp1ev .logobar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wlp1ev .logobar-logo {
+      display: inline-flex;
+      align-items: center;
+    }
+    .wlp1ev .logobar-logo img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+    .wlp1ev .logobar-cta {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 10px 20px;
+      border: 1px solid var(--ink);
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .wlp1ev .logobar-cta:hover {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    @media (max-width: 520px) {
+      .wlp1ev .logobar {
+        padding: 14px 0;
+      }
+      .wlp1ev .logobar-logo img {
+        height: 22px;
+      }
+      .wlp1ev .logobar-cta {
+        font-size: 11px;
+        padding: 8px 14px;
+        letter-spacing: 0.12em;
+      }
+    }
+
+    /* ===== 1. HERO ===== */
+    .wlp1ev .hero {
+      padding: 60px 0 40px;
+      background: var(--cream);
+    }
+    .wlp1ev .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .wlp1ev .hero-image {
+      aspect-ratio: 1 / 1;
+      background: var(--cream-alt);
+      border-radius: 4px;
+      position: relative;
+      overflow: visible;
+    }
+    .wlp1ev .hero-image-main {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--cream-alt);
+    }
+    .wlp1ev .hero-image-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .wlp1ev .hero-image-bottle {
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 42%;
+      aspect-ratio: 1 / 1;
+      background: var(--cream-alt);
+      border: 6px solid var(--cream);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    .wlp1ev .hero-image-bottle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .wlp1ev .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .wlp1ev h1 {
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.05;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+    .wlp1ev h1 em {
+      font-style: italic;
+      color: var(--blue);
+    }
+    .wlp1ev .hero-sub {
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin: 0 0 24px;
+      max-width: 520px;
+    }
+    .wlp1ev .hero-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 30px;
+      max-width: 520px;
+    }
+    .wlp1ev .hero-bullets li {
+      position: relative;
+      padding: 8px 0 8px 28px;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.45;
+      border-bottom: 1px solid var(--line);
+    }
+    .wlp1ev .hero-bullets li:first-child {
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .hero-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15px;
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'><path d='M2 7.5L5.5 11L12 3' stroke='%235e91d5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+    }
+    .wlp1ev .hero-price-anchor {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px 14px;
+      margin: 0 0 24px;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .wlp1ev .anchor-strike {
+      font-size: 18px;
+      color: var(--ink-soft);
+      text-decoration: line-through;
+      font-weight: 500;
+    }
+    .wlp1ev .anchor-now {
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .wlp1ev .anchor-now strong {
+      font-size: 22px;
+      color: var(--blue);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 1px;
+    }
+    .wlp1ev .anchor-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      padding: 4px 10px;
+      border: 1px solid var(--blue);
+      border-radius: 100px;
+    }
+    .wlp1ev .hero-cta {
+      display: inline-block;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 18px 48px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 4px;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .wlp1ev .hero-cta:hover {
+      background: var(--blue-hover);
+      color: var(--white);
+    }
+    .wlp1ev .hero-stars {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0 16px;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .wlp1ev .stars {
+      color: var(--blue);
+      letter-spacing: 2px;
+      font-size: 18px;
+    }
+    .wlp1ev .hero-micro {
+      font-size: 13px;
+      color: var(--ink-soft);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .wlp1ev .hero-micro span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wlp1ev .hero-micro span::before {
+      content: '✓';
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    /* ===== Section base ===== */
+    .wlp1ev .section {
+      padding: 100px 0;
+    }
+    .wlp1ev .section-label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .wlp1ev .section-title {
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .wlp1ev .section-intro {
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 60px;
+    }
+
+    /* ===== FOUNDER'S NOTE ===== */
+    .wlp1ev .founder-section {
+      background: var(--cream-alt);
+      padding: 100px 0;
+    }
+    .wlp1ev .founder-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+    .wlp1ev .founder-image {
+      aspect-ratio: 4 / 5;
+      background: var(--cream);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .wlp1ev .founder-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .wlp1ev .founder-copy .eyebrow {
+      margin-bottom: 24px;
+    }
+    .wlp1ev .founder-title {
+      font-size: clamp(28px, 3.4vw, 42px);
+      line-height: 1.2;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 28px;
+      color: var(--ink);
+      font-style: italic;
+    }
+    .wlp1ev .founder-body {
+      font-size: 17px;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin: 0 0 18px;
+    }
+    .wlp1ev .founder-signature {
+      margin-top: 32px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .founder-signature span {
+      display: block;
+      margin-top: 4px;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    /* ===== TRANSFORMATION ===== */
+    .wlp1ev .transformation {
+      background: var(--white);
+    }
+    .wlp1ev .transform-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      position: relative;
+      margin-top: 30px;
+    }
+    .wlp1ev .transform-steps::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 16.66%;
+      right: 16.66%;
+      height: 1px;
+      background: var(--line);
+      z-index: 0;
+    }
+    .wlp1ev .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .wlp1ev .step-num {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      font-size: 28px;
+      color: var(--blue);
+    }
+    .wlp1ev .step h3 {
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .wlp1ev .step p {
+      color: var(--ink-soft);
+      font-size: 15px;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    /* ===== 3. BENEFITS ===== */
+    .wlp1ev .benefits {
+      background: var(--cream);
+    }
+    .wlp1ev .benefit-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+    .wlp1ev .benefit-row:last-child {
+      margin-bottom: 0;
+    }
+    .wlp1ev .benefit-row.reverse .benefit-media {
+      order: 2;
+    }
+    .wlp1ev .benefit-media {
+      aspect-ratio: 4 / 5;
+      background: var(--cream-alt);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .wlp1ev .benefit-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .wlp1ev .benefit-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .wlp1ev .benefit-copy h3 {
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.15;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+    .wlp1ev .benefit-copy p {
+      font-size: 17px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+    .wlp1ev .stat-pair {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .wlp1ev .stat-block {
+      flex: 1;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 20px 18px;
+      text-align: left;
+      max-width: 220px;
+    }
+    .wlp1ev .stat-num {
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--blue);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .wlp1ev .stat-hormone {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+    }
+    .wlp1ev .stat-plain {
+      font-size: 12px;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== 4. FEATURES ===== */
+    .wlp1ev .features {
+      background: var(--white);
+    }
+    .wlp1ev .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px 50px;
+      margin-top: 20px;
+    }
+    .wlp1ev .feature {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .wlp1ev .feature-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      font-style: italic;
+      font-size: 18px;
+    }
+    .wlp1ev .feature-text h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0 0 6px;
+      letter-spacing: -0.005em;
+      color: var(--ink);
+    }
+    .wlp1ev .feature-text p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ===== 5. MID CTA ===== */
+    .wlp1ev .midcta {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .wlp1ev .midcta-stars {
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }
+    .wlp1ev .midcta-rating {
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      color: var(--cream-alt);
+      margin-bottom: 28px;
+    }
+    .wlp1ev .midcta h2 {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 32px;
+      line-height: 1.15;
+      color: var(--cream);
+    }
+    .wlp1ev .midcta h2 em {
+      font-style: italic;
+      color: var(--blue);
+    }
+    .wlp1ev .midcta-cta {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 18px 54px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 24px;
+      display: inline-block;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .wlp1ev .midcta-cta:hover {
+      background: var(--blue-hover);
+      color: var(--white);
+    }
+    .wlp1ev .midcta-trust {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cream-alt);
+    }
+
+    /* ===== 6. WHAT'S INCLUDED ===== */
+    .wlp1ev .included {
+      background: var(--cream);
+    }
+    .wlp1ev .included-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .wlp1ev .included-media {
+      aspect-ratio: 1 / 1;
+      background: var(--cream-alt);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .wlp1ev .included-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .wlp1ev .included-copy h2 {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 28px;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+    .wlp1ev .included-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .included-list li {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .wlp1ev .included-list strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    .wlp1ev .included-list .inc-body {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .wlp1ev .inc-num {
+      flex-shrink: 0;
+      font-style: italic;
+      color: var(--blue);
+      font-size: 18px;
+      min-width: 28px;
+    }
+    .wlp1ev .included-cta {
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .included-cta .inline-cta-sub {
+      margin-top: 14px;
+    }
+
+    /* ===== REVIEWS ===== */
+    .wlp1ev .reviews-section {
+      background: var(--white);
+    }
+    .wlp1ev .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .wlp1ev .review {
+      background: var(--cream);
+      padding: 30px 26px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+    .wlp1ev .review-stars {
+      color: var(--blue);
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    .wlp1ev .star-empty {
+      color: var(--line);
+    }
+    .wlp1ev .review-title {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 0 0 14px;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .wlp1ev .review-body {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin: 0 0 18px;
+      flex: 1;
+    }
+    .wlp1ev .review-author {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      font-weight: 600;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .review-author span {
+      display: block;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* ===== COMPARISON ===== */
+    .wlp1ev .compare {
+      background: var(--cream);
+    }
+    .wlp1ev .compare-table {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+    .wlp1ev .compare-table th,
+    .wlp1ev .compare-table td {
+      padding: 20px 18px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .wlp1ev .compare-table th {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 600;
+      background: var(--cream);
+    }
+    .wlp1ev .compare-table th.us {
+      background: var(--blue);
+      color: var(--white);
+    }
+    .wlp1ev .compare-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .wlp1ev .compare-table td.us {
+      background: rgba(94, 145, 213, 0.06);
+    }
+    .wlp1ev .check {
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .wlp1ev .xmark {
+      color: var(--line);
+      font-size: 18px;
+    }
+    .wlp1ev .compare-row-header {
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    /* ===== 10. FAQ ===== */
+    .wlp1ev .faq {
+      background: var(--white);
+    }
+    .wlp1ev .faq-list {
+      max-width: 800px;
+      margin: 40px auto 0;
+    }
+    .wlp1ev .faq-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .wlp1ev .faq-item:first-child {
+      border-top: 1px solid var(--line);
+    }
+    .wlp1ev .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 24px 0;
+      text-align: left;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--ink);
+    }
+    .wlp1ev .faq-q::after {
+      content: '+';
+      font-weight: 300;
+      font-size: 28px;
+      color: var(--blue);
+      transition: transform 0.2s;
+      font-family: inherit;
+    }
+    .wlp1ev .faq-item.open .faq-q::after {
+      content: '−';
+    }
+    .wlp1ev .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+    .wlp1ev .faq-item.open .faq-a {
+      max-height: 400px;
+      padding-bottom: 24px;
+    }
+
+    /* ===== 11. IMAGE STRIP ===== */
+    .wlp1ev .imagestrip {
+      background: var(--cream-alt);
+      padding: 60px 0;
+      overflow: hidden;
+    }
+    .wlp1ev .strip-inner {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+    .wlp1ev .strip-img {
+      aspect-ratio: 1 / 1;
+      background: var(--cream);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .wlp1ev .strip-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .wlp1ev .strip-img:hover img {
+      transform: scale(1.04);
+    }
+
+    /* ===== 12. FINAL CTA ===== */
+    .wlp1ev .finalcta {
+      background: var(--cream);
+      padding: 110px 0;
+      text-align: center;
+      position: relative;
+    }
+    .wlp1ev .finalcta::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 1px;
+      background: var(--blue);
+      margin: 0 auto 30px;
+    }
+    .wlp1ev .finalcta h2 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0 auto 20px;
+      max-width: 700px;
+      color: var(--ink);
+    }
+    .wlp1ev .finalcta p {
+      font-size: 20px;
+      color: var(--ink-soft);
+      margin: 0 auto 36px;
+      max-width: 540px;
+    }
+    .wlp1ev .finalcta .hero-cta {
+      margin-bottom: 28px;
+    }
+    .wlp1ev .finalcta-badges {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .wlp1ev .finalcta-badges span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wlp1ev .finalcta-badges span::before {
+      content: '◆';
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    /* ===== Disclaimer + footer note ===== */
+    .wlp1ev .disclaimer {
+      background: var(--cream-alt);
+      padding: 40px 0;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+    .wlp1ev .disclaimer p {
+      max-width: 800px;
+      margin: 0 auto 10px;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .wlp1ev .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .wlp1ev .hero-image {
+        max-width: 320px;
+        margin: 0 auto 24px;
+        width: 100%;
+        order: 1;
+      }
+      .wlp1ev .hero-image-bottle {
+        bottom: -16px;
+        left: -12px;
+        width: 38%;
+        border-width: 4px;
+      }
+      .wlp1ev .hero-copy {
+        order: 2;
+      }
+      .wlp1ev .transform-steps {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .wlp1ev .transform-steps::before {
+        display: none;
+      }
+      .wlp1ev .benefit-row {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        margin-bottom: 60px;
+      }
+      .wlp1ev .benefit-row.reverse .benefit-media {
+        order: 0;
+      }
+      .wlp1ev .founder-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      .wlp1ev .founder-section {
+        padding: 60px 0;
+      }
+      .wlp1ev .founder-image {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .wlp1ev .buybox {
+        padding: 60px 0;
+      }
+      .wlp1ev .buybox-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      .wlp1ev .buybox-image {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 30px;
+      }
+      .wlp1ev .tier {
+        padding: 18px 16px;
+        gap: 12px;
+      }
+      .wlp1ev .tier-name {
+        font-size: 17px;
+      }
+      .wlp1ev .tier-price-now {
+        font-size: 22px;
+      }
+      .wlp1ev .features-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+      .wlp1ev .included-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      .wlp1ev .reviews-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .wlp1ev .compare-table th,
+      .wlp1ev .compare-table td {
+        padding: 14px 8px;
+        font-size: 12px;
+      }
+      .wlp1ev .strip-inner {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .wlp1ev .section {
+        padding: 70px 0;
+      }
+    }
+    @media (max-width: 520px) {
+      .wlp1ev .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .wlp1ev .strip-inner {~9 lbs
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .wlp1ev .hero {
+        padding: 40px 0 20px;
+      }
+      .wlp1ev .stat-pair {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .wlp1ev .stat-block {
+        max-width: 100%;
+      }
+    }
+
+    /* ===== Sticky mobile CTA ===== */
+    .wlp1ev .sticky-cta {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .wlp1ev .sticky-cta {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--cream);
+        border-top: 1px solid var(--line);
+        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        z-index: 100;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+      }~9 lbs
+      .wlp1ev .sticky-cta.visible {
+        transform: translateY(0);
+      }
+      .wlp1ev .sticky-cta-btn {
+        display: block;
+        width: 100%;
+        background: var(--blue);
+        color: var(--white);
+        text-align: center;
+        padding: 14px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        font-family: inherit;
+      }
+      .wlp1ev .sticky-cta-btn:hover {
+        background: var(--blue-hover);
+        color: var(--white);
+      }
+      /* Add bottom padding to body so sticky doesn't cover content */
+      .wlp1ev .finalcta {
+        padding-bottom: 130px;
+      }
+    }
+</style>
+
+<div class="wlp1ev">
+  {%- comment -%} Announcement bar {%- endcomment -%}
+  <div class="announce">
+    <div class="announce-track">
+      <span class="announce-item">Co-founded by Ian Somerhalder &amp; Nikki Reed</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">The GLP-1 support people want · without the needles</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">Up to 12% body weight reduction in 10 weeks*</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">Formulated with clinically studied ingredients</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">Co-founded by Ian Somerhalder &amp; Nikki Reed</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">The GLP-1 support people want · without the needles</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">Up to 12% body weight reduction in 10 weeks*</span>
+      <span class="announce-dot">◆</span>
+      <span class="announce-item">Formulated with clinically studied ingredients</span>
+      <span class="announce-dot">◆</span>
+    </div>
+  </div>
+
+  {%- comment -%} Logo bar {%- endcomment -%}
+  <div class="logobar">
+    <div class="container logobar-inner">
+      <a href="/" class="logobar-logo">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/logo-2.svg?v=1761576529"
+          alt="The Absorption Company"
+          width="200"
+          height="28"
+        >
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} 1. HERO {%- endcomment -%}
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-image">
+          <div class="hero-image-main">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ian-wlp-lander.jpg?v=1777500390"
+              alt="Ian Somerhalder, co-founder of The Absorption Company, holding WLP-1"
+              loading="eager"
+              width="600"
+              height="600"
+            >
+          </div>
+          <div class="hero-image-bottle">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_WLP-1_Lifestyle-Image_1.png?v=1774571152"
+              alt="WLP-1 oral GLP-1 biomimetic supplement bottle"
+              loading="eager"
+              width="300"
+              height="300"
+            >
+          </div>
+        </div>
+        <div class="hero-copy">
+          <div class="eyebrow">Co-founded by Ian Somerhalder</div>
+          <h1>The GLP-1 support people want. <em>Without the needles.</em></h1>
+          <p class="hero-sub">
+            Built with scientists, Ian, and Nikki. The first oral GLP-1 biomimetic.* No injections. No prescriptions. No
+            stimulants.
+          </p>
+          <ul class="hero-bullets">
+            <li><strong>~9 lbs lost in 4 weeks</strong> in clinical trials*</li>
+            <li>Up to 12% body weight reduction in 10 weeks (BMI 25+)*</li>
+            <li>Feel full sooner and stay satisfied longer between meals</li>
+            <li>Quiet food noise and emotional cravings throughout the day</li>
+            <li>Burn more calories at rest, even without changing your routine</li>
+          </ul>
+          <div class="hero-price-anchor">
+            <span class="anchor-strike">$99</span>
+            <span class="anchor-now">As low as <strong>$64</strong>/mo</span>
+            <span class="anchor-label">Subscribe &amp; save</span>
+          </div>
+          <a href="#buy-box" class="hero-cta">Shop WLP-1™</a>
+          <div class="hero-stars">
+            <span class="stars">◆</span>
+            <span>Formulated with clinically studied ingredients</span>
+          </div>
+          <div class="hero-micro">
+            <span>30-day money-back guarantee</span>
+            <span>Free shipping</span>
+            <span>Secure checkout</span>
+            <span>FREE premium gifts ($55 value)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 3. TRANSFORMATION {%- endcomment -%}
+  <section class="section transformation">
+    <div class="container">
+      <div class="section-label">The Transformation</div>
+      <h2 class="section-title">Three pathways. Two pills. Daily.</h2>
+      <p class="section-intro">
+        No injections. No stimulants. Just the daily metabolic support people seek from GLP-1 biology.
+      </p>
+
+      <div class="transform-steps">
+        <div class="step">
+          <div class="step-num">i.</div>
+          <h3>Take daily</h3>
+          <p>Two simple capsules with water. Morning or before your largest meal.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">ii.</div>
+          <h3>Activate three pathways</h3>
+          <p>GLP-1 activity, appetite signaling, and thermogenesis. Working together, not in isolation.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">iii.</div>
+          <h3>Feel the shift</h3>
+          <p>Fewer cravings. Steadier energy. Real change supported by clinically studied ingredients.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} BUY BOX — in-page checkout {%- endcomment -%}
+  <section class="buybox" id="buy-box">
+    <div class="container">
+      <div class="buybox-grid">
+        <div class="buybox-image">
+          <span class="buybox-image-tag">WLP-1™</span>
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-hero-jar.jpg?v=1776657813"
+            alt="WLP-1 jar by The Absorption Company"
+            loading="lazy"
+            width="600"
+            height="600"
+          >
+        </div>
+        <div class="buybox-copy">
+          <h2 class="buybox-title">Two capsules a day. <em>Your choice</em> of how often.</h2>
+          <p class="buybox-sub">
+            Every plan ships free. Pause, skip, or cancel anytime. Backed by our 30-day money-back guarantee.
+          </p>
+
+          <div class="buybox-tiers">
+            <div
+              class="tier"
+              data-tier="monthly"
+              data-variant-id="52472821121313"
+              data-selling-plan-id="691162546465"
+            >
+              <div class="tier-radio"></div>
+              <div class="tier-info">
+                <div class="tier-header">
+                  <span class="tier-name">Monthly</span>
+                  <span class="tier-save">Save 20%</span>
+                </div>
+                <div class="tier-desc">A 1-month supply, delivered every month.</div>
+                <div class="tier-meta">Free shipping. Pause or cancel anytime.</div>
+              </div>
+              <div class="tier-price">
+                <span class="tier-price-now">$79<span>/mo</span></span>
+                <div class="tier-price-line"><s>$99.00</s> $79.00 total</div>
+                <div class="tier-savings">save $20.00</div>
+              </div>
+            </div>
+
+            <div
+              class="tier selected"
+              data-tier="3month"
+              data-variant-id="52472821154081"
+              data-selling-plan-id="691162579233"
+            >
+              <div class="tier-radio"></div>
+              <div class="tier-info">
+                <div class="tier-header">
+                  <span class="tier-name">3 Months</span>
+                  <span class="tier-save">Save 30%</span>
+                  <span class="tier-pill">Most Popular</span>
+                </div>
+                <div class="tier-desc">A 3-month supply with refills delivered every 3 months.</div>
+                <div class="tier-meta">Free shipping. Pause or cancel anytime.</div>
+              </div>
+              <div class="tier-price">
+                <span class="tier-price-now">$69<span>/mo</span></span>
+                <div class="tier-price-line"><s>$297.00</s> $207.00 total</div>
+                <div class="tier-savings">save $90.00</div>
+              </div>
+            </div>
+
+            <div
+              class="tier"
+              data-tier="6month"
+              data-variant-id="52472821186849"
+              data-selling-plan-id="691166544161"
+            >
+              <div class="tier-radio"></div>
+              <div class="tier-info">
+                <div class="tier-header">
+                  <span class="tier-name">6 Months</span>
+                  <span class="tier-save">Save 35%</span>
+                  <span class="tier-pill">Best Value</span>
+                </div>
+                <div class="tier-desc">A 6-month supply with refills delivered every 6 months.</div>
+                <div class="tier-meta">Free shipping. Pause or cancel anytime.</div>
+              </div>
+              <div class="tier-price">
+                <span class="tier-price-now">$64<span>/mo</span></span>
+                <div class="tier-price-line"><s>$594.00</s> $384.00 total</div>
+                <div class="tier-savings">save $210.00</div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="buybox-cta" id="wlp1ev-add-to-cart">Add to Cart →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 3. BENEFITS {%- endcomment -%}
+  <section class="section benefits">
+    <div class="container">
+      <div class="section-label">What To Expect</div>
+      <h2 class="section-title">What you can actually expect.</h2>
+      <p class="section-intro">No promises. Just the research behind every ingredient we chose.*</p>
+
+      <div class="benefit-row">
+        <div class="benefit-media">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-benefit-1-appetite.jpg?v=1776657813"
+            alt="Morning kitchen scene with WLP-1"
+            loading="lazy"
+            width="800"
+            height="1000"
+          >
+        </div>
+        <div class="benefit-copy">
+          <div class="benefit-eyebrow">Appetite Control</div>
+          <h3>Hunger signals that finally make sense.</h3>
+          <p>
+            IGOB131® resets the hormones that drive hunger and cravings. It quiets the signals that keep you reaching
+            for more and boosts the ones that help your body burn fat. The result: real satisfaction, not forced
+            restraint.
+          </p>
+          <div class="stat-pair">
+            <div class="stat-block">
+              <div class="stat-num">−48.6%*</div>
+              <div class="stat-hormone">Leptin</div>
+              <div class="stat-plain">hunger hormone</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-num">+159%*</div>
+              <div class="stat-hormone">Adiponectin</div>
+              <div class="stat-plain">fat-burning hormone</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benefit-row reverse">
+        <div class="benefit-media">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-benefit-2-glp1.jpg?v=1776657813"
+            alt="WLP-1 capsules close up"
+            loading="lazy"
+            width="800"
+            height="1000"
+          >
+        </div>
+        <div class="benefit-copy">
+          <div class="benefit-eyebrow">GLP-1 Activity</div>
+          <h3>Feel full faster. Stay full longer.</h3>
+          <p>
+            CQR300® helps your body produce more of its natural fullness signal while protecting it from breaking down
+            too fast. The feeling: you finish meals satisfied and stop reaching for snacks between them. The ingredient
+            has been studied over 16 weeks in humans.*
+          </p>
+          <div class="stat-pair">
+            <div class="stat-block">
+              <div class="stat-num">+321%*</div>
+              <div class="stat-hormone">GLP-1</div>
+              <div class="stat-plain">natural fullness signal</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-num">−17.8%*</div>
+              <div class="stat-hormone">DPP-4</div>
+              <div class="stat-plain">the enzyme that breaks it down</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benefit-row">
+        <div class="benefit-media">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-benefit-3-thermogenesis.jpg?v=1776657813"
+            alt="Active lifestyle with WLP-1"
+            loading="lazy"
+            width="800"
+            height="1000"
+          >
+        </div>
+        <div class="benefit-copy">
+          <div class="benefit-eyebrow">Thermogenesis</div>
+          <h3>Burn more calories, even at rest.</h3>
+          <p>
+            Capsifen® turns up your body's natural calorie burn in the background. It's built with a special delivery
+            system that gets it where it needs to go, without the spice or stomach discomfort of regular capsaicin. You
+            work less. Your body works more.
+          </p>
+          <div class="stat-pair">
+            <div class="stat-block">
+              <div class="stat-num">Up to 20x*</div>
+              <div class="stat-hormone">Capsifen®</div>
+              <div class="stat-plain">absorption vs. standard forms</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-num">9 lbs*</div>
+              <div class="stat-hormone">In 4 weeks</div>
+              <div class="stat-plain">clinical study, BMI 25+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benefit-row reverse">
+        <div class="benefit-media">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-benefit-4-composition_1.jpg?v=1776658224"
+            alt="WLP-1 jar with measuring tape and capsules"
+            loading="lazy"
+            width="800"
+            height="1000"
+          >
+        </div>
+        <div class="benefit-copy">
+          <div class="benefit-eyebrow">Body Composition</div>
+          <h3>Real weight change. Not water weight.</h3>
+          <p>
+            Most supplements drop water weight through diuretics and call it a win. WLP-1™'s clinically studied
+            ingredients target the underlying systems that control how your body stores fat and manages energy. The
+            change is structural, so it holds up.*
+          </p>
+          <div class="stat-pair">
+            <div class="stat-block">
+              <div class="stat-num">Up to 12%*</div>
+              <div class="stat-hormone">Body weight</div>
+              <div class="stat-plain">reduction over 10 weeks, BMI 25+</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-num">9 lbs*</div>
+              <div class="stat-hormone">In 4 weeks</div>
+              <div class="stat-plain">Capsifen® clinical study, BMI 25+</div>
+            </div>
+          </div>
+          <a href="#buy-box" class="micro-cta">Shop WLP-1™</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 5. MID-PAGE CTA (moved up — high engagement after Benefits) {%- endcomment -%}
+  <section class="midcta">
+    <div class="container-narrow">
+      <div class="midcta-stars">◆</div>
+      <div class="midcta-rating">Co-founded by Ian Somerhalder &amp; Nikki Reed</div>
+      <h2>The GLP-1 alternative built for people who don't want a needle. <em>Or a prescription.</em></h2>
+      <a href="#buy-box" class="midcta-cta">Start With WLP-1™ · $64/mo</a>
+      <div class="midcta-trust">
+        <span>◆ Free shipping</span>
+        <span>◆ 30-day money-back guarantee</span>
+        <span>◆ Third-party tested</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 9. COMPARISON (moved up — decision moment hits at engagement peak) {%- endcomment -%}
+  <section class="section compare">
+    <div class="container">
+      <div class="section-label">Side By Side</div>
+      <h2 class="section-title">How WLP-1™ compares.</h2>
+      <p class="section-intro">No fluff. Just the categories people actually ask us about.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="us">WLP-1™</th>
+            <th>GLP-1 Injections</th>
+            <th>Standard Weight Supplements</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="compare-row-header">Supports natural GLP-1 activity</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Oral delivery</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">No stimulants</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Clinically studied ingredients</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">No prescription required</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Third-party tested</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+          <tr>
+            <td class="compare-row-header">Supports three metabolic pathways</td>
+            <td class="us"><span class="check">✓</span></td>
+            <td><span class="xmark">✕</span></td>
+            <td><span class="xmark">✕</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {%- comment -%} Inline CTA — after Comparison {%- endcomment -%}
+  <section class="compare">
+    <div class="container inline-cta">
+      <div class="inline-cta-micro">The clear choice</div>
+      <h3 class="inline-cta-title">Why more people are switching to WLP-1™.</h3>
+      <a href="#buy-box" class="inline-cta-btn">Start With WLP-1™</a>
+      <div class="inline-cta-sub">30-day money-back guarantee · Third-party tested</div>
+    </div>
+  </section>
+
+  {%- comment -%} 4. FEATURES {%- endcomment -%}
+  <section class="section features">
+    <div class="container">
+      <div class="section-label">The Details</div>
+      <h2 class="section-title">Built differently.</h2>
+      <p class="section-intro">What sets it apart.</p>
+
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">a</div>
+          <div class="feature-text">
+            <h4>Oral GLP-1 biomimetic</h4>
+            <p>No needles. No prescriptions. 2 Daily capsules you can travel with.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">b</div>
+          <div class="feature-text">
+            <h4>Three metabolic pathways</h4>
+            <p>GLP-1 activity, appetite signaling, and thermogenesis in one formula.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">c</div>
+          <div class="feature-text">
+            <h4>Up to 20x absorption*</h4>
+            <p>Capsifen® nano-beadlet delivery. Ingredients that actually reach your system.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">d</div>
+          <div class="feature-text">
+            <h4>Zero stimulants</h4>
+            <p>No caffeine, no green tea, no jitters. Works with your body, not against it.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">e</div>
+          <div class="feature-text">
+            <h4>Clinically backed ingredients</h4>
+            <p>IGOB131® is patented. CQR300® and Capsifen® are clinically studied and registered.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">f</div>
+          <div class="feature-text">
+            <h4>Third-party tested</h4>
+            <p>Every batch. Pharmaceutical-grade standards. Full transparency.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">g</div>
+          <div class="feature-text">
+            <h4>Ivy League formulated</h4>
+            <p>Developed with an expert advisory board that includes an Ivy League doctor.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">h</div>
+          <div class="feature-text">
+            <h4>30-day money-back guarantee</h4>
+            <p>Try it for 30 days. Don't love it? We'll refund you.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">i</div>
+          <div class="feature-text">
+            <h4>Subscribe &amp; save</h4>
+            <p>Lock in better pricing. Pause or cancel anytime.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 6. WHAT'S INCLUDED {%- endcomment -%}
+  <section class="section included">
+    <div class="container">
+      <div class="included-grid">
+        <div class="included-media">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-included-unboxing.jpg?v=1776657813"
+            alt="WLP-1 unboxing with jar, box and satchels"
+            loading="lazy"
+            width="800"
+            height="800"
+          >
+        </div>
+        <div class="included-copy">
+          <div class="eyebrow">What's Inside</div>
+          <h2>Exactly what you get.</h2>
+          <ul class="included-list">
+            <li>
+              <span class="inc-num">1.</span>
+              <div>
+                <strong>400mg IGOB131®</strong>
+                <span class="inc-body"
+                  >The only patented Irvingia gabonensis extract. Supports leptin and adiponectin rebalancing.</span
+                >
+              </div>
+            </li>
+            <li>
+              <span class="inc-num">2.</span>
+              <div>
+                <strong>300mg CQR300®</strong>
+                <span class="inc-body"
+                  >Proprietary Cissus quadrangularis extract. Clinically studied for GLP-1 activity and metabolic
+                  support.</span
+                >
+              </div>
+            </li>
+            <li>
+              <span class="inc-num">3.</span>
+              <div>
+                <strong>200mg Capsifen®</strong>
+                <span class="inc-body"
+                  >Nano-beadlet capsaicin. Up to 20x absorption.* Thermogenesis without the burn.</span
+                >
+              </div>
+            </li>
+            <li>
+              <span class="inc-num">4.</span>
+              <div>
+                <strong>Body Ready™ Tripeptide Complex</strong>
+                <span class="inc-body"
+                  >Capsoil Humelene nanoemulsion, Grains of Paradise, and reduced glutathione. Targeted peptide science.</span
+                >
+              </div>
+            </li>
+            <li>
+              <span class="inc-num">5.</span>
+              <div>
+                <strong>30-day supply · 1 jar</strong>
+                <span class="inc-body">Ships free. Subscribe and save.</span>
+              </div>
+            </li>
+          </ul>
+          <div class="included-cta">
+            <a href="#buy-box" class="inline-cta-btn">Shop WLP-1™ · As low as $64/month</a>
+            <div class="inline-cta-sub">30-day money-back guarantee · Free shipping</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} REVIEWS — between What's Included and FAQ {%- endcomment -%}
+  <section class="section reviews-section">
+    <div class="container">
+      <div class="section-label">Verified Buyers</div>
+      <h2 class="section-title">What people are saying.</h2>
+      <p class="section-intro">Real reviews from real customers.</p>
+
+      <div class="reviews-grid">
+        <div class="review">
+          <div class="review-stars">★★★★<span class="star-empty">★</span></div>
+          <h4 class="review-title">Works!</h4>
+          <p class="review-body">
+            I am definitely losing weight in just my first week. I have had some mild stomach discomfort, but hopefully
+            it will resolve in the next week or so!
+          </p>
+          <div class="review-author">anon <span>Verified buyer</span></div>
+        </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-title">WLP-1</h4>
+          <p class="review-body">
+            I have noticed a change in my appetite. I don't get as hungry and I don't eat as much.
+          </p>
+          <div class="review-author">Tiffany L. <span>Verified buyer</span></div>
+        </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-title">Wow!</h4>
+          <p class="review-body">About a week in and I can already tell the difference.</p>
+          <div class="review-author">TF <span>Verified buyer</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 10. FAQ {%- endcomment -%}
+  <section class="section faq">
+    <div class="container">
+      <div class="section-label">Questions</div>
+      <h2 class="section-title">Everything you might be wondering.</h2>
+
+      <div class="faq-list">
+        <div class="faq-item open">
+          <button type="button" class="faq-q">How is WLP-1™ different from a prescription GLP-1?</button>
+          <div class="faq-a">
+            WLP-1™ is a daily oral supplement formulated with clinically studied ingredients that may help support
+            natural GLP-1 activity, appetite signaling, and thermogenesis. It is not a prescription medication and does
+            not contain semaglutide or other GLP-1 agonist drugs. If you are considering or currently using a
+            prescription GLP-1, please speak with your healthcare provider.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">When should I expect results?</button>
+          <div class="faq-a">
+            Every body is different. Clinical research on WLP-1™'s studied ingredients has shown meaningful shifts in
+            appetite behavior and body composition within 4 to 10 weeks in individuals with a BMI of 25+. Most people
+            take it daily for at least 60 to 90 days to evaluate fit.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">Are there side effects?</button>
+          <div class="faq-a">
+            WLP-1™ is formulated without caffeine, green tea, or other harsh stimulants. It's third-party tested and
+            made to pharmaceutical-grade standards. As with any supplement, talk to your healthcare provider before
+            starting, especially if you're pregnant, nursing, or on medication.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">How do I take it?</button>
+          <div class="faq-a">
+            One serving per day with water, ideally before your largest meal or in the morning. Consistent daily use is
+            what supports the multi-pathway approach the formula is built around.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">What's your return policy?</button>
+          <div class="faq-a">
+            WLP-1™ is backed by a 30-day money-back guarantee. If it's not for you, reach out and we'll refund your
+            first order.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">Can I cancel my subscription?</button>
+          <div class="faq-a">
+            Yes, anytime. You can pause, skip, or cancel from your account with no lock-in and no friction.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q">Does it ship internationally?</button>
+          <div class="faq-a">
+            We currently ship within the US with free shipping on every order. International shipping is expanding. Join
+            the list for updates.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} Inline CTA 3 — after FAQ {%- endcomment -%}
+  <section class="faq">
+    <div class="container inline-cta">
+      <div class="inline-cta-micro">No more questions?</div>
+      <h3 class="inline-cta-title">Give WLP-1™ a try.</h3>
+      <a href="#buy-box" class="inline-cta-btn">Shop WLP-1™ · As low as $64/month</a>
+      <div class="inline-cta-sub">Try it for 30 days. Not for you? Full refund.</div>
+    </div>
+  </section>
+
+  {%- comment -%} 11. IMAGE STRIP {%- endcomment -%}
+  <section class="imagestrip">
+    <div class="container">
+      <div class="strip-inner">
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-strip-1-flatlay.jpg?v=1776657813"
+            alt="WLP-1 wellness flatlay"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ian-wlp-lander-2.jpg?v=1777500390"
+            alt="Ian Somerhalder, co-founder"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-strip-3-dining.jpg?v=1776657813"
+            alt="WLP-1 at the table"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-strip-4-capsule.jpg?v=1776657813"
+            alt="WLP-1 capsule close up"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-strip-5-pocket.jpg?v=1776657813"
+            alt="WLP-1 satchel on the go"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+        <div class="strip-img">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-strip-6-composition.jpg?v=1776657813"
+            alt="WLP-1 product composition"
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 12. FINAL CTA {%- endcomment -%}
+  <section class="finalcta">
+    <div class="container">
+      <h2>The GLP-1 alternative we built for ourselves.</h2>
+      <p>And for everyone who wanted a real option that wasn't a prescription, an injection, or a stimulant pill.</p>
+      <a href="#buy-box" class="hero-cta">Shop WLP-1™ · As low as $64/month</a>
+      <div class="finalcta-badges">
+        <span>Free shipping</span>
+        <span>30-day money-back guarantee</span>
+        <span>Third-party tested</span>
+        <span>Secure checkout</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} Disclaimer {%- endcomment -%}
+  <div class="disclaimer">
+    <div class="container">
+      <p>
+        *These statements have not been evaluated by the Food and Drug Administration. This product is not intended to
+        diagnose, treat, cure, or prevent any disease. Individual results vary. Clinical results referenced are based on
+        studies of individual ingredients (IGOB131®, CQR300®, and Capsifen®) conducted in populations with a BMI of 25
+        or higher, not on the finished WLP-1™ formula. Absorption claim (up to 20x) refers to Capsifen® in a human
+        bioavailability study versus standard capsaicin extract.
+      </p>
+      <p>
+        WLP-1™ does not contain semaglutide and is not a substitute for prescription medication. Always consult your
+        healthcare provider before starting a new supplement, particularly if you are pregnant, nursing, or taking
+        medication.
+      </p>
+    </div>
+  </div>
+
+  {%- comment -%} Sticky mobile CTA bar (appears after hero scrolls out) {%- endcomment -%}
+  <div class="sticky-cta" id="wlp1ev-sticky">
+    <a href="#buy-box" class="sticky-cta-btn">Shop WLP-1™ · $64/mo →</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // FAQ accordion
+    var faqItems = document.querySelectorAll('.wlp1ev .faq-q');
+    for (var i = 0; i < faqItems.length; i++) {
+      faqItems[i].addEventListener('click', function () {
+        this.parentElement.classList.toggle('open');
+      });
+    }
+
+    // Sticky mobile CTA — show after hero leaves view
+    var stickyEl = document.getElementById('wlp1ev-sticky');
+    var heroEl = document.querySelector('.wlp1ev .hero');
+    if (stickyEl && heroEl) {
+      var ticking = false;
+      function updateSticky() {
+        var heroBottom = heroEl.getBoundingClientRect().bottom;
+        if (heroBottom < 0) {
+          stickyEl.classList.add('visible');
+        } else {
+          stickyEl.classList.remove('visible');
+        }
+        ticking = false;
+      }
+      window.addEventListener(
+        'scroll',
+        function () {
+          if (!ticking) {
+            window.requestAnimationFrame(updateSticky);
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+    }
+
+    // Smooth scroll for #buy-box anchors
+    var anchorLinks = document.querySelectorAll('.wlp1ev a[href="#buy-box"]');
+    for (var j = 0; j < anchorLinks.length; j++) {
+      anchorLinks[j].addEventListener('click', function (e) {
+        var target = document.getElementById('buy-box');
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    // Buy box tier selection
+    var tiers = document.querySelectorAll('.wlp1ev .tier');
+    for (var k = 0; k < tiers.length; k++) {
+      tiers[k].addEventListener('click', function () {
+        for (var m = 0; m < tiers.length; m++) {
+          tiers[m].classList.remove('selected');
+        }
+        this.classList.add('selected');
+      });
+    }
+
+    // Add to cart
+    var addBtn = document.getElementById('wlp1ev-add-to-cart');
+    if (addBtn) {
+      addBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var selectedTier = document.querySelector('.wlp1ev .tier.selected');
+        if (!selectedTier) return;
+
+        var variantId = selectedTier.getAttribute('data-variant-id');
+        var sellingPlanId = selectedTier.getAttribute('data-selling-plan-id');
+
+        var payload = {
+          items: [{ id: parseInt(variantId, 10), quantity: 1 }],
+        };
+        if (sellingPlanId) {
+          payload.items[0].selling_plan = parseInt(sellingPlanId, 10);
+        }
+
+        var originalText = addBtn.textContent;
+        addBtn.disabled = true;
+        addBtn.textContent = 'Adding...';
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error('Cart add failed');
+            return res.json();
+          })
+          .then(function () {
+            window.location.href = '/cart';
+          })
+          .catch(function (err) {
+            console.error('Cart add failed:', err);
+            addBtn.disabled = false;
+            addBtn.textContent = originalText;
+            alert('Sorry, there was an error adding to cart. Please try again.');
+          });
+      });
+    }
+  })();
+</script>

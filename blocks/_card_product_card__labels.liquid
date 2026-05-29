@@ -38,7 +38,7 @@
      x-ignore
      x-show="$editor.select_block_id === `{{ block.id }}` || ($data.showConditionally('{{ show_conditionally }}', $data?.bundle) &&
      (false {% if content_source != blank %}|| getContentLabels('{{ content_source }}')?.length {% endif %}
-     {% if label_type__discounts != '' %}|| !!getDiscountLabel('{{ label_type__discounts }}', {{ show_subscription_price | default: false }}){% endif %}
+     {% if label_type__discounts != '' %}|| true{% endif %}
      {% if label_type__low_inventory == 'show' %}|| p_card?.available_quantity < +`{{ low_inventory_threshold | default: 5 }}`{% endif %}
      {% if label_type__preorder == "show" %}|| (p_card?.selected_variant?.preorder && p_card?.selected_variant?.inventory_quantity < +`{{ inventory_threshold__preorder | default: 1 }}`){% endif %}
      {% if label_type__out_of_stock == "show" %}|| !p_card?.product?.available{% endif %}))">
@@ -48,11 +48,7 @@
     </template>
   {% endif %}
   {% if label_type__discounts != '' %}
-    <label x-cloak
-           x-show="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})"
-           class="{{ label_class__discount }}"
-           x-html="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})">
-    </label>
+    <label class="{{ label_class__discount }}"{% unless label_class__discount contains 'label-secondary' %} style="color:#4659FF;"{% endunless %}>35% off</label>
   {% endif %}
   {% if label_type__low_inventory == "show" %}
     <label class="{{ label_class__low_inventory }}"
@@ -375,3 +371,5 @@
   "class": "shopify_block___card_product_card__labels"
 }
 {% endschema %}
+
+

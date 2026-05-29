@@ -1,0 +1,489 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_delivers_results"
+
+  assign image_position = section.settings.image_position
+  assign image_ratio = section.settings.image_ratio
+  assign stats_cols_desktop = section.settings.stats_cols_desktop
+  assign layout_gap_desktop = section.settings.layout_gap_desktop
+  assign layout_gap_mobile = section.settings.layout_gap_mobile
+  assign stats_gap_desktop = section.settings.stats_gap_desktop
+  assign stats_gap_mobile = section.settings.stats_gap_mobile
+
+  assign accent_color = section.settings.accent_color
+  assign card_background = section.settings.card_background
+
+  assign header_size_desktop = section.settings.header_size_desktop
+  assign header_size_mobile = section.settings.header_size_mobile
+  assign header_line_height = section.settings.header_line_height
+  assign subtitle_size = section.settings.subtitle_size
+  assign stat_title_size = section.settings.stat_title_size
+  assign stat_desc_size = section.settings.stat_desc_size
+  assign stat_number_size_desktop = section.settings.stat_number_size_desktop
+  assign stat_number_size_mobile = section.settings.stat_number_size_mobile
+  assign stat_label_size = section.settings.stat_label_size
+  assign footer_size = section.settings.footer_size
+
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --dr-header-d: {{ header_size_desktop }}px;
+    --dr-header-m: {{ header_size_mobile }}px;
+    --dr-header-lh: {{ header_line_height | divided_by: 100.0 }};
+    --dr-subtitle: {{ subtitle_size }}px;
+    --dr-stat-title: {{ stat_title_size }}px;
+    --dr-stat-desc: {{ stat_desc_size }}px;
+    --dr-stat-number-d: {{ stat_number_size_desktop }}px;
+    --dr-stat-number-m: {{ stat_number_size_mobile }}px;
+    --dr-stat-label: {{ stat_label_size }}px;
+    --dr-footer: {{ footer_size }}px;
+
+    --dr-accent: {{ accent_color }};
+    --dr-card-bg: {{ card_background }};
+
+    --dr-layout-gap-d: {{ layout_gap_desktop }}px;
+    --dr-layout-gap-m: {{ layout_gap_mobile }}px;
+    --dr-stats-gap-d: {{ stats_gap_desktop }}px;
+    --dr-stats-gap-m: {{ stats_gap_mobile }}px;
+    --dr-stats-cols-d: {{ stats_cols_desktop }};
+    --dr-image-ratio: {{ image_ratio }};
+    --dr-image-order: {% if image_position == 'right' %}2{% else %}1{% endif %};
+    --dr-stats-order: {% if image_position == 'right' %}1{% else %}2{% endif %};
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-delivers-results {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div class="ctr-dr__inner">
+    {% content_for "blocks" %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Delivers Results",
+  "tag": "section",
+  "class": "shopify_section__ctr_delivers_results",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select", "id": "image_position", "label": "Image position (desktop)", "default": "left",
+      "options": [{ "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }]
+    },
+    { "type": "range", "id": "image_ratio", "label": "Image aspect ratio (w:h)", "min": 50, "max": 200, "step": 5, "default": 100, "unit": "%", "info": "100% = square. Lower = wider. Higher = taller." },
+    {
+      "type": "select", "id": "stats_cols_desktop", "label": "Stats grid columns (desktop)", "default": "2",
+      "options": [{ "value": "1", "label": "1 column" }, { "value": "2", "label": "2 columns" }, { "value": "4", "label": "4 columns" }]
+    },
+    { "type": "range", "id": "layout_gap_desktop", "label": "Gap between image & stats (desktop)", "min": 16, "max": 96, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "layout_gap_mobile", "label": "Gap between image & stats (mobile)", "min": 16, "max": 64, "step": 4, "default": 24, "unit": "px" },
+    { "type": "range", "id": "stats_gap_desktop", "label": "Gap between stat boxes (desktop)", "min": 8, "max": 48, "step": 2, "default": 20, "unit": "px" },
+    { "type": "range", "id": "stats_gap_mobile", "label": "Gap between stat boxes (mobile)", "min": 8, "max": 32, "step": 2, "default": 14, "unit": "px" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#7C95D0", "info": "Used for stat numbers and the inner box border." },
+    { "type": "color", "alpha": true, "id": "card_background", "label": "Stat card background", "default": "rgba(255,255,255,0.5)" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "paragraph", "content": "Font sizes apply to the matching blocks in the preset. For new blocks, edit the block's Custom CSS." },
+    { "type": "range", "id": "header_size_desktop", "label": "Header size (desktop)", "min": 22, "max": 72, "step": 1, "default": 40, "unit": "px" },
+    { "type": "range", "id": "header_size_mobile", "label": "Header size (mobile)", "min": 20, "max": 48, "step": 1, "default": 28, "unit": "px" },
+    { "type": "range", "id": "header_line_height", "label": "Header line height", "min": 90, "max": 160, "step": 5, "default": 110, "unit": "%" },
+    { "type": "range", "id": "subtitle_size", "label": "Subtitle size", "min": 12, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "stat_title_size", "label": "Stat title size", "min": 14, "max": 28, "step": 1, "default": 18, "unit": "px" },
+    { "type": "range", "id": "stat_desc_size", "label": "Stat description size", "min": 11, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "stat_number_size_desktop", "label": "Stat number size (desktop)", "min": 32, "max": 96, "step": 2, "default": 48, "unit": "px" },
+    { "type": "range", "id": "stat_number_size_mobile", "label": "Stat number size (mobile)", "min": 28, "max": 72, "step": 2, "default": 40, "unit": "px" },
+    { "type": "range", "id": "stat_label_size", "label": "Stat label size", "min": 10, "max": 16, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "footer_size", "label": "Footer text size", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" }, { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" }, { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" }, { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "text_color", "label": "Text color" },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#F5F1EA" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 64px 0;\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 48px 0;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Delivers Results",
+      "category": "Custom",
+      "settings": {
+        "image_position": "left",
+        "image_ratio": 100,
+        "stats_cols_desktop": "2",
+        "layout_gap_desktop": 48,
+        "layout_gap_mobile": 24,
+        "stats_gap_desktop": 20,
+        "stats_gap_mobile": 14,
+        "accent_color": "#7C95D0",
+        "card_background": "rgba(255,255,255,0.5)",
+        "header_size_desktop": 40,
+        "header_size_mobile": 28,
+        "header_line_height": 110,
+        "subtitle_size": 16,
+        "stat_title_size": 18,
+        "stat_desc_size": 14,
+        "stat_number_size_desktop": 48,
+        "stat_number_size_mobile": 40,
+        "stat_label_size": 12,
+        "footer_size": 14,
+        "background_color": "#F5F1EA"
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Header",
+          "settings": {
+            "title": "<h2><strong>Absorption That Actually Delivers Results.</strong></h2>",
+            "content_class": "richtext-md",
+            "text_alignment": "center",
+            "custom_css": "& {\n  max-width: 720px;\n  margin: 0 auto 12px;\n}\n& h2, & h1, & p {\n  font-size: var(--dr-header-d);\n  line-height: var(--dr-header-lh);\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & h2, & h1, & p {\n    font-size: var(--dr-header-m);\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "richtext",
+          "name": "Subtitle",
+          "settings": {
+            "title": "<p>Standard berberine has poor bioavailability, which is why most brands push you toward higher doses (and worse side effects).</p>",
+            "content_class": "richtext-md",
+            "text_alignment": "center",
+            "custom_css": "& {\n  max-width: 640px;\n  margin: 0 auto 40px;\n  color: #555;\n}\n& p {\n  font-size: var(--dr-subtitle);\n  line-height: 1.5;\n  margin: 0;\n}\n@media (max-width: 1023px) {\n  & {\n    margin-bottom: 32px;\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "container",
+          "name": "Two-column layout",
+          "settings": {
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: var(--dr-layout-gap-m);\n  margin-bottom: 32px;\n}\n@media (min-width: 1024px) {\n  & {\n    display: grid;\n    grid-template-columns: 5fr 7fr;\n    gap: var(--dr-layout-gap-d);\n    align-items: center;\n    margin-bottom: 40px;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "container",
+              "name": "Image wrapper",
+              "settings": {
+                "custom_css": "& {\n  order: var(--dr-image-order);\n  width: 100%;\n  border-radius: 16px;\n  overflow: hidden;\n  aspect-ratio: calc(1 / (var(--dr-image-ratio) / 100));\n}"
+              },
+              "blocks": [
+                {
+                  "type": "image_with_caption",
+                  "name": "Hero image",
+                  "settings": {
+                    "caption": "",
+                    "max_width": 1600,
+                    "custom_css": "& {\n  display: block;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n}\n& .image-wrapper {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  max-width: none;\n}\n& img, & picture {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "container",
+              "name": "Stats grid",
+              "settings": {
+                "custom_css": "& {\n  order: var(--dr-stats-order);\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: var(--dr-stats-gap-m);\n}\n@media (min-width: 1024px) {\n  & {\n    grid-template-columns: repeat(var(--dr-stats-cols-d), 1fr);\n    gap: var(--dr-stats-gap-d);\n  }\n}"
+              },
+              "blocks": [
+                {
+                  "type": "container",
+                  "name": "Stat 1 — Cravings",
+                  "settings": {
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 24px;\n  background: var(--dr-card-bg);\n  border-radius: 12px;\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "name": "Title",
+                      "settings": {
+                        "title": "<h4><strong>Curbs Sugar Cravings</strong></h4>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& h4, & h3, & p {\n  font-size: var(--dr-stat-title);\n  line-height: 1.3;\n  margin: 0;\n  font-weight: 700;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Description",
+                      "settings": {
+                        "title": "<p>Stop reaching for something sweet after every meal.</p>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& {\n  color: #6b6b6b;\n  margin-bottom: 4px;\n}\n& p {\n  font-size: var(--dr-stat-desc);\n  line-height: 1.45;\n  margin: 0;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "container",
+                      "name": "Stat highlight box",
+                      "settings": {
+                        "custom_css": "& {\n  margin-top: 12px;\n  padding: 18px 20px;\n  border: 1.5px solid var(--dr-accent);\n  border-radius: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}"
+                      },
+                      "blocks": [
+                        {
+                          "type": "richtext",
+                          "name": "Stat number",
+                          "settings": {
+                            "title": "<h2><strong>89%</strong></h2>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& h2, & h1, & p {\n  font-size: var(--dr-stat-number-d);\n  line-height: 1;\n  margin: 0;\n  color: var(--dr-accent);\n  font-weight: 700;\n}\n@media (max-width: 749px) {\n  & h2, & h1, & p {\n    font-size: var(--dr-stat-number-m);\n  }\n}",
+                            "hide_if_empty": "none"
+                          }
+                        },
+                        {
+                          "type": "richtext",
+                          "name": "Stat label",
+                          "settings": {
+                            "title": "<p>Reported fewer sugar cravings 30-day customer survey</p>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& p {\n  font-size: var(--dr-stat-label);\n  line-height: 1.4;\n  margin: 0;\n  color: #444;\n}",
+                            "hide_if_empty": "none"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "container",
+                  "name": "Stat 2 — Blood Sugar",
+                  "settings": {
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 24px;\n  background: var(--dr-card-bg);\n  border-radius: 12px;\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "name": "Title",
+                      "settings": {
+                        "title": "<h4><strong>Steadier Blood Sugar</strong></h4>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& h4, & h3, & p {\n  font-size: var(--dr-stat-title);\n  line-height: 1.3;\n  margin: 0;\n  font-weight: 700;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Description",
+                      "settings": {
+                        "title": "<p>Smooths out post-meal spikes and the 3pm crash.</p>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& {\n  color: #6b6b6b;\n  margin-bottom: 4px;\n}\n& p {\n  font-size: var(--dr-stat-desc);\n  line-height: 1.45;\n  margin: 0;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "container",
+                      "name": "Stat highlight box",
+                      "settings": {
+                        "custom_css": "& {\n  margin-top: 12px;\n  padding: 18px 20px;\n  border: 1.5px solid var(--dr-accent);\n  border-radius: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}"
+                      },
+                      "blocks": [
+                        {
+                          "type": "richtext",
+                          "name": "Stat number",
+                          "settings": {
+                            "title": "<h2><strong>89%</strong></h2>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& h2, & h1, & p {\n  font-size: var(--dr-stat-number-d);\n  line-height: 1;\n  margin: 0;\n  color: var(--dr-accent);\n  font-weight: 700;\n}\n@media (max-width: 749px) {\n  & h2, & h1, & p {\n    font-size: var(--dr-stat-number-m);\n  }\n}",
+                            "hide_if_empty": "none"
+                          }
+                        },
+                        {
+                          "type": "richtext",
+                          "name": "Stat label",
+                          "settings": {
+                            "title": "<p>Smaller post-meal glucose spikes berberine clinical research</p>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& p {\n  font-size: var(--dr-stat-label);\n  line-height: 1.4;\n  margin: 0;\n  color: #444;\n}",
+                            "hide_if_empty": "none"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "container",
+                  "name": "Stat 3 — GI Issues",
+                  "settings": {
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 24px;\n  background: var(--dr-card-bg);\n  border-radius: 12px;\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "name": "Title",
+                      "settings": {
+                        "title": "<h4><strong>Fewer GI Issues</strong></h4>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& h4, & h3, & p {\n  font-size: var(--dr-stat-title);\n  line-height: 1.3;\n  margin: 0;\n  font-weight: 700;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Description",
+                      "settings": {
+                        "title": "<p>Gentle on your stomach, day after day.</p>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& {\n  color: #6b6b6b;\n  margin-bottom: 4px;\n}\n& p {\n  font-size: var(--dr-stat-desc);\n  line-height: 1.45;\n  margin: 0;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "container",
+                      "name": "Stat highlight box",
+                      "settings": {
+                        "custom_css": "& {\n  margin-top: 12px;\n  padding: 18px 20px;\n  border: 1.5px solid var(--dr-accent);\n  border-radius: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}"
+                      },
+                      "blocks": [
+                        {
+                          "type": "richtext",
+                          "name": "Stat number",
+                          "settings": {
+                            "title": "<h2><strong>7x</strong></h2>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& h2, & h1, & p {\n  font-size: var(--dr-stat-number-d);\n  line-height: 1;\n  margin: 0;\n  color: var(--dr-accent);\n  font-weight: 700;\n}\n@media (max-width: 749px) {\n  & h2, & h1, & p {\n    font-size: var(--dr-stat-number-m);\n  }\n}",
+                            "hide_if_empty": "none"
+                          }
+                        },
+                        {
+                          "type": "richtext",
+                          "name": "Stat label",
+                          "settings": {
+                            "title": "<p>Fewer GI side effects reported vs standard berberine</p>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& p {\n  font-size: var(--dr-stat-label);\n  line-height: 1.4;\n  margin: 0;\n  color: #444;\n}",
+                            "hide_if_empty": "none"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "container",
+                  "name": "Stat 4 — Absorbed Dose",
+                  "settings": {
+                    "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 24px;\n  background: var(--dr-card-bg);\n  border-radius: 12px;\n}"
+                  },
+                  "blocks": [
+                    {
+                      "type": "richtext",
+                      "name": "Title",
+                      "settings": {
+                        "title": "<h4><strong>Absorbed-Equivalent Dose</strong></h4>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& h4, & h3, & p {\n  font-size: var(--dr-stat-title);\n  line-height: 1.3;\n  margin: 0;\n  font-weight: 700;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "richtext",
+                      "name": "Description",
+                      "settings": {
+                        "title": "<p>Not what's in the bottle. What your body actually gets.</p>",
+                        "content_class": "richtext-md",
+                        "text_alignment": "inherit",
+                        "custom_css": "& {\n  color: #6b6b6b;\n  margin-bottom: 4px;\n}\n& p {\n  font-size: var(--dr-stat-desc);\n  line-height: 1.45;\n  margin: 0;\n}",
+                        "hide_if_empty": "none"
+                      }
+                    },
+                    {
+                      "type": "container",
+                      "name": "Stat highlight box",
+                      "settings": {
+                        "custom_css": "& {\n  margin-top: 12px;\n  padding: 18px 20px;\n  border: 1.5px solid var(--dr-accent);\n  border-radius: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}"
+                      },
+                      "blocks": [
+                        {
+                          "type": "richtext",
+                          "name": "Stat number",
+                          "settings": {
+                            "title": "<h2><strong>1,500mg</strong></h2>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& h2, & h1, & p {\n  font-size: var(--dr-stat-number-d);\n  line-height: 1;\n  margin: 0;\n  color: var(--dr-accent);\n  font-weight: 700;\n}\n@media (max-width: 749px) {\n  & h2, & h1, & p {\n    font-size: var(--dr-stat-number-m);\n  }\n}",
+                            "hide_if_empty": "none"
+                          }
+                        },
+                        {
+                          "type": "richtext",
+                          "name": "Stat label",
+                          "settings": {
+                            "title": "<p>Absorbed-equivalent berberine per serving Powered by FenuMat®</p>",
+                            "content_class": "richtext-md",
+                            "text_alignment": "inherit",
+                            "custom_css": "& p {\n  font-size: var(--dr-stat-label);\n  line-height: 1.4;\n  margin: 0;\n  color: #444;\n}",
+                            "hide_if_empty": "none"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "name": "Footer",
+          "settings": {
+            "title": "<p>Our FenuMat® hybrid-hydrogel locks berberine into a fenugreek-galactomannan matrix, releasing it slowly so your body absorbs more and your gut stays calm.</p>",
+            "content_class": "richtext-md",
+            "text_alignment": "center",
+            "custom_css": "& {\n  max-width: 720px;\n  margin: 0 auto;\n  color: #555;\n}\n& p {\n  font-size: var(--dr-footer);\n  line-height: 1.5;\n  margin: 0;\n}",
+            "hide_if_empty": "none"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

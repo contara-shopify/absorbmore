@@ -42,9 +42,6 @@
   assign default_allocation = variant.selling_plan_allocations | first
 %}
 
-{% capture lp3_plan_prices %}{ {% for a in variant.selling_plan_allocations %}{{ a.selling_plan.id }}: {{ a.per_delivery_price }}{% unless forloop.last %}, {% endunless %}{% endfor %} }{% endcapture %}
-{% capture lp3_compare_prices %}{ {% for a in variant.selling_plan_allocations %}{{ a.selling_plan.id }}: {{ a.compare_at_list_price | default: 0 }}{% unless forloop.last %}, {% endunless %}{% endfor %} }{% endcapture %}
-
 {% style %}
   #shopify-section-{{ section.id }} {
     background: {{ section.settings.section_background }};
@@ -604,82 +601,138 @@
       data-product-id="{{ product.id }}"
       data-variant-id="{{ variant.id }}"
       data-default-subscription="true"
-      x-data="{
-        ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
-        galleryIndex: 0,
-        mobileStickyVisible: false,
-        lp3PlanPrices: {{ lp3_plan_prices }},
-        lp3ComparePrices: {{ lp3_compare_prices }},
-        lp3SelectedPlanId: {{ default_allocation.selling_plan.id | default: 'null' }},
-        get lp3CurrentPrice() {
-          return this.lp3PlanPrices[this.lp3SelectedPlanId]
-            ?? this.pdp?.selected_price
-            ?? {{ variant.price }};
-        },
-        get lp3CurrentComparePrice() {
-          return this.lp3ComparePrices[this.lp3SelectedPlanId]
-            ?? this.pdp?.selected_compare_at_price
-            ?? {{ compare_at_price }};
-        },
-        selectDefaultPlan() {
-          const allocations = this.pdp?.selling_plan_allocations || [];
-          const targetPlan = allocations[0]?.selling_plan;
-          if (targetPlan?.id) {
-            this.lp3SelectedPlanId = targetPlan.id;
-            if (this.pdp?.selected_selling_plan?.id !== targetPlan.id) {
-              this.setSellingPlan(targetPlan.id);
+      x-data="
+        {
+          ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
+          galleryIndex: 0,
+          mobileStickyVisible: false,
+          lp3DiscountConfig: window.ctrDiscountDisplay?.parseConfig({{ product.metafields.custom.ctr_discount_config.value | json }}),
+          lp3SelectedPlanId: {{ default_allocation.selling_plan.id | default: 'null' }},
+          get lp3CurrentAllocation() {
+            return this.pdp?.selling_plan_allocations?.find((allocation) => String(allocation?.selling_plan?.id) === String(this.lp3SelectedPlanId));
+          },
+          get lp3CurrentResolved() {
+            return window.ctrDiscountDisplay?.resolveSubscriptionDisplay(
+              this.lp3SelectedPlanId,
+              this.lp3DiscountConfig,
+              this.lp3CurrentAllocation,
+              this.pdp?.selected_variant,
+              Math.max(this.pdp?.selected_variant?.compare_at_price || 0, this.pdp?.selected_variant?.price || 0),
+              this.pdp?.selected_price
+            );
+          },
+          get lp3CurrentPrice() {
+            if (!this.pdp?.selected_selling_plan?.id) {
+              return this.pdp?.selected_price ?? {{ variant.price }};
             }
+            return this.lp3CurrentResolved?.price ?? this.pdp?.selected_price ?? {{ variant.price }};
+          },
+          get lp3CurrentComparePrice() {
+            return this.lp3CurrentResolved?.compareAt ?? this.pdp?.selected_compare_at_price ?? {{ compare_at_price }};
+          },
+          get lp3SaveBadgeText() {
+            const percent = this.lp3CurrentResolved?.percent;
+            return percent > 0 ? `SAVE ${percent}%` : `{{ section.settings.subscription_badge_text | escape }}`;
+          },
+          selectDefaultPlan() {
+            const allocations = this.pdp?.selling_plan_allocations || [];
+            const existingPlan = allocations.find(
+              (allocation) => String(allocation?.selling_plan?.id) === String(this.pdp?.selected_selling_plan?.id)
+            )?.selling_plan;
+            const targetPlan = existingPlan ?? allocations[0]?.selling_plan;
+            if (targetPlan?.id) {
+              this.lp3SelectedPlanId = targetPlan.id;
+              if (this.pdp?.selected_selling_plan?.id !== targetPlan.id) {
+                this.setSellingPlan(targetPlan.id);
+              }
+            }
+          },
+          toggleSubscription() {
+            if (this.pdp?.selected_selling_plan?.id) {
+              this.lp3SelectedPlanId = null;
+              this.setSellingPlan(undefined);
+              return;
+            }
+
+            this.selectDefaultPlan();
+          },
+          initPurchaseBox() {
+            this.selectDefaultPlan();
+            this.$watch('pdp.selling_plan_allocations', () => this.selectDefaultPlan());
+            this.$watch('pdp.selected_variant', () => this.selectDefaultPlan());
+
+            if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) {
+              return;
+            }
+
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                this.mobileStickyVisible = !entry.isIntersecting;
+              },
+              { threshold: 0.2 }
+            );
+
+            observer.observe(this.$refs.primaryCta);
           }
-        },
-        toggleSubscription() {
-          if (this.pdp?.selected_selling_plan?.id) {
-            this.lp3SelectedPlanId = null;
-            this.setSellingPlan(undefined);
-            return;
-          }
-
-          this.selectDefaultPlan();
-        },
-        initPurchaseBox() {
-          this.selectDefaultPlan();
-          this.$watch('pdp.selling_plan_allocations', () => this.selectDefaultPlan());
-          this.$watch('pdp.selected_variant', () => this.selectDefaultPlan());
-
-          if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) {
-            return;
-          }
-
-          const observer = new IntersectionObserver(
-            ([entry]) => {
-              this.mobileStickyVisible = !entry.isIntersecting;
-            },
-            { threshold: 0.2 }
-          );
-
-          observer.observe(this.$refs.primaryCta);
         }
-      }"
-      x-init="initPurchaseBox()">
+      "
+      x-init="initPurchaseBox()"
+    >
       <input type="hidden" name="form_type" value="product">
       <input type="hidden" name="utf8" value="✓">
       <input type="hidden" name="id" value="{{ variant.id }}" :value="pdp.selected_variant?.id">
-      <input type="hidden" name="selling_plan" value="{{ default_allocation.selling_plan.id }}" :value="pdp.selected_selling_plan?.id || ''">
+      <input
+        type="hidden"
+        name="selling_plan"
+        value="{{ default_allocation.selling_plan.id }}"
+        :value="pdp.selected_selling_plan?.id || ''"
+      >
 
       <div class="ctr-ppb__gallery-layout">
         <div class="ctr-ppb__thumbs" aria-label="Product images">
           {% if image_1 != blank %}
-            <button type="button" class="ctr-ppb__thumb is-active" :class="{ 'is-active': galleryIndex === 0 }" @click="galleryIndex = 0" aria-label="View image 1">
-              {{ image_1 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb is-active"
+              :class="{ 'is-active': galleryIndex === 0 }"
+              @click="galleryIndex = 0"
+              aria-label="View image 1"
+            >
+              {{
+                image_1
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
           {% if image_2 != blank %}
-            <button type="button" class="ctr-ppb__thumb" :class="{ 'is-active': galleryIndex === 1 }" @click="galleryIndex = 1" aria-label="View image 2">
-              {{ image_2 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb"
+              :class="{ 'is-active': galleryIndex === 1 }"
+              @click="galleryIndex = 1"
+              aria-label="View image 2"
+            >
+              {{
+                image_2
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
           {% if image_3 != blank %}
-            <button type="button" class="ctr-ppb__thumb" :class="{ 'is-active': galleryIndex === 2 }" @click="galleryIndex = 2" aria-label="View image 3">
-              {{ image_3 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb"
+              :class="{ 'is-active': galleryIndex === 2 }"
+              @click="galleryIndex = 2"
+              aria-label="View image 3"
+            >
+              {{
+                image_3
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
         </div>
@@ -687,17 +740,41 @@
         <div class="ctr-ppb__hero-image">
           {% if image_1 != blank %}
             <div x-show="galleryIndex === 0">
-              {{ image_1 | image_url: width: 1600 | image_tag: loading: 'eager', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_1
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'eager',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
           {% if image_2 != blank %}
             <div x-cloak x-show="galleryIndex === 1">
-              {{ image_2 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_2
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
           {% if image_3 != blank %}
             <div x-cloak x-show="galleryIndex === 2">
-              {{ image_3 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_3
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
         </div>
@@ -730,8 +807,17 @@
 
         {% if section.settings.frontrow_product_id != blank %}
           <div class="ctr-ppb__frontrow">
-            <script async type="text/javascript" src="https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"></script>
-            <iframe class="iframe-frontrow" id="iframe-frontrow-quant" frameborder="0" src="https://app.thefrontrowhealth.com/api/widgets?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"></iframe>
+            <script
+              async
+              type="text/javascript"
+              src="https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"
+            ></script>
+            <iframe
+              class="iframe-frontrow"
+              id="iframe-frontrow-quant"
+              frameborder="0"
+              src="https://app.thefrontrowhealth.com/api/widgets?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"
+            ></iframe>
           </div>
         {% endif %}
 
@@ -741,13 +827,19 @@
 
         <ul class="ctr-ppb__benefits">
           {% if section.settings.benefit_1 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_1 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_1 | escape }}</span>
+            </li>
           {% endif %}
           {% if section.settings.benefit_2 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_2 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_2 | escape }}</span>
+            </li>
           {% endif %}
           {% if section.settings.benefit_3 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_3 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_3 | escape }}</span>
+            </li>
           {% endif %}
         </ul>
 
@@ -759,21 +851,26 @@
               role="switch"
               :aria-checked="!!pdp.selected_selling_plan?.id"
               :aria-label="(pdp.selected_selling_plan?.id ? 'Disable' : 'Enable') + ' subscription'"
-              @click="toggleSubscription()"></button>
+              @click="toggleSubscription()"
+            ></button>
             <div class="ctr-ppb__purchase-title-wrap">
               <span class="ctr-ppb__purchase-title">{{ section.settings.subscription_title | escape }}</span>
               {% if section.settings.subscription_badge_text != blank %}
-                <span class="ctr-ppb__save-badge">{{ section.settings.subscription_badge_text | escape }}</span>
+                <span class="ctr-ppb__save-badge" x-text="lp3SaveBadgeText">{{ section.settings.subscription_badge_text | escape }}</span>
               {% endif %}
             </div>
             <div class="ctr-ppb__price-wrap">
               <div class="ctr-ppb__price-block" x-show="lp3CurrentComparePrice > lp3CurrentPrice">
                 {% comment %} <span class="ctr-ppb__price-label">{{ section.settings.compare_at_label | escape }}</span> {% endcomment %}
-                <span class="ctr-ppb__compare-price" x-text="utils.formatMoney(lp3CurrentComparePrice)">{{ compare_at_price | money }}</span>
+                <span class="ctr-ppb__compare-price" x-text="utils.formatMoney(lp3CurrentComparePrice)">
+                  {{- compare_at_price | money -}}
+                </span>
               </div>
               <div class="ctr-ppb__price-block">
                 {% comment %} <span class="ctr-ppb__price-label">{{ section.settings.sale_price_label | escape }}</span> {% endcomment %}
-                <span class="ctr-ppb__sale-price" x-text="utils.formatMoney(lp3CurrentPrice)">{{ default_allocation.per_delivery_price | default: variant.price | money }}</span>
+                <span class="ctr-ppb__sale-price" x-text="utils.formatMoney(lp3CurrentPrice)">
+                  {{- default_allocation.per_delivery_price | default: variant.price | money -}}
+                </span>
               </div>
             </div>
           </div>
@@ -782,21 +879,31 @@
             class="ctr-ppb__plan-select"
             aria-label="Delivery frequency"
             @change="lp3SelectedPlanId = +$el.value; setSellingPlan(+$el.value)"
-            :value="lp3SelectedPlanId">
-            {% for allocation in variant.selling_plan_allocations %}
-              <option value="{{ allocation.selling_plan.id }}">{{ allocation.selling_plan.name }}</option>
-            {% endfor %}
+            :value="lp3SelectedPlanId"
+          >
+            <template x-for="allocation in pdp.selling_plan_allocations" :key="allocation.selling_plan.id">
+              <option
+                :value="allocation.selling_plan.id"
+                x-text="window.ctrDiscountDisplay?.formatFrequencyTitle(allocation?.selling_plan?.name, allocation?.selling_plan?.id, lp3DiscountConfig, allocation, pdp?.selected_variant) ?? allocation?.selling_plan?.name"
+              ></option>
+            </template>
           </select>
 
           <ul class="ctr-ppb__subscription-perks">
             {% if section.settings.subscription_perk_1 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_1 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_1 | escape }}</span>
+              </li>
             {% endif %}
             {% if section.settings.subscription_perk_2 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_2 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_2 | escape }}</span>
+              </li>
             {% endif %}
             {% if section.settings.subscription_perk_3 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_3 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_3 | escape }}</span>
+              </li>
             {% endif %}
           </ul>
         </div>
@@ -808,24 +915,50 @@
             <p class="ctr-ppb__gift-copy">
               {{ section.settings.gift_callout_text | escape }}
               {% if section.settings.gift_callout_link_text != blank %}
-                <a href="#popup--gifts" @click.prevent="$modal.setId('popup--gifts')">{{ section.settings.gift_callout_link_text | escape }}</a>
+                <a href="#popup--gifts" @click.prevent="$modal.setId('popup--gifts')">
+                  {{- section.settings.gift_callout_link_text | escape -}}
+                </a>
               {% endif %}
             </p>
           </div>
           <div class="ctr-ppb__gift-images">
             {% if section.settings.gift_image_1 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_1 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_1
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
             {% if section.settings.gift_image_2 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_2 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_2
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
             {% if section.settings.gift_image_3 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_3 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_3
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
           </div>
@@ -836,9 +969,11 @@
           class="ctr-ppb__cta"
           x-ref="primaryCta"
           :disabled="pdp.isAdding || pdp.soldOut"
-          @click="handleAddToCart($event)">
+          @click="handleAddToCart($event)"
+        >
           <span x-text="pdp.soldOut ? '{{ section.settings.sold_out_text | escape }}' : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(lp3CurrentPrice)">
-            {{ section.settings.cta_text | escape }} - {{ default_allocation.per_delivery_price | default: variant.price | money }}
+            {{ section.settings.cta_text | escape }} -
+            {{ default_allocation.per_delivery_price | default: variant.price | money }}
           </span>
         </button>
 
@@ -859,14 +994,16 @@
             type="submit"
             class="ctr-ppb__sticky-button"
             :disabled="pdp.isAdding || pdp.soldOut"
-            @click="handleAddToCart($event)">
+            @click="handleAddToCart($event)"
+          >
             <span x-text="pdp.soldOut ? '{{ section.settings.sold_out_text | escape }}' : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(lp3CurrentPrice)">
-              {{ section.settings.cta_text | escape }} - {{ default_allocation.per_delivery_price | default: variant.price | money }}
+              {{ section.settings.cta_text | escape }} -
+              {{ default_allocation.per_delivery_price | default: variant.price | money }}
             </span>
           </button>
         </div>
-        </div>
-      </form>
+      </div>
+    </form>
   </section>
 {% endif %}
 

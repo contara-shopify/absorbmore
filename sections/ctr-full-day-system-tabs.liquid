@@ -1,0 +1,409 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  & .ctr-full-day__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  & .ctr-full-day__header {
+    max-width: 900px;
+    margin: 0 auto {{ section.settings.header_gap }}px;
+    text-align: center;
+  }
+
+  & .ctr-full-day__heading {
+    margin: 0;
+    font-size: {{ section.settings.heading_size_desktop }}px;
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  & .ctr-full-day__heading p,
+  & .ctr-full-day__subheading p,
+  & .ctr-full-day__panel-copy p {
+    margin: 0;
+  }
+
+  & .ctr-full-day__subheading {
+    max-width: 760px;
+    margin: 28px auto 0;
+    font-size: {{ section.settings.subheading_size_desktop }}px;
+    line-height: 1.3;
+  }
+
+  & .ctr-full-day__equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    margin-bottom: {{ section.settings.tabs_gap }}px;
+  }
+
+  & .ctr-full-day__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-width: {{ section.settings.pill_min_width }}px;
+    min-height: 48px;
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    background: {{ section.settings.pill_bg }};
+    color: {{ section.settings.text_color }};
+    font: inherit;
+    font-size: {{ section.settings.pill_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+
+  & .ctr-full-day__pill:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+  }
+
+  & .ctr-full-day__pill:active {
+    transform: translateY(1px);
+  }
+
+  & .ctr-full-day__pill.is-active {
+    border-color: var(--accent);
+    background: {{ section.settings.active_pill_bg }};
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  & .ctr-full-day__pill svg {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 auto;
+  }
+
+  & .ctr-full-day__operator {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.operator_size }}px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  & .ctr-full-day__panel {
+    display: none;
+    max-width: {{ section.settings.panel_max_width }}px;
+    margin: 0 auto;
+    padding: {{ section.settings.panel_padding }}px;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: {{ section.settings.panel_radius }}px;
+    background: {{ section.settings.panel_bg }};
+  }
+
+  & .ctr-full-day__panel.is-active {
+    display: block;
+  }
+
+  & .ctr-full-day__panel-eyebrow {
+    margin-bottom: 14px;
+    color: var(--accent);
+    font-size: {{ section.settings.panel_eyebrow_size }}px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  & .ctr-full-day__panel-title {
+    margin: 0 0 14px;
+    font-size: {{ section.settings.panel_title_size }}px;
+    font-weight: 800;
+    line-height: 1.05;
+  }
+
+  & .ctr-full-day__panel-copy {
+    font-size: {{ section.settings.panel_copy_size }}px;
+    line-height: 1.38;
+  }
+
+  @media (max-width: 1023px) {
+    & {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    & .ctr-full-day__header {
+      margin-bottom: {{ section.settings.header_gap_mobile }}px;
+      text-align: left;
+    }
+
+    & .ctr-full-day__heading {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+      line-height: 0.96;
+    }
+
+    & .ctr-full-day__subheading {
+      margin-top: 26px;
+      font-size: {{ section.settings.subheading_size_mobile }}px;
+      line-height: 1.34;
+    }
+
+    & .ctr-full-day__equation {
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: {{ section.settings.tabs_gap_mobile }}px;
+    }
+
+    & .ctr-full-day__pill {
+      width: 100%;
+      min-width: 0;
+      min-height: 54px;
+      padding: 14px 24px;
+      font-size: {{ section.settings.pill_size_mobile }}px;
+    }
+
+    & .ctr-full-day__operator {
+      font-size: 24px;
+    }
+
+    & .ctr-full-day__panel {
+      padding: {{ section.settings.panel_padding_mobile }}px;
+      border-radius: {{ section.settings.panel_radius_mobile }}px;
+    }
+
+    & .ctr-full-day__panel-title {
+      font-size: {{ section.settings.panel_title_size_mobile }}px;
+    }
+
+    & .ctr-full-day__panel-copy {
+      font-size: {{ section.settings.panel_copy_size_mobile }}px;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_full_day_system_tabs"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-full-day {{ container_spacing }}"
+  x-data="{ activeTab: '' }"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-full-day__inner">
+    <div class="ctr-full-day__header">
+      {% if section.settings.heading != blank %}
+        <div class="ctr-full-day__heading">{{ section.settings.heading }}</div>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <div class="ctr-full-day__subheading">{{ section.settings.subheading }}</div>
+      {% endif %}
+    </div>
+
+    <div class="ctr-full-day__equation" role="tablist" aria-label="Full day balance tabs">
+      <button
+        type="button"
+        class="ctr-full-day__pill"
+        style="--accent: {{ section.settings.blood_color }};"
+        :class="activeTab === 'blood' ? 'is-active' : ''"
+        @click="activeTab = activeTab === 'blood' ? '' : 'blood'"
+        role="tab"
+        :aria-selected="activeTab === 'blood' ? 'true' : 'false'"
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+          <path d="M9.99935 13.3334C11.8403 13.3334 13.3327 11.841 13.3327 10.0001C13.3327 8.15913 11.8403 6.66675 9.99935 6.66675C8.1584 6.66675 6.66602 8.15913 6.66602 10.0001C6.66602 11.841 8.1584 13.3334 9.99935 13.3334Z" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 2.5V3.33333" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 16.6667V17.5001" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2.5 10H3.33333" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16.666 10H17.4993" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.3021 4.69678L14.7129 5.28594" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.28643 14.7141L4.69727 15.3033" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4.69727 4.69678L5.28643 5.28594" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.7129 14.7141L15.3021 15.3033" stroke="{{ section.settings.blood_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ section.settings.blood_label | escape }}</span>
+      </button>
+
+      <span class="ctr-full-day__operator" aria-hidden="true">+</span>
+
+      <button
+        type="button"
+        class="ctr-full-day__pill"
+        style="--accent: {{ section.settings.stress_color }};"
+        :class="activeTab === 'stress' ? 'is-active' : ''"
+        @click="activeTab = activeTab === 'stress' ? '' : 'stress'"
+        role="tab"
+        :aria-selected="activeTab === 'stress' ? 'true' : 'false'"
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+          <path d="M15 4.16675H18.3333" stroke="{{ section.settings.stress_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16.666 2.5V5.83333" stroke="{{ section.settings.stress_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17.4871 10.4049C17.409 11.8517 16.9135 13.2449 16.0605 14.4161C15.2075 15.5873 14.0335 16.4863 12.6805 17.0045C11.3274 17.5227 9.85325 17.6379 8.43612 17.3362C7.01899 17.0345 5.71961 16.3287 4.69503 15.3042C3.67045 14.2798 2.96455 12.9804 2.66266 11.5633C2.36077 10.1463 2.47581 8.67205 2.99388 7.31894C3.51194 5.96583 4.41086 4.79175 5.58196 3.93862C6.75305 3.08549 8.1462 2.58985 9.59298 2.51159C9.93048 2.49326 10.1071 2.89493 9.92798 3.18076C9.32872 4.13955 9.07212 5.27315 9.20006 6.39655C9.328 7.51995 9.83291 8.56682 10.6324 9.36632C11.4319 10.1658 12.4788 10.6707 13.6022 10.7987C14.7256 10.9266 15.8592 10.67 16.818 10.0708C17.1046 9.89159 17.5055 10.0674 17.4871 10.4049Z" stroke="{{ section.settings.stress_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ section.settings.stress_label | escape }}</span>
+      </button>
+
+      <span class="ctr-full-day__operator" aria-hidden="true">=</span>
+
+      <button
+        type="button"
+        class="ctr-full-day__pill"
+        style="--accent: {{ section.settings.balance_color }};"
+        :class="activeTab === 'balance' ? 'is-active' : ''"
+        @click="activeTab = activeTab === 'balance' ? '' : 'balance'"
+        role="tab"
+        :aria-selected="activeTab === 'balance' ? 'true' : 'false'"
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+          <path d="M8.33398 8.33325V11.6666" stroke="{{ section.settings.balance_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11.666 8.33325V11.6666" stroke="{{ section.settings.balance_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18.334 11.6666V8.33325" stroke="{{ section.settings.balance_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 8.33325V11.6666" stroke="{{ section.settings.balance_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.3327 5H3.33268C2.41221 5 1.66602 5.74619 1.66602 6.66667V13.3333C1.66602 14.2538 2.41221 15 3.33268 15H13.3327C14.2532 15 14.9993 14.2538 14.9993 13.3333V6.66667C14.9993 5.74619 14.2532 5 13.3327 5Z" stroke="{{ section.settings.balance_color }}" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ section.settings.balance_label | escape }}</span>
+      </button>
+    </div>
+
+    <div
+      class="ctr-full-day__panel"
+      style="--accent: {{ section.settings.blood_color }};"
+      :class="activeTab === 'blood' ? 'is-active' : ''"
+      role="tabpanel"
+    >
+      <div class="ctr-full-day__panel-eyebrow">{{ section.settings.blood_label | escape }}</div>
+      <h3 class="ctr-full-day__panel-title">{{ section.settings.blood_title | escape }}</h3>
+      <div class="ctr-full-day__panel-copy">{{ section.settings.blood_content }}</div>
+    </div>
+
+    <div
+      class="ctr-full-day__panel"
+      style="--accent: {{ section.settings.stress_color }};"
+      :class="activeTab === 'stress' ? 'is-active' : ''"
+      role="tabpanel"
+    >
+      <div class="ctr-full-day__panel-eyebrow">{{ section.settings.stress_label | escape }}</div>
+      <h3 class="ctr-full-day__panel-title">{{ section.settings.stress_title | escape }}</h3>
+      <div class="ctr-full-day__panel-copy">{{ section.settings.stress_content }}</div>
+    </div>
+
+    <div
+      class="ctr-full-day__panel"
+      style="--accent: {{ section.settings.balance_color }};"
+      :class="activeTab === 'balance' ? 'is-active' : ''"
+      role="tabpanel"
+    >
+      <div class="ctr-full-day__panel-eyebrow">{{ section.settings.balance_label | escape }}</div>
+      <h3 class="ctr-full-day__panel-title">{{ section.settings.balance_title | escape }}</h3>
+      <div class="ctr-full-day__panel-copy">{{ section.settings.balance_content }}</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Full-Day System Tabs",
+  "tag": "section",
+  "class": "shopify_section__ctr_full_day_system_tabs",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1200, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#f0ede7" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#202020" },
+    { "type": "range", "id": "padding_top", "label": "Padding top - desktop", "default": 56, "min": 0, "max": 160, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom - desktop", "default": 96, "min": 0, "max": 180, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top - mobile", "default": 40, "min": 0, "max": 120, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom - mobile", "default": 64, "min": 0, "max": 140, "step": 4, "unit": "px" },
+
+    { "type": "header", "content": "Header" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Together, they cover everything.</p>" },
+    { "type": "richtext", "id": "subheading", "label": "Subheading", "default": "<p>A full-day system built around how a woman's body actually works.</p>" },
+    { "type": "range", "id": "heading_size_desktop", "label": "Heading size - desktop", "default": 48, "min": 28, "max": 80, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size - mobile", "default": 36, "min": 24, "max": 56, "step": 1, "unit": "px" },
+    { "type": "range", "id": "subheading_size_desktop", "label": "Subheading size - desktop", "default": 21, "min": 14, "max": 30, "step": 1, "unit": "px" },
+    { "type": "range", "id": "subheading_size_mobile", "label": "Subheading size - mobile", "default": 20, "min": 14, "max": 26, "step": 1, "unit": "px" },
+    { "type": "range", "id": "header_gap", "label": "Header gap - desktop", "default": 42, "min": 12, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "header_gap_mobile", "label": "Header gap - mobile", "default": 34, "min": 12, "max": 80, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Pills" },
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#f7f5f0" },
+    { "type": "color", "id": "active_pill_bg", "label": "Active pill background", "default": "#fbfaf7" },
+    { "type": "range", "id": "pill_min_width", "label": "Pill min width - desktop", "default": 280, "min": 180, "max": 420, "step": 10, "unit": "px" },
+    { "type": "range", "id": "pill_size_desktop", "label": "Pill text size - desktop", "default": 22, "min": 14, "max": 30, "step": 1, "unit": "px" },
+    { "type": "range", "id": "pill_size_mobile", "label": "Pill text size - mobile", "default": 20, "min": 14, "max": 28, "step": 1, "unit": "px" },
+    { "type": "range", "id": "operator_size", "label": "Operator size", "default": 24, "min": 16, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "tabs_gap", "label": "Gap below pills - desktop", "default": 34, "min": 0, "max": 90, "step": 2, "unit": "px" },
+    { "type": "range", "id": "tabs_gap_mobile", "label": "Gap below pills - mobile", "default": 28, "min": 0, "max": 80, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Blood Sugar Tab" },
+    { "type": "color", "id": "blood_color", "label": "Color", "default": "#7d2b2d" },
+    { "type": "text", "id": "blood_label", "label": "Pill label", "default": "Blood Sugar (AM)" },
+    { "type": "text", "id": "blood_title", "label": "Panel title", "default": "Morning blood sugar support" },
+    { "type": "richtext", "id": "blood_content", "label": "Panel content", "default": "<p>Placeholder copy for Blood Sugar (AM). Replace this text with the final Figma content.</p>" },
+
+    { "type": "header", "content": "Stress + Recovery Tab" },
+    { "type": "color", "id": "stress_color", "label": "Color", "default": "#2c4ed0" },
+    { "type": "text", "id": "stress_label", "label": "Pill label", "default": "Stress + Recovery (PM)" },
+    { "type": "text", "id": "stress_title", "label": "Panel title", "default": "Nighttime recovery support" },
+    { "type": "richtext", "id": "stress_content", "label": "Panel content", "default": "<p>Placeholder copy for Stress + Recovery (PM). Replace this text with the final Figma content.</p>" },
+
+    { "type": "header", "content": "Full-Day Balance Tab" },
+    { "type": "color", "id": "balance_color", "label": "Color", "default": "#3ea193" },
+    { "type": "text", "id": "balance_label", "label": "Pill label", "default": "Full-Day Balance" },
+    { "type": "text", "id": "balance_title", "label": "Panel title", "default": "Full-day balance" },
+    { "type": "richtext", "id": "balance_content", "label": "Panel content", "default": "<p>Placeholder copy for Full-Day Balance. Replace this text with the final Figma content.</p>" },
+
+    { "type": "header", "content": "Panel" },
+    { "type": "color", "id": "panel_bg", "label": "Panel background", "default": "#f8f7f4" },
+    { "type": "range", "id": "panel_max_width", "label": "Panel max width", "default": 880, "min": 520, "max": 1280, "step": 20, "unit": "px" },
+    { "type": "range", "id": "panel_padding", "label": "Panel padding - desktop", "default": 34, "min": 16, "max": 72, "step": 2, "unit": "px" },
+    { "type": "range", "id": "panel_padding_mobile", "label": "Panel padding - mobile", "default": 24, "min": 14, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "panel_radius", "label": "Panel radius - desktop", "default": 18, "min": 0, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_radius_mobile", "label": "Panel radius - mobile", "default": 16, "min": 0, "max": 32, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_eyebrow_size", "label": "Panel eyebrow size", "default": 15, "min": 11, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_title_size", "label": "Panel title size - desktop", "default": 28, "min": 18, "max": 44, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_title_size_mobile", "label": "Panel title size - mobile", "default": 24, "min": 18, "max": 36, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_copy_size", "label": "Panel copy size - desktop", "default": 18, "min": 13, "max": 26, "step": 1, "unit": "px" },
+    { "type": "range", "id": "panel_copy_size_mobile", "label": "Panel copy size - mobile", "default": 16, "min": 13, "max": 22, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Full-Day System Tabs",
+      "category": "Custom"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

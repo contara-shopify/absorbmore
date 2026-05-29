@@ -1,0 +1,517 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_ingredients"
+
+  assign cards_per_row = section.settings.cards_per_row
+  assign gap_desktop = section.settings.gap_desktop
+  assign gap_mobile = section.settings.gap_mobile
+  assign header_columns_ratio = section.settings.header_columns_ratio
+
+  assign header_text = section.settings.header_text
+  assign subtitle_text = section.settings.subtitle_text
+
+  assign show_pill = section.settings.show_pill
+  assign pill_text = section.settings.pill_text
+  assign pill_bg = section.settings.pill_bg
+  assign pill_text_color = section.settings.pill_text_color
+  assign pill_dot_color = section.settings.pill_dot_color
+
+  assign card_border_color = section.settings.card_border_color
+  assign card_border_width = section.settings.card_border_width
+  assign card_radius = section.settings.card_radius
+  assign card_padding_desktop = section.settings.card_padding_desktop
+  assign card_padding_mobile = section.settings.card_padding_mobile
+  assign image_aspect = section.settings.image_aspect
+  assign image_bg = section.settings.image_bg
+
+  assign footer_text = section.settings.footer_text
+  assign footer_color = section.settings.footer_color
+
+  assign trust_item_1 = section.settings.trust_item_1
+  assign trust_item_2 = section.settings.trust_item_2
+  assign trust_item_3 = section.settings.trust_item_3
+  assign trust_item_4 = section.settings.trust_item_4
+  assign trust_item_5 = section.settings.trust_item_5
+  assign trust_item_6 = section.settings.trust_item_6
+
+  assign header_color = section.settings.header_color
+  assign subtitle_color = section.settings.subtitle_color
+  assign name_color = section.settings.name_color
+  assign source_color = section.settings.source_color
+  assign description_color = section.settings.description_color
+  assign trust_color = section.settings.trust_color
+  assign check_color = section.settings.check_color
+
+  assign header_size_desktop = section.settings.header_size_desktop
+  assign header_size_mobile = section.settings.header_size_mobile
+  assign header_line_height = section.settings.header_line_height
+  assign subtitle_size_desktop = section.settings.subtitle_size_desktop
+  assign subtitle_size_mobile = section.settings.subtitle_size_mobile
+  assign pill_size = section.settings.pill_size
+  assign name_size_desktop = section.settings.name_size_desktop
+  assign name_size_mobile = section.settings.name_size_mobile
+  assign source_size_desktop = section.settings.source_size_desktop
+  assign source_size_mobile = section.settings.source_size_mobile
+  assign description_size_desktop = section.settings.description_size_desktop
+  assign description_size_mobile = section.settings.description_size_mobile
+  assign footer_size_desktop = section.settings.footer_size_desktop
+  assign footer_size_mobile = section.settings.footer_size_mobile
+  assign trust_size = section.settings.trust_size
+
+  assign container_spacing = section.settings.container_spacing
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+
+  assign trust_combined = trust_item_1 | append: trust_item_2 | append: trust_item_3 | append: trust_item_4 | append: trust_item_5 | append: trust_item_6
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --ci-card-border: {{ card_border_color }};
+    --ci-card-border-w: {{ card_border_width }}px;
+    --ci-card-radius: {{ card_radius }}px;
+    --ci-card-padding-d: {{ card_padding_desktop }}px;
+    --ci-card-padding-m: {{ card_padding_mobile }}px;
+    --ci-image-aspect: {{ image_aspect }};
+    --ci-image-bg: {{ image_bg }};
+
+    --ci-pill-bg: {{ pill_bg }};
+    --ci-pill-text: {{ pill_text_color }};
+    --ci-pill-dot: {{ pill_dot_color }};
+    --ci-pill-size: {{ pill_size }}px;
+
+    --ci-header-color: {{ header_color }};
+    --ci-subtitle-color: {{ subtitle_color }};
+    --ci-name-color: {{ name_color }};
+    --ci-source-color: {{ source_color }};
+    --ci-desc-color: {{ description_color }};
+    --ci-footer-color: {{ footer_color }};
+    --ci-trust-color: {{ trust_color }};
+    --ci-check-color: {{ check_color }};
+
+    --ci-header-d: {{ header_size_desktop }}px;
+    --ci-header-m: {{ header_size_mobile }}px;
+    --ci-header-lh: {{ header_line_height | divided_by: 100.0 }};
+    --ci-subtitle-d: {{ subtitle_size_desktop }}px;
+    --ci-subtitle-m: {{ subtitle_size_mobile }}px;
+    --ci-name-d: {{ name_size_desktop }}px;
+    --ci-name-m: {{ name_size_mobile }}px;
+    --ci-source-d: {{ source_size_desktop }}px;
+    --ci-source-m: {{ source_size_mobile }}px;
+    --ci-desc-d: {{ description_size_desktop }}px;
+    --ci-desc-m: {{ description_size_mobile }}px;
+    --ci-footer-d: {{ footer_size_desktop }}px;
+    --ci-footer-m: {{ footer_size_mobile }}px;
+    --ci-trust-size: {{ trust_size }}px;
+
+    --ci-gap-d: {{ gap_desktop }}px;
+    --ci-gap-m: {{ gap_mobile }}px;
+    --ci-cards-per-row: {{ cards_per_row }};
+    --ci-head-ratio: {{ header_columns_ratio }};
+  }
+
+  /* Header */
+  & .ctr-ci__head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  & .ctr-ci__header {
+    font-size: var(--ci-header-m);
+    line-height: var(--ci-header-lh);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--ci-header-color);
+  }
+  & .ctr-ci__head-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  & .ctr-ci__subtitle {
+    font-size: var(--ci-subtitle-m);
+    line-height: 1.55;
+    margin: 0;
+    color: var(--ci-subtitle-color);
+    max-width: 540px;
+  }
+
+  /* Category pill */
+  & .ctr-ci__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ci-pill-bg);
+    color: var(--ci-pill-text);
+    padding: 5px 14px 5px 12px;
+    border-radius: 999px;
+    font-size: var(--ci-pill-size);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  & .ctr-ci__pill-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ci-pill-dot);
+    flex-shrink: 0;
+  }
+
+  /* Cards grid */
+  & .ctr-ci__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--ci-gap-m);
+    margin-bottom: 32px;
+  }
+
+  & .ctr-ci__card {
+    border: var(--ci-card-border-w) solid var(--ci-card-border);
+    border-radius: var(--ci-card-radius);
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+  }
+  & .ctr-ci__card-image-wrap {
+    aspect-ratio: var(--ci-image-aspect);
+    background: var(--ci-image-bg);
+    overflow: hidden;
+  }
+  & .ctr-ci__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  & .ctr-ci__card-content {
+    padding: var(--ci-card-padding-m);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  & .ctr-ci__card-name {
+    font-size: var(--ci-name-m);
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+    color: var(--ci-name-color);
+  }
+  & .ctr-ci__card-source {
+    font-size: var(--ci-source-m);
+    margin: 0;
+    line-height: 1.5;
+    color: var(--ci-source-color);
+  }
+  & .ctr-ci__card-description {
+    font-size: var(--ci-desc-m);
+    margin: 8px 0 0;
+    line-height: 1.55;
+    color: var(--ci-desc-color);
+  }
+
+  /* Footer text */
+  & .ctr-ci__footer-text {
+    margin: 0 0 32px;
+    text-align: center;
+  }
+  & .ctr-ci__footer-text p {
+    font-size: var(--ci-footer-m);
+    line-height: 1.55;
+    color: var(--ci-footer-color);
+    margin: 0;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Trust callouts */
+  & .ctr-ci__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 26px;
+    justify-content: center;
+    align-items: center;
+  }
+  & .ctr-ci__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--ci-trust-size);
+    color: var(--ci-trust-color);
+    line-height: 1.4;
+  }
+  & .ctr-ci__trust-item::before {
+    content: '\2713';
+    color: var(--ci-check-color);
+    font-weight: 700;
+    font-size: 1.05em;
+    line-height: 1;
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    & .ctr-ci__head {
+      display: grid;
+      grid-template-columns: var(--ci-head-ratio);
+      gap: 48px;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+    & .ctr-ci__header { font-size: var(--ci-header-d); }
+    & .ctr-ci__subtitle { font-size: var(--ci-subtitle-d); }
+    & .ctr-ci__cards {
+      grid-template-columns: repeat(var(--ci-cards-per-row), 1fr);
+      gap: var(--ci-gap-d);
+      margin-bottom: 40px;
+    }
+    & .ctr-ci__card-content { padding: var(--ci-card-padding-d); }
+    & .ctr-ci__card-name { font-size: var(--ci-name-d); }
+    & .ctr-ci__card-source { font-size: var(--ci-source-d); }
+    & .ctr-ci__card-description { font-size: var(--ci-desc-d); }
+    & .ctr-ci__footer-text { margin-bottom: 40px; }
+    & .ctr-ci__footer-text p { font-size: var(--ci-footer-d); }
+    & .ctr-ci__trust { gap: 14px 32px; }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-ingredients {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div class="ctr-ci__head">
+    <div class="ctr-ci__head-left">
+      {%- if header_text != blank -%}
+        <h2 class="ctr-ci__header">{{ header_text | escape | newline_to_br }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="ctr-ci__head-right">
+      {%- if subtitle_text != blank -%}
+        <p class="ctr-ci__subtitle">{{ subtitle_text | escape | newline_to_br }}</p>
+      {%- endif -%}
+      {%- if show_pill and pill_text != blank -%}
+        <span class="ctr-ci__pill">
+          <span class="ctr-ci__pill-dot" aria-hidden="true"></span>{{ pill_text | escape }}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="ctr-ci__cards">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'ingredient_card' -%}
+          {%- liquid
+            assign img_src = ''
+            if block.settings.image
+              assign img_src = block.settings.image | image_url: width: 1200
+            elsif block.settings.image_url != blank
+              assign img_src = block.settings.image_url
+            endif
+            assign alt_text = block.settings.name | strip_html
+          -%}
+          <article class="ctr-ci__card" {{ block.shopify_attributes }}>
+            {%- if img_src != blank -%}
+              <div class="ctr-ci__card-image-wrap">
+                <img src="{{ img_src }}" alt="{{ alt_text | escape }}" loading="lazy" class="ctr-ci__card-image" />
+              </div>
+            {%- endif -%}
+            <div class="ctr-ci__card-content">
+              {%- if block.settings.name != blank -%}
+                <h3 class="ctr-ci__card-name">{{ block.settings.name | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.source != blank -%}
+                <p class="ctr-ci__card-source">{{ block.settings.source | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.description != blank -%}
+                <p class="ctr-ci__card-description">{{ block.settings.description | escape | newline_to_br }}</p>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if footer_text != blank -%}
+    <div class="ctr-ci__footer-text">
+      <p>{{ footer_text | escape | newline_to_br }}</p>
+    </div>
+  {%- endif -%}
+
+  {%- if trust_combined != blank -%}
+    <div class="ctr-ci__trust">
+      {%- if trust_item_1 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_1 | escape }}</span>{%- endif -%}
+      {%- if trust_item_2 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_2 | escape }}</span>{%- endif -%}
+      {%- if trust_item_3 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_3 | escape }}</span>{%- endif -%}
+      {%- if trust_item_4 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_4 | escape }}</span>{%- endif -%}
+      {%- if trust_item_5 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_5 | escape }}</span>{%- endif -%}
+      {%- if trust_item_6 != blank -%}<span class="ctr-ci__trust-item">{{ trust_item_6 | escape }}</span>{%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "CTR Ingredients",
+  "tag": "section",
+  "class": "shopify_section__ctr_ingredients",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "cards_per_row", "label": "Cards per row (desktop)", "min": 1, "max": 4, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap_desktop", "label": "Card gap (desktop)", "min": 12, "max": 48, "step": 4, "default": 20, "unit": "px" },
+    { "type": "range", "id": "gap_mobile", "label": "Card gap (mobile)", "min": 12, "max": 32, "step": 4, "default": 16, "unit": "px" },
+    {
+      "type": "select", "id": "header_columns_ratio", "label": "Header column ratio (desktop)", "default": "5fr 7fr",
+      "options": [
+        { "value": "4fr 8fr", "label": "1:2 (narrow heading)" },
+        { "value": "5fr 7fr", "label": "5:7 (default)" },
+        { "value": "6fr 6fr", "label": "1:1 (equal)" },
+        { "value": "7fr 5fr", "label": "7:5 (wide heading)" }
+      ]
+    },
+
+    { "type": "header", "content": "Content" },
+    { "type": "textarea", "id": "header_text", "label": "Header (line breaks supported)", "default": "What's inside.\nAnd why it matters." },
+    { "type": "textarea", "id": "subtitle_text", "label": "Subtitle", "default": "Every ingredient is clinically studied and formulated for maximum absorption. No fillers, no fluff just the compounds that move the needle on your metabolism." },
+
+    { "type": "header", "content": "Category Pill" },
+    { "type": "checkbox", "id": "show_pill", "label": "Show category pill", "default": true },
+    { "type": "text", "id": "pill_text", "label": "Pill text", "default": "Berberine" },
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#F4EFE3" },
+    { "type": "color", "id": "pill_text_color", "label": "Pill text color", "default": "#2A2A2A" },
+    { "type": "color", "id": "pill_dot_color", "label": "Pill dot color", "default": "#C9533B" },
+
+    { "type": "header", "content": "Card Appearance" },
+    { "type": "color", "id": "card_border_color", "label": "Card border color", "default": "#D9B5BA" },
+    { "type": "range", "id": "card_border_width", "label": "Card border width", "min": 1, "max": 4, "step": 1, "default": 2, "unit": "px" },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 20, "step": 1, "default": 6, "unit": "px" },
+    { "type": "range", "id": "card_padding_desktop", "label": "Card content padding (desktop)", "min": 14, "max": 40, "step": 2, "default": 22, "unit": "px" },
+    { "type": "range", "id": "card_padding_mobile", "label": "Card content padding (mobile)", "min": 12, "max": 32, "step": 2, "default": 18, "unit": "px" },
+    {
+      "type": "select", "id": "image_aspect", "label": "Image aspect ratio", "default": "2/1",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/3", "label": "Standard (4:3)" },
+        { "value": "3/2", "label": "Photo (3:2)" },
+        { "value": "16/9", "label": "Widescreen (16:9)" },
+        { "value": "2/1", "label": "Banner (2:1)" },
+        { "value": "5/2", "label": "Wide banner (5:2)" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "image_bg", "label": "Image placeholder color", "default": "#F3E8E8", "info": "Shown while image loads or if no image is set." },
+
+    { "type": "header", "content": "Footer Text (below cards)" },
+    { "type": "textarea", "id": "footer_text", "label": "Footer paragraph (optional)", "info": "Optional supporting paragraph shown between the cards and the trust callouts. Leave blank to hide." },
+
+    { "type": "header", "content": "Trust Callouts" },
+    { "type": "paragraph", "content": "Each item gets its own ✓ check. Leave any field blank to hide it." },
+    { "type": "text", "id": "trust_item_1", "label": "Item 1", "default": "Food-Grade" },
+    { "type": "text", "id": "trust_item_2", "label": "Item 2", "default": "Non-GMO" },
+    { "type": "text", "id": "trust_item_3", "label": "Item 3", "default": "Vegan" },
+    { "type": "text", "id": "trust_item_4", "label": "Item 4", "default": "Allergen-Free" },
+    { "type": "text", "id": "trust_item_5", "label": "Item 5", "default": "No Synthetic Emulsifiers" },
+    { "type": "text", "id": "trust_item_6", "label": "Item 6", "default": "Third-Party Tested" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "header_color", "label": "Header text", "default": "#161616" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle text", "default": "#444444" },
+    { "type": "color", "id": "name_color", "label": "Card name text", "default": "#161616" },
+    { "type": "color", "id": "source_color", "label": "Card source / standardization text", "default": "#8A8A8A" },
+    { "type": "color", "id": "description_color", "label": "Card description text", "default": "#444444" },
+    { "type": "color", "id": "footer_color", "label": "Footer paragraph text", "default": "#555555" },
+    { "type": "color", "id": "trust_color", "label": "Trust callouts text", "default": "#2A2A2A" },
+    { "type": "color", "id": "check_color", "label": "Trust ✓ color", "default": "#3F8A2E" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "header_size_desktop", "label": "Header size (desktop)", "min": 22, "max": 64, "step": 1, "default": 38, "unit": "px" },
+    { "type": "range", "id": "header_size_mobile", "label": "Header size (mobile)", "min": 20, "max": 44, "step": 1, "default": 28, "unit": "px" },
+    { "type": "range", "id": "header_line_height", "label": "Header line height", "min": 90, "max": 160, "step": 5, "default": 110, "unit": "%" },
+    { "type": "range", "id": "subtitle_size_desktop", "label": "Subtitle size (desktop)", "min": 12, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "subtitle_size_mobile", "label": "Subtitle size (mobile)", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "pill_size", "label": "Pill text size", "min": 10, "max": 16, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "name_size_desktop", "label": "Card name size (desktop)", "min": 14, "max": 24, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "name_size_mobile", "label": "Card name size (mobile)", "min": 13, "max": 22, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "source_size_desktop", "label": "Card source size (desktop)", "min": 11, "max": 16, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "source_size_mobile", "label": "Card source size (mobile)", "min": 11, "max": 15, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "description_size_desktop", "label": "Card description size (desktop)", "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "description_size_mobile", "label": "Card description size (mobile)", "min": 12, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "footer_size_desktop", "label": "Footer paragraph size (desktop)", "min": 12, "max": 22, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "footer_size_mobile", "label": "Footer paragraph size (mobile)", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "trust_size", "label": "Trust callouts size", "min": 11, "max": 18, "step": 1, "default": 13, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#EFE9DC" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 80px max(20px, calc((100% - 1200px) / 2));\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 56px 20px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient_card",
+      "name": "Ingredient card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Ingredient image (upload)" },
+        { "type": "text", "id": "image_url", "label": "Ingredient image URL (alternative)", "info": "Use this if your image is already hosted externally. Falls back to the uploaded image above when blank." },
+        { "type": "text", "id": "name", "label": "Name (include dosage)", "default": "FenuMat® Berberine Complex · 625 mg" },
+        { "type": "text", "id": "source", "label": "Source / standardization (optional)", "info": "Small grey line under the name. Leave blank to hide." },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Cuts sugar cravings, steadies post-meal blood sugar, and supports healthy weight. All without the gut issues, cramping, or bathroom drama most berberine causes." }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "CTR Ingredients",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "ingredient_card",
+          "settings": {
+            "name": "FenuMat® Berberine Complex · 625 mg",
+            "source": "From Indian barberry root, standardized to 250 mg pure berberine",
+            "description": "Cuts sugar cravings, steadies post-meal blood sugar, and supports healthy weight. All without the gut issues, cramping, or bathroom drama most berberine causes."
+          }
+        },
+        {
+          "type": "ingredient_card",
+          "settings": {
+            "name": "Capsoil® Banaba Leaf Extract · 40 mg",
+            "source": "Standardized to 10% corosolic acid",
+            "description": "Keeps your blood sugar steady between meals so you skip the afternoon crash, stay focused longer, and stop reaching for the snack drawer at 3pm."
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,704 @@
+{%- comment -%} WLP-1 Memorial Day $65 lander. Drives 1-month sub at $65 first delivery (or upsell to 3mo/6mo). Ends 2026-05-25 23:59 PT. v2 — full blue hero, text countdown bar, $35-off badge, expanded benefits, buybox options selector, featured testimonial moved above buybox. {%- endcomment -%}
+
+{%- liquid
+  assign end_iso     = section.settings.end_iso       | default: '2026-05-25T23:59:59-07:00'
+  assign discount    = section.settings.discount_pct  | default: 35
+  assign hero_img    = section.settings.hero_img      | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?crop=center&height=1200&v=1774483977&width=1200'
+  assign cart_1mo    = section.settings.cart_1mo      | default: '/cart/52472821121313:1?selling_plan=691162546465'
+  assign cart_3mo    = section.settings.cart_3mo      | default: '/cart/52472821154081:1?selling_plan=691162579233'
+  assign cart_6mo    = section.settings.cart_6mo      | default: '/cart/52472821186849:1?selling_plan=691166544161'
+  assign price_1mo   = section.settings.price_1mo     | default: '$65'
+  assign price_1mo_was = section.settings.price_1mo_was | default: '$99'
+  assign price_3mo   = section.settings.price_3mo     | default: '$193'
+  assign price_3mo_per = section.settings.price_3mo_per | default: '$64/mo'
+  assign price_6mo   = section.settings.price_6mo     | default: '$379'
+  assign price_6mo_per = section.settings.price_6mo_per | default: '$63/mo'
+  assign rating      = section.settings.rating        | default: '4.5'
+  assign review_count = section.settings.review_count | default: '1,200+'
+-%}
+
+<style>
+  .wlp65 { --navy:#0D273E; --red:#DB3519; --cream:#efe9dd; --blue:#B8DCE8; --blue-deep:#5BA8C8; --blue-ink:#1F6F8B; --blue-dark:#7BBED5; --gold:#d4a23a; --ink:#0D273E; --paper:#fff;
+    color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.45; }
+  .wlp65 *{box-sizing:border-box}
+  .wlp65 img{max-width:100%;display:block}
+  .wlp65 a{color:inherit;text-decoration:none}
+  .wlp65 .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* ---------- STICKY TEXT COUNTDOWN BAR ---------- */
+  .wlp65-bar{position:sticky;top:0;z-index:60;background:var(--red);color:#fff;border-bottom:3px solid var(--navy)}
+  .wlp65-bar__row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;font-size:13px;flex-wrap:wrap;text-align:center;line-height:1.3}
+  .wlp65-bar__lead{font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff}
+  .wlp65-bar__lead em{font-style:normal;color:#fff;font-weight:800}
+  .wlp65-bar__sep{opacity:.6;color:#fff}
+  .wlp65-bar__cd{font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums;color:#fff;text-transform:uppercase}
+  .wlp65-bar__cd b{color:#fff;font-weight:800}
+  @media(max-width:480px){.wlp65-bar__row{font-size:12px;gap:6px}.wlp65-bar__sep{display:none}}
+
+  /* ---------- HERO: full navy ---------- */
+  .wlp65-hero{background:var(--navy);position:relative;overflow:hidden;padding:26px 0 34px;color:#fff}
+  .wlp65-hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 16px,rgba(255,255,255,.04) 16px 17px);pointer-events:none}
+  .wlp65-hero__grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center;position:relative}
+  @media(min-width:880px){.wlp65-hero__grid{grid-template-columns:1.05fr .95fr;gap:40px;padding:18px 0}}
+
+  .wlp65-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 11px;border-radius:999px;margin-bottom:14px}
+  .wlp65-hero__eyebrow svg{width:14px;height:14px}
+
+  .wlp65-hero h1{font-size:clamp(28px,5.4vw,46px);line-height:1.06;letter-spacing:-.01em;font-weight:800;margin:0 0 12px;color:#fff}
+  .wlp65-hero h1 em{font-style:normal;color:var(--blue)}
+  .wlp65-hero h1 .nowrap{white-space:nowrap}
+  .wlp65-hero__sub{font-size:clamp(15px,2vw,18px);max-width:520px;margin:0 0 18px;color:#cdd9e4}
+  .wlp65-hero__sub b{color:#fff}
+
+  /* Hero benefit bullets */
+  .wlp65-hero__bullets{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:8px;max-width:520px}
+  .wlp65-hero__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:15px;font-weight:500;color:#fff;line-height:1.4}
+  .wlp65-hero__bullets li strong{font-weight:800}
+  .wlp65-hero__bullets li svg{width:20px;height:20px;flex:0 0 auto;color:var(--blue);margin-top:2px}
+
+  .wlp65-hero__pricing{display:flex;align-items:baseline;gap:14px;margin:14px 0 6px}
+  .wlp65-hero__price-now{font-weight:900;font-size:clamp(26px,4vw,36px);color:#fff;letter-spacing:-.02em;line-height:1}
+  .wlp65-hero__price-was{font-size:clamp(15px,2vw,18px);color:#94a8bd;text-decoration:line-through;font-weight:600}
+  .wlp65-hero__price-tag{font-weight:800;color:#fff;background:var(--red);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px;border-radius:6px}
+
+  .wlp65-hero__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:440px;padding:18px 22px;background:var(--red);color:#fff !important;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;border-radius:10px;border:none;cursor:pointer;box-shadow:0 6px 0 #9b2210,0 12px 24px rgba(219,53,25,.25);transition:transform .12s ease, box-shadow .12s ease;text-decoration:none}
+  .wlp65-hero__cta *{color:#fff !important}
+  .wlp65-hero__cta:hover{transform:translateY(2px);box-shadow:0 4px 0 #9b2210,0 8px 16px rgba(219,53,25,.22)}
+  .wlp65-hero__cta:after{content:" →";margin-left:6px;color:#fff}
+
+  .wlp65-hero__guarantee{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:#cdd9e4}
+  .wlp65-hero__guarantee svg{width:18px;height:18px;color:var(--blue);flex:0 0 auto}
+
+  .wlp65-hero__cd-lead{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--blue);margin:18px 0 8px;display:block}
+  .wlp65-cd{display:flex;gap:8px;justify-content:flex-start;font-variant-numeric:tabular-nums;margin:0 0 8px}
+  .wlp65-cd__box{background:#fff;color:var(--navy);border-radius:8px;padding:8px 10px;min-width:54px;text-align:center;border-top:3px solid var(--red)}
+  .wlp65-cd__num{font-size:22px;font-weight:800;line-height:1;color:var(--navy)}
+  .wlp65-cd__lbl{font-size:10px;text-transform:uppercase;opacity:.65;letter-spacing:.06em;margin-top:2px;color:var(--navy)}
+
+  /* Hero image in square card */
+  .wlp65-hero__media{position:relative;text-align:center}
+  .wlp65-hero__card{background:#fff;border-radius:18px;padding:0;overflow:hidden;position:relative;width:100%;max-width:460px;margin:0 auto;aspect-ratio:1/1;box-shadow:0 18px 40px rgba(13,39,62,.22),inset 0 0 0 1px rgba(13,39,62,.08)}
+  .wlp65-hero__card img{width:100%;height:100%;object-fit:cover;display:block}
+  .wlp65-hero__badge{position:absolute;top:-12px;right:-12px;background:var(--red);color:#fff;border-radius:999px;width:96px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;line-height:1;transform:rotate(-8deg);border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.22);z-index:2}
+  .wlp65-hero__badge big{font-size:24px;color:#fff;letter-spacing:-.01em}
+  .wlp65-hero__badge span{font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;color:#fff}
+
+  /* ---------- URGENCY BAND ---------- */
+  .wlp65-urg{background:var(--navy);color:#fff;padding:38px 0;position:relative;overflow:hidden;border-top:3px solid var(--red)}
+  .wlp65-urg::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 18px,rgba(255,255,255,.03) 18px 19px);pointer-events:none}
+  .wlp65-urg__inner{text-align:center;position:relative}
+  .wlp65-urg__chip{display:inline-block;background:var(--red);color:#fff;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:14px}
+  .wlp65-urg__head{font-size:clamp(26px,4.6vw,42px);line-height:1.1;letter-spacing:-.01em;font-weight:900;margin:0 0 10px;color:#fff;max-width:920px;margin-left:auto;margin-right:auto}
+  .wlp65-urg__head em{font-style:normal;color:var(--blue)}
+  .wlp65-urg__sub{font-size:clamp(14px,1.8vw,17px);color:#cdd9e4;margin:0 0 20px;max-width:640px;margin-left:auto;margin-right:auto}
+  .wlp65-urg__cta{display:inline-flex;align-items:center;justify-content:center;padding:16px 26px;background:var(--red);color:#fff !important;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;border-radius:10px;box-shadow:0 6px 0 #9b2210,0 12px 22px rgba(219,53,25,.25);text-decoration:none}
+  .wlp65-urg__cta:after{content:" →";margin-left:6px;color:#fff}
+
+  /* ---------- TRUST STRIP ---------- */
+  .wlp65-trust{background:#fff;border-top:1px solid #e5ebef;border-bottom:1px solid #e5ebef;padding:14px 0}
+  .wlp65-trust__row{display:grid;grid-template-columns:1fr;gap:10px 16px;text-align:left;font-size:13px;font-weight:600;color:var(--navy)}
+  @media(min-width:520px){.wlp65-trust__row{grid-template-columns:1fr 1fr;text-align:center}}
+  @media(min-width:720px){.wlp65-trust__row{grid-template-columns:repeat(5,1fr);font-size:13px}}
+  .wlp65-trust__cell{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  @media(min-width:520px){.wlp65-trust__cell{justify-content:center}}
+  .wlp65-trust__cell svg{width:18px;height:18px;color:var(--blue-deep);flex:0 0 auto}
+  .wlp65-trust__stars{color:var(--gold);letter-spacing:1px;font-size:14px}
+
+  /* ---------- SECTION BASE ---------- */
+  .wlp65-sec{padding:40px 0}
+  .wlp65-sec--blue{background:var(--blue)}
+  .wlp65-sec--cream{background:var(--cream)}
+  .wlp65-sec--navy{background:var(--navy);color:#fff}
+  .wlp65-sec--navy h2,.wlp65-sec--navy h3{color:#fff}
+  .wlp65-sec__eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--red);margin:0 0 8px}
+  .wlp65-sec__title{font-size:clamp(26px,4.5vw,38px);font-weight:800;letter-spacing:-.01em;color:var(--navy);margin:0 0 8px;line-height:1.1}
+  .wlp65-sec__sub{font-size:16px;color:#4d6478;max-width:680px;margin:0 0 24px}
+  .wlp65-sec--navy .wlp65-sec__title{color:#fff}
+  .wlp65-sec--navy .wlp65-sec__sub{color:#cdd9e4}
+
+  /* ---------- BENEFITS NUMBERS ---------- */
+  .wlp65-benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:720px){.wlp65-benefits{grid-template-columns:repeat(4,1fr);gap:14px}}
+  .wlp65-benefit{background:#fff;border:1px solid #dbe5ec;border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden}
+  .wlp65-benefit__num{font-size:clamp(28px,4.5vw,40px);font-weight:900;color:var(--navy);letter-spacing:-.02em;line-height:1}
+  .wlp65-benefit__num em{font-style:normal;color:var(--red)}
+  .wlp65-benefit__lbl{font-size:13px;font-weight:600;color:#4d6478;margin-top:6px;line-height:1.3}
+  .wlp65-benefit__ref{display:block;font-size:10px;color:#90a0b2;margin-top:6px}
+
+  /* Benefits list (icon rows) */
+  .wlp65-benefit-list{display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-top:24px;max-width:720px;margin-left:auto;margin-right:auto}
+  @media(min-width:600px){.wlp65-benefit-list{grid-template-columns:repeat(2,1fr)}}
+  .wlp65-bl-item{background:#fff;border:1px solid #dbe5ec;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+  .wlp65-bl-item__ico{width:38px;height:38px;border-radius:10px;background:var(--blue);color:var(--navy);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .wlp65-bl-item__ico svg{width:22px;height:22px}
+  .wlp65-bl-item__txt{font-size:14px;font-weight:600;color:var(--navy);line-height:1.3}
+  .wlp65-bl-item__txt small{display:block;font-weight:500;color:#4d6478;font-size:12px;margin-top:2px}
+
+  /* ---------- FEATURED TESTIMONIAL ---------- */
+  .wlp65-feat{background:linear-gradient(180deg,#fff 0%,#f4f8fa 100%);border:1px solid #dbe5ec;border-radius:18px;padding:28px 24px;max-width:820px;margin:0 auto;box-shadow:0 10px 30px rgba(13,39,62,.06);position:relative}
+  .wlp65-feat__stars{color:var(--gold);font-size:18px;letter-spacing:2px;margin-bottom:10px;text-align:center}
+  .wlp65-feat__quote{font-size:clamp(20px,2.6vw,26px);line-height:1.35;font-weight:600;color:var(--navy);text-align:center;margin:0 0 18px;letter-spacing:-.01em}
+  .wlp65-feat__quote span{color:var(--red)}
+  .wlp65-feat__attrib{text-align:center;font-size:13px;color:#4d6478}
+  .wlp65-feat__attrib b{color:var(--navy);font-weight:800}
+  .wlp65-feat__verif{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#3a9b4a;font-weight:700;margin-left:6px}
+  .wlp65-feat__verif svg{width:12px;height:12px}
+
+  .wlp65-quotes{display:grid;grid-template-columns:1fr;gap:14px;margin-top:22px}
+  @media(min-width:720px){.wlp65-quotes{grid-template-columns:repeat(3,1fr)}}
+  .wlp65-quote{background:#fff;border-radius:14px;padding:18px;border:1px solid #dbe5ec}
+  .wlp65-quote__stars{color:var(--gold);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+  .wlp65-quote__txt{font-size:14px;color:#1f3850;line-height:1.5;margin:0 0 12px}
+  .wlp65-quote__name{font-size:13px;font-weight:700;color:var(--navy)}
+  .wlp65-quote__verif{font-size:11px;color:#3a9b4a;display:flex;align-items:center;gap:4px;margin-top:2px;font-weight:700}
+  .wlp65-quote__verif svg{width:11px;height:11px}
+
+  /* ---------- BUY BOX (option selector) ---------- */
+  .wlp65-buy{background:#fff;border:2px solid var(--navy);border-radius:18px;padding:22px;max-width:600px;margin:0 auto;box-shadow:0 14px 30px rgba(13,39,62,.10)}
+  .wlp65-buy__flag{display:inline-block;background:var(--red);color:#fff;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:6px;margin-bottom:12px}
+  .wlp65-buy__lowstock{display:inline-flex;align-items:center;gap:6px;background:#b91d1d;color:#fff;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:6px;margin:0 0 12px 8px;box-shadow:0 4px 12px rgba(185,29,29,0.32);vertical-align:top}
+  .wlp65-buy__lowstock::before{content:"";width:6px;height:6px;border-radius:999px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,0.32)}
+  .wlp65-hero__lowstock{display:inline-flex;align-items:center;gap:6px;background:#b91d1d;color:#fff;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 11px;border-radius:999px;margin-left:8px;box-shadow:0 4px 12px rgba(185,29,29,0.42);vertical-align:middle}
+  .wlp65-hero__lowstock::before{content:"";width:6px;height:6px;border-radius:999px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,0.32)}
+  .wlp65-buy__hero{background:#f4f8fa;border:1px solid #e0e7ed;border-radius:12px;padding:14px;margin:0 0 16px;display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;overflow:hidden}
+  .wlp65-buy__hero img{max-width:80%;max-height:100%;width:auto;height:auto;filter:drop-shadow(0 8px 14px rgba(13,39,62,.14))}
+  .wlp65-buy h3{font-size:22px;font-weight:800;color:var(--navy);margin:0 0 4px}
+  .wlp65-buy__stars{display:flex;align-items:center;gap:6px;font-size:13px;color:#4d6478;margin:0 0 16px}
+  .wlp65-buy__stars b{color:var(--gold);letter-spacing:1px}
+
+  .wlp65-buy__sub{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin:0 0 8px;opacity:.7}
+  .wlp65-buy__banner{display:flex;align-items:center;gap:10px;background:var(--red);color:#fff;border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:13px;font-weight:700;line-height:1.3}
+  .wlp65-buy__banner b{font-weight:900;letter-spacing:.02em}
+  .wlp65-buy__banner svg{width:18px;height:18px;flex:0 0 auto}
+
+  .wlp65-opts{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 16px}
+  .wlp65-opt{display:flex;align-items:center;gap:12px;background:#f8fafc;border:2px solid #dbe5ec;border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .12s, background .12s;position:relative}
+  .wlp65-opt input{position:absolute;opacity:0;pointer-events:none}
+  .wlp65-opt__bullet{width:20px;height:20px;border-radius:50%;border:2px solid #cbd6df;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#fff;transition:border-color .12s}
+  .wlp65-opt__bullet::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--red);transform:scale(0);transition:transform .12s}
+  .wlp65-opt__main{flex:1;min-width:0}
+  .wlp65-opt__title{font-size:14px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .wlp65-opt__title small{display:inline-block;background:var(--blue);color:var(--navy);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:5px}
+  .wlp65-opt__meta{font-size:12px;color:#4d6478;margin-top:2px}
+  .wlp65-opt__price{text-align:right;flex:0 0 auto;line-height:1}
+  .wlp65-opt__price b{display:block;font-size:18px;font-weight:900;color:var(--navy)}
+  .wlp65-opt__price s{display:block;font-size:11px;color:#7a8a99;font-weight:600;margin-top:3px}
+  .wlp65-opt.is-on{border-color:var(--red);background:#fff7f5}
+  .wlp65-opt.is-on .wlp65-opt__bullet{border-color:var(--red)}
+  .wlp65-opt.is-on .wlp65-opt__bullet::after{transform:scale(1)}
+  .wlp65-opt__flag{position:absolute;top:-8px;right:10px;background:var(--red);color:#fff;font-weight:800;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:4px}
+
+  .wlp65-buy__list{list-style:none;padding:0;margin:0 0 18px}
+  .wlp65-buy__list li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13px;color:#324a63;border-top:1px dashed #e0e7ed}
+  .wlp65-buy__list li:first-child{border-top:none}
+  .wlp65-buy__list svg{width:18px;height:18px;color:var(--blue-deep);flex:0 0 auto;margin-top:2px}
+
+  .wlp65-buy__cta{display:flex;align-items:center;justify-content:center;width:100%;padding:18px 20px;background:var(--red);color:#fff !important;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;border-radius:10px;border:none;cursor:pointer;box-shadow:0 6px 0 #9b2210,0 12px 22px rgba(219,53,25,.22);transition:transform .12s;text-decoration:none}
+  .wlp65-buy__cta:hover{transform:translateY(2px);box-shadow:0 4px 0 #9b2210}
+  .wlp65-buy__cta:after{content:" →";margin-left:6px;color:#fff !important}
+  .wlp65-buy__sub-info{font-size:12px;color:#7a8a99;text-align:center;margin:12px 0 0;line-height:1.4}
+
+  /* ---------- ACTIVES ---------- */
+  .wlp65-actives{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:720px){.wlp65-actives{grid-template-columns:repeat(3,1fr);gap:18px}}
+  .wlp65-active{background:#fff;border-radius:14px;padding:20px;border:1px solid #dbe5ec}
+  .wlp65-active__name{font-size:17px;font-weight:800;color:var(--navy);margin:0 0 4px}
+  .wlp65-active__stat{font-size:clamp(26px,4vw,32px);font-weight:900;color:var(--red);letter-spacing:-.01em;line-height:1;margin:8px 0}
+  .wlp65-active__stat-lbl{font-size:12px;color:#7a8a99;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .wlp65-active__body{font-size:14px;color:#4d6478;margin:10px 0 0;line-height:1.5}
+
+  /* ---------- COMPARISON ---------- */
+  .wlp65-comp{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #dbe5ec;font-size:13px;position:relative}
+  .wlp65-comp table{width:100%;border-collapse:collapse}
+  .wlp65-comp th,.wlp65-comp td{padding:12px 10px;text-align:center;border-bottom:1px solid #eef2f5;vertical-align:middle}
+  .wlp65-comp thead th{background:var(--navy);color:#fff;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .wlp65-comp thead th:first-child{text-align:left;background:var(--navy)}
+  .wlp65-comp thead th.wlp-col{background:var(--red);color:#fff;font-size:16px;text-transform:none;letter-spacing:-.01em;font-weight:900;padding-top:30px;position:relative}
+  .wlp65-comp thead th.wlp-col::before{content:"★ OUR PICK";display:block;position:absolute;top:0;left:0;right:0;background:#fff;color:var(--red);font-size:9px;letter-spacing:.1em;padding:5px 0;font-weight:900;border-bottom:2px solid var(--red)}
+  .wlp65-comp tbody td:first-child{text-align:left;font-weight:600;color:var(--navy);background:#f8fafc}
+  .wlp65-comp .yes{color:#3a9b4a;font-weight:800}
+  .wlp65-comp .no{color:#c44;font-weight:700}
+  .wlp65-comp tbody td.wlp-col{background:#dff0f6;font-weight:700;border-left:2px solid var(--red);border-right:2px solid var(--red)}
+  .wlp65-comp tbody tr:last-child td.wlp-col{border-bottom:2px solid var(--red)}
+
+  /* ---------- GUARANTEE ---------- */
+  .wlp65-guar{background:var(--blue);border-radius:18px;padding:28px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .wlp65-guar__seal{width:96px;height:96px;border-radius:50%;background:#fff;border:3px solid var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;text-align:center}
+  .wlp65-guar__seal big{font-size:28px;font-weight:900;color:var(--navy);line-height:1}
+  .wlp65-guar__seal span{font-size:10px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .wlp65-guar__txt{flex:1;min-width:240px}
+  .wlp65-guar__txt h3{font-size:22px;font-weight:800;color:var(--navy);margin:0 0 6px}
+  .wlp65-guar__txt p{font-size:14px;color:#324a63;margin:0;line-height:1.5}
+
+  /* ---------- FAQ ---------- */
+  .wlp65-faq{display:grid;gap:10px}
+  .wlp65-faq details{background:#fff;border:1px solid #dbe5ec;border-radius:10px;padding:14px 16px}
+  .wlp65-faq summary{font-weight:700;color:var(--navy);font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .wlp65-faq summary::-webkit-details-marker{display:none}
+  .wlp65-faq summary:after{content:"+";font-size:22px;font-weight:400;color:var(--blue-deep);line-height:1}
+  .wlp65-faq details[open] summary:after{content:"-"}
+  .wlp65-faq__a{font-size:14px;color:#4d6478;line-height:1.55;margin:10px 0 0}
+
+  /* ---------- FINAL CTA ---------- */
+  .wlp65-final{text-align:center}
+  .wlp65-final h2{font-size:clamp(28px,5vw,44px);margin:0 0 8px}
+  .wlp65-final h2 em{font-style:normal;color:var(--blue)}
+  .wlp65-final p{color:#cdd9e4;margin:0 0 22px;font-size:16px}
+  .wlp65-final .wlp65-cd{justify-content:center;margin:18px 0 26px}
+  .wlp65-final .wlp65-cd__box{background:#fff;color:var(--navy);border-top-color:var(--red)}
+  .wlp65-final .wlp65-cd__lbl{opacity:.65}
+  .wlp65-final__cta{display:inline-flex;align-items:center;justify-content:center;padding:18px 30px;background:var(--red);color:#fff !important;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;border-radius:10px;box-shadow:0 6px 0 #9b2210,0 12px 22px rgba(219,53,25,.22);text-decoration:none}
+  .wlp65-final__cta:after{content:" →";margin-left:6px;color:#fff}
+  .wlp65-final__fine{margin-top:14px;font-size:12px;color:#90a4b8}
+
+  /* ---------- STICKY MOBILE CTA ---------- */
+  .wlp65-stick{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid #dbe5ec;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 -8px 22px rgba(13,39,62,.10);transform:translateY(140%);transition:transform .25s ease}
+  .wlp65-stick.is-on{transform:translateY(0)}
+  .wlp65-stick__price{font-weight:900;color:var(--navy);font-size:18px;line-height:1;white-space:nowrap}
+  .wlp65-stick__price small{display:block;font-size:10px;color:#7a8a99;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:2px}
+  .wlp65-stick__cta{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 14px;background:var(--red);color:#fff !important;font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;border-radius:8px;box-shadow:0 4px 0 #9b2210;text-decoration:none}
+  .wlp65-stick__cta:after{content:" →";margin-left:4px;color:#fff}
+  @media(min-width:880px){.wlp65-stick{display:none}}
+
+  .stars5:before{content:"★★★★★"}
+  .wlp65 .center{text-align:center}
+  .wlp65 .badge-md{display:inline-block;background:var(--red);color:#fff;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:6px;margin-bottom:10px}
+</style>
+
+<div class="wlp65" data-end="{{ end_iso }}">
+
+  <!-- STICKY TEXT COUNTDOWN BAR -->
+  <div class="wlp65-bar" data-cd-bar>
+    <div class="wlp65-bar__row">
+      <span class="wlp65-bar__lead">Memorial Day · <em>{{ discount }}% Off WLP-1</em></span>
+      <span class="wlp65-bar__sep">·</span>
+      <span class="wlp65-bar__cd">Ends 5/25 at 11:59 PT</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="wlp65-hero">
+    <div class="wrap wlp65-hero__grid">
+      <div>
+        <span class="wlp65-hero__eyebrow">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 6.95H22l-6.18 4.49 2.39 7.06L12 16.97 5.79 20.5l2.39-7.06L2 8.95h7.61z"/></svg>
+          Memorial Day · {{ discount }}% Off Today
+        </span><span class="wlp65-hero__lowstock">Low Stock</span>
+        <h1><span class="nowrap">Lose <em>~9lbs</em></span> <em>in 4 weeks</em>. Get {{ discount }}% off today.</h1>
+        <p class="wlp65-hero__sub">WLP-1 activates your body's natural GLP-1 pathway. <b>No needles. No prescription.</b></p>
+
+        <ul class="wlp65-hero__bullets">
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Average ~9 lbs lost in 4 weeks</strong> in published Capsifen&reg; clinical study</span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Boosts natural GLP-1 by up to 321%</strong>, the same satiety hormone targeted by GLP-1 injections</span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Cuts food noise &amp; cravings</strong>, IGOB131&reg; users ate 17.5% less</span></li>
+        </ul>
+
+        <div class="wlp65-hero__pricing">
+          <span class="wlp65-hero__price-now">{{ price_1mo }}</span>
+          <span class="wlp65-hero__price-was">{{ price_1mo_was }}</span>
+          <span class="wlp65-hero__price-tag">Save {{ discount }}%</span>
+        </div>
+
+        <a href="#buy" class="wlp65-hero__cta">Get {{ discount }}% Off Today</a>
+        <div class="wlp65-hero__guarantee">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4zm-1 14l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></svg>
+          30-day money-back guarantee · Ships in 2 days · Free shipping on $50+
+        </div>
+      </div>
+
+      <div class="wlp65-hero__media">
+        <div class="wlp65-hero__card">
+          <div class="wlp65-hero__badge"><big>{{ discount }}%</big><span>Off</span></div>
+          <img src="{{ hero_img }}" alt="WLP-1 bottle. Memorial Day offer." loading="eager" width="800" height="800">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="wlp65-trust">
+    <div class="wrap wlp65-trust__row">
+      <div class="wlp65-trust__cell"><span class="wlp65-trust__stars stars5"></span><span>{{ rating }} stars · Real reviews</span></div>
+      <div class="wlp65-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4z"/></svg>30-day guarantee</div>
+      <div class="wlp65-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2V11H3v2zm4 8h10v-2H7v2zm0-4h10v-2H7v2zM21 7h-2v10h2V7zM7 11V3h10v8H7zM3 7h2V5H3v2zm0 12h2v-2H3v2z"/></svg>No needles, no Rx</div>
+      <div class="wlp65-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h13v2H3V4zm0 4h13v2H3V8zm0 4h9v2H3v-2zm14-2l4 4-4 4v-3h-4v-2h4v-3z"/></svg>Ships in 2 days</div>
+      <div class="wlp65-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>3 clinically studied actives</div>
+    </div>
+  </div>
+
+  <!-- BENEFITS NUMBERS + LIST -->
+  <section class="wlp65-sec wlp65-sec--blue">
+    <div class="wrap">
+      <p class="wlp65-sec__eyebrow center">What WLP-1 actually does</p>
+      <h2 class="wlp65-sec__title center">Real numbers. Published trials.</h2>
+      <div class="wlp65-benefits">
+        <div class="wlp65-benefit">
+          <div class="wlp65-benefit__num"><em>~9 lbs</em></div>
+          <div class="wlp65-benefit__lbl">Average weight loss in 4 weeks</div>
+          <span class="wlp65-benefit__ref">Capsifen® clinical study</span>
+        </div>
+        <div class="wlp65-benefit">
+          <div class="wlp65-benefit__num"><em>12%</em></div>
+          <div class="wlp65-benefit__lbl">Body weight lost in 10 weeks</div>
+          <span class="wlp65-benefit__ref">IGOB131® study</span>
+        </div>
+        <div class="wlp65-benefit">
+          <div class="wlp65-benefit__num"><em>+321%</em></div>
+          <div class="wlp65-benefit__lbl">Increase in natural GLP-1</div>
+          <span class="wlp65-benefit__ref">CQR300® clinical data</span>
+        </div>
+        <div class="wlp65-benefit">
+          <div class="wlp65-benefit__num"><em>17.5%</em></div>
+          <div class="wlp65-benefit__lbl">Less food eaten per day</div>
+          <span class="wlp65-benefit__ref">IGOB131® trial</span>
+        </div>
+      </div>
+
+      <div class="wlp65-benefit-list">
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z"/></svg></div>
+          <div class="wlp65-bl-item__txt">Quiets food noise<small>Less mental chatter about your next meal.</small></div>
+        </div>
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 016 6 6 6 0 11-6-6z"/></svg></div>
+          <div class="wlp65-bl-item__txt">Feel fuller, faster<small>Slows digestion the way GLP-1 hormones do.</small></div>
+        </div>
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12h2l3-8 4 16 3-10 2 4h4v2h-5l-2-3-3 9-4-15-2 5H3v0z"/></svg></div>
+          <div class="wlp65-bl-item__txt">Reduces hunger and cravings<small>17.5% less food eaten per day in published trial.</small></div>
+        </div>
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 1l-3 5h3l-2 4h4l-5 11 1-8H7l4-8V1h2z"/></svg></div>
+          <div class="wlp65-bl-item__txt">Burns calories at rest<small>Capsaicinoid blend drives thermogenesis without stimulants.</small></div>
+        </div>
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v6h6v2h-6v6h-2v-6H5V8h6V2z"/></svg></div>
+          <div class="wlp65-bl-item__txt">No needles. No prescription.<small>A daily capsule. Skip the doctor's office.</small></div>
+        </div>
+        <div class="wlp65-bl-item">
+          <div class="wlp65-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14v2H5V3zm0 4h14v14H5V7zm2 2v10h10V9H7z"/></svg></div>
+          <div class="wlp65-bl-item__txt">Lose 12% body weight in 10 weeks<small>Average result in the IGOB131® trial.</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- URGENCY BAND -->
+  <section class="wlp65-urg">
+    <div class="wrap wlp65-urg__inner">
+      <span class="wlp65-urg__chip">Memorial Day · {{ discount }}% Off</span>
+      <h2 class="wlp65-urg__head">The next 4 weeks are happening <em>either way</em>.</h2>
+      <p class="wlp65-urg__sub">Lose ~9 lbs, quiet the cravings, and feel fuller for longer. No needles, no Rx.</p>
+      <a href="#buy" class="wlp65-urg__cta">Claim {{ discount }}% Off</a>
+    </div>
+  </section>
+
+  <!-- FEATURED TESTIMONIAL + 3 -->
+  <section class="wlp65-sec">
+    <div class="wrap">
+      <p class="wlp65-sec__eyebrow center">Real customers · Verified reviews</p>
+      <h2 class="wlp65-sec__title center">"This is SO much better."</h2>
+
+      <div class="wlp65-feat">
+        <div class="wlp65-feat__stars stars5"></div>
+        <p class="wlp65-feat__quote">"I'd tried the other GLP-1 pills that were super expensive. I stayed sick on my stomach all day. <span>This is SO much better.</span> Curbs my appetite. I don't want to snack between meals."</p>
+        <div class="wlp65-feat__attrib">
+          <b>Kim E.</b> · WLP-1 customer
+          <span class="wlp65-feat__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</span>
+        </div>
+      </div>
+
+      <div class="wlp65-quotes">
+        <div class="wlp65-quote">
+          <div class="wlp65-quote__stars stars5"></div>
+          <p class="wlp65-quote__txt">"I have lost over 5 pounds in the first month. Feel like I am eating less and no longer have cravings to snack."</p>
+          <div class="wlp65-quote__name">Nicole S.</div>
+          <div class="wlp65-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="wlp65-quote">
+          <div class="wlp65-quote__stars stars5"></div>
+          <p class="wlp65-quote__txt">"Down 3 lbs in ~4 weeks. The hunger and food noise has been a game changer for me. Worth giving a try."</p>
+          <div class="wlp65-quote__name">Jenn O.</div>
+          <div class="wlp65-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="wlp65-quote">
+          <div class="wlp65-quote__stars stars5"></div>
+          <p class="wlp65-quote__txt">"Noticed a difference in one month. Less food cravings. Appetite has decreased. I no longer feel hungry all the time."</p>
+          <div class="wlp65-quote__name">Meredith N.</div>
+          <div class="wlp65-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUY BOX with OPTIONS SELECTOR -->
+  <section class="wlp65-sec wlp65-sec--blue" id="buy">
+    <div class="wrap">
+      <p class="wlp65-sec__eyebrow center">Pick your plan</p>
+      <h2 class="wlp65-sec__title center">{{ discount }}% off WLP-1 today only.</h2>
+
+      <div class="wlp65-buy" data-buybox>
+        <span class="wlp65-buy__flag">Memorial Day Sale</span><span class="wlp65-buy__lowstock">Low Stock</span>
+        <div class="wlp65-buy__hero"><img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?crop=center&height=1200&v=1774483977&width=1200" alt="WLP-1 bottle." loading="lazy" width="800" height="800"></div>
+        <h3>WLP-1 · Oral GLP-1 Support</h3>
+        <div class="wlp65-buy__stars"><b class="stars5"></b><span>{{ rating }} stars · Real reviews</span></div>
+
+        <div class="wlp65-buy__banner">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 6.95H22l-6.18 4.49 2.39 7.06L12 16.97 5.79 20.5l2.39-7.06L2 8.95h7.61z"/></svg>
+          <span><b>Every plan is 35% off</b> for Memorial Day · ends 5/25 11:59 PT</span>
+        </div>
+        <div class="wlp65-buy__sub">Choose a supply</div>
+        <div class="wlp65-opts">
+          <label class="wlp65-opt" data-opt data-cart="{{ cart_1mo }}" data-price="{{ price_1mo }}" data-period="first month">
+            <input type="radio" name="wlp65-plan" value="1mo">
+            <span class="wlp65-opt__bullet"></span>
+            <div class="wlp65-opt__main">
+              <div class="wlp65-opt__title">1-Month Supply <small>Lowest cost</small></div>
+              <div class="wlp65-opt__meta">60 capsules · 35% off first month</div>
+            </div>
+            <div class="wlp65-opt__price"><b>{{ price_1mo }}</b><s>was {{ price_1mo_was }}</s></div>
+          </label>
+
+          <label class="wlp65-opt is-on" data-opt data-cart="{{ cart_3mo }}" data-price="{{ price_3mo }}" data-period="{{ price_3mo_per }}">
+            <input type="radio" name="wlp65-plan" value="3mo" checked>
+            <span class="wlp65-opt__bullet"></span>
+            <div class="wlp65-opt__main">
+              <div class="wlp65-opt__title">3-Month Supply <small>Most popular</small></div>
+              <div class="wlp65-opt__meta">180 capsules · {{ price_3mo_per }} · 35% off</div>
+            </div>
+            <div class="wlp65-opt__price"><b>{{ price_3mo }}</b><s>was $297</s></div>
+          </label>
+
+          <label class="wlp65-opt" data-opt data-cart="{{ cart_6mo }}" data-price="{{ price_6mo }}" data-period="$63/mo">
+            <input type="radio" name="wlp65-plan" value="6mo">
+            <span class="wlp65-opt__bullet"></span>
+            <div class="wlp65-opt__main">
+              <div class="wlp65-opt__title">6-Month Supply <small>Best value</small></div>
+              <div class="wlp65-opt__meta">360 capsules · {{ price_6mo_per }} · 35% off</div>
+            </div>
+            <div class="wlp65-opt__price"><b>{{ price_6mo }}</b><s>was $584</s></div>
+          </label>
+        </div>
+
+        <ul class="wlp65-buy__list">
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>3 patented actives: CQR300®, IGOB131®, Capsifen®</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Free shipping on orders $50+</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Pause or cancel in 1 click anytime</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>30-day money-back guarantee, even on empty bottles</li>
+        </ul>
+
+        <a href="{{ cart_3mo }}" class="wlp65-buy__cta" data-buy-cta>Get {{ discount }}% Off Today</a>
+        <p class="wlp65-buy__sub-info">Discount applies automatically at checkout. Memorial Day pricing ends 5/25 at 11:59 PT.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS (3 actives) -->
+  <section class="wlp65-sec wlp65-sec--cream">
+    <div class="wrap">
+      <p class="wlp65-sec__eyebrow center">How WLP-1 works</p>
+      <h2 class="wlp65-sec__title center">Three actives. One GLP-1 pathway.</h2>
+      <p class="wlp65-sec__sub center" style="margin-left:auto;margin-right:auto">Same biology GLP-1 injections target. Activated naturally with patented plant compounds, formulated for absorption.</p>
+      <div class="wlp65-actives">
+        <div class="wlp65-active">
+          <div class="wlp65-active__name">CQR300®</div>
+          <div class="wlp65-active__stat">+321%</div>
+          <div class="wlp65-active__stat-lbl">Natural GLP-1 at 16 weeks</div>
+          <p class="wlp65-active__body">Cissus quadrangularis stimulates L-cells in the gut to release more endogenous GLP-1, the same satiety hormone GLP-1 drugs mimic.</p>
+        </div>
+        <div class="wlp65-active">
+          <div class="wlp65-active__name">IGOB131®</div>
+          <div class="wlp65-active__stat">−17.5%</div>
+          <div class="wlp65-active__stat-lbl">Food intake in published trial</div>
+          <p class="wlp65-active__body">African Mango extract targets leptin and adiponectin to quiet hunger and food noise. Trial: ~28 lbs lost and 6.7 inches off the waist over 10 weeks.</p>
+        </div>
+        <div class="wlp65-active">
+          <div class="wlp65-active__name">Capsifen®</div>
+          <div class="wlp65-active__stat">~9 lbs</div>
+          <div class="wlp65-active__stat-lbl">Lost in 4 weeks on average</div>
+          <p class="wlp65-active__body">Capsaicinoid blend promotes thermogenesis and calorie burn without stimulants. No jitters, no crash, no caffeine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="wlp65-sec wlp65-sec--blue">
+    <div class="wrap">
+      <p class="wlp65-sec__eyebrow center">WLP-1 vs the alternatives</p>
+      <h2 class="wlp65-sec__title center">Same pathway. None of the downsides.</h2>
+      <div class="wlp65-comp">
+        <table>
+          <thead>
+            <tr><th></th><th class="wlp-col">WLP-1</th><th>GLP-1 injections</th><th>Generic fat burner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Targets GLP-1 pathway</td><td class="wlp-col yes">✓</td><td class="yes">✓</td><td class="no">✗</td></tr>
+            <tr><td>Clinically studied formula</td><td class="wlp-col yes">✓</td><td class="yes">✓</td><td class="no">✗</td></tr>
+            <tr><td>Prescription required</td><td class="wlp-col yes">No</td><td class="no">Yes</td><td class="yes">No</td></tr>
+            <tr><td>Needles</td><td class="wlp-col yes">No</td><td class="no">Weekly</td><td class="yes">No</td></tr>
+            <tr><td>Cost (today)</td><td class="wlp-col yes"><b>From {{ price_1mo }}</b></td><td class="no">$1,000+</td><td>$30 to $60</td></tr>
+            <tr><td>Money-back guarantee</td><td class="wlp-col yes">30 days</td><td class="no">None</td><td class="no">Rarely</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARANTEE -->
+  <section class="wlp65-sec">
+    <div class="wrap">
+      <div class="wlp65-guar">
+        <div class="wlp65-guar__seal"><big>30</big><span>Day MBG</span></div>
+        <div class="wlp65-guar__txt">
+          <h3>Lose weight or your money back. Period.</h3>
+          <p>If you don't see real, measurable progress in 30 days, send back what's left, even empty bottles, and we'll refund every penny. No forms, no hassle, no questions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="wlp65-sec wlp65-sec--cream">
+    <div class="wrap" style="max-width:780px">
+      <p class="wlp65-sec__eyebrow center">FAQ</p>
+      <h2 class="wlp65-sec__title center">Before you start WLP-1</h2>
+      <div class="wlp65-faq" style="margin-top:18px">
+        <details>
+          <summary>How quickly will I see results?</summary>
+          <p class="wlp65-faq__a">Most users notice reduced cravings and food noise within the first week. Visible weight changes typically begin in week 2. Real change shows up between week 3 and week 8.</p>
+        </details>
+        <details>
+          <summary>Is WLP-1 the same as a GLP-1 injection?</summary>
+          <p class="wlp65-faq__a">No. WLP-1 isn't a GLP-1 drug. It's a daily capsule with three patented actives that target the same GLP-1 pathway naturally. No needles, no prescription, no $1,000 price tag.</p>
+        </details>
+        <details>
+          <summary>Are there side effects?</summary>
+          <p class="wlp65-faq__a">The Capsifen® study reported no serious adverse events. Most users tolerate WLP-1 well with no jitters, nausea, or crash. If you have any medical conditions, talk to your doctor first.</p>
+        </details>
+        <details>
+          <summary>Why is the price so low for Memorial Day?</summary>
+          <p class="wlp65-faq__a">It's a Memorial Day exclusive: {{ discount }}% off, sitewide. After the sale ends 5/25 at 11:59 PT, prices return to normal. Pause or cancel any subscription in 1 click anytime.</p>
+        </details>
+        <details>
+          <summary>What if it doesn't work for me?</summary>
+          <p class="wlp65-faq__a">Send it back within 30 days for a full refund, even if the bottle is empty. No forms. No restocking fees. No questions.</p>
+        </details>
+        <details>
+          <summary>Can I pause or cancel my subscription?</summary>
+          <p class="wlp65-faq__a">Yes, anytime in 1 click from your account. Pause, skip, change frequency, or cancel without talking to anyone.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="wlp65-sec wlp65-sec--navy wlp65-final">
+    <div class="wrap">
+      <span class="badge-md">Memorial Day · {{ discount }}% Off</span>
+      <h2>The next 4 weeks are happening <em>either way</em>.</h2>
+      <p>Lose ~9 lbs, quiet the cravings, and feel fuller for longer. No needles, no Rx.</p>
+      <a href="#buy" class="wlp65-final__cta">Get {{ discount }}% Off Today</a>
+      <div class="wlp65-final__fine">Memorial Day pricing ends 5/25 at 11:59 PT · Free shipping on $50+ · 30-day money-back guarantee.<br>
+      *These statements have not been evaluated by the FDA. WLP-1 is not intended to diagnose, treat, cure, or prevent any disease.</div>
+    </div>
+  </section>
+
+  <!-- STICKY MOBILE CTA -->
+  <div class="wlp65-stick" data-stick>
+    <div class="wlp65-stick__price" data-stick-price>{{ price_3mo }} <small>{{ price_3mo_per }}</small></div>
+    <a href="{{ cart_3mo }}" class="wlp65-stick__cta" data-stick-cta>Get {{ discount }}% Off</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.wlp65');
+  if(!root) return;
+  var endIso = root.getAttribute('data-end');
+  var end = new Date(endIso).getTime();
+  if(isNaN(end)){ return; }
+
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+
+  function tick(){
+    var diff = end - Date.now();
+    if(diff < 0) diff = 0;
+    var d = Math.floor(diff/86400000);
+    var h = Math.floor((diff%86400000)/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    var s = Math.floor((diff%60000)/1000);
+
+    root.querySelectorAll('[data-cd-d]').forEach(function(el){ el.textContent = pad(d); });
+    root.querySelectorAll('[data-cd-h]').forEach(function(el){ el.textContent = pad(h); });
+    root.querySelectorAll('[data-cd-m]').forEach(function(el){ el.textContent = pad(m); });
+    root.querySelectorAll('[data-cd-s]').forEach(function(el){ el.textContent = pad(s); });
+
+    var bd = root.querySelector('[data-cd-bar-d]'); if(bd) bd.textContent = pad(d);
+    var bh = root.querySelector('[data-cd-bar-h]'); if(bh) bh.textContent = pad(h);
+    var bm = root.querySelector('[data-cd-bar-m]'); if(bm) bm.textContent = pad(m);
+    var bs = root.querySelector('[data-cd-bar-s]'); if(bs) bs.textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Buy box option selector
+  var opts = root.querySelectorAll('[data-opt]');
+  var buyCta = root.querySelector('[data-buy-cta]');
+  var stickCta = root.querySelector('[data-stick-cta]');
+  var stickPrice = root.querySelector('[data-stick-price]');
+
+  opts.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      opts.forEach(function(o){ o.classList.remove('is-on'); });
+      opt.classList.add('is-on');
+      var radio = opt.querySelector('input');
+      if(radio) radio.checked = true;
+      var cart = opt.getAttribute('data-cart');
+      var price = opt.getAttribute('data-price');
+      var period = opt.getAttribute('data-period');
+      if(buyCta && cart) buyCta.setAttribute('href', cart);
+      if(stickCta && cart) stickCta.setAttribute('href', cart);
+      if(stickPrice && price){
+        stickPrice.innerHTML = price + ' <small>' + (period || '') + '</small>';
+      }
+    });
+  });
+
+  // Sticky mobile CTA reveal after hero
+  var stick = root.querySelector('[data-stick]');
+  var hero = root.querySelector('.wlp65-hero');
+  if(stick && hero){
+    var heroBottom = function(){ return hero.getBoundingClientRect().bottom; };
+    var onScroll = function(){
+      if(heroBottom() < 60){ stick.classList.add('is-on'); }
+      else { stick.classList.remove('is-on'); }
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 MD $65 Lander v2",
+  "settings": [
+    { "type": "text",  "id": "end_iso",       "label": "Countdown end (ISO)", "default": "2026-05-25T23:59:59-07:00" },
+    { "type": "number","id": "discount_pct",  "label": "Discount %",         "default": 35 },
+    { "type": "url",   "id": "hero_img",      "label": "Hero image URL" },
+    { "type": "text",  "id": "price_1mo",     "label": "1-month sale price", "default": "$65" },
+    { "type": "text",  "id": "price_1mo_was", "label": "1-month was",        "default": "$99" },
+    { "type": "text",  "id": "price_3mo",     "label": "3-month sale price", "default": "$193" },
+    { "type": "text",  "id": "price_3mo_per", "label": "3-month per/mo",     "default": "$64/mo" },
+    { "type": "text",  "id": "price_6mo",     "label": "6-month sale price", "default": "$379" },
+    { "type": "text",  "id": "price_6mo_per", "label": "6-month per/mo",     "default": "$63/mo" },
+    { "type": "text",  "id": "cart_1mo",      "label": "1-month cart URL",   "default": "/cart/52472821121313:1?selling_plan=691162546465" },
+    { "type": "text",  "id": "cart_3mo",      "label": "3-month cart URL",   "default": "/cart/52472821154081:1?selling_plan=691162579233" },
+    { "type": "text",  "id": "cart_6mo",      "label": "6-month cart URL",   "default": "/cart/52472821186849:1?selling_plan=691166544161" },
+    { "type": "text",  "id": "rating",        "label": "Star rating",        "default": "4.5" },
+    { "type": "text",  "id": "review_count",  "label": "Review count",       "default": "1,200+" }
+  ],
+  "presets": [{ "name": "WLP-1 MD $65 Lander v2" }]
+}
+{% endschema %}

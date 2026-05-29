@@ -1,0 +1,3086 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign container_width_desktop = section.settings.container_width_desktop | default: 1440
+  assign desktop_columns = section.settings.desktop_columns | default: 3
+  assign mobile_columns = section.settings.mobile_columns | default: 1
+  assign discount_property_key = section.settings.discount_property_key
+  assign trigger_2_discount = section.settings.trigger_2_discount | default: 0
+  assign trigger_3_discount = section.settings.trigger_3_discount | default: 0
+  assign trigger_4_discount = section.settings.trigger_4_discount | default: 0
+  assign trigger_5_discount = section.settings.trigger_5_discount | default: 0
+-%}
+
+<style>
+  [data-ctr-bundle-builder] {
+    --ctr-border: #d9d9d9;
+    --ctr-ink: #111;
+    --ctr-soft: #707070;
+    --ctr-bg: #fff;
+    --ctr-accent: #3558f5;
+    --ctr-accent-soft: #e8edff;
+    --ctr-success: #edeefe;
+  }
+
+  .ctr-bundle-builder__layout {
+    display: grid;
+    gap: 24px;
+    padding: 24px 0;
+  }
+
+  @media (min-width: 960px) {
+    .ctr-bundle-builder__layout {
+      grid-template-columns: minmax(0, 1.9fr) minmax(320px, 420px);
+      align-items: start;
+      padding: 40px 0;
+    }
+  }
+
+  .ctr-bundle-builder__filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .ctr-bundle-builder__mobile-filter {
+    display: grid;
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 20px;
+  }
+
+  .ctr-bundle-builder__mobile-filter-label {
+    color: var(--ctr-soft);
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .ctr-bundle-builder__mobile-filter-select,
+  .ctr-bundle-card__variant-select {
+    width: 100%;
+    border: 1px solid var(--ctr-border);
+    border-radius: 12px;
+    padding: 12px 44px 12px 14px;
+    font-size: 16px;
+    line-height: 1.2;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    -webkit-appearance: none;
+    appearance: none;
+    color: var(--ctr-ink);
+  }
+
+  @media (min-width: 960px) {
+    .ctr-bundle-builder__mobile-filter {
+      display: none;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .ctr-bundle-builder__filters {
+      display: none;
+    }
+  }
+
+  .ctr-bundle-builder__filter {
+    border: 1px solid var(--ctr-border);
+    background: #f6f5f1;
+    color: var(--ctr-soft);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .ctr-bundle-builder__filter.is-active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+  }
+
+  .ctr-bundle-builder__grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(var(--ctr-mobile-columns, 1), minmax(0, 1fr));
+    padding: 0 16px;
+  }
+
+  @media (min-width: 960px) {
+    .ctr-bundle-builder__grid {
+      grid-template-columns: repeat(var(--ctr-desktop-columns, 3), minmax(0, 1fr));
+      padding: 0;
+    }
+  }
+
+  .ctr-bundle-builder__status,
+  .ctr-bundle-builder__debug {
+    border: 1px solid var(--ctr-border);
+    border-radius: 14px;
+    background: #fafafa;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .ctr-bundle-builder__status {
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__status.is-error {
+    color: #b42318;
+    border-color: #fda29b;
+    background: #fef3f2;
+  }
+
+  .ctr-bundle-builder__debug {
+    {% comment %} display: grid; {% endcomment %}
+    display: none;
+    gap: 14px;
+  }
+
+  .ctr-bundle-builder__debug-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-builder__debug-toggle-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .ctr-bundle-builder__debug-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__debug-copy {
+    font-size: 12px;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__debug-group {
+    display: grid;
+    gap: 8px;
+  }
+
+  .ctr-bundle-builder__debug-group-name {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__debug-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .ctr-bundle-builder__debug-item {
+    border: 1px solid var(--ctr-border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px 12px;
+    display: grid;
+    gap: 6px;
+  }
+
+  .ctr-bundle-builder__debug-product {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__debug-variants {
+    display: grid;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card {
+    border: 1px solid var(--ctr-border);
+    border-radius: 8px;
+    background: var(--ctr-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ctr-bundle-card.is-selected {
+    border-color: #b07b2f;
+  }
+
+  .ctr-bundle-card__image-wrap {
+    aspect-ratio: 1 / 1;
+    background: #f7f6f3;
+    padding: 0;
+    position: relative;
+  }
+
+  .ctr-bundle-card__badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 3px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ctr-bundle-card__image,
+  .ctr-bundle-card__image--placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ctr-bundle-card__image--placeholder {
+    background: #efefef;
+  }
+
+  .ctr-bundle-card__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+
+  .ctr-bundle-card__meta {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ctr-bundle-card__title {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .ctr-bundle-card__title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ctr-bundle-card__title-link:hover {
+    text-decoration: underline;
+  }
+
+  .ctr-bundle-card__subtitle {
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating-star {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0; 
+    background: #000000;
+    mask: var(--icon-star); 
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 14px 14px;
+    transform: translateY(-1px);
+  }
+
+  .ctr-bundle-card__rating-text {
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-card__rating-score {
+    font-weight: 700;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-card__price-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .ctr-bundle-card__price {
+    font-weight: 700;
+  }
+
+  .ctr-bundle-card__compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+    font-size: 13px;
+  }
+
+  .ctr-bundle-card__price-divider {
+    color: var(--ctr-soft);
+    font-weight: 700;
+    line-height: 1;
+    font-size: 12px;
+  }
+
+  .ctr-bundle-card__discount-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    {% comment %} min-height: 24px; {% endcomment %}
+    {% comment %} padding: 3px 10px; {% endcomment %}
+    {% comment %} border-radius: 999px; {% endcomment %}
+    {% comment %} background: #4a5cff; {% endcomment %}
+    color: #4659ff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ctr-bundle-card__single-variant-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 24px;
+    padding: 3px 10px;
+    border: 1px solid var(--ctr-ink);
+    border-radius: 999px;
+    color: var(--ctr-ink);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ctr-bundle-card__variant-select-wrap {
+    width: 100%;
+  }
+
+  .ctr-bundle-card__option-toggle {
+    width: 100%;
+    display: flex;
+    padding: 4px;
+    border: 1px solid var(--ctr-border);
+    border-radius: 999px;
+    background: #fff;
+    gap: 4px;
+  }
+
+  .ctr-bundle-card__option-pill {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ctr-soft);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .ctr-bundle-card__option-pill.is-active {
+    background: #111;
+    color: #fff;
+  }
+
+  .ctr-bundle-card__variant-select {
+    width: 100%;
+    border: 1px solid var(--ctr-border);
+    border-radius: 999px;
+    padding: 10px 44px 10px 14px;
+    font-size: 13px;
+  }
+
+  .ctr-bundle-card__add,
+  .ctr-bundle-builder__cta {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__cta-price {
+    display: none;
+  }
+
+  .ctr-bundle-card__stepper {
+    display: grid;
+    grid-template-columns: 42px 1fr 42px;
+    align-items: center;
+    border: 1px solid var(--ctr-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .ctr-bundle-card__stepper-btn {
+    border: 0;
+    background: #111;
+    color: #fff;
+    min-height: 42px;
+    font-size: 18px;
+  }
+
+  .ctr-bundle-card__qty {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-card__soldout {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #efefef;
+    color: #666;
+    text-align: center;
+  }
+
+  .ctr-bundle-builder__panel {
+    border: 1px solid var(--ctr-border);
+    border-radius: 8px;
+    background: #fff;
+    padding: 16px;
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 24px;
+    margin-top: 56px;
+  }
+
+  .ctr-bundle-builder__mobile-drawer-toggle {
+    display: none;
+  }
+
+  .ctr-bundle-builder__mobile-drawer-chevron {
+    width: 14px;
+    height: 14px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(225deg);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .ctr-bundle-builder__mobile-drawer-toggle--close .ctr-bundle-builder__mobile-drawer-chevron {
+    transform: rotate(45deg) translateY(-2px);
+  }
+
+  @media (max-width: 959px) {
+    .ctr-bundle-builder__layout {
+      padding-bottom: 170px;
+    }
+
+    .ctr-bundle-builder__panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: auto;
+      z-index: 40;
+      max-height: calc(100dvh - 20px);
+      margin: 0;
+      border-right: 0;
+      border-bottom: 0;
+      border-left: 0;
+      border-radius: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transition: max-height 0.24s ease;
+      padding-top: 0;
+      box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .ctr-bundle-builder__panel:not(.is-open) {
+      max-height: 174px;
+      padding-top: 0;
+      overflow: hidden;
+    }
+
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__mobile-drawer-toggle--close,
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__headline,
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__empty,
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__summary-list,
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__purchase-box,
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__totals {
+      display: none;
+    }
+
+    .ctr-bundle-builder__panel.is-open .ctr-bundle-builder__mobile-drawer-toggle--view {
+      display: none;
+    }
+
+    .ctr-bundle-builder__mobile-drawer-toggle {
+      width: calc(100% + 32px);
+      margin: 0 -16px;
+      border: 0;
+      border-bottom: 1px solid var(--ctr-border);
+      background: #fff;
+      color: var(--ctr-ink);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: left;
+    }
+
+    .ctr-bundle-builder__panel:not(.is-open) .ctr-bundle-builder__mobile-drawer-toggle--view {
+      {% comment %} border-top: 1px solid var(--ctr-border); {% endcomment %}
+    }
+
+    .ctr-bundle-builder__panel .ctr-bundle-builder__cta {
+      min-height: 58px;
+      border-radius: 8px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .ctr-bundle-builder__cta-price {
+      display: inline;
+      white-space: nowrap;
+    }
+  }
+
+  .ctr-bundle-builder__headline {
+    display: grid;
+    gap: 10px;
+  }
+
+  .ctr-bundle-builder__headline h2 {
+    margin: 0 0 20px;
+    font-size: 28px;
+    line-height: 1;
+    text-align: center;
+    font-weight: 700;
+
+  }
+
+  .ctr-bundle-builder__progress-bar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+  }
+
+  .ctr-bundle-builder__progress-segment {
+    display: grid;
+    gap: 4px;
+    align-items: end;
+    min-width: 0;
+  }
+
+  .ctr-bundle-builder__progress-percent {
+    color: var(--ctr-accent);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+    min-height: 14px;
+    margin-bottom: 10px;
+  }
+
+  .ctr-bundle-builder__progress-track {
+    position: relative;
+    height: 8px;
+    background: #e2e2e2;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+  }
+
+  .ctr-bundle-builder__progress-segment.is-active .ctr-bundle-builder__progress-track {
+    background: var(--ctr-accent);
+  }
+
+  .ctr-bundle-builder__progress-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #b8b8b8;
+    color: #4a4a4a;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .ctr-bundle-builder__progress-segment.is-active .ctr-bundle-builder__progress-count {
+    background: var(--ctr-accent);
+    color: #ffffff;
+  }
+
+  .ctr-bundle-builder__summary-list,
+  .ctr-bundle-builder__empty {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ctr-bundle-builder__gift-card {
+    position: relative;
+    border: 1px solid var(--ctr-border);
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .ctr-bundle-builder__gift-card.is-unlocked {
+    border-color: #5dd6bf;
+    background: #f6fffc;
+  }
+
+  .ctr-bundle-builder__gift-card-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .ctr-bundle-builder__gift-card.is-locked .ctr-bundle-builder__gift-card-inner {
+    filter: blur(5px);
+    opacity: 0.7;
+  }
+
+  .ctr-bundle-builder__gift-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    border-radius: 999px;
+    background: #5dd6bf;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .ctr-bundle-builder__gift-card-media {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+  }
+
+  .ctr-bundle-builder__gift-card-title {
+    font-size: 15px;
+    font-weight: 700; 
+    line-height: 1.2;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-builder__gift-card-title.is-accent {
+    color: var(--ctr-accent);
+  }
+
+  .ctr-bundle-builder__gift-card-subtitle {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__gift-card-price-row {
+    margin-top: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ctr-bundle-builder__gift-card-free {
+    color: var(--ctr-accent);
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__gift-card-compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+  }
+
+  .ctr-bundle-builder__gift-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .ctr-bundle-builder__gift-card-lock-copy {
+    color: var(--ctr-ink);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
+  .ctr-bundle-builder__gift-card-lock-copy .ctr-bundle-builder__helper-accent {
+    margin-left: 3px;
+  }
+
+  .ctr-bundle-builder__purchase-gift {
+    margin-top: 16px;
+  }
+
+  .ctr-bundle-builder__empty {
+    text-align: center;
+    color: var(--ctr-soft);
+  }
+
+  .ctr-bundle-builder__summary-item {
+    display: grid;
+    grid-template-columns: 82px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    background: #F7F6F2;
+  }
+
+  .ctr-bundle-builder__summary-placeholder {
+    min-height: 96px;
+    border: 1px dashed #2b2b2b;
+    border-radius: 4px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ctr-bundle-builder__summary-placeholder-plus {
+    font-size: 44px;
+    line-height: 1;
+    color: #1f1f1f;
+    font-weight: 300;
+  }
+
+  .ctr-bundle-builder__summary-thumb {
+    width: 82px;
+    height: 73px;
+    object-fit: contain;
+    background: transparent;
+  }
+
+  .ctr-bundle-builder__summary-title {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .ctr-bundle-builder__summary-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ctr-bundle-builder__summary-discount-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 22px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--ctr-accent);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .ctr-bundle-builder__summary-subtitle {
+    color: var(--ctr-soft);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .ctr-bundle-builder__summary-supply-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 18px;
+    padding: 2px 8px;
+    border: 1px solid var(--ctr-ink);
+    background: #fff;
+    border-radius: 999px;
+    color: var(--ctr-ink);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ctr-bundle-builder__summary-subtitle::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px; 
+    background: var(--ctr-soft);
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+
+  .ctr-bundle-builder__summary-short_desc {
+    color: var(--ctr-soft);
+    font-size: 12px;
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+
+  .ctr-bundle-builder__summary-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px; 
+  }
+
+  .ctr-bundle-builder__summary-qty {
+    font-weight: 600;
+    color: var(--ctr-ink);
+  }
+
+  .ctr-bundle-builder__summary-price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ctr-bundle-builder__summary-remove {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #E1E3E7;
+    border-radius: 4px;
+    background: #fff;
+    color: var(--ctr-ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    align-self: flex-start;
+  }
+
+  .ctr-bundle-builder__summary-compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+    display: block;
+  }
+
+  .ctr-bundle-builder__purchase-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  } 
+
+  .ctr-bundle-builder__purchase-option {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--ctr-border);
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active {
+    background: var(--ctr-success);
+    border-color: var(--ctr-accent);
+  }
+
+  .ctr-bundle-builder__purchase-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ctr-bundle-builder__purchase-toggle {
+    width: 60px;
+    height: 32px;
+    font-size: 14px;
+    border: 0;
+    border-radius: 999px;
+    background: #d0d5dd;
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__purchase-toggle {
+    background: #4f8b2c;
+  }
+
+  .ctr-bundle-builder__purchase-toggle-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    font-size: 14px;
+    font-weight: 700;
+    transform: translateX(0);
+    transition: transform 0.2s ease;
+  }
+
+  .ctr-bundle-builder__purchase-option.is-active .ctr-bundle-builder__purchase-toggle-thumb {
+    transform: translateX(28px);
+  }
+
+  .ctr-bundle-builder__purchase-price {
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__purchase-price-wrap {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-end; 
+    gap: 8px;
+  } 
+
+  .ctr-bundle-builder__purchase-prices {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    {% comment %} gap: 3px; {% endcomment %}
+  }
+
+  .ctr-bundle-builder__purchase-price-compare {
+    color: var(--ctr-soft);
+    text-decoration: line-through;
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__purchase-saved {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--ctr-accent);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 700;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ctr-bundle-builder__purchase-copy {
+    color: var(--ctr-soft);
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__supply-notice {
+    color: var(--ctr-ink);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .ctr-bundle-builder__purchase-copy ul {
+  
+  }
+
+  .ctr-bundle-builder__purchase-copy ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #707070;
+  }
+
+  .ctr-bundle-builder__purchase-copy.is-one-time ul li {
+    text-decoration: line-through;
+  }
+
+  .ctr-bundle-builder__purchase-copy.is-one-time ul li::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M15 5L5 15M5 5L15 15' stroke='%23FF0000' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    background-color: transparent;
+  }
+
+  .ctr-bundle-builder__purchase-copy ul li::before {
+    content: "";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background-color: var(--ctr-accent);
+    color: #ffffff;
+    font-size: 8px; 
+    font-weight: 700;
+    transform: translateY(3px);
+    background-image: url('{{ "ctr-toggle-check.svg" | asset_url }}');
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: 7px 7px;
+    {% comment %} margin-right: 14px; {% endcomment %}
+  }
+
+  .ctr-bundle-builder__select {
+    width: 100%;
+    border: 1px solid var(--ctr-border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    background: #fff;
+    padding-right: 40px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__totals {
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .ctr-bundle-builder__totals-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .ctr-bundle-builder__totals-row--grand {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__badge {
+    display: inline-flex;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    background: var(--ctr-accent-soft);
+    color: var(--ctr-accent);
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__helper {
+    color: var(--ctr-soft);
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .ctr-bundle-builder__helper-accent {
+    color: var(--ctr-accent);
+    font-weight: 700;
+  }
+
+  .ctr-bundle-builder__helper.is-warning {
+    color: #9a6700;
+  }
+
+  .ctr-bundle-builder__gift {
+    border: 1px dashed var(--ctr-border);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 13px;
+  }
+</style>
+
+<section {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+         data-ctr-bundle-builder
+         data-section-settings="{{ section.settings | json | escape }}"
+         x-data="_sections.initCtrBundleBuilder($el)"
+         x-init="init()">
+  <div class="mx-auto w-full"
+       style="--ctr-desktop-columns: {{ desktop_columns }}; --ctr-mobile-columns: {{ mobile_columns }}; max-width: min(100%, {{ container_width_desktop }}px);">
+    <div class="ctr-bundle-builder__layout">
+      <div class="ctr-bundle-builder__main">
+        <div class="ctr-bundle-builder__mobile-filter">
+          <label class="ctr-bundle-builder__mobile-filter-label" for="ctr-bundle-filter-{{ section.id }}">Filter by Category</label>
+          <select id="ctr-bundle-filter-{{ section.id }}"
+                  class="ctr-bundle-builder__mobile-filter-select"
+                  :value="activeFilter"
+                  @change="setFilter($event.target.value)">
+            <option value="shop-all">Shop All</option>
+            <template x-for="group in getFilterGroups()" :key="group.handle">
+              <option :value="group.handle" x-text="group.title"></option>
+            </template>
+          </select>
+        </div>
+
+        <div class="ctr-bundle-builder__filters">
+          <button type="button"
+                  class="ctr-bundle-builder__filter"
+                  :class="{ 'is-active': activeFilter === 'shop-all' }"
+                  @click="setFilter('shop-all')">
+            Shop All
+          </button>
+          <template x-for="group in getFilterGroups()" :key="group.handle">
+            <button type="button"
+                    class="ctr-bundle-builder__filter"
+                    :class="{ 'is-active': activeFilter === group.handle }"
+                    @click="setFilter(group.handle)"
+                    x-text="group.title"></button>
+          </template>
+        </div>
+
+        <div class="ctr-bundle-builder__status" x-show="isLoadingProducts">
+          Loading stack products from Skio...
+        </div>
+
+        <div class="ctr-bundle-builder__status is-error" x-show="!isLoadingProducts && loadError" x-text="loadError"></div>
+
+        <div class="ctr-bundle-builder__debug" x-show="!isLoadingProducts && !loadError && debugGroups.length">
+          <button type="button"
+                  class="ctr-bundle-builder__debug-toggle"
+                  @click="isDebugOpen = !isDebugOpen"
+                  :aria-expanded="isDebugOpen ? 'true' : 'false'">
+            <span>
+              <h3 class="ctr-bundle-builder__debug-title">Skio Bundle Data</h3>
+              <div class="ctr-bundle-builder__debug-copy">
+                Categories, products, and variants currently returned by the Dynamic Box response.
+              </div>
+            </span>
+            <span class="ctr-bundle-builder__debug-toggle-icon" x-text="isDebugOpen ? '−' : '+'"></span>
+          </button>
+
+          <div x-show="isDebugOpen">
+            <template x-for="group in debugGroups" :key="group.handle">
+              <div class="ctr-bundle-builder__debug-group">
+                <div class="ctr-bundle-builder__debug-group-name" x-text="group.title"></div>
+                <div class="ctr-bundle-builder__debug-list">
+                  <template x-for="product in group.products" :key="product.handle">
+                    <div class="ctr-bundle-builder__debug-item">
+                      <div class="ctr-bundle-builder__debug-product" x-text="product.title"></div>
+                      <div class="ctr-bundle-builder__debug-copy" x-text="product.handle"></div>
+                      <div class="ctr-bundle-builder__debug-copy" x-text="product.image || 'No image URL'"></div>
+                      <div class="ctr-bundle-builder__debug-variants">
+                        <template x-for="variant in product.skioVariants" :key="variant.platformId">
+                          <div x-text="`${variant.productVariantTitle} (${formatMoney(variant.price)})`"></div>
+                        </template>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="ctr-bundle-builder__grid">
+          <template x-for="item in getVisibleProducts()" :key="item.handle">
+            <article class="ctr-bundle-card"
+                     :class="{ 'is-selected': getQuantity(item.handle) > 0 }"
+                     x-cloak>
+              <div class="ctr-bundle-card__image-wrap">
+                <template x-if="getProductBadge(item.handle)">
+                  <div class="ctr-bundle-card__badges">
+                    <span class="label-primary"
+                          :class="getProductBadgeClass(item.handle)"
+                          x-text="getProductBadge(item.handle)"></span>
+                  </div>
+                </template>
+
+                <template x-if="getProductCardImage(item.handle)">
+                  <img class="ctr-bundle-card__image"
+                       :src="getProductCardImage(item.handle)"
+                       :alt="item.title"
+                       loading="lazy"
+                       width="360"
+                       height="360">
+                </template>
+
+                <template x-if="!getProductCardImage(item.handle)">
+                  <div class="ctr-bundle-card__image ctr-bundle-card__image--placeholder"></div>
+                </template>
+              </div>
+
+              <div class="ctr-bundle-card__body">
+                <div class="ctr-bundle-card__meta">
+                  <div class="ctr-bundle-card__rating"
+                       x-show="getProductReviewCount(item.handle) > 0"
+                       x-cloak>
+                    <span class="ctr-bundle-card__rating-star"></span>
+                    <span class="ctr-bundle-card__rating-score"
+                          x-text="getProductRatingScore(item.handle)"></span>
+                    <span class="ctr-bundle-card__rating-text"
+                          x-text="`(${getProductReviewCount(item.handle)})`"></span>
+                  </div>
+                  <h3 class="ctr-bundle-card__title">
+                    <a class="ctr-bundle-card__title-link"
+                       :href="item.url"
+                       x-text="item.title"></a>
+                  </h3>
+                  <div class="ctr-bundle-card__subtitle"
+                       x-show="getProductSubtitle(item.handle)"
+                       x-text="getProductSubtitle(item.handle)"></div>
+                  <div class="ctr-bundle-card__price-row">
+                    <span class="ctr-bundle-card__price"
+                          x-text="formatMoney(getDisplayUnitPrice(item.handle))"></span>
+                    <span class="ctr-bundle-card__compare"
+                          x-show="getDisplayComparePrice(item.handle) > getDisplayUnitPrice(item.handle)"
+                          x-text="formatMoney(getDisplayComparePrice(item.handle))"></span>
+                    <span class="ctr-bundle-card__price-divider"
+                          x-show="getPurchaseSavedPercent() > 0">•</span>
+                    <span class="ctr-bundle-card__discount-badge"
+                          x-show="getPurchaseSavedPercent() > 0"
+                          x-text="`${getPurchaseSavedPercent()}% STACK DISCOUNT`"></span>
+                  </div>
+                </div>
+
+                <template x-if="getFirstOptionValues(item.handle).length > 1 && getFirstOptionValues(item.handle).length <= 3">
+                  <div class="ctr-bundle-card__option-toggle" role="tablist" aria-label="Product options">
+                    <template x-for="value in getFirstOptionValues(item.handle)" :key="`${item.handle}-${value}`">
+                      <button type="button"
+                              class="ctr-bundle-card__option-pill"
+                              :class="{ 'is-active': getActiveFirstOptionValue(item.handle) === value }"
+                              @click="setFirstOption(item.handle, value)"
+                              x-text="value"></button>
+                    </template>
+                  </div>
+                </template>
+
+                <template x-if="getFirstOptionValues(item.handle).length > 3">
+                  <div class="ctr-bundle-card__variant-select-wrap">
+                    <select class="ctr-bundle-card__variant-select"
+                            :value="getActiveFirstOptionValue(item.handle)"
+                            @change="setFirstOption(item.handle, $event.target.value)">
+                      <template x-for="value in getFirstOptionValues(item.handle)" :key="`${item.handle}-${value}`">
+                        <option :value="value"
+                                x-text="value"></option>
+                      </template>
+                    </select>
+                  </div>
+                </template>
+
+                <template x-if="shouldShowVariantSelect(item.handle)">
+                  <div class="ctr-bundle-card__variant-select-wrap">
+                    <select class="ctr-bundle-card__variant-select"
+                            :value="getSelectedVariant(item.handle)?.id || ''"
+                            @change="setVariant(item.handle, $event.target.value)">
+                      <template x-for="variant in getFilteredVariantChoices(item.handle)" :key="variant.id">
+                        <option :value="variant.id"
+                                x-text="variant.title"></option>
+                      </template>
+                    </select>
+                  </div>
+                </template>
+
+                <template x-if="shouldShowSingleVariantBadge(item.handle)">
+                  <div class="ctr-bundle-card__single-variant-badge"
+                       x-text="getSingleVariantBadgeText(item.handle)"></div>
+                </template>
+
+                <div class="ctr-bundle-card__actions">
+                  <button type="button"
+                          class="ctr-bundle-card__add"
+                          x-show="getQuantity(item.handle) < 1 && getSelectedVariant(item.handle)?.available"
+                          @click="increment(item.handle)">
+                    + Add To Stack
+                  </button>
+
+                  <div class="ctr-bundle-card__stepper"
+                       x-show="getQuantity(item.handle) > 0 && getSelectedVariant(item.handle)?.available">
+                    <button type="button" class="ctr-bundle-card__stepper-btn" @click="decrement(item.handle)">-</button>
+                    <span class="ctr-bundle-card__qty" x-text="getQuantity(item.handle)"></span>
+                    <button type="button" class="ctr-bundle-card__stepper-btn" @click="increment(item.handle)">+</button>
+                  </div>
+
+                  <div class="ctr-bundle-card__soldout"
+                       x-show="getSelectedVariant(item.handle) && !getSelectedVariant(item.handle)?.available">
+                    Unavailable
+                  </div>
+                </div>
+              </div>
+            </article>
+          </template>
+        </div>
+      </div>
+
+      <aside class="ctr-bundle-builder__panel"
+             :class="{ 'is-open': isMobileBundleOpen }">
+    <button type="button"
+            class="ctr-bundle-builder__mobile-drawer-toggle ctr-bundle-builder__mobile-drawer-toggle--close"
+            @click="isMobileBundleOpen = false"
+            aria-label="Close stack drawer">
+      <span>Close My Stack</span>
+      <span class="ctr-bundle-builder__mobile-drawer-chevron" aria-hidden="true"></span>
+    </button>
+
+    <div class="ctr-bundle-builder__headline">
+      <h2>{{ section.settings.heading | default: 'Your Stack' }}</h2>
+      <div class="ctr-bundle-builder__progress-bar">
+        <template x-for="tier in getProgressTiers()" :key="tier.count">
+          <div class="ctr-bundle-builder__progress-segment"
+               :class="{ 'is-active': tier.isActive }">
+            <div class="ctr-bundle-builder__progress-percent" x-text="`${tier.discount}%`"></div>
+            <div class="ctr-bundle-builder__progress-track">
+              <span class="ctr-bundle-builder__progress-count" x-text="tier.count"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div class="ctr-bundle-builder__helper" x-html="getProgressCopy()"></div>
+      <div class="ctr-bundle-builder__helper is-warning"
+           x-show="purchaseMode === 'subscription' && !sellingPlans.length">
+        No shared subscription frequency is available for the current stack.
+      </div>
+    </div>
+
+    <div class="ctr-bundle-builder__empty" x-show="false">
+      {{ section.settings.empty_state_text | default: 'Add products to start building your stack.' }}
+    </div>
+
+    <div class="ctr-bundle-builder__summary-list">
+      <template x-for="slot in getSummarySlots()" :key="slot.key">
+        <div>
+          <template x-if="slot.type === 'item'">
+            <div class="ctr-bundle-builder__summary-item">
+              <img class="ctr-bundle-builder__summary-thumb" :src="slot.image" :alt="slot.title" width="82" height="73">
+              <div>
+                <div class="ctr-bundle-builder__summary-title-row">
+                  <div class="ctr-bundle-builder__summary-title" x-text="slot.title"></div>
+                  <span class="ctr-bundle-builder__summary-discount-badge"
+                        x-show="slot.discountPercent > 0"
+                        x-text="`Save ${slot.discountPercent}%`"></span>
+                </div>
+                <div class="ctr-bundle-builder__summary-short_desc"
+                     x-show="slot.summaryBadge"
+                     x-text="slot.summaryBadge"></div>
+                <div class="ctr-bundle-builder__summary-price-row">
+                  <div class="ctr-bundle-builder__summary-price">
+                    <span class="ctr-bundle-builder__summary-qty"
+                          x-text="`${slot.quantity}x`"></span>
+                    <span x-show="slot.compareTotal > slot.total"
+                          class="ctr-bundle-builder__summary-compare"
+                          x-text="formatMoney(slot.compareTotal)"></span> 
+                    <span x-text="formatMoney(slot.total)"></span>
+                  </div>
+                </div>
+              </div>
+              
+              <button type="button"
+                      class="ctr-bundle-builder__summary-remove"
+                      @click="removeSelectedItem(slot.handle)"
+                      aria-label="Remove item from stack">
+                ×
+              </button>
+            </div>
+          </template>
+
+          <template x-if="slot.type === 'placeholder'">
+            <div class="ctr-bundle-builder__summary-placeholder" aria-hidden="true">
+              <span class="ctr-bundle-builder__summary-placeholder-plus">+</span>
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    <div class="ctr-bundle-builder__purchase-box">
+      <div class="ctr-bundle-builder__purchase-option"
+           :class="{ 'is-active': purchaseMode === 'subscription' }">
+        <span class="ctr-bundle-builder__purchase-head">
+          <button type="button"
+                  class="ctr-bundle-builder__purchase-toggle"
+                  @click.stop="togglePurchaseMode()"
+                  :aria-pressed="purchaseMode === 'subscription' ? 'true' : 'false'"
+                  aria-label="Toggle subscription">
+            <span class="ctr-bundle-builder__purchase-toggle-thumb" x-text="purchaseMode === 'subscription' ? '' : ''"></span>
+          </button>
+          <span x-text="purchaseMode === 'subscription' ? '{{ section.settings.subscription_label | default: 'Subscribe' }}' : '{{ section.settings.one_time_label | default: 'One-Time Purchase' }}'"></span>
+          <span class="ctr-bundle-builder__purchase-price-wrap">
+            <span class="ctr-bundle-builder__purchase-saved"
+              x-show="purchaseMode === 'subscription' && getPurchaseSavedBadgePercent() > 0"
+              x-text="`SAVE ${getPurchaseSavedBadgePercent()}%`"></span>
+            <span class="ctr-bundle-builder__purchase-prices">
+              <span class="ctr-bundle-builder__purchase-price"
+                    x-text="formatMoney(purchaseMode === 'subscription' ? getSubscriptionFinalTotal() : getOneTimeFinalTotal())"></span>
+              <span class="ctr-bundle-builder__purchase-price-compare"
+                    x-show="purchaseMode === 'subscription' && getOneTimeFinalTotal() > getSubscriptionFinalTotal()"
+                    x-text="formatMoney(getOneTimeFinalTotal())"></span>
+            </span>      
+          </span>
+        </span>
+        <select class="ctr-bundle-builder__select"
+                x-show="purchaseMode === 'subscription' && sellingPlans.length"
+                x-model="selectedSellingPlanId"
+                @click.stop
+                @change="persistSelection(); emitAnalytics('frequency_changed', { sellingPlanId: selectedSellingPlanId })">
+          <template x-for="plan in sellingPlans" :key="plan.id">
+            <option :value="plan.id" x-text="plan.name"></option>
+          </template>
+        </select>
+        <div class="ctr-bundle-builder__purchase-copy" :class="{ 'is-one-time': purchaseMode === 'one-time' }">
+          {{ section.settings.subscription_richtext }}
+        </div>
+
+        <div class="ctr-bundle-builder__purchase-gift" x-show="hasEligibleSubscriptionGift(getGiftProduct())">
+          <div class="ctr-bundle-builder__gift-card"
+               x-show="getGiftProduct()">
+            <div class="ctr-bundle-builder__gift-card-inner">
+              <img class="ctr-bundle-builder__gift-card-media"
+                   :src="getGiftProduct()?.image || ''"
+                   :alt="getGiftProduct()?.title || 'Free gift'"
+                   loading="lazy"
+                   width="62"
+                   height="62">
+              <div>
+                <div class="ctr-bundle-builder__gift-card-title is-accent"
+                     x-text="`FREE ${getGiftProduct()?.title || ''}`"></div>
+                <div class="ctr-bundle-builder__gift-card-subtitle">On First Order</div>
+                <div class="ctr-bundle-builder__gift-card-price-row">
+                  <span class="ctr-bundle-builder__gift-card-compare"
+                        x-text="formatMoney(getGiftComparePrice(getGiftProduct()))"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctr-bundle-builder__totals">
+      <div class="ctr-bundle-builder__totals-row">
+        <span>Subtotal</span>
+        <span x-text="formatMoney(getSubtotal())"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row" x-show="getSubscriptionSavings() > 0">
+        <span>Subscription savings</span>
+        <span x-text="`-${formatMoney(getSubscriptionSavings())}`"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row" x-show="getBundleSavings() > 0">
+        <span>Stack savings</span>
+        <span x-text="`-${formatMoney(getBundleSavings())}`"></span>
+      </div>
+      <div class="ctr-bundle-builder__totals-row ctr-bundle-builder__totals-row--grand">
+        <span>Total</span>
+        <span x-text="formatMoney(getFinalTotal())"></span>
+      </div>
+    </div>
+
+    <button type="button"
+            class="ctr-bundle-builder__mobile-drawer-toggle ctr-bundle-builder__mobile-drawer-toggle--view"
+            @click="isMobileBundleOpen = true"
+            aria-label="View stack drawer">
+      <span>View My Stack</span>
+      <span class="ctr-bundle-builder__mobile-drawer-chevron" aria-hidden="true"></span>
+    </button>
+
+    <button type="button"
+            class="ctr-bundle-builder__cta"
+            :disabled="isAdding || getTotalItemCount() < 1"
+            @click="addBundleToCart()">
+      <span x-text="isAdding ? 'Adding...' : '{{ section.settings.cta_text | default: 'Add Stack To Cart' }}'"></span>
+      <span class="ctr-bundle-builder__cta-price"
+            x-text="formatMoney(getFinalTotal())"></span>
+    </button>
+      </aside>
+    </div>
+  </div>
+
+  <script type="application/json" data-ctr-subscription-product>
+    {% if section.settings.main_bundle_product != blank %}
+      {
+        "id": {{ section.settings.main_bundle_product.id | json }},
+        "handle": {{ section.settings.main_bundle_product.handle | json }},
+        "title": {{ section.settings.main_bundle_product.title | json }},
+        "available": {{ section.settings.main_bundle_product.available | json }},
+        "selected_variant_id": {{ section.settings.main_bundle_product.selected_or_first_available_variant.id | json }},
+        "variants": [
+          {% for variant in section.settings.main_bundle_product.variants %}
+            {
+              "id": {{ variant.id | json }},
+              "title": {{ variant.title | json }},
+              "available": {{ variant.available | json }},
+              "price": {{ variant.price | json }},
+              "compare_at_price": {{ variant.compare_at_price | default: variant.price | json }},
+              "selling_plan_allocations": [
+                {% for allocation in variant.selling_plan_allocations %}
+                  {
+                    "id": {{ allocation.selling_plan.id | json }},
+                    "name": {{ allocation.selling_plan.name | json }},
+                    "price": {{ allocation.per_delivery_price | default: variant.price | json }},
+                    "compare_at_price": {{ allocation.compare_at_list_price | default: variant.price | json }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      }
+    {% else %}
+      null
+    {% endif %}
+  </script>
+
+  <script type="application/json" data-ctr-gift-products>
+    [{% liquid
+      assign printed_gift = false
+      for block in section.blocks
+        if block.type == 'gift' and block.settings.product != blank
+          if printed_gift
+            echo ','
+          endif
+          assign printed_gift = true
+          echo '{"key":'
+          echo block.id | json
+          echo ',"title":'
+          echo block.settings.product.title | json
+          echo ',"handle":'
+          echo block.settings.product.handle | json
+          echo ',"variant_id":'
+          echo block.settings.product.selected_or_first_available_variant.id | json
+          echo ',"available":'
+          echo block.settings.product.selected_or_first_available_variant.available | json
+          echo ',"image":'
+          echo block.settings.product.featured_image | image_url: width: 160 | json
+          echo ',"price":'
+          echo block.settings.product.selected_or_first_available_variant.price | json
+          echo ',"compare_at_price":'
+          echo block.settings.product.selected_or_first_available_variant.compare_at_price | default: block.settings.product.selected_or_first_available_variant.price | json
+          echo ',"property_value":'
+          echo block.settings.property_value | json
+          echo '}'
+        endif
+      endfor
+    %}]
+  </script>
+
+  <script type="application/json" data-ctr-product-order-overrides>
+    [{% liquid
+      assign printed_override = false
+      for block in section.blocks
+        if block.type == 'product_order_override' and block.settings.category_handle != blank and block.settings.product_handles != blank
+          if printed_override
+            echo ','
+          endif
+          assign printed_override = true
+          echo '{"categoryHandle":'
+          echo block.settings.category_handle | strip | downcase | json
+          echo ',"productHandles":'
+          echo block.settings.product_handles | json
+          echo '}'
+        endif
+      endfor
+    %}]
+  </script>
+
+  <script>
+    if (!window._sections.initCtrBundleBuilder) {
+      window._sections.initCtrBundleBuilder = function ($el) {
+        const settings = JSON.parse($el.getAttribute("data-section-settings") || "{}");
+
+        return {
+          settings,
+          activeFilter: "shop-all",
+          purchaseMode: "subscription",
+          selectedSellingPlanId: "",
+          isAdding: false,
+          isLoadingProducts: false,
+          isDebugOpen: false,
+          isMobileBundleOpen: false,
+          selectionVersion: 0,
+          loadError: "",
+          productMap: new Map(),
+          selectedMap: new Map(),
+          productGroups: [],
+          debugGroups: [],
+          skioBox: null,
+          sellingPlans: [],
+          subscriptionProduct: null,
+          giftProducts: [],
+          productOrderOverrides: [],
+
+          async init() {
+            this.subscriptionProduct = this.parseSubscriptionProduct();
+            this.giftProducts = this.parseGiftProducts();
+            this.productOrderOverrides = this.parseProductOrderOverrides();
+            console.info("Subscription Product", this.subscriptionProduct);
+            await this.loadBundleProducts();
+            this.restorePersistedSelection();
+            this.refreshSellingPlans();
+          },
+
+          parseSubscriptionProduct() {
+            const script = $el.querySelector("[data-ctr-subscription-product]");
+            return script ? JSON.parse(script.textContent || "null") : null;
+          },
+
+          parseGiftProducts() {
+            const script = $el.querySelector("[data-ctr-gift-products]");
+            return script ? JSON.parse(script.textContent || "[]") : [];
+          },
+
+          parseProductOrderOverrides() {
+            const script = $el.querySelector("[data-ctr-product-order-overrides]");
+            const raw = script ? JSON.parse(script.textContent || "[]") : [];
+            return raw.map((entry) => {
+              const handles = String(entry?.productHandles || "")
+                .split(/\r?\n/)
+                .map((handle) => this.handleize(handle))
+                .filter(Boolean);
+              return {
+                categoryHandle: this.handleize(entry?.categoryHandle || ""),
+                productHandles: handles
+              };
+            }).filter((entry) => entry.categoryHandle && entry.productHandles.length);
+          },
+
+          getNumericIdFromGid(gid) {
+            if (!gid) return "";
+            return String(gid).split("/").pop();
+          },
+
+          normalizeProductImage(product, fallbackImage) {
+            if (typeof product?.featured_image === "string" && product.featured_image) {
+              return product.featured_image;
+            }
+
+            if (typeof product?.featured_image?.src === "string" && product.featured_image.src) {
+              return product.featured_image.src;
+            }
+
+            if (typeof product?.featured_media?.src === "string" && product.featured_media.src) {
+              return product.featured_media.src;
+            }
+
+            return fallbackImage || "";
+          },
+
+          async fetchSkioDynamicBox(productPlatformId) {
+            const response = await fetch("https://api.skio.com/storefront-http/get-dynamic-box", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                productPlatformId: String(productPlatformId)
+              })
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data?.ok || !data?.DynamicBox) {
+              throw new Error("Skio Dynamic Box request failed.");
+            }
+
+            return data.DynamicBox;
+          },
+
+          async fetchShopifyProductsForSkioProducts(skioProducts) {
+            const products = await Promise.all(
+              (skioProducts || []).map(async (item) => {
+                const productId = this.getNumericIdFromGid(item.productPlatformId);
+                if (!item.productHandle || !productId) return null;
+
+                const product = window._products?.[item.productHandle] ?? window._product.getHtmlProduct(item.productHandle);
+                if (product) return product;
+
+                try {
+                  return await window._product.getProductData(item.productHandle, productId);
+                } catch (error) {
+                  console.error("CTR Stack product hydration failed", item.productHandle, error);
+                  return null;
+                }
+              })
+            );
+
+            return products.filter(Boolean);
+          },
+
+          mergeSkioAndShopifyProducts(skioProducts, shopifyProducts) {
+            const shopifyByHandle = new Map((shopifyProducts || []).map((product) => [product.handle, product]));
+
+            return (skioProducts || []).map((skioProduct) => {
+              const shopifyProduct = shopifyByHandle.get(skioProduct.productHandle);
+              if (!shopifyProduct) return null;
+
+              const skioVariantsById = new Map(
+                (skioProduct.productVariants || []).map((variant) => [this.getNumericIdFromGid(variant.platformId), variant])
+              );
+
+              const variants = (shopifyProduct.variants || [])
+                .filter((variant) => skioVariantsById.has(String(variant.id)))
+                .map((variant) => {
+                  const skioVariant = skioVariantsById.get(String(variant.id));
+                  return {
+                    ...variant,
+                    price: this.normalizeSkioMoney(skioVariant?.price, variant.price),
+                    compare_at_price: this.normalizeSkioMoney(
+                      skioVariant?.compareAtPrice,
+                      variant.compare_at_price ?? variant.price
+                    ),
+                    skioVariant
+                  };
+                });
+
+              if (!variants.length) return null;
+
+              const defaultVariantId = this.getNumericIdFromGid(skioProduct.productVariants?.[0]?.platformId);
+
+              return {
+                id: shopifyProduct.id,
+                handle: shopifyProduct.handle,
+                title: shopifyProduct.title || skioProduct.productTitle,
+                url: shopifyProduct.url || `/products/${shopifyProduct.handle}`,
+                available: shopifyProduct.available,
+                featured_image: this.normalizeProductImage(shopifyProduct, skioProduct.productImageSrc),
+                selected_variant_id: defaultVariantId || shopifyProduct.selected_variant_id || variants[0]?.id,
+                variants,
+                collections: shopifyProduct.collections || [],
+                reviews: shopifyProduct.reviews || {},
+                metafields: shopifyProduct.metafields || {},
+                skioProduct
+              };
+            }).filter(Boolean);
+          },
+
+          hasProductOrderOverride(groupHandle) {
+            return this.productOrderOverrides.some((entry) => entry.categoryHandle === groupHandle);
+          },
+
+          applyProductOrderOverride(groupHandle, products) {
+            const override = this.productOrderOverrides.find((entry) => entry.categoryHandle === groupHandle);
+            if (!override || !products.length) return products;
+
+            const orderIndex = new Map(override.productHandles.map((handle, index) => [handle, index]));
+            const skioIndex = new Map(products.map((product, index) => [product.handle, index]));
+
+            return [...products].sort((a, b) => {
+              const aOverride = orderIndex.has(a.handle) ? orderIndex.get(a.handle) : Infinity;
+              const bOverride = orderIndex.has(b.handle) ? orderIndex.get(b.handle) : Infinity;
+
+              if (aOverride !== bOverride) return aOverride - bOverride;
+              return skioIndex.get(a.handle) - skioIndex.get(b.handle);
+            });
+          },
+
+          buildGroupsFromSkio(skioBox, mergedProducts) {
+            const grouping = skioBox?.settings?.productGrouping || {};
+            const groupingOrder = skioBox?.settings?.productGroupingOrder || Object.keys(grouping);
+            const mergedById = new Map((mergedProducts || []).map((product) => [String(product.id), product]));
+            const groups = [];
+            const groupedHandles = new Set();
+
+            groupingOrder.forEach((groupTitle) => {
+              const productIds = grouping[groupTitle] || [];
+              const products = productIds
+                .map((productId) => mergedById.get(String(productId)))
+                .filter(Boolean);
+
+              products.forEach((product) => groupedHandles.add(product.handle));
+
+              const groupHandle = this.handleize(groupTitle);
+              const orderedProducts = this.hasProductOrderOverride(groupHandle)
+                ? this.applyProductOrderOverride(groupHandle, products)
+                : products;
+
+              groups.push({
+                title: groupTitle,
+                handle: groupHandle,
+                products: orderedProducts
+              });
+            });
+
+            (mergedProducts || []).forEach((product) => {
+              if (groupedHandles.has(product.handle)) return;
+
+              const collections = product.collections || [];
+              const matchingGroup = groups.find((group) => collections.includes(group.handle));
+              if (!matchingGroup) return;
+
+              matchingGroup.products.push(product);
+              groupedHandles.add(product.handle);
+            });
+
+            // Re-apply override to groups that received late-added (collection-matched)
+            // products, whenever a customizer override exists for that group.
+            groups.forEach((group) => {
+              if (!this.hasProductOrderOverride(group.handle)) return;
+              group.products = this.applyProductOrderOverride(group.handle, group.products);
+            });
+
+            const visibleGroups = groups.filter((group) => group.products.length);
+            const ungroupedProducts = (mergedProducts || []).filter((product) => !groupedHandles.has(product.handle));
+
+            if (ungroupedProducts.length) {
+              const otherProducts = this.applyProductOrderOverride("other", ungroupedProducts);
+              visibleGroups.push({
+                title: "Other",
+                handle: "other",
+                products: otherProducts
+              });
+            }
+
+            return visibleGroups;
+          },
+
+          buildDebugGroups(groups) {
+            return (groups || []).map((group) => ({
+              title: group.title,
+              handle: group.handle,
+              products: group.products.map((product) => ({
+                handle: product.handle,
+                title: product.title,
+                image: product.featured_image || "",
+                skioVariants: product.skioProduct?.productVariants || []
+              }))
+            }));
+          },
+
+          getGiftProducts() {
+            return [...(this.giftProducts || [])];
+          },
+
+          getGiftProduct() {
+            return this.getGiftProducts()[0] || null;
+          },
+
+          hasSelectedPowder28Serving() {
+            return [...this.selectedMap.entries()].some(([handle, value]) => {
+              if (Number(value?.quantity || 0) < 1) return false;
+              if (this.getProductGroupHandle(handle) !== "powders") return false;
+
+              const variant = this.getSelectedVariant(handle);
+              return /(^|\D)28(\D|$)/.test(String(variant?.title || ""));
+            });
+          },
+
+          hasEligibleSubscriptionGift(gift = this.getGiftProduct()) {
+            return this.purchaseMode === "subscription" && !!gift?.variant_id && gift?.available !== false && this.hasSelectedPowder28Serving();
+          },
+
+          getGiftComparePrice(gift) {
+            return Number(gift?.compare_at_price || gift?.price || 0);
+          },
+
+          handleize(value) {
+            return String(value || "")
+              .trim()
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-+|-+$/g, "");
+          },
+
+          async loadBundleProducts() {
+            if (!this.subscriptionProduct?.id) {
+              this.loadError = "Select a Subscription Product to load stack products.";
+              return;
+            }
+
+            this.isLoadingProducts = true;
+            this.loadError = "";
+
+            try {
+              const skioBox = await this.fetchSkioDynamicBox(this.subscriptionProduct.id);
+              const skioProducts = skioBox.selectableProductVariants || [];
+              const shopifyProducts = await this.fetchShopifyProductsForSkioProducts(skioProducts);
+              const mergedProducts = this.mergeSkioAndShopifyProducts(skioProducts, shopifyProducts);
+
+              this.skioBox = skioBox;
+              this.productMap = new Map(mergedProducts.map((product) => [product.handle, product]));
+              this.productGroups = this.buildGroupsFromSkio(skioBox, mergedProducts);
+              this.debugGroups = this.buildDebugGroups(this.productGroups);
+
+              console.info("CTR Stack Skio Box", skioBox);
+              console.info("CTR Stack Product Groups", this.debugGroups);
+            } catch (error) {
+              this.loadError = error?.message || "Failed to load stack products.";
+              console.error("CTR Stack load failed", error);
+            } finally {
+              this.isLoadingProducts = false;
+            }
+          },
+
+          collectSellingPlans() {
+            const plans = new Map();
+
+            (this.subscriptionProduct?.variants || []).forEach((variant) => {
+              (variant.selling_plan_allocations || []).forEach((allocation) => {
+                if (!allocation?.id) return;
+                if (!this.isBundleSellingPlan(allocation)) return;
+
+                const planId = String(allocation.id);
+                if (!plans.has(planId)) {
+                  plans.set(planId, {
+                    id: planId,
+                    name: allocation.name
+                  });
+                }
+              });
+            });
+
+            return [...plans.values()];
+          },
+
+          getBundleSellingPlanNames() {
+            return (window.theme_settings?.data__product__excluded_pdp_selling_plan_names || "")
+              .split(/\r?\n/)
+              .map((name) => name.trim().toLowerCase())
+              .filter(Boolean);
+          },
+
+          isBundleSellingPlan(allocation) {
+            const names = this.getBundleSellingPlanNames();
+            if (!names.length) return true;
+
+            return names.includes(String(allocation?.name || "").trim().toLowerCase());
+          },
+
+          refreshSellingPlans() {
+            const nextPlans = this.collectSellingPlans();
+            const currentPlanStillValid = nextPlans.some((plan) => String(plan.id) === String(this.selectedSellingPlanId));
+
+            this.sellingPlans = nextPlans;
+            this.selectedSellingPlanId = currentPlanStillValid ? String(this.selectedSellingPlanId) : (nextPlans[0]?.id || "");
+
+            if (!nextPlans.length && this.purchaseMode === "subscription") {
+              this.purchaseMode = "one-time";
+            }
+          },
+
+          getStorageKey() {
+            return this.subscriptionProduct?.id ? `ctr_bundle_builder:${this.subscriptionProduct.id}` : "";
+          },
+
+          getStorage() {
+            try {
+              const storage = window.localStorage;
+              const testKey = "__ctr_bundle_builder_test__";
+              storage.setItem(testKey, testKey);
+              storage.removeItem(testKey);
+              return storage;
+            } catch (error) {
+              return null;
+            }
+          },
+
+          persistSelection() {
+            const storage = this.getStorage();
+            const key = this.getStorageKey();
+            if (!storage || !key) return;
+
+            const items = [...this.selectedMap.entries()]
+              .map(([handle, value]) => ({
+                handle,
+                variantId: String(value?.variantId || ""),
+                quantity: Number(value?.quantity || 0)
+              }))
+              .filter((item) => item.handle && item.variantId && item.quantity > 0);
+
+            if (!items.length) {
+              try {
+                storage.removeItem(key);
+              } catch (error) {
+                console.warn("CTR Stack saved selection could not be cleared", error);
+              }
+              return;
+            }
+
+            try {
+              storage.setItem(key, JSON.stringify({
+                items,
+                purchaseMode: this.purchaseMode,
+                selectedSellingPlanId: String(this.selectedSellingPlanId || "")
+              }));
+            } catch (error) {
+              console.warn("CTR Stack selection could not be saved", error);
+            }
+          },
+
+          clearPersistedSelection() {
+            const storage = this.getStorage();
+            const key = this.getStorageKey();
+            if (!storage || !key) return;
+
+            try {
+              storage.removeItem(key);
+            } catch (error) {
+              console.warn("CTR Stack saved selection could not be cleared", error);
+            }
+          },
+
+          restorePersistedSelection() {
+            const storage = this.getStorage();
+            const key = this.getStorageKey();
+            if (!storage || !key) return;
+
+            try {
+              const saved = JSON.parse(storage.getItem(key) || "null");
+              const nextMap = new Map();
+
+              (saved?.items || []).forEach((item) => {
+                const product = this.productMap.get(item?.handle);
+                const quantity = Number(item?.quantity || 0);
+                const variant = product?.variants?.find((candidate) => String(candidate.id) === String(item?.variantId));
+
+                if (!product || !variant || quantity < 1) return;
+
+                nextMap.set(product.handle, {
+                  quantity,
+                  variantId: String(variant.id)
+                });
+              });
+
+              if (!nextMap.size) {
+                this.clearPersistedSelection();
+                return;
+              }
+
+              this.selectedMap = nextMap;
+              this.purchaseMode = saved?.purchaseMode === "one-time" ? "one-time" : "subscription";
+              this.selectedSellingPlanId = String(saved?.selectedSellingPlanId || "");
+              this.selectionVersion += 1;
+            } catch (error) {
+              this.clearPersistedSelection();
+              console.warn("CTR Stack saved selection could not be restored", error);
+            }
+          },
+
+          setFilter(filter) {
+            this.activeFilter = filter;
+            this.emitAnalytics("filter_changed", { filter });
+          },
+
+          getFilterGroups() {
+            return this.productGroups;
+          },
+
+          getVisibleProducts() {
+            const products = this.activeFilter === "shop-all"
+              ? this.productGroups.flatMap((group) => group.products)
+              : (this.productGroups.find((group) => group.handle === this.activeFilter)?.products || []);
+
+            const filtered = products.filter((product) => product?.available !== false);
+
+            // The "shop-all" filter view is a flattened cross-group list, not a real
+            // Skio group, so its ordering can't be set at buildGroupsFromSkio time.
+            // Honor a shop-all override block here at render time. Unlisted products
+            // fall to the end in their original (flattened) order.
+            if (this.activeFilter === "shop-all" && this.hasProductOrderOverride("shop-all")) {
+              return this.applyProductOrderOverride("shop-all", filtered);
+            }
+
+            return filtered;
+          },
+
+          isProductVisible(handle, groupHandle) {
+            if (this.activeFilter === "shop-all") return true;
+            return this.activeFilter === groupHandle;
+          },
+
+          getProductState(handle) {
+            return this.productMap.get(handle) || null;
+          },
+
+          getVariantChoices(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return [];
+
+            const variants = product.variants.filter((variant) => variant.title !== "Default Title");
+            return variants.length ? variants : product.variants;
+          },
+
+          getVariantFirstOptionValue(variant) {
+            return variant?.options?.[0] || variant?.option1 || "";
+          },
+
+          isBagOptionValue(value) {
+            return ["bag", "bags"].includes(String(value || "").trim().toLowerCase());
+          },
+
+          getDefaultVariant(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return null;
+
+            const variants = this.getVariantChoices(handle);
+            const bagVariant = variants.find((variant) => {
+              return variant.available && this.isBagOptionValue(this.getVariantFirstOptionValue(variant));
+            }) || variants.find((variant) => this.isBagOptionValue(this.getVariantFirstOptionValue(variant)));
+            const selectedVariant = product.variants.find((variant) => String(variant.id) === String(product.selected_variant_id));
+
+            return bagVariant || selectedVariant || product.variants[0] || null;
+          },
+
+          getFirstOptionValues(handle) {
+            const values = [];
+
+            this.filterVariantsByBuilderRules(handle, this.getVariantChoices(handle)).forEach((variant) => {
+              const value = this.getVariantFirstOptionValue(variant);
+              if (value && !values.includes(value)) {
+                values.push(value);
+              }
+            });
+
+            return values;
+          },
+
+          getRawSelectedVariant(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return null;
+
+            const selected = this.selectedMap.get(handle);
+            const selectedVariant = selected?.variantId
+              ? product.variants.find((variant) => String(variant.id) === String(selected.variantId))
+              : null;
+
+            return selectedVariant || this.getDefaultVariant(handle);
+          },
+
+          getActiveFirstOptionValue(handle) {
+            const selectedVariant = this.getRawSelectedVariant(handle);
+            const selectedValue = this.getVariantFirstOptionValue(selectedVariant);
+
+            if (selectedValue) return selectedValue;
+
+            return this.getFirstOptionValues(handle)[0] || "";
+          },
+
+          getProductGroupHandle(handle) {
+            return this.productGroups.find((group) => {
+              return group.products.some((product) => product.handle === handle);
+            })?.handle || "";
+          },
+
+          filterPowderVariantsByOption(variants, optionValue) {
+            const option = String(optionValue || "").trim().toLowerCase();
+            const allowedCounts = option === "sticks" ? [14, 28] : ["bag", "bags"].includes(option) ? [28] : null;
+            if (!allowedCounts) return variants;
+
+            const filteredVariants = variants.filter((variant) => {
+              const title = String(variant?.title || "");
+              return allowedCounts.some((count) => new RegExp(`(^|\\D)${count}(\\D|$)`).test(title));
+            });
+
+            return filteredVariants.length ? filteredVariants : variants;
+          },
+
+          filterVariantsByBuilderRules(handle, variants, optionValue = "") {
+            const groupHandle = this.getProductGroupHandle(handle);
+            const oneMonthVariants = variants.filter((variant) => {
+              const title = String(variant?.title || "").trim().toLowerCase();
+              return title === "one month" || title === "monthly";
+            });
+            if (oneMonthVariants.length) return oneMonthVariants;
+
+            if (groupHandle === "powders") {
+              return this.filterPowderVariantsByOption(variants, optionValue);
+            }
+
+            if (groupHandle === "capsules") {
+              const filteredVariants = variants.filter((variant) => String(variant?.title || "").trim().toLowerCase() === "1 bottle");
+              return filteredVariants.length ? filteredVariants : variants;
+            }
+
+            return variants;
+          },
+
+          getFilteredVariantChoices(handle) {
+            const variants = this.getVariantChoices(handle);
+            const activeFirstOption = this.getActiveFirstOptionValue(handle);
+            const groupHandle = this.getProductGroupHandle(handle);
+            const capsuleRuleVariants = groupHandle === "capsules" ? this.filterVariantsByBuilderRules(handle, variants, activeFirstOption) : variants;
+            const capsuleRuleApplied = groupHandle === "capsules" && capsuleRuleVariants.length !== variants.length;
+            const variantsForOption = capsuleRuleApplied ? capsuleRuleVariants : variants;
+            const matchingVariants = capsuleRuleApplied
+              ? variantsForOption
+              : activeFirstOption
+              ? variantsForOption.filter((variant) => this.getVariantFirstOptionValue(variant) === activeFirstOption)
+              : variantsForOption;
+            const builderRuleVariants = this.filterVariantsByBuilderRules(handle, matchingVariants, activeFirstOption);
+            const availableVariants = builderRuleVariants.filter((variant) => variant.available);
+
+            return availableVariants.length ? availableVariants : builderRuleVariants;
+          },
+
+          hasVariantChoiceBeyondFirstOption(variant) {
+            const options = variant?.options || [];
+            if (options.length > 1) return true;
+
+            const firstOption = this.getVariantFirstOptionValue(variant);
+            return String(variant?.title || "").trim() !== String(firstOption || "").trim();
+          },
+
+          shouldShowVariantSelect(handle) {
+            const availableVariants = this.getFilteredVariantChoices(handle).filter((variant) => variant.available);
+            const groupHandle = this.getProductGroupHandle(handle);
+            const activeFirstOption = this.getActiveFirstOptionValue(handle);
+
+            if (groupHandle === "powders" && this.isBagOptionValue(activeFirstOption) && availableVariants.length) {
+              return true;
+            }
+
+            if (availableVariants.length < 2) return false;
+
+            return availableVariants.some((variant) => this.hasVariantChoiceBeyondFirstOption(variant));
+          },
+
+          getSelectedVariant(handle) {
+            const product = this.getProductState(handle);
+            if (!product) return null;
+
+            const selectedVariantId = this.getRawSelectedVariant(handle)?.id;
+            const filteredVariants = this.getFilteredVariantChoices(handle);
+            return filteredVariants.find((variant) => String(variant.id) === String(selectedVariantId)) || filteredVariants[0] || product.variants[0] || null;
+          },
+
+          getSingleVariantBadgeText(handle) {
+            if (this.getProductGroupHandle(handle) === "capsules") return "1 Bottle";
+
+            const variant = this.getFilteredVariantChoices(handle)[0];
+            const title = String(variant?.title || "").trim();
+
+            return title && title !== "Default Title" ? title : "";
+          },
+
+          shouldShowSingleVariantBadge(handle) {
+            if (this.getProductGroupHandle(handle) === "capsules") return true;
+
+            return !this.shouldShowVariantSelect(handle)
+              && this.getFirstOptionValues(handle).length <= 1
+              && this.getFilteredVariantChoices(handle).length === 1
+              && !!this.getSingleVariantBadgeText(handle);
+          },
+
+          normalizeVariantImage(image) {
+            if (!image) return "";
+            if (typeof image === "string") return image;
+
+            return image.src || image.url || image.preview_image?.src || "";
+          },
+
+          getVariantImage(variant) {
+            return this.normalizeVariantImage(variant?.featured_image)
+              || this.normalizeVariantImage(variant?.image)
+              || this.normalizeVariantImage(variant?.image_src)
+              || this.normalizeVariantImage(variant?.skioVariant?.imageSrc);
+          },
+
+          getProductCardImage(handle) {
+            const product = this.getProductState(handle);
+            const variantImage = this.getVariantImage(this.getSelectedVariant(handle));
+
+            return variantImage || product?.featured_image || "";
+          },
+
+          setFirstOption(handle, value) {
+            const current = this.selectedMap.get(handle) || { quantity: 0 };
+            const matchingVariants = this.getVariantChoices(handle).filter((variant) => {
+              return this.getVariantFirstOptionValue(variant) === value;
+            });
+            const allowedVariants = this.filterVariantsByBuilderRules(handle, matchingVariants, value);
+
+            if (!allowedVariants.length) return;
+
+            const currentVariant = this.getSelectedVariant(handle);
+            const nextVariant = allowedVariants.find((variant) => {
+              return String(variant.id) === String(currentVariant?.id) && variant.available;
+            }) || allowedVariants.find((variant) => variant.available) || allowedVariants[0];
+
+            this.selectedMap.set(handle, {
+              ...current,
+              variantId: String(nextVariant.id)
+            });
+
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.persistSelection();
+            this.emitAnalytics("variant_option_changed", {
+              handle,
+              optionValue: value,
+              variantId: String(nextVariant.id)
+            });
+          },
+
+          getProductBadge(handle) {
+            const product = this.getProductState(handle);
+            const badge = product?.metafields?.custom?.card_badge || product?.metafields?.smart?.card_badge_2;
+
+            if (!badge) return "";
+            if (typeof badge === "string") return badge;
+            if (typeof badge?.value === "string") return badge.value;
+
+            return "";
+          },
+
+          getProductSubtitle(handle) {
+            const product = this.getProductState(handle);
+            const bullets = product?.ctr_smart_bullet_points || product?.metafields?.custom?.smart_bullet_points;
+            const value = bullets?.value ?? bullets;
+
+            if (Array.isArray(value)) return String(value[0] || "").trim();
+            if (typeof value === "string") {
+              try {
+                const parsed = JSON.parse(value);
+                if (Array.isArray(parsed)) return String(parsed[0] || "").trim();
+              } catch (error) {
+                return value.split("\n").map((item) => item.trim()).filter(Boolean)[0] || "";
+              }
+            }
+
+            return "";
+          },
+
+          getProductBadgeClass(handle) {
+            return this.handleize(this.getProductBadge(handle));
+          },
+
+          getProductRatingValue(handle) {
+            const product = this.getProductState(handle);
+            const directRating = Number(product?.reviews?.rating || 0);
+
+            if (directRating > 0) return directRating;
+
+            const ratingMetafield = product?.metafields?.smart?.rating;
+            const metafieldValue = ratingMetafield?.value?.rating ?? ratingMetafield?.value ?? ratingMetafield;
+            const rating = Number(metafieldValue || 0);
+
+            return rating > 0 ? rating : 0;
+          },
+
+          getProductReviewCount(handle) {
+            const product = this.getProductState(handle);
+            const directCount = Number(product?.reviews?.review_count || 0);
+
+            if (directCount > 0) return directCount;
+
+            const countMetafield = product?.metafields?.smart?.review_count;
+            const count = Number(countMetafield?.value ?? countMetafield ?? 0);
+
+            return count > 0 ? count : 0;
+          },
+
+          getProductRatingLabel(handle) {
+            const rating = this.getProductRatingValue(handle);
+            const count = this.getProductReviewCount(handle);
+
+            if (!count || !rating) return "";
+
+            return `${Number(rating).toFixed(1)} (${count})`;
+          },
+
+          getProductRatingScore(handle) {
+            const rating = this.getProductRatingValue(handle);
+
+            if (!rating) return "";
+
+            return `${Number(rating).toFixed(2)}/5`;
+          },
+
+          setVariant(handle, variantId) {
+            const current = this.selectedMap.get(handle) || { quantity: 0 };
+            this.selectedMap.set(handle, { ...current, variantId: String(variantId) });
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.persistSelection();
+            this.emitAnalytics("variant_changed", { handle, variantId: String(variantId) });
+          },
+
+          getQuantity(handle) {
+            return this.selectedMap.get(handle)?.quantity || 0;
+          },
+
+          increment(handle) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant || !variant.available) return;
+
+            const current = this.selectedMap.get(handle) || { quantity: 0, variantId: String(variant.id) };
+            this.selectedMap.set(handle, {
+              quantity: current.quantity + 1,
+              variantId: current.variantId || String(variant.id)
+            });
+
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.persistSelection();
+            this.emitAnalytics("bundle_item_added", {
+              handle,
+              variantId: String(variant.id),
+              quantity: current.quantity + 1
+            });
+          },
+
+          decrement(handle) {
+            const current = this.selectedMap.get(handle);
+            if (!current) return;
+
+            const nextQty = Math.max(0, current.quantity - 1);
+            if (nextQty < 1) {
+              this.selectedMap.delete(handle);
+            } else {
+              this.selectedMap.set(handle, { ...current, quantity: nextQty });
+            }
+
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.persistSelection();
+            this.emitAnalytics("bundle_item_removed", {
+              handle,
+              quantity: nextQty
+            });
+          },
+
+          removeSelectedItem(handle) {
+            if (!this.selectedMap.has(handle)) return;
+
+            this.selectedMap.delete(handle);
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.persistSelection();
+            this.emitAnalytics("bundle_item_removed", {
+              handle,
+              quantity: 0,
+              removedFromSummary: true
+            });
+          },
+
+          resetSelection() {
+            this.selectedMap = new Map();
+            this.selectionVersion += 1;
+            this.refreshSellingPlans();
+            this.clearPersistedSelection();
+          },
+
+          getTotalItemCount() {
+            this.selectionVersion;
+            let total = 0;
+            this.selectedMap.forEach((value) => {
+              total += value.quantity || 0;
+            });
+            return total;
+          },
+
+          getSkioTiers() {
+            const tierMap = this.skioBox?.percentDiscountTier || {};
+
+            return Object.entries(tierMap)
+              .map(([count, discount]) => ({
+                count: Number(count),
+                discount: Number(discount || 0),
+                propertyValue: ""
+              }))
+              .filter((tier) => tier.count > 0 && tier.discount > 0)
+              .sort((a, b) => a.count - b.count);
+          },
+
+          getActiveTier() {
+            this.selectionVersion;
+            const count = this.getTotalItemCount();
+            const tiers = this.getSkioTiers();
+
+            const matched = tiers
+              .filter((tier) => count >= tier.count && tier.discount > 0)
+              .sort((a, b) => b.count - a.count)[0];
+
+            return matched || { count: 0, discount: 0, propertyValue: "" };
+          },
+
+          getNextTier() {
+            this.selectionVersion;
+            const count = this.getTotalItemCount();
+            const tiers = this.getSkioTiers();
+            return tiers.find((tier) => count < tier.count) || null;
+          },
+
+          getMaxTierDiscount() {
+            const tiers = this.getSkioTiers();
+            if (!tiers.length) return 0;
+            return Math.max(...tiers.map((tier) => Number(tier.discount) || 0));
+          },
+
+          getFilledSegmentCount() {
+            this.selectionVersion;
+            return Math.min(this.getTotalItemCount(), 5);
+          },
+
+          getProgressTiers() {
+            this.selectionVersion;
+            const count = this.getTotalItemCount();
+
+            return this.getSkioTiers().map((tier) => ({
+              ...tier,
+              isActive: count >= tier.count
+            }));
+          },
+
+          getProgressCopy() {
+            this.selectionVersion;
+            const activeTier = this.getActiveTier();
+            const nextTier = this.getNextTier();
+            const highlightDiscount = (discount) => `<span class="ctr-bundle-builder__helper-accent">${discount}%</span>`;
+
+            if (nextTier) {
+              const remaining = Math.max(nextTier.count - this.getTotalItemCount(), 0);
+              return `Add ${remaining} more item${remaining === 1 ? "" : "s"} to unlock ${highlightDiscount(nextTier.discount)}`;
+            }
+
+            if (activeTier.discount) {
+              return `${highlightDiscount(activeTier.discount)} unlocked. Highest tier reached.`;
+            }
+
+            return "Add products to unlock stack discounts.";
+          },
+
+          getSelectedPlanAllocation(handle) {
+            if (this.purchaseMode !== "subscription") return null;
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return null;
+
+            const selectedPlanId = String(this.selectedSellingPlanId || "");
+            if (!selectedPlanId) {
+              return (variant.selling_plan_allocations || []).find((allocation) => this.isBundleSellingPlan(allocation)) || null;
+            }
+
+            return (variant.selling_plan_allocations || []).find((allocation) => {
+              return String(allocation.id) === selectedPlanId && this.isBundleSellingPlan(allocation);
+            }) || null;
+          },
+
+          getSelectedSellingPlanGroup() {
+            if (!this.selectedSellingPlanId || !this.skioBox?.sellingPlanGroup) return null;
+
+            return Object.entries(this.skioBox.sellingPlanGroup).find(([planGid]) => {
+              return this.getNumericIdFromGid(planGid) === String(this.selectedSellingPlanId);
+            })?.[1] || null;
+          },
+
+          getSubscriptionDiscountPercent() {
+            return Number(this.getSelectedSellingPlanGroup()?.priceAdjustmentAmount || 0);
+          },
+
+          getPurchaseSavedPercent() {
+            const activeTierDiscount = Number(this.getActiveTier().discount || 0);
+            if (activeTierDiscount > 0) return activeTierDiscount;
+
+            return this.getSubscriptionDiscountPercent();
+          },
+
+          getPurchaseSavedBadgePercent() {
+            if (this.getTotalItemCount() > 0) return this.getPurchaseSavedPercent();
+
+            const firstTierDiscount = Number(this.getSkioTiers()[0]?.discount || 0);
+            return firstTierDiscount || this.getSubscriptionDiscountPercent();
+          },
+
+          normalizeSkioMoney(value, fallback = 0) {
+            if (typeof value === "number" && Number.isFinite(value)) {
+              return Math.round(value * 100);
+            }
+
+            if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) {
+              return Math.round(Number(value) * 100);
+            }
+
+            return Number(fallback || 0);
+          },
+
+          getDisplayUnitPriceForMode(handle, mode) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return 0;
+
+            if (mode === "subscription") {
+              const selectedPlanGroup = this.getSelectedSellingPlanGroup();
+              if (selectedPlanGroup?.variantMapping) {
+                const variantGid = `gid://shopify/ProductVariant/${variant.id}`;
+                const adjustedPrice = selectedPlanGroup.variantMapping?.[variantGid]?.adjustedPrice;
+                if (typeof adjustedPrice === "number" || typeof adjustedPrice === "string") {
+                  return this.normalizeSkioMoney(adjustedPrice, variant.price);
+                }
+              }
+
+              const allocation = (variant.selling_plan_allocations || []).find((item) => {
+                return String(item.id) === String(this.selectedSellingPlanId);
+              });
+
+              if (allocation?.price) {
+                return allocation.price;
+              }
+            }
+
+            return variant.price || 0;
+          },
+
+          getDisplayComparePriceForMode(handle, mode) {
+            const variant = this.getSelectedVariant(handle);
+            if (!variant) return 0;
+
+            if (mode === "subscription") {
+              return variant.price || 0;
+            }
+
+            return variant.compare_at_price || variant.price || 0;
+          },
+
+          getDisplayUnitPrice(handle) {
+            return this.getDisplayUnitPriceForMode(handle, this.purchaseMode);
+          },
+
+          getDisplayComparePrice(handle) {
+            return this.getDisplayComparePriceForMode(handle, this.purchaseMode);
+          },
+
+          getDisplayDiscountPercent(handle) {
+            const unitPrice = Number(this.getDisplayUnitPrice(handle) || 0);
+            const comparePrice = Number(this.getDisplayComparePrice(handle) || 0);
+            if (!unitPrice || !comparePrice || comparePrice <= unitPrice) return 0;
+
+            return Math.round(((comparePrice - unitPrice) / comparePrice) * 100);
+          },
+
+          getSubtotal() {
+            return this.getSubtotalForMode(this.purchaseMode);
+          },
+
+          getSubtotalForMode(mode) {
+            let subtotal = 0;
+            this.selectedMap.forEach((value, handle) => {
+              subtotal += this.getDisplayUnitPriceForMode(handle, mode) * value.quantity;
+            });
+            return subtotal;
+          },
+
+          getSubscriptionCompareSubtotal() {
+            return this.getSubscriptionCompareSubtotalForMode(this.purchaseMode);
+          },
+
+          getSubscriptionCompareSubtotalForMode(mode) {
+            if (mode !== "subscription") return 0;
+            let subtotal = 0;
+            this.selectedMap.forEach((value, handle) => {
+              const variant = this.getSelectedVariant(handle);
+              if (!variant) return;
+              subtotal += (variant.price || 0) * value.quantity;
+            });
+            return subtotal;
+          },
+
+          getSubscriptionSavings() {
+            return this.getSubscriptionSavingsForMode(this.purchaseMode);
+          },
+
+          getSubscriptionSavingsForMode(mode) {
+            if (mode !== "subscription") return 0;
+            return Math.max(this.getSubscriptionCompareSubtotalForMode(mode) - this.getSubtotalForMode(mode), 0);
+          },
+
+          getBundleSavings() {
+            return this.getBundleSavingsForMode(this.purchaseMode);
+          },
+
+          getBundleSavingsForMode(mode) {
+            const subtotal = this.getSubtotalForMode(mode);
+            const discount = this.getActiveTier().discount;
+            if (!subtotal || !discount) return 0;
+            return Math.round(subtotal * (discount / 100));
+          },
+
+          getFinalTotal() {
+            return this.getFinalTotalForMode(this.purchaseMode);
+          },
+
+          getFinalTotalForMode(mode) {
+            return Math.max(this.getSubtotalForMode(mode) - this.getBundleSavingsForMode(mode), 0);
+          },
+
+          isSupplyBottleVariantTitle(variantTitle) {
+            const title = String(variantTitle || "").trim().toLowerCase();
+            return title === "one bottle" || title === "1 bottle";
+          },
+
+          getSupplyDaysForQuantity(quantity = 1) {
+            // Capsule supply duration logic. Current behavior scales by quantity:
+            // 1 bottle = 60 days, 2 bottles = 120 days, etc.
+            // To quickly return to static copy, replace this helper usage with 60 in
+            // getSummarySupplyBadgeText() and getSelectedSupplyDays().
+            const bottleCount = Math.max(Number(quantity || 1), 1);
+            return bottleCount * 60;
+          },
+
+          getSummarySupplyBadgeText(variantTitle, quantity = 1) {
+            if (!this.isSupplyBottleVariantTitle(variantTitle)) return "";
+
+            return `${this.getSupplyDaysForQuantity(quantity)}-Day Supply`;
+          },
+
+          getSelectedSupplyDays() {
+            const supplyDays = this.getSelectedItems()
+              .filter((item) => this.isSupplyBottleVariantTitle(item.variantTitle))
+              .map((item) => this.getSupplyDaysForQuantity(item.quantity));
+
+            return supplyDays.length ? Math.max(...supplyDays) : 0;
+          },
+
+          getOneTimeFinalTotal() {
+            return this.getFinalTotalForMode("one-time");
+          },
+
+          getSubscriptionFinalTotal() {
+            return this.getFinalTotalForMode("subscription");
+          },
+
+          getSelectedItems() {
+            const activeTier = this.getActiveTier();
+            return [...this.selectedMap.entries()]
+              .filter(([, value]) => Number(value?.quantity || 0) > 0)
+              .map(([handle, value]) => {
+              const product = this.getProductState(handle);
+              const variant = this.getSelectedVariant(handle);
+              const unitPrice = this.getDisplayUnitPriceForMode(handle, this.purchaseMode);
+              const comparePrice = this.getDisplayComparePriceForMode(handle, this.purchaseMode);
+              const lineSubtotal = unitPrice * value.quantity;
+              const lineCompare = comparePrice * value.quantity;
+              const discountFactor = activeTier.discount > 0 ? (1 - activeTier.discount / 100) : 1;
+
+              return {
+                key: `${handle}-${variant?.id || "product"}`,
+                handle,
+                title: product?.title || handle,
+                image: this.getProductCardImage(handle),
+                summaryBadge: this.getProductBadge(handle),
+                discountPercent: activeTier.discount,
+                variantTitle: variant?.title && variant.title !== "Default Title" ? variant.title : (this.purchaseMode === "subscription" ? "Subscription" : "One-time"),
+                quantity: value.quantity,
+                compareTotal: lineCompare,
+                total: Math.round(lineSubtotal * discountFactor)
+              };
+            });
+          },
+
+          getSummarySlots() {
+            const items = this.getSelectedItems().map((item) => ({
+              ...item,
+              type: "item"
+            }));
+            const maxSlots = 5;
+            const hasAvailablePlaceholderSlot = items.length < maxSlots;
+
+            if (hasAvailablePlaceholderSlot) {
+              items.push({
+                key: `placeholder-${items.length}`,
+                type: "placeholder"
+              });
+            }
+
+            return items.slice(0, maxSlots);
+          },
+
+          setPurchaseMode(mode) {
+            this.refreshSellingPlans();
+            if (mode === "subscription" && !this.sellingPlans.length) return;
+            this.purchaseMode = mode;
+            this.persistSelection();
+            this.emitAnalytics("purchase_mode_changed", {
+              mode,
+              availableSellingPlanCount: this.sellingPlans.length
+            });
+          },
+
+          togglePurchaseMode() {
+            if (this.purchaseMode === "subscription") {
+              this.setPurchaseMode("one-time");
+              return;
+            }
+
+            this.setPurchaseMode("subscription");
+          },
+
+          buildDiscountProperties() {
+            const properties = {
+              _ctr_bundle_id: `${Date.now()}-${Math.round(Math.random() * 10000)}`,
+              _ctr_bundle_count: String(this.getTotalItemCount())
+            };
+
+            const tier = this.getActiveTier();
+            if (this.settings.discount_property_key && tier.propertyValue) {
+              properties[this.settings.discount_property_key] = tier.propertyValue;
+            }
+
+            return properties;
+          },
+
+          async addBundleToCart() {
+            if (this.isAdding || this.getTotalItemCount() < 1) return;
+
+            const properties = this.buildDiscountProperties();
+            const items = [];
+            let dynamicBoxIndex = 0;
+
+            this.selectedMap.forEach((value, handle) => {
+              const variant = this.getSelectedVariant(handle);
+              if (!variant || Number(value?.quantity || 0) < 1) return;
+
+              const item = {
+                id: variant.id,
+                quantity: value.quantity,
+                properties: {
+                  ...properties,
+                  _dynamicBoxId: this.skioBox?.boxId || "",
+                  _dynamicBoxIndex: dynamicBoxIndex
+                }
+              };
+
+              const allocation = this.getSelectedPlanAllocation(handle);
+              if (this.purchaseMode === "subscription" && allocation?.id) {
+                item.selling_plan = allocation.id;
+              }
+
+              items.push(item);
+              // dynamicBoxIndex += 1;
+            });
+
+            const gift = this.getGiftProduct();
+            if (this.hasEligibleSubscriptionGift(gift)) {
+              items.push({
+                id: gift.variant_id,
+                quantity: 1,
+                properties: {
+                  ...properties,
+                  _bundle_gift: "_gift"
+                }
+              });
+            }
+
+            this.isAdding = true;
+            this.emitAnalytics("bundle_add_to_cart_started", {
+              itemCount: this.getTotalItemCount(),
+              purchaseMode: this.purchaseMode,
+              tier: this.getActiveTier().count,
+              discountPropertyKey: this.settings.discount_property_key || "",
+              discountPropertyValue: this.getActiveTier().propertyValue || "",
+              sellingPlanId: this.purchaseMode === "subscription" ? String(this.selectedSellingPlanId || "") : ""
+            });
+
+            try {
+              const data = await _cart.add({ items });
+              if (!data?.cart_error) {
+                this.emitAnalytics("bundle_add_to_cart_success", {
+                  itemCount: this.getTotalItemCount(),
+                  purchaseMode: this.purchaseMode,
+                  tier: this.getActiveTier().count,
+                  items: items.map((item) => ({
+                    id: String(item.id),
+                    quantity: item.quantity,
+                    sellingPlan: item.selling_plan ? String(item.selling_plan) : ""
+                  }))
+                });
+                this.resetSelection();
+                _stores.modal.setId("modal--cart-drawer");
+              } else {
+                this.emitAnalytics("bundle_add_to_cart_failed", {
+                  itemCount: this.getTotalItemCount(),
+                  purchaseMode: this.purchaseMode,
+                  tier: this.getActiveTier().count
+                });
+                console.error("CTR Stack cart error", data.cart_error);
+              }
+            } catch (error) {
+              this.emitAnalytics("bundle_add_to_cart_failed", {
+                itemCount: this.getTotalItemCount(),
+                purchaseMode: this.purchaseMode,
+                tier: this.getActiveTier().count,
+                message: error?.message || "unknown_error"
+              });
+              console.error("CTR Stack add to cart failed", error);
+            } finally {
+              this.isAdding = false;
+            }
+          },
+
+          emitAnalytics(name, payload) {
+            const detail = { name, payload };
+            console.info("[CTR Stack]", detail);
+            document.dispatchEvent(new CustomEvent("ctr:bundle", { detail }));
+          },
+
+          formatMoney(value) {
+            return utils.formatMoney(Number(value || 0));
+          }
+        };
+      };
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Stack Builder",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID"
+    },
+    {
+      "type": "number",
+      "id": "container_width_desktop",
+      "label": "Desktop container width (px)",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "label": "Desktop product columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile product columns",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Stack"
+    },
+    {
+      "type": "text",
+      "id": "empty_state_text",
+      "label": "Empty state text",
+      "default": "Add products to start building your stack."
+    },
+    {
+      "type": "text",
+      "id": "subscription_label",
+      "label": "Subscription label",
+      "default": "Subscribe & Save"
+    },
+    {
+      "type": "richtext",
+      "id": "subscription_richtext",
+      "label": "Subscription rich text"
+    },
+    {
+      "type": "product",
+      "id": "main_bundle_product",
+      "label": "Subscription Product"
+    },
+    {
+      "type": "text",
+      "id": "one_time_label",
+      "label": "One-time label",
+      "default": "One-Time Purchase"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Add Stack To Cart"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gift",
+      "name": "Add Gift",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Gift product"
+        },
+        {
+          "type": "text",
+          "id": "property_value",
+          "label": "Property value"
+        }
+      ]
+    },
+    {
+      "type": "product_order_override",
+      "name": "Product Order Override",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Fallback product order for a category. Only used when Skio returns no usable order. Skio's order wins whenever it's present."
+        },
+        {
+          "type": "text",
+          "id": "category_handle",
+          "label": "Category handle",
+          "info": "Lowercase, hyphenated. e.g. powders, capsules, other"
+        },
+        {
+          "type": "textarea",
+          "id": "product_handles",
+          "label": "Product handles in desired order",
+          "info": "One per line. Use the URL slug from /products/<handle> (e.g. vitamin-d3-k2). Titles work too — they're auto-normalized (Vitamin D3+K2 -> vitamin-d3-k2). Unlisted products fall to the end in Skio's order."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Stack Builder"
+    }
+  ]
+}
+{% endschema %}

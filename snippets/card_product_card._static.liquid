@@ -35,6 +35,16 @@
 
   assign variant = variant | default: product.selected_or_first_available_variant
 
+  assign card_show_subscription_price = false
+  for block in section.blocks
+    if block.type == '_card_product_card__price' or block.type == '_card_product_card__labels'
+      if block.settings.show_subscription_price
+        assign card_show_subscription_price = true
+        break
+      endif
+    endif
+  endfor
+
   assign price = variant.price
   assign compare_at_price = variant.compare_at_price | at_least: variant.price
 
@@ -129,12 +139,15 @@
   <article
       data-product-handle="{{ product.handle }}"
       data-product-id="{{ product.id }}"
-      x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')) }"
+      x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription'), $el.hasAttribute('data-show-subscription-price')) }"
       x-defer="intersect"
       data-variant-id="{{ variant.id }}"
       data-product-available="{{ product.available }}"
       {% if default_select_selling_plan %}
         data-default-subscription="true"
+      {% endif %}
+      {% if card_show_subscription_price %}
+        data-show-subscription-price="true"
       {% endif %}
       {% if link_to_object %}
         :href="`${_stores.router?.pathname?.replace(/^.*?(\/collections\/[^/]*)?.*$/gi,'$1')?.replace(/^\/$/gi,'') ?? ''}/products/${p_card?.product_handle}?variant=${p_card?.selected_variant?.id}${$el.hasAttribute('data-recommendation-params') ? `&${$el.getAttribute('data-recommendation-params')}` : ''}`"

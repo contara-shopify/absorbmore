@@ -1,0 +1,349 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_hero_banner"
+
+  assign background_image = section.settings.background_image
+  assign background_image_mobile = section.settings.background_image_mobile
+  assign background_position = section.settings.background_position
+  assign overlay_color = section.settings.overlay_color
+  assign overlay_opacity = section.settings.overlay_opacity
+
+  assign min_height_desktop = section.settings.min_height_desktop
+  assign min_height_mobile = section.settings.min_height_mobile
+  assign content_max_width = section.settings.content_max_width
+  assign content_align_h = section.settings.content_align_h
+  assign content_align_v = section.settings.content_align_v
+
+  assign rating_size_desktop = section.settings.rating_size_desktop
+  assign rating_size_mobile = section.settings.rating_size_mobile
+  assign headline_size_desktop = section.settings.headline_size_desktop
+  assign headline_size_mobile = section.settings.headline_size_mobile
+  assign headline_line_height = section.settings.headline_line_height
+  assign bullets_size_desktop = section.settings.bullets_size_desktop
+  assign bullets_size_mobile = section.settings.bullets_size_mobile
+  assign cta_size_desktop = section.settings.cta_size_desktop
+  assign cta_size_mobile = section.settings.cta_size_mobile
+  assign badge_size_desktop = section.settings.badge_size_desktop
+  assign badge_size_mobile = section.settings.badge_size_mobile
+  assign trust_size_desktop = section.settings.trust_size_desktop
+  assign trust_size_mobile = section.settings.trust_size_mobile
+
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+
+  assign bg_img = background_image | default: background_image_mobile
+
+  case content_align_h
+    when 'left'
+      assign flex_align = 'flex-start'
+    when 'center'
+      assign flex_align = 'center'
+    when 'right'
+      assign flex_align = 'flex-end'
+  endcase
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{ content_align_v }};
+    align-items: {{ flex_align }};
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+    {% if min_height_desktop > 0 %}min-height: {{ min_height_desktop }}px;{% endif %}
+
+    --hero-rating-d: {{ rating_size_desktop }}px;
+    --hero-rating-m: {{ rating_size_mobile }}px;
+    --hero-headline-d: {{ headline_size_desktop }}px;
+    --hero-headline-m: {{ headline_size_mobile }}px;
+    --hero-headline-lh: {{ headline_line_height | divided_by: 100.0 }};
+    --hero-bullets-d: {{ bullets_size_desktop }}px;
+    --hero-bullets-m: {{ bullets_size_mobile }}px;
+    --hero-cta-d: {{ cta_size_desktop }}px;
+    --hero-cta-m: {{ cta_size_mobile }}px;
+    --hero-badge-d: {{ badge_size_desktop }}px;
+    --hero-badge-m: {{ badge_size_mobile }}px;
+    --hero-trust-d: {{ trust_size_desktop }}px;
+    --hero-trust-m: {{ trust_size_mobile }}px;
+  }
+
+  & .ctr-hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  & .ctr-hero__bg picture,
+  & .ctr-hero__bg img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: {{ background_position }};
+  }
+  & .ctr-hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: {{ overlay_color }};
+    opacity: {{ overlay_opacity | divided_by: 100.0 }};
+  }
+  & .ctr-hero__content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: {{ content_max_width }}px;
+    display: flex;
+    flex-direction: column;
+    text-align: {{ content_align_h }};
+    align-self: {{ flex_align }};
+    {% if content_align_h == 'left' %}margin-left: 0; margin-right: auto;{% endif %}
+    {% if content_align_h == 'center' %}margin-inline: auto;{% endif %}
+    {% if content_align_h == 'right' %}margin-left: auto; margin-right: 0;{% endif %}
+  }
+
+  @media (max-width: 1023px) {
+    & {
+      {% if min_height_mobile > 0 %}min-height: {{ min_height_mobile }}px;{% endif %}
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-hero-banner {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  {%- if bg_img != blank -%}
+    <div class="ctr-hero__bg" aria-hidden="true">
+      <picture>
+        {%- if background_image_mobile != blank -%}
+          <source media="(max-width: 749px)"
+            srcset="{{ background_image_mobile | image_url: width: 750 }} 750w, {{ background_image_mobile | image_url: width: 1100 }} 1100w, {{ background_image_mobile | image_url: width: 1500 }} 1500w"
+            sizes="100vw">
+        {%- endif -%}
+        {%- if background_image != blank -%}
+          <source media="(min-width: 750px)"
+            srcset="{{ background_image | image_url: width: 1200 }} 1200w, {{ background_image | image_url: width: 1800 }} 1800w, {{ background_image | image_url: width: 2400 }} 2400w"
+            sizes="100vw">
+        {%- endif -%}
+        <img
+          src="{{ bg_img | image_url: width: 1600 }}"
+          alt="{{ bg_img.alt | escape }}"
+          width="{{ bg_img.width }}"
+          height="{{ bg_img.height }}"
+          loading="eager"
+          fetchpriority="high">
+      </picture>
+    </div>
+    {%- if overlay_opacity > 0 -%}
+      <div class="ctr-hero__overlay" aria-hidden="true"></div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="ctr-hero__content">
+    {% content_for "blocks" %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Hero Banner",
+  "tag": "section",
+  "class": "shopify_section__ctr_hero_banner",
+  "settings": [
+    { "type": "header", "content": "Background" },
+    { "type": "image_picker", "id": "background_image", "label": "Background image (desktop)" },
+    { "type": "image_picker", "id": "background_image_mobile", "label": "Background image (mobile)", "info": "Optional. Falls back to desktop." },
+    {
+      "type": "select", "id": "background_position", "label": "Image focal point", "default": "center center",
+      "options": [
+        { "value": "left top", "label": "Left top" }, { "value": "center top", "label": "Center top" }, { "value": "right top", "label": "Right top" },
+        { "value": "left center", "label": "Left center" }, { "value": "center center", "label": "Center" }, { "value": "right center", "label": "Right center" },
+        { "value": "left bottom", "label": "Left bottom" }, { "value": "center bottom", "label": "Center bottom" }, { "value": "right bottom", "label": "Right bottom" }
+      ]
+    },
+    { "type": "color", "id": "overlay_color", "label": "Overlay color", "default": "#000000" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 90, "step": 5, "default": 35, "unit": "%" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "min_height_desktop", "label": "Min height (desktop)", "min": 320, "max": 900, "step": 10, "default": 640, "unit": "px" },
+    { "type": "range", "id": "min_height_mobile", "label": "Min height (mobile)", "min": 320, "max": 800, "step": 10, "default": 580, "unit": "px" },
+    { "type": "range", "id": "content_max_width", "label": "Content max width", "min": 360, "max": 1200, "step": 10, "default": 620, "unit": "px" },
+    {
+      "type": "select", "id": "content_align_h", "label": "Content horizontal alignment", "default": "left",
+      "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }]
+    },
+    {
+      "type": "select", "id": "content_align_v", "label": "Content vertical position", "default": "center",
+      "options": [{ "value": "flex-start", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Bottom" }]
+    },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "paragraph", "content": "Font sizes apply to the blocks in the preset (Star rating, Headline, Bullets, CTA button, CTA badge, Trust callouts). For new blocks you add, set font-size directly in the block's Custom CSS." },
+
+    { "type": "range", "id": "rating_size_desktop", "label": "Star rating size (desktop)", "min": 11, "max": 24, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "rating_size_mobile", "label": "Star rating size (mobile)", "min": 11, "max": 22, "step": 1, "default": 13, "unit": "px" },
+
+    { "type": "range", "id": "headline_size_desktop", "label": "Headline size (desktop)", "min": 24, "max": 96, "step": 2, "default": 56, "unit": "px" },
+    { "type": "range", "id": "headline_size_mobile", "label": "Headline size (mobile)", "min": 22, "max": 64, "step": 2, "default": 36, "unit": "px" },
+    { "type": "range", "id": "headline_line_height", "label": "Headline line height", "min": 90, "max": 160, "step": 5, "default": 105, "unit": "%" },
+
+    { "type": "range", "id": "bullets_size_desktop", "label": "Bullets size (desktop)", "min": 12, "max": 24, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "bullets_size_mobile", "label": "Bullets size (mobile)", "min": 12, "max": 22, "step": 1, "default": 15, "unit": "px" },
+
+    { "type": "range", "id": "cta_size_desktop", "label": "CTA button size (desktop)", "min": 14, "max": 28, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "cta_size_mobile", "label": "CTA button size (mobile)", "min": 14, "max": 24, "step": 1, "default": 16, "unit": "px" },
+
+    { "type": "range", "id": "badge_size_desktop", "label": "CTA badge size (desktop)", "min": 9, "max": 18, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "badge_size_mobile", "label": "CTA badge size (mobile)", "min": 9, "max": 16, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "range", "id": "trust_size_desktop", "label": "Trust callouts size (desktop)", "min": 11, "max": 22, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "trust_size_mobile", "label": "Trust callouts size (mobile)", "min": 11, "max": 20, "step": 1, "default": 13, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-fullwidth",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" }, { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" }, { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" }, { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#1a1a1a" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 80px max(24px, calc((100% - 1200px) / 2));\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 56px 20px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Hero Banner",
+      "category": "Custom",
+      "settings": {
+        "overlay_opacity": 35,
+        "overlay_color": "#000000",
+        "content_max_width": 620,
+        "content_align_h": "left",
+        "content_align_v": "center",
+        "min_height_desktop": 640,
+        "min_height_mobile": 580,
+        "text_color": "#ffffff",
+        "background_color": "#1a1a1a",
+        "rating_size_desktop": 14,
+        "rating_size_mobile": 13,
+        "headline_size_desktop": 56,
+        "headline_size_mobile": 36,
+        "headline_line_height": 105,
+        "bullets_size_desktop": 16,
+        "bullets_size_mobile": 15,
+        "cta_size_desktop": 17,
+        "cta_size_mobile": 16,
+        "badge_size_desktop": 12,
+        "badge_size_mobile": 11,
+        "trust_size_desktop": 14,
+        "trust_size_mobile": 13
+      },
+      "blocks": [
+        {
+          "type": "richtext",
+          "name": "Star rating",
+          "settings": {
+            "title": "<p>★★★★★ &nbsp; 4.84/5 from 10,000+ verified reviews</p>",
+            "content_class": "richtext-md",
+            "text_alignment": "inherit",
+            "custom_css": "& {\n  margin-bottom: 16px;\n  opacity: 0.9;\n}\n& p {\n  font-size: var(--hero-rating-d);\n  line-height: 1.4;\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & p {\n    font-size: var(--hero-rating-m);\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "richtext",
+          "name": "Headline",
+          "settings": {
+            "title": "<h1><strong>Buy 2. Get 1 Free.<br/>Save $49 Today.</strong></h1>",
+            "content_class": "richtext-md",
+            "text_alignment": "inherit",
+            "custom_css": "& {\n  margin-bottom: 22px;\n}\n& h1, & h2, & h3, & p {\n  font-size: var(--hero-headline-d);\n  line-height: var(--hero-headline-lh);\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & h1, & h2, & h3, & p {\n    font-size: var(--hero-headline-m);\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "richtext",
+          "name": "Bullets",
+          "settings": {
+            "title": "<ul><li>6.2x more absorbed than standard berberine</li><li>7x fewer GI issues, gentle on your stomach</li><li>Curbs cravings and steadies blood sugar</li></ul>",
+            "content_class": "richtext-md",
+            "text_alignment": "inherit",
+            "custom_css": "& {\n  margin-bottom: 28px;\n}\n& ul {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n& li {\n  position: relative;\n  padding-left: 22px;\n  font-size: var(--hero-bullets-d);\n  line-height: 1.4;\n}\n& li::before {\n  content: '\\2713';\n  position: absolute;\n  left: 0;\n  top: 0;\n  font-weight: 700;\n}\n@media (max-width: 749px) {\n  & li {\n    font-size: var(--hero-bullets-m);\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        },
+        {
+          "type": "container",
+          "name": "CTA with badge",
+          "settings": {
+            "custom_css": "& {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 18px;\n  max-width: 420px;\n  width: 100%;\n  isolation: isolate;\n  align-self: flex-start;\n}"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "CTA button",
+              "settings": {
+                "title": "<p><a href=\"#purchase\">Claim My Free Bottle</a></p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  width: 100%;\n}\n& p {\n  margin: 0;\n}\n& a {\n  display: block;\n  width: 100%;\n  text-align: center;\n  padding: 18px 24px;\n  border-radius: 10px;\n  text-decoration: none;\n  font-weight: 700;\n  font-size: var(--hero-cta-d);\n  background-color: #ffffff;\n  color: #111111;\n  transition: background-color 0.2s ease, transform 0.15s ease;\n}\n& a:hover {\n  background-color: #f4f4f4;\n}\n& a:active {\n  transform: translateY(1px);\n}\n@media (max-width: 749px) {\n  & a {\n    font-size: var(--hero-cta-m);\n  }\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "CTA badge",
+              "settings": {
+                "title": "<p><strong>BUY 2 GET 1 FREE</strong></p>",
+                "content_class": "richtext-md",
+                "text_alignment": "center",
+                "custom_css": "& {\n  position: absolute;\n  top: -12px;\n  right: -14px;\n  transform: rotate(10deg);\n  transform-origin: center;\n  background-color: #A6192E;\n  color: #fff;\n  padding: 6px 14px;\n  border-radius: 999px;\n  letter-spacing: 0.06em;\n  font-size: var(--hero-badge-d);\n  z-index: 2;\n  box-shadow: 0 4px 12px rgba(0,0,0,0.25);\n  pointer-events: none;\n  white-space: nowrap;\n}\n& p {\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & {\n    top: -10px;\n    right: -6px;\n    padding: 5px 12px;\n    font-size: var(--hero-badge-m);\n  }\n}",
+                "hide_if_empty": "container"
+              }
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "name": "Trust callouts",
+          "settings": {
+            "title": "<p>✓ 30-Day Guarantee &nbsp;&nbsp; ✓ HSA/FSA Eligible</p>",
+            "content_class": "richtext-md",
+            "text_alignment": "inherit",
+            "custom_css": "& {\n  opacity: 0.85;\n}\n& p {\n  font-size: var(--hero-trust-d);\n  line-height: 1.4;\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & p {\n    font-size: var(--hero-trust-m);\n  }\n}",
+            "hide_if_empty": "none"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

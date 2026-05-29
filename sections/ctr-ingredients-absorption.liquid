@@ -1,0 +1,658 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+
+    @media (max-width: 749px) {
+      padding-right: 0 !important;
+    }
+  }
+
+  & .ctr-ingr__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  & .ctr-ingr__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.header_inner_gap }}px;
+    align-items: start;
+    margin-bottom: {{ section.settings.header_gap }}px;
+  }
+
+  & .ctr-ingr__heading {
+    margin: 0;
+    font-size: {{ section.settings.heading_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  & .ctr-ingr__heading p { margin: 0; }
+
+  & .ctr-ingr__header-right {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.description_legend_gap }}px;
+  }
+
+  & .ctr-ingr__description {
+    font-size: {{ section.settings.description_size_desktop }}px;
+    line-height: 1.4;
+  }
+
+  & .ctr-ingr__description p { margin: 0; }
+
+  & .ctr-ingr__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  & .ctr-ingr__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: {{ section.settings.pill_bg }};
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.pill_size_desktop }}px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  & .ctr-ingr__pill-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+  }
+
+  /* Cards grid - desktop: 2x2 grid */
+  & .ctr-ingr__cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: {{ section.settings.column_gap }}px;
+    row-gap: {{ section.settings.card_gap }}px;
+  }
+
+  & .ctr-ingr__card {
+    position: relative;
+    border-radius: {{ section.settings.card_radius }}px;
+    background: var(--card-bg);
+    border: 1px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    padding: {{ section.settings.card_padding }}px;
+  }
+
+  /* Card connector dot+line — only above first card in each desktop column */
+  & .ctr-ingr__card--top {
+    margin-top: {{ section.settings.connector_height }}px;
+  }
+
+  & .ctr-ingr__card-marker {
+    position: absolute;
+    top: -{{ section.settings.connector_height }}px;
+    left: 50%;
+    transform: translateX(-50%);
+    {% comment %} display: none; {% endcomment %}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  & .ctr-ingr__card--top .ctr-ingr__card-marker {
+    display: flex;
+  }
+
+  & .ctr-ingr__card-marker-line {
+    width: 1px;
+    height: calc({{ section.settings.connector_height }}px - 10px);
+    background: var(--accent);
+    opacity: 0.6;
+    display: none;
+  }
+
+  & .ctr-ingr__card-marker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateY(1px);
+  }
+
+  & .ctr-ingr__card-media {
+    width: 100%;
+    height: {{ section.settings.image_height_desktop }}px;
+    margin-bottom: {{ section.settings.card_inner_gap }}px;
+    border-radius: {{ section.settings.image_radius }}px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  & .ctr-ingr__card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  & .ctr-ingr__card-body {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  & .ctr-ingr__card-title {
+    margin: 0;
+    font-size: {{ section.settings.card_title_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  & .ctr-ingr__card-label {
+    color: #707070;
+    font-size: {{ section.settings.card_label_size_desktop }}px;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  & .ctr-ingr__card-copy {
+    font-size: {{ section.settings.card_copy_size_desktop }}px;
+    line-height: 1.45;
+  }
+
+  & .ctr-ingr__card-copy p { margin: 0; }
+  & .ctr-ingr__card-copy p + p { margin-top: 0.6em; }
+
+  /* Progress bar — desktop hidden */
+  & .ctr-ingr__progress {
+    display: none;
+  }
+
+  /* Stats row */
+  & .ctr-ingr__stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: {{ section.settings.column_gap }}px;
+    margin-top: {{ section.settings.stat_gap }}px;
+  }
+
+  & .ctr-ingr__stat {
+    padding: 0 16px;
+    text-align: center;
+    font-size: {{ section.settings.stat_size_desktop }}px;
+    line-height: 1.4;
+  }
+
+  & .ctr-ingr__stat p { margin: 0; }
+  & .ctr-ingr__stat strong,
+  & .ctr-ingr__stat b { font-weight: 800; }
+
+  @media (max-width: 1023px) {
+    & {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    & .ctr-ingr__header {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: {{ section.settings.header_gap_mobile }}px;
+    }
+
+    & .ctr-ingr__heading {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+
+    & .ctr-ingr__description {
+      font-size: {{ section.settings.description_size_mobile }}px;
+    }
+
+    & .ctr-ingr__pill {
+      font-size: {{ section.settings.pill_size_mobile }}px;
+    }
+
+    /* Mobile: horizontal carousel */
+    & .ctr-ingr__cards-grid {
+      display: flex;
+      grid-template-columns: none;
+      column-gap: 0;
+      gap: {{ section.settings.card_gap_mobile }}px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+
+    & .ctr-ingr__cards-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    & .ctr-ingr__card {
+      flex: 0 0 {{ section.settings.mobile_slide_width }}%;
+      scroll-snap-align: start;
+      margin-top: {{ section.settings.connector_height_mobile }}px;
+    }
+
+    /* On mobile every card gets the connector */
+    & .ctr-ingr__card-marker {
+      display: flex;
+      top: -{{ section.settings.connector_height_mobile }}px;
+    }
+
+    & .ctr-ingr__card-marker-line {
+      height: calc({{ section.settings.connector_height_mobile }}px - 10px);
+      display: none;
+    }
+
+    & .ctr-ingr__card--top {
+      margin-top: {{ section.settings.connector_height_mobile }}px;
+    }
+
+    & .ctr-ingr__card {
+      padding: {{ section.settings.card_padding_mobile }}px;
+    }
+
+    & .ctr-ingr__card-media {
+      height: auto;
+      aspect-ratio: {{ section.settings.image_aspect_ratio_mobile }};
+      margin-bottom: {{ section.settings.card_inner_gap_mobile }}px;
+    }
+
+    & .ctr-ingr__card-title {
+      font-size: {{ section.settings.card_title_size_mobile }}px;
+    }
+
+    & .ctr-ingr__card-label {
+      font-size: {{ section.settings.card_label_size_mobile }}px;
+    }
+
+    & .ctr-ingr__card-copy {
+      font-size: {{ section.settings.card_copy_size_mobile }}px;
+    }
+
+    /* Progress bar — mobile visible */
+    & .ctr-ingr__progress {
+      display: block;
+      position: relative;
+      height: 3px;
+      margin-top: 18px;
+      background: {{ section.settings.progress_track_color }};
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    & .ctr-ingr__progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background: {{ section.settings.progress_thumb_color }};
+      border-radius: 2px;
+      transition: left 0.08s linear, width 0.08s linear;
+    }
+
+    /* Stats stack on mobile */
+    & .ctr-ingr__stats-row {
+      grid-template-columns: 1fr;
+      row-gap: 14px;
+      margin-top: {{ section.settings.stat_gap_mobile }}px;
+      {% if section.settings.hide_stats_mobile %}
+        display: none;
+      {% endif %}
+    }
+
+    & .ctr-ingr__stat {
+      font-size: {{ section.settings.stat_size_mobile }}px;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_ingredients_absorption"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-ingr {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-ingr__inner">
+    <div class="ctr-ingr__header">
+      {% if section.settings.heading != blank %}
+        <div class="ctr-ingr__heading">{{ section.settings.heading }}</div>
+      {% endif %}
+
+      <div class="ctr-ingr__header-right">
+        {% if section.settings.description != blank %}
+          <div class="ctr-ingr__description">{{ section.settings.description }}</div>
+        {% endif %}
+
+        {% if section.settings.cat1_label != blank or section.settings.cat2_label != blank %}
+          <div class="ctr-ingr__legend">
+            {% if section.settings.cat1_label != blank %}
+              <span class="ctr-ingr__pill">
+                <span class="ctr-ingr__pill-dot" style="background: {{ section.settings.cat1_color }};"></span>
+                <span>{{ section.settings.cat1_label | escape }}</span>
+              </span>
+            {% endif %}
+
+            {% if section.settings.cat2_label != blank %}
+              <span class="ctr-ingr__pill">
+                <span class="ctr-ingr__pill-dot" style="background: {{ section.settings.cat2_color }};"></span>
+                <span>{{ section.settings.cat2_label | escape }}</span>
+              </span>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ctr-ingr__cards-grid">
+      {%- assign cat1_idx = 0 -%}
+      {% for block in section.blocks %}
+        {% if block.settings.category == '1' %}
+          {%- assign cat1_idx = cat1_idx | plus: 1 -%}
+          <article
+            class="ctr-ingr__card{% if cat1_idx == 1 %} ctr-ingr__card--top{% endif %}"
+            style="--accent: {{ section.settings.cat1_color }}; --card-bg: {{ section.settings.cat1_card_bg }}; grid-column: 1; grid-row: {{ cat1_idx }};"
+            {{ block.shopify_attributes }}
+          >
+            <div class="ctr-ingr__card-marker" aria-hidden="true">
+              <span class="ctr-ingr__card-marker-line"></span>
+              <span class="ctr-ingr__card-marker-dot"></span>
+            </div>
+
+            {% if block.settings.image != blank %}
+              <div class="ctr-ingr__card-media">
+                {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400,600,800,1000,1200', sizes: '(max-width: 1023px) 80vw, 50vw', alt: block.settings.title }}
+              </div>
+            {% endif %}
+
+            <div class="ctr-ingr__card-body">
+              {% if block.settings.title != blank %}
+                <h3 class="ctr-ingr__card-title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+
+              {% if block.settings.label != blank %}
+                <div class="ctr-ingr__card-label">{{ block.settings.label | escape }}</div>
+              {% endif %}
+
+              {% if block.settings.content != blank %}
+                <div class="ctr-ingr__card-copy">{{ block.settings.content }}</div>
+              {% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+
+      {%- assign cat2_idx = 0 -%}
+      {% for block in section.blocks %}
+        {% if block.settings.category == '2' %}
+          {%- assign cat2_idx = cat2_idx | plus: 1 -%}
+          <article
+            class="ctr-ingr__card{% if cat2_idx == 1 %} ctr-ingr__card--top{% endif %}"
+            style="--accent: {{ section.settings.cat2_color }}; --card-bg: {{ section.settings.cat2_card_bg }}; grid-column: 2; grid-row: {{ cat2_idx }};"
+            {{ block.shopify_attributes }}
+          >
+            <div class="ctr-ingr__card-marker" aria-hidden="true">
+              <span class="ctr-ingr__card-marker-line"></span>
+              <span class="ctr-ingr__card-marker-dot"></span>
+            </div>
+
+            {% if block.settings.image != blank %}
+              <div class="ctr-ingr__card-media">
+                {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400,600,800,1000,1200', sizes: '(max-width: 1023px) 80vw, 50vw', alt: block.settings.title }}
+              </div>
+            {% endif %}
+
+            <div class="ctr-ingr__card-body">
+              {% if block.settings.title != blank %}
+                <h3 class="ctr-ingr__card-title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+
+              {% if block.settings.label != blank %}
+                <div class="ctr-ingr__card-label">{{ block.settings.label | escape }}</div>
+              {% endif %}
+
+              {% if block.settings.content != blank %}
+                <div class="ctr-ingr__card-copy">{{ block.settings.content }}</div>
+              {% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="ctr-ingr__progress" aria-hidden="true">
+      <div class="ctr-ingr__progress-fill"></div>
+    </div>
+
+    <div class="ctr-ingr__stats-row">
+      {% if section.settings.cat1_stat != blank %}
+        <div class="ctr-ingr__stat" style="--accent: {{ section.settings.cat1_color }};">{{ section.settings.cat1_stat }}</div>
+      {% endif %}
+      {% if section.settings.cat2_stat != blank %}
+        <div class="ctr-ingr__stat" style="--accent: {{ section.settings.cat2_color }};">{{ section.settings.cat2_stat }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var section = document.querySelector('[data-style-id="{{ section.id }}"]');
+      if (!section) return;
+      var grid = section.querySelector('.ctr-ingr__cards-grid');
+      var fill = section.querySelector('.ctr-ingr__progress-fill');
+      if (!grid || !fill) return;
+
+      function update() {
+        var max = grid.scrollWidth - grid.clientWidth;
+        if (max <= 0) {
+          fill.style.width = '0%';
+          fill.style.left = '0%';
+          return;
+        }
+        var thumbWidth = (grid.clientWidth / grid.scrollWidth) * 100;
+        var scrollRatio = grid.scrollLeft / max;
+        var thumbLeft = scrollRatio * (100 - thumbWidth);
+        fill.style.width = thumbWidth + '%';
+        fill.style.left = thumbLeft + '%';
+      }
+
+      grid.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      // run after layout settles
+      requestAnimationFrame(update);
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Ingredient Cards",
+  "tag": "section",
+  "class": "shopify_section__ctr_ingredients_absorption",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1280, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "color", "id": "background_color", "label": "Background (full width)", "default": "#f0ede7" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#202020" },
+    { "type": "range", "id": "padding_top", "label": "Padding top - desktop", "default": 80, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom - desktop", "default": 96, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top - mobile", "default": 48, "min": 0, "max": 140, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom - mobile", "default": 64, "min": 0, "max": 140, "step": 4, "unit": "px" },
+
+    { "type": "header", "content": "Header" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Ingredients that<br>actually reach your cells.</p>" },
+    { "type": "richtext", "id": "description", "label": "Description", "default": "<p>The right ingredients mean nothing if your body can't absorb them. Every compound in this stack uses patented delivery technology to make sure it does.</p>" },
+    { "type": "range", "id": "heading_size_desktop", "label": "Heading size - desktop", "default": 56, "min": 24, "max": 96, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size - mobile", "default": 36, "min": 22, "max": 64, "step": 1, "unit": "px" },
+    { "type": "range", "id": "description_size_desktop", "label": "Description size - desktop", "default": 18, "min": 13, "max": 28, "step": 1, "unit": "px" },
+    { "type": "range", "id": "description_size_mobile", "label": "Description size - mobile", "default": 16, "min": 13, "max": 24, "step": 1, "unit": "px" },
+    { "type": "range", "id": "header_inner_gap", "label": "Header columns gap", "default": 80, "min": 20, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "description_legend_gap", "label": "Gap between description and pills", "default": 20, "min": 0, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "header_gap", "label": "Header bottom gap - desktop", "default": 56, "min": 12, "max": 140, "step": 2, "unit": "px" },
+    { "type": "range", "id": "header_gap_mobile", "label": "Header bottom gap - mobile", "default": 36, "min": 12, "max": 100, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Legend pills" },
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#f7f5f0" },
+    { "type": "range", "id": "pill_size_desktop", "label": "Pill text size - desktop", "default": 16, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "pill_size_mobile", "label": "Pill text size - mobile", "default": 14, "min": 11, "max": 20, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Category 1 (left column)" },
+    { "type": "text", "id": "cat1_label", "label": "Pill label", "default": "Berberine" },
+    { "type": "color", "id": "cat1_color", "label": "Accent color", "default": "#7d2b2d" },
+    { "type": "color", "id": "cat1_card_bg", "label": "Card background", "default": "#f3e3df" },
+    { "type": "richtext", "id": "cat1_stat", "label": "Stat callout", "default": "<p><strong>6.2× better absorption</strong>. One capsule does the work of six standard ones. Less waste, more results.</p>" },
+
+    { "type": "header", "content": "Category 2 (right column)" },
+    { "type": "text", "id": "cat2_label", "label": "Pill label", "default": "Magnesium Glycinate" },
+    { "type": "color", "id": "cat2_color", "label": "Accent color", "default": "#2c4ed0" },
+    { "type": "color", "id": "cat2_card_bg", "label": "Card background", "default": "#e7eaf5" },
+    { "type": "richtext", "id": "cat2_stat", "label": "Stat callout", "default": "<p><strong>8× better absorption.</strong> 64% of what you take reaches your cells. The industry average is well under 10%.</p>" },
+
+    { "type": "header", "content": "Columns / carousel" },
+    { "type": "range", "id": "column_gap", "label": "Column gap - desktop", "default": 36, "min": 0, "max": 120, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_gap", "label": "Gap between cards (desktop column)", "default": 24, "min": 8, "max": 60, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_gap_mobile", "label": "Gap between slides (mobile carousel)", "default": 14, "min": 6, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "mobile_slide_width", "label": "Mobile slide width (~1.3 slides visible at 77%)", "default": 77, "min": 50, "max": 95, "step": 1, "unit": "%" },
+    { "type": "range", "id": "connector_height", "label": "Connector height - desktop", "default": 32, "min": 0, "max": 80, "step": 1, "unit": "px" },
+    { "type": "range", "id": "connector_height_mobile", "label": "Connector height - mobile", "default": 24, "min": 0, "max": 60, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Cards" },
+    { "type": "range", "id": "card_radius", "label": "Card radius", "default": 14, "min": 0, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_padding", "label": "Card padding - desktop", "default": 18, "min": 8, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_padding_mobile", "label": "Card padding - mobile", "default": 14, "min": 6, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_inner_gap", "label": "Gap between image and text - desktop", "default": 18, "min": 0, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "card_inner_gap_mobile", "label": "Gap between image and text - mobile", "default": 14, "min": 0, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "image_radius", "label": "Image radius", "default": 8, "min": 0, "max": 30, "step": 1, "unit": "px" },
+    { "type": "range", "id": "image_height_desktop", "label": "Image height - desktop", "default": 220, "min": 120, "max": 420, "step": 4, "unit": "px" },
+    { "type": "text", "id": "image_aspect_ratio_mobile", "label": "Image aspect ratio - mobile (W / H)", "default": "247 / 92", "info": "CSS aspect-ratio value, e.g. 247 / 92 or 16 / 9" },
+    { "type": "range", "id": "card_title_size_desktop", "label": "Card title size - desktop", "default": 22, "min": 14, "max": 36, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_title_size_mobile", "label": "Card title size - mobile", "default": 20, "min": 14, "max": 30, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_label_size_desktop", "label": "Tech label size - desktop", "default": 14, "min": 10, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_label_size_mobile", "label": "Tech label size - mobile", "default": 13, "min": 10, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_copy_size_desktop", "label": "Card copy size - desktop", "default": 15, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "card_copy_size_mobile", "label": "Card copy size - mobile", "default": 14, "min": 12, "max": 20, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Stat callouts" },
+    { "type": "checkbox", "id": "hide_stats_mobile", "label": "Hide stats row on mobile", "default": false },
+    { "type": "range", "id": "stat_gap", "label": "Gap above stats - desktop", "default": 28, "min": 0, "max": 80, "step": 2, "unit": "px" },
+    { "type": "range", "id": "stat_gap_mobile", "label": "Gap above stats - mobile", "default": 24, "min": 0, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "stat_size_desktop", "label": "Stat size - desktop", "default": 16, "min": 12, "max": 26, "step": 1, "unit": "px" },
+    { "type": "range", "id": "stat_size_mobile", "label": "Stat size - mobile", "default": 15, "min": 12, "max": 22, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Mobile progress bar" },
+    { "type": "color", "id": "progress_track_color", "label": "Track color", "default": "#dcd7cc" },
+    { "type": "color", "id": "progress_thumb_color", "label": "Thumb color", "default": "#202020" },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "1",
+          "options": [
+            { "value": "1", "label": "Category 1 (left column)" },
+            { "value": "2", "label": "Category 2 (right column)" }
+          ]
+        },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Card title", "default": "Berberine HCl · 1000mg" },
+        { "type": "text", "id": "label", "label": "Technology label", "default": "FenuMat® Technology" },
+        { "type": "richtext", "id": "content", "label": "Card content", "default": "<p>Placeholder copy. Describe the active compound and its delivery technology.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Ingredient Cards",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "category": "1",
+            "title": "Berberine HCl · 1000mg",
+            "label": "FenuMat® Technology",
+            "content": "<p>The active compound from Berberis plants, clinically studied for blood sugar regulation and AMPK activation. FenuMat® delivers 6.2× more free berberine than standard capsules meaning your body actually uses what you take. Standard berberine absorbs at just 5%. We fixed that.</p>"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "category": "1",
+            "title": "Capsoil® Nanotechnology",
+            "label": "Gentle Delivery",
+            "content": "<p>Breaks the formula into nano-sized particles for maximum absorption without the GI distress. Standard berberine commonly causes cramping and nausea. Most customers on our formula report zero stomach issues.</p>"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "category": "2",
+            "title": "Chelamax® Magnesium Bisglycinate Chelate",
+            "label": "Chelamax® Chelation",
+            "content": "<p>Magnesium bound to glycine for maximum absorption and gut-friendliness. Sourced from Dead Sea mineral-rich waters not synthesized in industrial labs. Supports over 300 enzymatic reactions that influence energy, rest, muscle function, and nervous system balance.</p>"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "category": "2",
+            "title": "Capsoil® Liposomal Delivery",
+            "label": "Liposomal Technology",
+            "content": "<p>A fat-based delivery system that helps magnesium cross the gut wall with far greater efficiency, achieving a record 64% absorption rate. Two of our capsules are equivalent to roughly 320mg of standard magnesium glycinate or 960mg of magnesium oxide.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

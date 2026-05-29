@@ -1,300 +1,1865 @@
 {% comment %} WLP-1 Product Landing Page — evergreen, top-of-funnel {% endcomment %}
 
 <style>
-  /* Body */
-body {
-  margin: 0;
-  padding: 0;
-}
-
-/* Hide header and footer */
-header,
-footer {
-  display: none;
-}
-  #wea-root{--cream:#EAE6DC;--page:#F8F5F2;--ink:#1A1A18;--ink-60:rgba(26,26,24,.62);--ink-40:rgba(26,26,24,.4);--ink-10:rgba(26,26,24,.1);--blue:#5e91d5;--blue-dk:#4a7dbe;--blue-tint:#e8f0fb;--maroon:#8a2f3f;--maroon-dk:#6f2433;--maroon-tint:#f5e9ec;--card:#ffffff;--radius:14px;--shadow:0 1px 2px rgba(26,26,24,.04),0 8px 24px rgba(26,26,24,.06);color:var(--ink);background:var(--page);line-height:1.55;-webkit-font-smoothing:antialiased}
-  #wea-root *{box-sizing:border-box}
-  #wea-root .serif{font-weight:500;letter-spacing:-.01em}
-  #wea-root .eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-  #wea-root .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  #wea-root {
+    --cream: #eae6dc;
+    --page: #f8f5f2;
+    --ink: #1a1a18;
+    --ink-60: rgba(26, 26, 24, 0.62);
+    --ink-40: rgba(26, 26, 24, 0.4);
+    --ink-10: rgba(26, 26, 24, 0.1);
+    --blue: #5e91d5;
+    --blue-dk: #4a7dbe;
+    --blue-tint: #e8f0fb;
+    --maroon: #8a2f3f;
+    --maroon-dk: #6f2433;
+    --maroon-tint: #f5e9ec;
+    --card: #ffffff;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(26, 26, 24, 0.04), 0 8px 24px rgba(26, 26, 24, 0.06);
+    color: var(--ink);
+    background: var(--page);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wea-root * {
+    box-sizing: border-box;
+  }
+  #wea-root .serif {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  #wea-root .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  #wea-root .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
   /* Top bar */
-  #wea-root .topbar{background:var(--ink);color:#fff;padding:14px 24px}
-  #wea-root .topbar-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-  #wea-root .topbar-brand{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-  #wea-root .topbar-link{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
-  #wea-root .topbar-link:hover{color:var(--blue)}
-  #wea-root .topbar-link svg{transition:transform .2s}
-  #wea-root .topbar-link:hover svg{transform:translateX(3px)}
+  #wea-root .topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 24px;
+  }
+  #wea-root .topbar-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #wea-root .topbar-brand {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  #wea-root .topbar-link {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  #wea-root .topbar-link:hover {
+    color: var(--blue);
+  }
+  #wea-root .topbar-link svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .topbar-link:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* Purchase toggle */
+  #wea-root .purchase-toggle {
+    display: flex;
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  #wea-root .pt-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+    color: var(--ink-60);
+    transition: all 0.2s;
+  }
+  #wea-root .pt-btn.active {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Tier cards */
+  #wea-root .tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  #wea-root .tier {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 2px solid var(--ink-10);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  #wea-root .tier:hover {
+    border-color: var(--blue);
+  }
+  #wea-root .tier.selected {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 1px var(--blue);
+  }
+  #wea-root .tier-radio {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: border-color 0.15s;
+  }
+  #wea-root .tier.selected .tier-radio {
+    border-color: var(--blue);
+  }
+  #wea-root .tier-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.15s;
+  }
+  #wea-root .tier.selected .tier-dot {
+    background: var(--blue);
+  }
+  #wea-root .tier-body {
+    flex: 1;
+    min-width: 0;
+  }
+  #wea-root .tier-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  #wea-root .tier-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  #wea-root .tier-badges {
+    display: flex;
+    gap: 6px;
+  }
+  #wea-root .tier-save {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  #wea-root .tier-pop {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--blue);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  #wea-root .tier-val {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--blue);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  #wea-root .tier-desc {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.45;
+  }
+  #wea-root .tier-pricing {
+    text-align: right;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-left: 16px;
+  }
+  #wea-root .tier-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .tier-price span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-60);
+  }
+  #wea-root .tier-compare {
+    font-size: 11px;
+    color: var(--ink-60);
+    margin-top: 4px;
+  }
+  #wea-root .tier-compare s {
+    color: var(--ink-40);
+  }
+  #wea-root .tier-savings {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+    margin-top: 2px;
+    font-style: italic;
+  }
+  #wea-root .onetime-row {
+    margin-bottom: 20px;
+  }
+  #wea-root .onetime-row .tier {
+    cursor: default;
+  }
+  #wea-root .onetime-row .tier-price span {
+    display: none;
+  }
+
+  /* Flyout cart */
+  #wea-root .flyout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  #wea-root .flyout-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  #wea-root .flyout {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    background: #fff;
+    z-index: 9999;
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+    transition: right 0.35s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  #wea-root .flyout.open {
+    right: 0;
+  }
+  #wea-root .flyout-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--ink-10);
+  }
+  #wea-root .flyout-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  #wea-root .flyout-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--ink);
+  }
+  #wea-root .flyout-body {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  #wea-root .flyout-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  #wea-root .flyout-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    background: var(--cream);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  #wea-root .flyout-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #wea-root .flyout-details {
+    flex: 1;
+  }
+  #wea-root .flyout-product {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  #wea-root .flyout-plan {
+    font-size: 12px;
+    color: var(--ink-60);
+    margin-bottom: 8px;
+  }
+  #wea-root .flyout-line-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  #wea-root .flyout-foot {
+    padding: 20px 24px;
+    border-top: 1px solid var(--ink-10);
+  }
+  #wea-root .flyout-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #wea-root .flyout-checkout {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    background: var(--blue);
+    color: #fff;
+    text-align: center;
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  #wea-root .flyout-checkout:hover {
+    background: var(--blue-dk);
+  }
 
   /* PDP section */
-  #wea-root .pdp{background:var(--page);padding:72px 0 72px}
-  #wea-root .pdp-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-  #wea-root .pdp-gallery{position:relative}
-  #wea-root .pdp-main{aspect-ratio:1/1;background:var(--cream);border-radius:18px;overflow:hidden;position:relative}
-  #wea-root .pdp-main img{width:100%;height:100%;object-fit:cover;display:block}
-  #wea-root .pdp-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
-  #wea-root .pdp-thumb{aspect-ratio:1/1;background:var(--cream);border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
-  #wea-root .pdp-thumb.active{border-color:var(--blue)}
-  #wea-root .pdp-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  #wea-root .pdp-badge{position:absolute;top:18px;left:18px;background:var(--blue);color:#fff;padding:7px 14px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;z-index:2}
-  #wea-root .pdp-info{display:flex;flex-direction:column}
-  #wea-root .pdp-eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
-  #wea-root .pdp-title{font-weight:500;font-size:44px;line-height:1.05;letter-spacing:-.02em;margin:0 0 8px}
-  #wea-root .pdp-subtitle{font-size:16px;color:var(--ink-60);margin:0 0 18px;line-height:1.5}
-  #wea-root .pdp-rating{display:flex;align-items:center;gap:10px;margin-bottom:22px}
-  #wea-root .pdp-stars{display:inline-flex;gap:2px;color:var(--blue)}
-  #wea-root .pdp-rating-txt{font-size:13px;color:var(--ink-60);font-weight:500}
-  #wea-root .pdp-rating-txt b{color:var(--ink);font-weight:600}
-  #wea-root .pdp-price-row{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--ink-10)}
-  #wea-root .pdp-price{font-size:36px;font-weight:600;color:var(--ink);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
-  #wea-root .pdp-price-orig{font-size:18px;color:var(--ink-40);text-decoration:line-through;font-weight:500}
-  #wea-root .pdp-price-meta{font-size:12px;color:var(--ink-60);font-weight:500}
-  #wea-root .pdp-bullets{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-direction:column;gap:12px}
-  #wea-root .pdp-bullets li{font-size:14px;color:var(--ink);line-height:1.5;display:flex;gap:12px;align-items:flex-start}
-  #wea-root .pdp-bullets li::before{content:'';min-width:20px;height:20px;border-radius:50%;background:var(--blue-tint);margin-top:1px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%235e91d5' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");background-repeat:no-repeat;background-position:center;flex-shrink:0}
-  #wea-root .pdp-cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:#fff;text-decoration:none;padding:20px 32px;border-radius:100px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,transform .2s;width:100%;box-sizing:border-box}
-  #wea-root .pdp-cta:hover{background:var(--blue);transform:translateY(-2px)}
-  #wea-root .pdp-cta svg{transition:transform .2s}
-  #wea-root .pdp-cta:hover svg{transform:translateX(3px)}
-  #wea-root .pdp-assurance{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:11px;color:var(--ink-60);font-weight:500}
-  #wea-root .pdp-assurance svg{color:var(--blue);flex-shrink:0}
+  #wea-root .pdp {
+    background: var(--page);
+    padding: 72px 0 72px;
+  }
+  #wea-root .pdp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  #wea-root .pdp-gallery {
+    position: relative;
+  }
+  #wea-root .pdp-main {
+    aspect-ratio: 1/1;
+    background: var(--cream);
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+  #wea-root .pdp-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #wea-root .pdp-thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+  #wea-root .pdp-thumb {
+    aspect-ratio: 1/1;
+    background: var(--cream);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  #wea-root .pdp-thumb.active {
+    border-color: var(--blue);
+  }
+  #wea-root .pdp-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #wea-root .pdp-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: var(--blue);
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  #wea-root .pdp-info {
+    display: flex;
+    flex-direction: column;
+  }
+  #wea-root .pdp-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+  #wea-root .pdp-title {
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  #wea-root .pdp-subtitle {
+    font-size: 16px;
+    color: var(--ink-60);
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+  #wea-root .pdp-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  #wea-root .pdp-stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--blue);
+  }
+  #wea-root .pdp-rating-txt {
+    font-size: 13px;
+    color: var(--ink-60);
+    font-weight: 500;
+  }
+  #wea-root .pdp-rating-txt b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  #wea-root .pdp-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--ink-10);
+  }
+  #wea-root .pdp-price {
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .pdp-price-orig {
+    font-size: 18px;
+    color: var(--ink-40);
+    text-decoration: line-through;
+    font-weight: 500;
+  }
+  #wea-root .pdp-price-meta {
+    font-size: 12px;
+    color: var(--ink-60);
+    font-weight: 500;
+  }
+  #wea-root .pdp-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #wea-root .pdp-bullets li {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  #wea-root .pdp-bullets li::before {
+    content: '';
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--blue-tint);
+    margin-top: 1px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%235e91d5' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+  }
+  #wea-root .pdp-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 20px 32px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  #wea-root .pdp-cta:hover {
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
+  #wea-root .pdp-cta svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .pdp-cta:hover svg {
+    transform: translateX(3px);
+  }
+  #wea-root .pdp-assurance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--ink-60);
+    font-weight: 500;
+  }
+  #wea-root .pdp-assurance svg {
+    color: var(--blue);
+    flex-shrink: 0;
+  }
 
   /* Hero */
-  #wea-root .hero{padding:72px 0 56px;background:var(--page)}
-  #wea-root .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
-  #wea-root .hero .hero-head{font-weight:500;font-size:58px;line-height:1.05;letter-spacing:-.02em;margin:14px 0 22px}
-  #wea-root .hero .hero-head em{font-style:italic;color:var(--blue)}
-  #wea-root .hero p{font-size:17px;color:var(--ink-60);max-width:520px;margin:0}
-  #wea-root .hero-cta{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;text-decoration:none;padding:20px 40px;border-radius:100px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,transform .2s;margin-top:32px}
-  #wea-root .hero-cta:hover{background:var(--blue);transform:translateY(-2px)}
-  #wea-root .hero-cta svg{transition:transform .2s}
-  #wea-root .hero-cta:hover svg{transform:translateX(3px)}
-  #wea-root .hero-bullets{list-style:none;padding:0;margin:24px 0 4px;display:flex;flex-direction:column;gap:14px;max-width:520px}
-  #wea-root .hero-bullets li{font-size:14px;line-height:1.45;color:var(--ink);display:flex;gap:12px;align-items:flex-start}
-  #wea-root .hero-bullets li::before{content:'';min-width:20px;height:20px;border-radius:50%;background:var(--blue-tint);margin-top:2px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%235e91d5' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");background-repeat:no-repeat;background-position:center;flex-shrink:0}
-  #wea-root .hero-bullets li > div{display:flex;flex-direction:column;gap:2px}
-  #wea-root .hero-bullets .hb-benefit{font-size:14px;font-weight:600;color:var(--ink);line-height:1.4}
-  #wea-root .hero-bullets .hb-stat{font-size:13px;color:var(--ink-60);font-weight:400;line-height:1.4;font-style:normal}
+  #wea-root .hero {
+    padding: 72px 0 56px;
+    background: var(--page);
+  }
+  #wea-root .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #wea-root .hero .hero-head {
+    font-weight: 500;
+    font-size: 58px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 14px 0 22px;
+  }
+  #wea-root .hero .hero-head em {
+    font-style: italic;
+    color: var(--blue);
+  }
+  #wea-root .hero p {
+    font-size: 17px;
+    color: var(--ink-60);
+    max-width: 520px;
+    margin: 0;
+  }
+  #wea-root .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 20px 40px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+    margin-top: 32px;
+  }
+  #wea-root .hero-cta:hover {
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
+  #wea-root .hero-cta svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .hero-cta:hover svg {
+    transform: translateX(3px);
+  }
+  #wea-root .hero-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 520px;
+  }
+  #wea-root .hero-bullets li {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  #wea-root .hero-bullets li::before {
+    content: '';
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--blue-tint);
+    margin-top: 2px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%235e91d5' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+  }
+  #wea-root .hero-bullets li > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  #wea-root .hero-bullets .hb-benefit {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  #wea-root .hero-bullets .hb-stat {
+    font-size: 13px;
+    color: var(--ink-60);
+    font-weight: 400;
+    line-height: 1.4;
+    font-style: normal;
+  }
   #wea-root .hero-bullets b,
-  #wea-root .hero-bullets em{display:none !important}
-  #wea-root .new-badge{position:absolute;top:22px;right:22px;width:78px;height:78px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 24px rgba(94,145,213,.45);border:4px solid #fff;animation:newBadge 2.4s ease-in-out infinite;z-index:2}
-  @keyframes newBadge{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(-10deg) scale(1.06)}}
-  #wea-root .hero-img{position:relative;aspect-ratio:4/5;background:var(--cream);border-radius:18px;overflow:hidden}
-  #wea-root .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
-  #wea-root .hero-badge{position:absolute;top:18px;left:18px;background:#fff;border-radius:100px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);box-shadow:var(--shadow)}
-  #wea-root .hero-badge::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);margin-right:8px;vertical-align:middle}
-  #wea-root .scroll-cue{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-40);margin-top:28px;font-weight:500;letter-spacing:.04em}
-  #wea-root .scroll-cue svg{animation:bob 1.6s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  #wea-root .hero-bullets em {
+    display: none !important;
+  }
+  #wea-root .new-badge {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(94, 145, 213, 0.45);
+    border: 4px solid #fff;
+    animation: newBadge 2.4s ease-in-out infinite;
+    z-index: 2;
+  }
+  @keyframes newBadge {
+    0%,
+    100% {
+      transform: rotate(-10deg) scale(1);
+    }
+    50% {
+      transform: rotate(-10deg) scale(1.06);
+    }
+  }
+  #wea-root .hero-img {
+    position: relative;
+    aspect-ratio: 4/5;
+    background: var(--cream);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  #wea-root .hero-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #wea-root .hero-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: #fff;
+    border-radius: 100px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  #wea-root .hero-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  #wea-root .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-40);
+    margin-top: 28px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  #wea-root .scroll-cue svg {
+    animation: bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+  }
 
   /* Claims strip */
-  #wea-root .claims{background:var(--ink);color:#fff;padding:44px 0}
-  #wea-root .claims-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
-  #wea-root .claim{text-align:center}
-  #wea-root .claim-num{font-size:42px;font-weight:500;color:var(--blue);line-height:1;letter-spacing:-.01em}
-  #wea-root .claim-txt{font-size:12px;color:rgba(255,255,255,.72);margin-top:8px;line-height:1.45}
+  #wea-root .claims {
+    background: var(--ink);
+    color: #fff;
+    padding: 44px 0;
+  }
+  #wea-root .claims-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  #wea-root .claim {
+    text-align: center;
+  }
+  #wea-root .claim-num {
+    font-size: 42px;
+    font-weight: 500;
+    color: var(--blue);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  #wea-root .claim-txt {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+    margin-top: 8px;
+    line-height: 1.45;
+  }
 
   /* Section base */
-  #wea-root section.sec{padding:84px 0}
-  #wea-root .sec h2{font-weight:500;font-size:42px;line-height:1.1;letter-spacing:-.015em;margin:10px 0 14px;max-width:720px}
-  #wea-root .sec .lede{font-size:16px;color:var(--ink-60);max-width:620px;margin-bottom:44px}
+  #wea-root section.sec {
+    padding: 84px 0;
+  }
+  #wea-root .sec h2 {
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 10px 0 14px;
+    max-width: 720px;
+  }
+  #wea-root .sec .lede {
+    font-size: 16px;
+    color: var(--ink-60);
+    max-width: 620px;
+    margin-bottom: 44px;
+  }
 
   /* Clinical proof cards (new format) */
-  #wea-root .proof{background:var(--cream)}
-  #wea-root .proof-stack{display:flex;flex-direction:column;gap:16px}
-  #wea-root .proof-card{background:#fff;border-radius:var(--radius);padding:36px 42px;box-shadow:var(--shadow)}
-  #wea-root .proof-quote{font-style:italic;font-size:22px;line-height:1.42;color:var(--ink);margin:0 0 20px}
-  #wea-root .proof-quote b{font-weight:700;font-style:italic}
-  #wea-root .proof-source{font-size:14px;color:var(--ink-60)}
-  #wea-root .proof-source b{color:var(--ink);font-weight:600}
+  #wea-root .proof {
+    background: var(--cream);
+  }
+  #wea-root .proof-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #wea-root .proof-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 36px 42px;
+    box-shadow: var(--shadow);
+  }
+  #wea-root .proof-quote {
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.42;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+  #wea-root .proof-quote b {
+    font-weight: 700;
+    font-style: italic;
+  }
+  #wea-root .proof-source {
+    font-size: 14px;
+    color: var(--ink-60);
+  }
+  #wea-root .proof-source b {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
   /* Product overview */
-  #wea-root .overview{background:var(--page)}
-  #wea-root .overview-head{text-align:center;max-width:720px;margin:0 auto 52px}
-  #wea-root .overview-head .eyebrow{display:block;margin-bottom:12px}
-  #wea-root .overview-head h2{margin:0 auto 14px}
-  #wea-root .overview-head .lede{margin:0 auto}
-  #wea-root .pathways-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  #wea-root .pw-card{background:#fff;border:1px solid var(--ink-10);border-radius:var(--radius);padding:36px 32px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
-  #wea-root .pw-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-  #wea-root .pw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue)}
-  #wea-root .pw-num{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--blue);margin-bottom:18px;font-variant-numeric:tabular-nums}
-  #wea-root .pw-icon{width:52px;height:52px;border-radius:14px;background:var(--blue-tint);color:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-  #wea-root .pw-t{font-size:22px;font-weight:500;line-height:1.2;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink)}
-  #wea-root .pw-d{font-size:14px;color:var(--ink-60);line-height:1.6;margin:0 0 22px;flex:1}
-  #wea-root .pw-stat{display:block;padding:14px 16px;background:var(--blue-tint);border-radius:10px;font-size:12px;font-weight:600;color:var(--blue-dk);line-height:1.45}
-  #wea-root .pw-stat b{display:block;font-size:18px;font-weight:700;color:var(--blue);margin-bottom:2px;letter-spacing:-.01em}
-  #wea-root .overview-cta{display:flex;justify-content:center;margin-top:44px}
+  #wea-root .overview {
+    background: var(--page);
+  }
+  #wea-root .overview-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 52px;
+  }
+  #wea-root .overview-head .eyebrow {
+    display: block;
+    margin-bottom: 12px;
+  }
+  #wea-root .overview-head h2 {
+    margin: 0 auto 14px;
+  }
+  #wea-root .overview-head .lede {
+    margin: 0 auto;
+  }
+  #wea-root .pathways-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  #wea-root .pw-card {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  #wea-root .pw-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  #wea-root .pw-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--blue);
+  }
+  #wea-root .pw-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--blue);
+    margin-bottom: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .pw-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--blue-tint);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  #wea-root .pw-t {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  #wea-root .pw-d {
+    font-size: 14px;
+    color: var(--ink-60);
+    line-height: 1.6;
+    margin: 0 0 22px;
+    flex: 1;
+  }
+  #wea-root .pw-stat {
+    display: block;
+    padding: 14px 16px;
+    background: var(--blue-tint);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue-dk);
+    line-height: 1.45;
+  }
+  #wea-root .pw-stat b {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 2px;
+    letter-spacing: -0.01em;
+  }
+  #wea-root .overview-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 44px;
+  }
 
   /* 4th pathway (Berberine) module */
-  #wea-root .fourth{background:linear-gradient(180deg,var(--maroon-tint) 0%,var(--page) 100%);padding:84px 0}
-  #wea-root .fourth-wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-  #wea-root .fourth-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(138,47,63,.06),0 12px 40px rgba(138,47,63,.08);border-top:4px solid var(--maroon)}
-  #wea-root .fourth-inner{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;padding:56px 60px;align-items:center}
-  #wea-root .fourth-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--maroon);background:var(--maroon-tint);padding:7px 14px;border-radius:100px;margin-bottom:16px}
-  #wea-root .fourth-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--maroon)}
-  #wea-root .fourth-h{font-size:40px;font-weight:500;line-height:1.08;letter-spacing:-.015em;margin:0 0 18px}
-  #wea-root .fourth-h em{font-style:italic;color:var(--maroon)}
-  #wea-root .fourth-p{font-size:15px;color:var(--ink-60);line-height:1.65;margin:0 0 24px;max-width:520px}
-  #wea-root .fourth-feats{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
-  #wea-root .fourth-feat{display:flex;gap:14px;align-items:flex-start;font-size:14px;color:var(--ink)}
-  #wea-root .fourth-feat::before{content:'';min-width:22px;height:22px;border-radius:50%;background:var(--maroon-tint);color:var(--maroon);display:flex;align-items:center;justify-content:center;margin-top:1px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a2f3f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");background-repeat:no-repeat;background-position:center}
-  #wea-root .fourth-cta{display:inline-flex;align-items:center;gap:10px;background:var(--maroon);color:#fff;text-decoration:none;padding:16px 28px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,transform .2s}
-  #wea-root .fourth-cta:hover{background:var(--maroon-dk);transform:translateY(-2px)}
+  #wea-root .fourth {
+    background: linear-gradient(180deg, var(--maroon-tint) 0%, var(--page) 100%);
+    padding: 84px 0;
+  }
+  #wea-root .fourth-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  #wea-root .fourth-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(138, 47, 63, 0.06), 0 12px 40px rgba(138, 47, 63, 0.08);
+    border-top: 4px solid var(--maroon);
+  }
+  #wea-root .fourth-inner {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    padding: 56px 60px;
+    align-items: center;
+  }
+  #wea-root .fourth-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    background: var(--maroon-tint);
+    padding: 7px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  #wea-root .fourth-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--maroon);
+  }
+  #wea-root .fourth-h {
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+  }
+  #wea-root .fourth-h em {
+    font-style: italic;
+    color: var(--maroon);
+  }
+  #wea-root .fourth-p {
+    font-size: 15px;
+    color: var(--ink-60);
+    line-height: 1.65;
+    margin: 0 0 24px;
+    max-width: 520px;
+  }
+  #wea-root .fourth-feats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  #wea-root .fourth-feat {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  #wea-root .fourth-feat::before {
+    content: '';
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--maroon-tint);
+    color: var(--maroon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a2f3f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  #wea-root .fourth-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--maroon);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 28px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+  }
+  #wea-root .fourth-cta:hover {
+    background: var(--maroon-dk);
+    transform: translateY(-2px);
+  }
 
   /* 4-lane visual */
-  #wea-root .lanes{background:var(--page);border-radius:16px;padding:28px 24px;border:1px solid rgba(138,47,63,.12)}
-  #wea-root .lanes-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-60);margin-bottom:18px;text-align:center}
-  #wea-root .lane{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px dashed rgba(26,26,24,.08)}
-  #wea-root .lane:last-child{border-bottom:none}
-  #wea-root .lane-n{font-size:11px;font-weight:700;min-width:24px;color:var(--ink-40);font-variant-numeric:tabular-nums}
-  #wea-root .lane-bar{flex:1;height:8px;border-radius:100px;background:var(--ink-10);position:relative;overflow:hidden}
-  #wea-root .lane-bar::after{content:'';position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--blue);border-radius:100px}
-  #wea-root .lane.four .lane-bar::after{background:var(--maroon);animation:laneFill 1.4s .3s ease-out backwards}
-  #wea-root .lane.four .lane-n{color:var(--maroon)}
-  #wea-root .lane-lab{font-size:12px;font-weight:600;color:var(--ink);min-width:110px;text-align:right}
-  #wea-root .lane.four .lane-lab{color:var(--maroon)}
-  @keyframes laneFill{from{width:0}to{width:100%}}
+  #wea-root .lanes {
+    background: var(--page);
+    border-radius: 16px;
+    padding: 28px 24px;
+    border: 1px solid rgba(138, 47, 63, 0.12);
+  }
+  #wea-root .lanes-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  #wea-root .lane {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(26, 26, 24, 0.08);
+  }
+  #wea-root .lane:last-child {
+    border-bottom: none;
+  }
+  #wea-root .lane-n {
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 24px;
+    color: var(--ink-40);
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .lane-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 100px;
+    background: var(--ink-10);
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .lane-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: var(--blue);
+    border-radius: 100px;
+  }
+  #wea-root .lane.four .lane-bar::after {
+    background: var(--maroon);
+    animation: laneFill 1.4s 0.3s ease-out backwards;
+  }
+  #wea-root .lane.four .lane-n {
+    color: var(--maroon);
+  }
+  #wea-root .lane-lab {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 110px;
+    text-align: right;
+  }
+  #wea-root .lane.four .lane-lab {
+    color: var(--maroon);
+  }
+  @keyframes laneFill {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
 
   /* Best for */
-  #wea-root .bestfor{background:var(--cream)}
-  #wea-root .bestfor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  #wea-root .bf-card{background:#fff;border-radius:12px;padding:24px 26px;display:flex;gap:16px;align-items:flex-start}
-  #wea-root .bf-check{min-width:22px;height:22px;border-radius:50%;background:var(--blue-tint);color:var(--blue);display:flex;align-items:center;justify-content:center;margin-top:2px}
-  #wea-root .bf-t{font-size:15px;font-weight:600;margin-bottom:4px}
-  #wea-root .bf-d{font-size:13px;color:var(--ink-60);line-height:1.5}
+  #wea-root .bestfor {
+    background: var(--cream);
+  }
+  #wea-root .bestfor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  #wea-root .bf-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 26px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  #wea-root .bf-check {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue-tint);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  #wea-root .bf-t {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  #wea-root .bf-d {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.5;
+  }
 
   /* Timeline */
-  #wea-root .timeline{background:var(--page)}
-  #wea-root .tl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  #wea-root .tl-card{background:#fff;border:1px solid var(--ink-10);border-radius:var(--radius);padding:32px 30px;position:relative;overflow:hidden}
-  #wea-root .tl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue)}
-  #wea-root .tl-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
-  #wea-root .tl-h{font-size:30px;font-weight:500;line-height:1.1;margin-bottom:14px}
-  #wea-root .tl-p{font-size:14px;color:var(--ink-60);line-height:1.6}
-  #wea-root .tl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-  #wea-root .tl-list li{font-size:13px;color:var(--ink-60);line-height:1.5;padding-left:18px;position:relative}
-  #wea-root .tl-list li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+  #wea-root .timeline {
+    background: var(--page);
+  }
+  #wea-root .tl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  #wea-root .tl-card {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: var(--radius);
+    padding: 32px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .tl-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--blue);
+  }
+  #wea-root .tl-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  #wea-root .tl-h {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  #wea-root .tl-p {
+    font-size: 14px;
+    color: var(--ink-60);
+    line-height: 1.6;
+  }
+  #wea-root .tl-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #wea-root .tl-list li {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.5;
+    padding-left: 18px;
+    position: relative;
+  }
+  #wea-root .tl-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
 
   /* Calculator */
-  #wea-root .calc-wrap{background:var(--cream)}
-  #wea-root .calc{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);max-width:920px;margin:0 auto}
-  #wea-root .calc-head{background:var(--ink);color:#fff;padding:22px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-  #wea-root .calc-title{font-size:15px;font-weight:600;letter-spacing:.02em}
-  #wea-root .calc-title span{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
-  #wea-root .unit-tog{background:rgba(255,255,255,.08);border-radius:8px;padding:3px;display:flex}
-  #wea-root .u-btn{background:transparent;border:0;color:rgba(255,255,255,.7);font:inherit;font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  #wea-root .u-btn.on{background:#fff;color:var(--ink)}
-  #wea-root .calc-body{display:grid;grid-template-columns:1fr 1.1fr}
-  #wea-root .calc-inputs{padding:32px;border-right:1px solid var(--ink-10);display:flex;flex-direction:column;gap:24px}
-  #wea-root .slg{display:flex;flex-direction:column;gap:10px}
-  #wea-root .sl-top{display:flex;justify-content:space-between;align-items:baseline}
-  #wea-root .sl-lab{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .sl-val{font-size:28px;font-weight:600;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  #wea-root .sl-val span{font-size:14px;color:var(--ink-60);font-weight:500;margin-left:2px}
-  #wea-root input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--ink-10);border-radius:100px;outline:none;cursor:pointer}
-  #wea-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 2px 6px rgba(94,145,213,.4);cursor:grab}
-  #wea-root input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 2px 6px rgba(94,145,213,.4);cursor:grab}
-  #wea-root .bmi-warn{font-size:11px;padding:10px 12px;background:#FEF7E8;border-radius:8px;line-height:1.5;color:#6B4A0A;display:none;align-items:flex-start;gap:8px}
-  #wea-root .bmi-warn.show{display:flex}
+  #wea-root .calc-wrap {
+    background: var(--cream);
+  }
+  #wea-root .calc {
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  #wea-root .calc-head {
+    background: var(--ink);
+    color: #fff;
+    padding: 22px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  #wea-root .calc-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  #wea-root .calc-title span {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #wea-root .unit-tog {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 3px;
+    display: flex;
+  }
+  #wea-root .u-btn {
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #wea-root .u-btn.on {
+    background: #fff;
+    color: var(--ink);
+  }
+  #wea-root .calc-body {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+  }
+  #wea-root .calc-inputs {
+    padding: 32px;
+    border-right: 1px solid var(--ink-10);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  #wea-root .slg {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #wea-root .sl-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  #wea-root .sl-lab {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .sl-val {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .sl-val span {
+    font-size: 14px;
+    color: var(--ink-60);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+  #wea-root input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--ink-10);
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+  }
+  #wea-root input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(94, 145, 213, 0.4);
+    cursor: grab;
+  }
+  #wea-root input[type='range']::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(94, 145, 213, 0.4);
+    cursor: grab;
+  }
+  #wea-root .bmi-warn {
+    font-size: 11px;
+    padding: 10px 12px;
+    background: #fef7e8;
+    border-radius: 8px;
+    line-height: 1.5;
+    color: #6b4a0a;
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  #wea-root .bmi-warn.show {
+    display: flex;
+  }
 
-  #wea-root .calc-out{padding:32px;background:#FAF9F6;display:flex;flex-direction:column;gap:18px}
-  #wea-root .out-lab{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
-  #wea-root .out-head{font-size:22px;font-weight:500;line-height:1.2;margin-top:4px}
-  #wea-root .out-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
-  #wea-root .out-stat{background:#fff;border:1px solid var(--ink-10);border-radius:10px;padding:14px 16px}
-  #wea-root .os-lab{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .os-val{font-size:24px;font-weight:600;color:var(--ink);margin-top:4px;line-height:1;font-variant-numeric:tabular-nums}
-  #wea-root .os-val span{font-size:13px;color:var(--ink-60);font-weight:500;margin-left:2px}
+  #wea-root .calc-out {
+    padding: 32px;
+    background: #faf9f6;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  #wea-root .out-lab {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  #wea-root .out-head {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+  #wea-root .out-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  #wea-root .out-stat {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  #wea-root .os-lab {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .os-val {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 4px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .os-val span {
+    font-size: 13px;
+    color: var(--ink-60);
+    font-weight: 500;
+    margin-left: 2px;
+  }
 
   /* Chart */
-  #wea-root .chart-wrap{background:#fff;border:1px solid var(--ink-10);border-radius:10px;padding:16px 18px 12px}
-  #wea-root .chart-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-  #wea-root .chart-lab{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .chart-month{font-size:10px;color:var(--ink-40)}
-  #wea-root .chart svg{width:100%;height:124px;display:block}
-  #wea-root .chart-x{display:flex;justify-content:space-between;font-size:9px;color:var(--ink-40);margin-top:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  #wea-root .chart-wrap {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 10px;
+    padding: 16px 18px 12px;
+  }
+  #wea-root .chart-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  #wea-root .chart-lab {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .chart-month {
+    font-size: 10px;
+    color: var(--ink-40);
+  }
+  #wea-root .chart svg {
+    width: 100%;
+    height: 124px;
+    display: block;
+  }
+  #wea-root .chart-x {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--ink-40);
+    margin-top: 4px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 
-  #wea-root .calc-disc{font-size:10px;color:var(--ink-40);line-height:1.5;margin-top:4px}
+  #wea-root .calc-disc {
+    font-size: 10px;
+    color: var(--ink-40);
+    line-height: 1.5;
+    margin-top: 4px;
+  }
 
   /* Product links */
-  #wea-root .products{background:var(--page)}
-  #wea-root .prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  #wea-root .prod-card{background:#fff;border:1px solid var(--ink-10);border-radius:18px;overflow:hidden;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
-  #wea-root .prod-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-  #wea-root .prod-img{aspect-ratio:16/10;background:var(--cream);position:relative;overflow:hidden}
-  #wea-root .prod-img img{width:100%;height:100%;object-fit:cover}
-  #wea-root .prod-tag{position:absolute;top:16px;left:16px;background:#fff;padding:6px 12px;border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-  #wea-root .prod-body{padding:32px;display:flex;flex-direction:column;flex:1}
-  #wea-root .prod-h{font-size:30px;font-weight:500;line-height:1.15;margin:4px 0 10px}
-  #wea-root .prod-d{font-size:14px;color:var(--ink-60);line-height:1.6;margin-bottom:20px;flex:1}
-  #wea-root .prod-feat{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;padding-top:18px;border-top:1px solid var(--ink-10)}
-  #wea-root .prod-f{font-size:13px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
-  #wea-root .prod-f::before{content:'';min-width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:8px}
-  #wea-root .prod-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:#fff;text-decoration:none;padding:16px 24px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.04em;transition:background .2s}
-  #wea-root .prod-cta:hover{background:var(--blue)}
-  #wea-root .prod-cta.stack{background:var(--blue)}
-  #wea-root .prod-cta.stack:hover{background:var(--blue-dk)}
+  #wea-root .products {
+    background: var(--page);
+  }
+  #wea-root .prod-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  #wea-root .prod-card {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  #wea-root .prod-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  #wea-root .prod-img {
+    aspect-ratio: 16/10;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .prod-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #wea-root .prod-tag {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  #wea-root .prod-body {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  #wea-root .prod-h {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 4px 0 10px;
+  }
+  #wea-root .prod-d {
+    font-size: 14px;
+    color: var(--ink-60);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  #wea-root .prod-feat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ink-10);
+  }
+  #wea-root .prod-f {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  #wea-root .prod-f::before {
+    content: '';
+    min-width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-top: 8px;
+  }
+  #wea-root .prod-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 24px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  #wea-root .prod-cta:hover {
+    background: var(--blue);
+  }
+  #wea-root .prod-cta.stack {
+    background: var(--blue);
+  }
+  #wea-root .prod-cta.stack:hover {
+    background: var(--blue-dk);
+  }
 
   /* Inline section CTA */
-  #wea-root .inline-cta{display:flex;justify-content:center;margin-top:44px}
-  #wea-root .inline-cta a{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;text-decoration:none;padding:18px 36px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,transform .2s}
-  #wea-root .inline-cta a:hover{background:var(--blue);transform:translateY(-2px)}
-  #wea-root .inline-cta a svg{transition:transform .2s}
-  #wea-root .inline-cta a:hover svg{transform:translateX(3px)}
-  #wea-root .calc-cta{margin-top:4px}
-  #wea-root .calc-cta a{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--blue);color:#fff;text-decoration:none;padding:16px 22px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s}
-  #wea-root .calc-cta a:hover{background:var(--blue-dk)}
-  #wea-root .fourth-chip{display:inline-flex;align-items:center;gap:8px;background:var(--blue-tint);color:var(--blue-dk);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px;align-self:flex-start}
+  #wea-root .inline-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 44px;
+  }
+  #wea-root .inline-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 18px 36px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+  }
+  #wea-root .inline-cta a:hover {
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
+  #wea-root .inline-cta a svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .inline-cta a:hover svg {
+    transform: translateX(3px);
+  }
+  #wea-root .calc-cta {
+    margin-top: 4px;
+  }
+  #wea-root .calc-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--blue);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 22px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  #wea-root .calc-cta a:hover {
+    background: var(--blue-dk);
+  }
+  #wea-root .fourth-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-tint);
+    color: var(--blue-dk);
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    align-self: flex-start;
+  }
 
   /* Footer disclaimer */
-  #wea-root .foot{background:var(--ink);color:rgba(255,255,255,.5);padding:44px 0;font-size:11px;line-height:1.7}
-  #wea-root .foot p{margin:0 0 10px}
-  #wea-root .foot .tm{color:#fff;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;margin-bottom:14px}
+  #wea-root .foot {
+    background: var(--ink);
+    color: rgba(255, 255, 255, 0.5);
+    padding: 44px 0;
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  #wea-root .foot p {
+    margin: 0 0 10px;
+  }
+  #wea-root .foot .tm {
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
 
   /* Mobile */
-  @media (max-width:860px){
-    #wea-root .hero{padding:44px 0 32px}
-    #wea-root .hero-grid{grid-template-columns:1fr;gap:36px}
-    #wea-root .hero .hero-head{font-size:40px}
-    #wea-root .hero-img{aspect-ratio:1/1}
-    #wea-root .sec{padding:56px 0}
-    #wea-root .sec h2{font-size:32px}
-    #wea-root .claims-grid{grid-template-columns:1fr 1fr;gap:32px 20px}
-    #wea-root .claim-num{font-size:36px}
-    #wea-root .proof-card{padding:28px 26px}
-    #wea-root .proof-quote{font-size:18px}
-    #wea-root .pathways-grid{grid-template-columns:1fr;gap:14px}
-    #wea-root .overview-head{margin-bottom:36px}
-    #wea-root .pw-card{padding:28px 26px}
-    #wea-root .pw-t{font-size:20px}
-    #wea-root .fourth{padding:56px 0}
-    #wea-root .fourth-inner{grid-template-columns:1fr;gap:36px;padding:36px 28px}
-    #wea-root .fourth-h{font-size:30px}
-    #wea-root .bestfor-grid{grid-template-columns:1fr}
-    #wea-root .tl-grid{grid-template-columns:1fr;gap:14px}
-    #wea-root .calc-body{grid-template-columns:1fr}
-    #wea-root .calc-inputs{border-right:0;border-bottom:1px solid var(--ink-10)}
-    #wea-root .prod-grid{grid-template-columns:1fr}
-    #wea-root .topbar{padding:12px 16px}
-    #wea-root .topbar-brand{font-size:11px}
-    #wea-root .pdp{padding:40px 0 48px}
-    #wea-root .pdp-grid{grid-template-columns:1fr;gap:32px}
-    #wea-root .pdp-title{font-size:32px}
-    #wea-root .pdp-price{font-size:30px}
+  @media (max-width: 860px) {
+    #wea-root .hero {
+      padding: 44px 0 32px;
+    }
+    #wea-root .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    #wea-root .hero .hero-head {
+      font-size: 40px;
+    }
+    #wea-root .hero-img {
+      aspect-ratio: 1/1;
+    }
+    #wea-root .sec {
+      padding: 56px 0;
+    }
+    #wea-root .sec h2 {
+      font-size: 32px;
+    }
+    #wea-root .claims-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 20px;
+    }
+    #wea-root .claim-num {
+      font-size: 36px;
+    }
+    #wea-root .proof-card {
+      padding: 28px 26px;
+    }
+    #wea-root .proof-quote {
+      font-size: 18px;
+    }
+    #wea-root .pathways-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    #wea-root .overview-head {
+      margin-bottom: 36px;
+    }
+    #wea-root .pw-card {
+      padding: 28px 26px;
+    }
+    #wea-root .pw-t {
+      font-size: 20px;
+    }
+    #wea-root .fourth {
+      padding: 56px 0;
+    }
+    #wea-root .fourth-inner {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding: 36px 28px;
+    }
+    #wea-root .fourth-h {
+      font-size: 30px;
+    }
+    #wea-root .bestfor-grid {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .tl-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    #wea-root .calc-body {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .calc-inputs {
+      border-right: 0;
+      border-bottom: 1px solid var(--ink-10);
+    }
+    #wea-root .prod-grid {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .topbar {
+      padding: 12px 16px;
+    }
+    #wea-root .topbar-brand {
+      font-size: 11px;
+    }
+    #wea-root .pdp {
+      padding: 40px 0 48px;
+    }
+    #wea-root .tier {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    #wea-root .tier-pricing {
+      text-align: left;
+      padding-left: 36px;
+      margin-left: 0;
+    }
+    #wea-root .tier-name {
+      font-size: 16px;
+    }
+    #wea-root .tier-price {
+      font-size: 24px;
+    }
+    #wea-root .flyout {
+      width: 100%;
+      max-width: 100vw;
+      right: -100%;
+    }
+    #wea-root .pdp-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    #wea-root .pdp-title {
+      font-size: 32px;
+    }
+    #wea-root .pdp-price {
+      font-size: 30px;
+    }
   }
 </style>
 
 <div id="wea-root">
-
   {% comment %} TOP BAR {% endcomment %}
   <div class="topbar">
     <div class="topbar-inner">
       <div class="topbar-brand">{{ section.settings.topbar_brand | default: 'The Absorption Company' }}</div>
-      <a href="{{ section.settings.topbar_link_url | default: '/products/wlp-1' }}" class="topbar-link">
+      <a href="#buy" class="topbar-link">
         {{ section.settings.topbar_link_text | default: 'Shop WLP-1™' }}
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        >
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
       </a>
     </div>
   </div>
@@ -303,33 +1868,64 @@ footer {
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        {%- if section.settings.hero_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.hero_eyebrow }}</div>{%- endif -%}
-        <h1 class="hero-head">{{ section.settings.hero_heading }}</h1>
-        {%- if section.settings.hero_body != blank -%}<p>{{ section.settings.hero_body }}</p>{%- endif -%}
-        {%- if section.settings.hero_bullet_1 != blank or section.settings.hero_bullet_2 != blank or section.settings.hero_bullet_3 != blank -%}
-        <ul class="hero-bullets">
-          {%- for i in (1..3) -%}
-            {%- assign bk = 'hero_bullet_' | append: i -%}
-            {%- assign raw = section.settings[bk] -%}
-            {%- if raw != blank -%}
-              {%- assign benefit = raw | split: '<b>' | last | split: '</b>' | first -%}
-              {%- assign stat = raw | split: '<em>' | last | split: '</em>' | first -%}
-              <li><div><span class="hb-benefit">{{ benefit }}</span><span class="hb-stat">{{ stat }}</span></div></li>
-            {%- endif -%}
-          {%- endfor -%}
-        </ul>
+        {%- if section.settings.hero_eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.hero_eyebrow }}</div>
         {%- endif -%}
-        <a href="{{ section.settings.hero_cta_url | default: '/products/wlp-1' }}" class="hero-cta">
+        <h1 class="hero-head">{{ section.settings.hero_heading }}</h1>
+        {%- if section.settings.hero_body != blank -%}
+          <p>{{ section.settings.hero_body }}</p>
+        {%- endif -%}
+        {%- if section.settings.hero_bullet_1 != blank
+          or section.settings.hero_bullet_2 != blank
+          or section.settings.hero_bullet_3 != blank
+        -%}
+          <ul class="hero-bullets">
+            {%- for i in (1..3) -%}
+              {%- assign bk = 'hero_bullet_' | append: i -%}
+              {%- assign raw = section.settings[bk] -%}
+              {%- if raw != blank -%}
+                {%- assign benefit = raw | split: '<b>' | last | split: '</b>' | first -%}
+                {%- assign stat = raw | split: '<em>' | last | split: '</em>' | first -%}
+                <li>
+                  <div>
+                    <span class="hb-benefit">{{ benefit }}</span><span class="hb-stat">{{ stat }}</span>
+                  </div>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <a href="#buy" class="hero-cta">
           {{ section.settings.hero_cta_text | default: 'Shop WLP-1' }}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </a>
       </div>
       <div class="hero-img">
-        {%- if section.settings.hero_show_new_badge -%}<div class="new-badge">{{ section.settings.hero_new_badge_text | default: 'NEW' }}</div>{%- endif -%}
+        {%- if section.settings.hero_show_new_badge -%}
+          <div class="new-badge">{{ section.settings.hero_new_badge_text | default: 'NEW' }}</div>
+        {%- endif -%}
         {%- if section.settings.hero_image -%}
-          <img src="{{ section.settings.hero_image | image_url: width: 1000 }}" alt="{{ section.settings.hero_heading | strip_html | escape }}" loading="eager">
+          <img
+            src="{{ section.settings.hero_image | image_url: width: 1000 }}"
+            alt="{{ section.settings.hero_heading | strip_html | escape }}"
+            loading="eager"
+          >
         {%- else -%}
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%23EAE6DC'/></svg>" alt="" loading="eager">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%23EAE6DC'/></svg>"
+            alt=""
+            loading="eager"
+          >
         {%- endif -%}
       </div>
     </div>
@@ -344,14 +1940,16 @@ footer {
         {%- assign num_val = section.settings[num_key] -%}
         {%- assign txt_val = section.settings[txt_key] -%}
         {%- if num_val != blank or txt_val != blank -%}
-          <div class="claim"><div class="claim-num">{{ num_val }}</div><div class="claim-txt">{{ txt_val }}</div></div>
+          <div class="claim">
+            <div class="claim-num">{{ num_val }}</div>
+            <div class="claim-txt">{{ txt_val }}</div>
+          </div>
         {%- endif -%}
       {%- endfor -%}
     </div>
   </section>
 
-
-{% comment %} HOW IT WORKS / 3 PATHWAYS {% endcomment %}
+  {% comment %} HOW IT WORKS / 3 PATHWAYS {% endcomment %}
   {%- capture pw_icon_bolt -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>{%- endcapture -%}
   {%- capture pw_icon_smile -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>{%- endcapture -%}
   {%- capture pw_icon_flame -%}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>{%- endcapture -%}
@@ -360,9 +1958,13 @@ footer {
   <section class="sec overview">
     <div class="wrap">
       <div class="overview-head">
-        {%- if section.settings.ov_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.ov_eyebrow }}</div>{%- endif -%}
+        {%- if section.settings.ov_eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.ov_eyebrow }}</div>
+        {%- endif -%}
         <h2 class="serif">{{ section.settings.ov_heading }}</h2>
-        {%- if section.settings.ov_lede != blank -%}<p class="lede">{{ section.settings.ov_lede }}</p>{%- endif -%}
+        {%- if section.settings.ov_lede != blank -%}
+          <p class="lede">{{ section.settings.ov_lede }}</p>
+        {%- endif -%}
       </div>
       <div class="pathways-grid">
         {%- for i in (1..3) -%}
@@ -373,32 +1975,43 @@ footer {
           {%- assign stat_num_key = 'pw' | append: i | append: '_stat_num' -%}
           {%- assign stat_txt_key = 'pw' | append: i | append: '_stat_text' -%}
           {%- case section.settings[icon_key] -%}
-            {%- when 'bolt' -%}{%- assign pw_icon = pw_icon_bolt -%}
-            {%- when 'smile' -%}{%- assign pw_icon = pw_icon_smile -%}
-            {%- when 'flame' -%}{%- assign pw_icon = pw_icon_flame -%}
-            {%- when 'pulse' -%}{%- assign pw_icon = pw_icon_pulse -%}
-            {%- when 'drop' -%}{%- assign pw_icon = pw_icon_drop -%}
-            {%- else -%}{%- assign pw_icon = pw_icon_bolt -%}
+            {%- when 'bolt' -%}
+              {%- assign pw_icon = pw_icon_bolt -%}
+            {%- when 'smile' -%}
+              {%- assign pw_icon = pw_icon_smile -%}
+            {%- when 'flame' -%}
+              {%- assign pw_icon = pw_icon_flame -%}
+            {%- when 'pulse' -%}
+              {%- assign pw_icon = pw_icon_pulse -%}
+            {%- when 'drop' -%}
+              {%- assign pw_icon = pw_icon_drop -%}
+            {%- else -%}
+              {%- assign pw_icon = pw_icon_bolt -%}
           {%- endcase -%}
           <div class="pw-card">
             <div class="pw-num">{{ section.settings[num_key] }}</div>
             <div class="pw-icon">{{ pw_icon }}</div>
             <h3 class="pw-t serif">{{ section.settings[title_key] }}</h3>
             <p class="pw-d">{{ section.settings[desc_key] }}</p>
-            <div class="pw-stat"><b>{{ section.settings[stat_num_key] }}</b>{{ section.settings[stat_txt_key] }}</div>
+            <div class="pw-stat">
+              <b>{{ section.settings[stat_num_key] }}</b>{{ section.settings[stat_txt_key] }}
+            </div>
           </div>
         {%- endfor -%}
       </div>
     </div>
   </section>
 
-
-{% comment %} BEST FOR / IS THIS FOR YOU {% endcomment %}
+  {% comment %} BEST FOR / IS THIS FOR YOU {% endcomment %}
   <section class="sec bestfor">
     <div class="wrap">
-      {%- if section.settings.bf_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.bf_eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.bf_eyebrow != blank -%}
+        <div class="eyebrow">{{ section.settings.bf_eyebrow }}</div>
+      {%- endif -%}
       <h2 class="serif">{{ section.settings.bf_heading }}</h2>
-      {%- if section.settings.bf_lede != blank -%}<p class="lede">{{ section.settings.bf_lede }}</p>{%- endif -%}
+      {%- if section.settings.bf_lede != blank -%}
+        <p class="lede">{{ section.settings.bf_lede }}</p>
+      {%- endif -%}
       <div class="bestfor-grid">
         {%- for i in (1..6) -%}
           {%- assign t_key = 'bf' | append: i | append: '_title' -%}
@@ -406,8 +2019,24 @@ footer {
           {%- assign t_val = section.settings[t_key] -%}
           {%- if t_val != blank -%}
             <div class="bf-card">
-              <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <div><div class="bf-t">{{ t_val }}</div><div class="bf-d">{{ section.settings[d_key] }}</div></div>
+              <div class="bf-check">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div>
+                <div class="bf-t">{{ t_val }}</div>
+                <div class="bf-d">{{ section.settings[d_key] }}</div>
+              </div>
             </div>
           {%- endif -%}
         {%- endfor -%}
@@ -415,11 +2044,8 @@ footer {
     </div>
   </section>
 
-
-
-
-{% comment %} PDP BUY BLOCK {% endcomment %}
-  <section class="pdp">
+  {% comment %} PDP BUY BLOCK {% endcomment %}
+  <section class="pdp" id="buy">
     <div class="wrap pdp-grid">
       <div class="pdp-gallery">
         <div class="pdp-main">
@@ -427,9 +2053,17 @@ footer {
             <div class="pdp-badge">{{ section.settings.pdp_badge_text }}</div>
           {%- endif -%}
           {%- if section.settings.pdp_image_1 -%}
-            <img id="pdpMain" src="{{ section.settings.pdp_image_1 | image_url: width: 1000 }}" alt="{{ section.settings.pdp_title | default: 'WLP-1' }}">
+            <img
+              id="pdpMain"
+              src="{{ section.settings.pdp_image_1 | image_url: width: 1000 }}"
+              alt="{{ section.settings.pdp_title | default: 'WLP-1' }}"
+            >
           {%- else -%}
-            <img id="pdpMain" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%23EAE6DC'/><text x='400' y='410' font-family='Georgia,serif' font-size='44' fill='%231A1A18' text-anchor='middle' opacity='.35'>Main Image</text></svg>" alt="WLP-1">
+            <img
+              id="pdpMain"
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%23EAE6DC'/><text x='400' y='410' font-family='Georgia,serif' font-size='44' fill='%231A1A18' text-anchor='middle' opacity='.35'>Main Image</text></svg>"
+              alt="WLP-1"
+            >
           {%- endif -%}
         </div>
         <div class="pdp-thumbs">
@@ -439,7 +2073,12 @@ footer {
             {%- assign img_val = section.settings[img_key] -%}
             {%- assign label_val = section.settings[label_key] | default: 'View' -%}
             {%- if img_val -%}
-              <div class="pdp-thumb{% if i == 1 %} active{% endif %}" data-thumb-index="{{ i }}" data-thumb-src="{{ img_val | image_url: width: 1000 }}" data-thumb-label="{{ label_val | escape }}">
+              <div
+                class="pdp-thumb{% if i == 1 %} active{% endif %}"
+                data-thumb-index="{{ i }}"
+                data-thumb-src="{{ img_val | image_url: width: 1000 }}"
+                data-thumb-label="{{ label_val | escape }}"
+              >
                 <img src="{{ img_val | image_url: width: 300 }}" alt="{{ label_val | escape }}">
               </div>
             {%- endif -%}
@@ -447,34 +2086,162 @@ footer {
         </div>
       </div>
       <div class="pdp-info">
-        {%- if section.settings.pdp_eyebrow != blank -%}<div class="pdp-eyebrow">{{ section.settings.pdp_eyebrow }}</div>{%- endif -%}
+        {%- if section.settings.pdp_eyebrow != blank -%}
+          <div class="pdp-eyebrow">{{ section.settings.pdp_eyebrow }}</div>
+        {%- endif -%}
         <h2 class="pdp-title serif">{{ section.settings.pdp_title }}</h2>
-        {%- if section.settings.pdp_subtitle != blank -%}<p class="pdp-subtitle">{{ section.settings.pdp_subtitle }}</p>{%- endif -%}
+        {%- if section.settings.pdp_subtitle != blank -%}
+          <p class="pdp-subtitle">{{ section.settings.pdp_subtitle }}</p>
+        {%- endif -%}
         {%- if section.settings.pdp_show_rating -%}
           <div class="pdp-rating">
             <div class="pdp-stars">
-              {%- for s in (1..5) -%}<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{%- endfor -%}
+              {%- for s in (1..5) -%}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {%- endfor -%}
             </div>
-            <div class="pdp-rating-txt"><b>{{ section.settings.pdp_rating_score }}</b> · {{ section.settings.pdp_rating_count }}</div>
+            <div class="pdp-rating-txt">
+              <b>{{ section.settings.pdp_rating_score }}</b> · {{ section.settings.pdp_rating_count }}
+            </div>
           </div>
         {%- endif -%}
-        <div class="pdp-price-row">
-          <div class="pdp-price">{{ section.settings.pdp_price }}</div>
-          {%- if section.settings.pdp_price_meta != blank -%}<div class="pdp-price-meta">{{ section.settings.pdp_price_meta }}</div>{%- endif -%}
+        <div class="purchase-toggle">
+          <button class="pt-btn active" id="ptSub" onclick="weaTogglePurchase('sub')">Subscribe & Save</button>
+          <button class="pt-btn" id="ptOne" onclick="weaTogglePurchase('one')">One-Time</button>
+        </div>
+        <div class="tiers" id="weaTiers">
+          <div
+            class="tier"
+            data-tier="monthly"
+            data-variant-id="52472821121313"
+            data-selling-plan-id="691162546465"
+            onclick="weaSelectTier(this)"
+          >
+            <div class="tier-radio"><div class="tier-dot"></div></div>
+            <div class="tier-body">
+              <div class="tier-top">
+                <div class="tier-name">Monthly</div>
+                <div class="tier-badges"><span class="tier-save">SAVE 20%</span></div>
+              </div>
+              <div class="tier-desc">
+                A 1-month supply, delivered every month. Free shipping. Pause or cancel anytime.
+              </div>
+            </div>
+            <div class="tier-pricing">
+              <div class="tier-price">$79<span>/mo</span></div>
+              <div class="tier-compare"><s>$99.00</s> $79.00 total</div>
+              <div class="tier-savings">save $20.00</div>
+            </div>
+          </div>
+          <div
+            class="tier selected"
+            data-tier="3month"
+            data-variant-id="52472821154081"
+            data-selling-plan-id="691162579233"
+            onclick="weaSelectTier(this)"
+          >
+            <div class="tier-radio"><div class="tier-dot"></div></div>
+            <div class="tier-body">
+              <div class="tier-top">
+                <div class="tier-name">3 Months</div>
+                <div class="tier-badges">
+                  <span class="tier-save">SAVE 30%</span><span class="tier-pop">MOST POPULAR</span>
+                </div>
+              </div>
+              <div class="tier-desc">
+                A 3-month supply with refills delivered every 3 months. Free shipping. Pause or cancel anytime.
+              </div>
+            </div>
+            <div class="tier-pricing">
+              <div class="tier-price">$69<span>/mo</span></div>
+              <div class="tier-compare"><s>$297.00</s> $207.00 total</div>
+              <div class="tier-savings">save $90.00</div>
+            </div>
+          </div>
+          <div
+            class="tier"
+            data-tier="6month"
+            data-variant-id="52472821186849"
+            data-selling-plan-id="691166544161"
+            onclick="weaSelectTier(this)"
+          >
+            <div class="tier-radio"><div class="tier-dot"></div></div>
+            <div class="tier-body">
+              <div class="tier-top">
+                <div class="tier-name">6 Months</div>
+                <div class="tier-badges">
+                  <span class="tier-save">SAVE 35%</span><span class="tier-val">BEST VALUE</span>
+                </div>
+              </div>
+              <div class="tier-desc">
+                A 6-month supply with refills delivered every 6 months. Free shipping. Pause or cancel anytime.
+              </div>
+            </div>
+            <div class="tier-pricing">
+              <div class="tier-price">$64<span>/mo</span></div>
+              <div class="tier-compare"><s>$594.00</s> $384.00 total</div>
+              <div class="tier-savings">save $210.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="onetime-row" id="weaOnetime" style="display:none">
+          <div class="tier selected" data-tier="onetime" data-variant-id="52472821121313" data-selling-plan-id="">
+            <div class="tier-body">
+              <div class="tier-top">
+                <div class="tier-name">One-Time Purchase</div>
+              </div>
+              <div class="tier-desc">A single 30-day supply. No subscription.</div>
+            </div>
+            <div class="tier-pricing">
+              <div class="tier-price">$99</div>
+              <div class="tier-compare">30-day supply</div>
+            </div>
+          </div>
         </div>
         <ul class="pdp-bullets">
-          {%- if section.settings.pdp_bullet_1 != blank -%}<li>{{ section.settings.pdp_bullet_1 }}</li>{%- endif -%}
-          {%- if section.settings.pdp_bullet_2 != blank -%}<li>{{ section.settings.pdp_bullet_2 }}</li>{%- endif -%}
-          {%- if section.settings.pdp_bullet_3 != blank -%}<li>{{ section.settings.pdp_bullet_3 }}</li>{%- endif -%}
-          {%- if section.settings.pdp_bullet_4 != blank -%}<li>{{ section.settings.pdp_bullet_4 }}</li>{%- endif -%}
+          {%- if section.settings.pdp_bullet_1 != blank -%}
+            <li>{{ section.settings.pdp_bullet_1 }}</li>
+          {%- endif -%}
+          {%- if section.settings.pdp_bullet_2 != blank -%}
+            <li>{{ section.settings.pdp_bullet_2 }}</li>
+          {%- endif -%}
+          {%- if section.settings.pdp_bullet_3 != blank -%}
+            <li>{{ section.settings.pdp_bullet_3 }}</li>
+          {%- endif -%}
+          {%- if section.settings.pdp_bullet_4 != blank -%}
+            <li>{{ section.settings.pdp_bullet_4 }}</li>
+          {%- endif -%}
         </ul>
-        <a href="{{ section.settings.pdp_cta_url | default: '/products/wlp-1' }}" class="pdp-cta">
-          {{ section.settings.pdp_cta_text | default: 'Shop Now' }}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <button class="pdp-cta" id="weaAtc" type="button">
+          Add to Cart
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
         {%- if section.settings.pdp_assurance != blank -%}
           <div class="pdp-assurance">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z"/></svg>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12l2 2 4-4"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z"/>
+            </svg>
             {{ section.settings.pdp_assurance }}
           </div>
         {%- endif -%}
@@ -482,12 +2249,16 @@ footer {
     </div>
   </section>
 
-{% comment %} CLINICAL PROOF {% endcomment %}
+  {% comment %} CLINICAL PROOF {% endcomment %}
   <section class="sec proof">
     <div class="wrap">
-      {%- if section.settings.proof_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.proof_eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.proof_eyebrow != blank -%}
+        <div class="eyebrow">{{ section.settings.proof_eyebrow }}</div>
+      {%- endif -%}
       <h2 class="serif">{{ section.settings.proof_heading }}</h2>
-      {%- if section.settings.proof_lede != blank -%}<p class="lede">{{ section.settings.proof_lede }}</p>{%- endif -%}
+      {%- if section.settings.proof_lede != blank -%}
+        <p class="lede">{{ section.settings.proof_lede }}</p>
+      {%- endif -%}
       <div class="proof-stack">
         {%- for i in (1..3) -%}
           {%- assign quote_key = 'proof' | append: i | append: '_quote' -%}
@@ -497,7 +2268,9 @@ footer {
           {%- if quote_val != blank -%}
             <div class="proof-card">
               <p class="proof-quote">{{ quote_val }}</p>
-              {%- if source_val != blank -%}<div class="proof-source">{{ source_val }}</div>{%- endif -%}
+              {%- if source_val != blank -%}
+                <div class="proof-source">{{ source_val }}</div>
+              {%- endif -%}
             </div>
           {%- endif -%}
         {%- endfor -%}
@@ -505,35 +2278,76 @@ footer {
     </div>
   </section>
 
-
-
   {% comment %} FOURTH PATHWAY / BERBERINE {% endcomment %}
   <section class="fourth">
     <div class="fourth-wrap">
       <div class="fourth-card">
         <div class="fourth-inner">
           <div>
-            {%- if section.settings.fourth_eyebrow != blank -%}<div class="fourth-eyebrow">{{ section.settings.fourth_eyebrow }}</div>{%- endif -%}
+            {%- if section.settings.fourth_eyebrow != blank -%}
+              <div class="fourth-eyebrow">{{ section.settings.fourth_eyebrow }}</div>
+            {%- endif -%}
             <h2 class="fourth-h serif">{{ section.settings.fourth_heading }}</h2>
-            {%- if section.settings.fourth_body != blank -%}<p class="fourth-p">{{ section.settings.fourth_body }}</p>{%- endif -%}
+            {%- if section.settings.fourth_body != blank -%}
+              <p class="fourth-p">{{ section.settings.fourth_body }}</p>
+            {%- endif -%}
             <div class="fourth-feats">
-              {%- if section.settings.fourth_feat_1 != blank -%}<div class="fourth-feat">{{ section.settings.fourth_feat_1 }}</div>{%- endif -%}
-              {%- if section.settings.fourth_feat_2 != blank -%}<div class="fourth-feat">{{ section.settings.fourth_feat_2 }}</div>{%- endif -%}
-              {%- if section.settings.fourth_feat_3 != blank -%}<div class="fourth-feat">{{ section.settings.fourth_feat_3 }}</div>{%- endif -%}
-              {%- if section.settings.fourth_feat_4 != blank -%}<div class="fourth-feat">{{ section.settings.fourth_feat_4 }}</div>{%- endif -%}
+              {%- if section.settings.fourth_feat_1 != blank -%}
+                <div class="fourth-feat">{{ section.settings.fourth_feat_1 }}</div>
+              {%- endif -%}
+              {%- if section.settings.fourth_feat_2 != blank -%}
+                <div class="fourth-feat">{{ section.settings.fourth_feat_2 }}</div>
+              {%- endif -%}
+              {%- if section.settings.fourth_feat_3 != blank -%}
+                <div class="fourth-feat">{{ section.settings.fourth_feat_3 }}</div>
+              {%- endif -%}
+              {%- if section.settings.fourth_feat_4 != blank -%}
+                <div class="fourth-feat">{{ section.settings.fourth_feat_4 }}</div>
+              {%- endif -%}
             </div>
-            <a href="{{ section.settings.fourth_cta_url | default: '/products/ultimate-weight-management-stack' }}" class="fourth-cta">
+            <a
+              href="{{ section.settings.fourth_cta_url | default: '/products/ultimate-weight-management-stack' }}"
+              class="fourth-cta"
+            >
               {{ section.settings.fourth_cta_text | default: 'Shop The Stack' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
           <div>
             <div class="lanes">
-              {%- if section.settings.lanes_title != blank -%}<div class="lanes-title">{{ section.settings.lanes_title }}</div>{%- endif -%}
-              <div class="lane"><div class="lane-n">01</div><div class="lane-bar"></div><div class="lane-lab">{{ section.settings.lane_1_label }}</div></div>
-              <div class="lane"><div class="lane-n">02</div><div class="lane-bar"></div><div class="lane-lab">{{ section.settings.lane_2_label }}</div></div>
-              <div class="lane"><div class="lane-n">03</div><div class="lane-bar"></div><div class="lane-lab">{{ section.settings.lane_3_label }}</div></div>
-              <div class="lane four"><div class="lane-n">04</div><div class="lane-bar"></div><div class="lane-lab">{{ section.settings.lane_4_label }}</div></div>
+              {%- if section.settings.lanes_title != blank -%}
+                <div class="lanes-title">{{ section.settings.lanes_title }}</div>
+              {%- endif -%}
+              <div class="lane">
+                <div class="lane-n">01</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">{{ section.settings.lane_1_label }}</div>
+              </div>
+              <div class="lane">
+                <div class="lane-n">02</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">{{ section.settings.lane_2_label }}</div>
+              </div>
+              <div class="lane">
+                <div class="lane-n">03</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">{{ section.settings.lane_3_label }}</div>
+              </div>
+              <div class="lane four">
+                <div class="lane-n">04</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">{{ section.settings.lane_4_label }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -541,13 +2355,16 @@ footer {
     </div>
   </section>
 
-  
   {% comment %} TIMELINE / FIRST 90 DAYS {% endcomment %}
   <section class="sec timeline">
     <div class="wrap">
-      {%- if section.settings.tl_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.tl_eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.tl_eyebrow != blank -%}
+        <div class="eyebrow">{{ section.settings.tl_eyebrow }}</div>
+      {%- endif -%}
       <h2 class="serif">{{ section.settings.tl_heading }}</h2>
-      {%- if section.settings.tl_lede != blank -%}<p class="lede">{{ section.settings.tl_lede }}</p>{%- endif -%}
+      {%- if section.settings.tl_lede != blank -%}
+        <p class="lede">{{ section.settings.tl_lede }}</p>
+      {%- endif -%}
       <div class="tl-grid">
         {%- for i in (1..3) -%}
           {%- assign tag_key = 'tl' | append: i | append: '_tag' -%}
@@ -562,7 +2379,9 @@ footer {
                 {%- assign bullets_arr = bullets_val | newline_to_br | split: '<br />' -%}
                 {%- for line in bullets_arr -%}
                   {%- assign line_trim = line | strip -%}
-                  {%- if line_trim != blank -%}<li>{{ line_trim }}</li>{%- endif -%}
+                  {%- if line_trim != blank -%}
+                    <li>{{ line_trim }}</li>
+                  {%- endif -%}
                 {%- endfor -%}
               </ul>
             </div>
@@ -575,9 +2394,17 @@ footer {
   <!-- CALCULATOR -->
   <section class="sec calc-wrap">
     <div class="wrap">
-      {%- if section.settings.calc_eyebrow != blank -%}<div class="eyebrow" style="text-align:center;display:block">{{ section.settings.calc_eyebrow }}</div>{%- endif -%}
-      <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">{{ section.settings.calc_heading }}</h2>
-      {%- if section.settings.calc_lede != blank -%}<p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">{{ section.settings.calc_lede }}</p>{%- endif -%}
+      {%- if section.settings.calc_eyebrow != blank -%}
+        <div class="eyebrow" style="text-align:center;display:block">{{ section.settings.calc_eyebrow }}</div>
+      {%- endif -%}
+      <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">
+        {{ section.settings.calc_heading }}
+      </h2>
+      {%- if section.settings.calc_lede != blank -%}
+        <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">
+          {{ section.settings.calc_lede }}
+        </p>
+      {%- endif -%}
 
       <div class="calc">
         <div class="calc-head">
@@ -590,38 +2417,76 @@ footer {
         <div class="calc-body">
           <div class="calc-inputs">
             <div class="slg">
-              <div class="sl-top"><div class="sl-lab">Current Weight</div><div class="sl-val" id="weaDispW">180 <span>lbs</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Current Weight</div>
+                <div class="sl-val" id="weaDispW">180 <span>lbs</span></div>
+              </div>
               <input type="range" id="weaSW" min="120" max="400" value="180" oninput="weaCalc()">
             </div>
             <div class="slg" id="weaHImpRow">
-              <div class="sl-top"><div class="sl-lab">Height</div><div class="sl-val" id="weaDispH">5'8"</div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Height</div>
+                <div class="sl-val" id="weaDispH">5'8"</div>
+              </div>
               <input type="range" id="weaSH" min="54" max="84" value="68" oninput="weaCalc()">
             </div>
             <div class="slg" id="weaHMetRow" style="display:none">
-              <div class="sl-top"><div class="sl-lab">Height</div><div class="sl-val" id="weaDispHC">173 <span>cm</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Height</div>
+                <div class="sl-val" id="weaDispHC">173 <span>cm</span></div>
+              </div>
               <input type="range" id="weaSHC" min="140" max="215" value="173" oninput="weaCalc()">
             </div>
             <div class="slg">
-              <div class="sl-top"><div class="sl-lab">Goal (total to lose)</div><div class="sl-val" id="weaDispG">18 <span>lbs</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Goal (total to lose)</div>
+                <div class="sl-val" id="weaDispG">18 <span>lbs</span></div>
+              </div>
               <input type="range" id="weaSG" min="5" max="100" value="18" step="1" oninput="weaCalc()">
             </div>
             <div class="bmi-warn" id="weaBmiWarn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span>Clinical studies were conducted on adults with a BMI of 26 or higher. Results may vary outside this range.</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                style="flex-shrink:0;margin-top:1px"
+              >
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span
+                >Clinical studies were conducted on adults with a BMI of 26 or higher. Results may vary outside this
+                range.</span
+              >
             </div>
           </div>
           <div class="calc-out">
             <div>
               <div class="out-lab" id="weaOutLab">Your 3-Month Potential</div>
               <div class="out-head serif" id="weaOutHead"></div>
-              <div style="font-size:11px;color:var(--ink-40);margin-top:6px">Based on clinical study pace of {{ section.settings.calc_pace_low | default: 1 }}–{{ section.settings.calc_pace_high | default: 2 }} lbs per week</div>
+              <div style="font-size:11px;color:var(--ink-40);margin-top:6px">
+                Based on clinical study pace of {{ section.settings.calc_pace_low | default: 1 }}–
+                {{- section.settings.calc_pace_high | default: 2 }}
+                lbs per week
+              </div>
             </div>
             <div class="out-stats">
-              <div class="out-stat"><div class="os-lab">Starting</div><div class="os-val" id="weaOsStart"></div></div>
-              <div class="out-stat"><div class="os-lab" id="weaOsLab2">After 3 months</div><div class="os-val" id="weaOsGoal"></div></div>
+              <div class="out-stat">
+                <div class="os-lab">Starting</div>
+                <div class="os-val" id="weaOsStart"></div>
+              </div>
+              <div class="out-stat">
+                <div class="os-lab" id="weaOsLab2">After 3 months</div>
+                <div class="os-val" id="weaOsGoal"></div>
+              </div>
             </div>
             <div class="chart-wrap">
-              <div class="chart-top"><div class="chart-lab">3-Month Trajectory</div><div class="chart-month" id="weaChartMax">180 → 162 lbs</div></div>
+              <div class="chart-top">
+                <div class="chart-lab">3-Month Trajectory</div>
+                <div class="chart-month" id="weaChartMax">180 → 162 lbs</div>
+              </div>
               <div class="chart">
                 <svg viewBox="0 0 300 120" preserveAspectRatio="none">
                   <defs>
@@ -643,8 +2508,25 @@ footer {
               </div>
               <div class="chart-x"><span>Today</span><span>Month 1</span><span>Month 2</span><span>Month 3</span></div>
             </div>
-            <div class="calc-cta"><a href="{{ section.settings.calc_cta_url | default: '/products/wlp-1' }}">{{ section.settings.calc_cta_text | default: 'Shop WLP-1' }} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
-            {%- if section.settings.calc_disclaimer != blank -%}<div class="calc-disc">{{ section.settings.calc_disclaimer }}</div>{%- endif -%}
+            <div class="calc-cta">
+              <a href="#buy">
+                {{- section.settings.calc_cta_text | default: 'Shop WLP-1' }}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+            {%- if section.settings.calc_disclaimer != blank -%}
+              <div class="calc-disc">{{ section.settings.calc_disclaimer }}</div>
+            {%- endif -%}
           </div>
         </div>
       </div>
@@ -654,28 +2536,59 @@ footer {
   {% comment %} PRODUCT CARDS (WLP-1 vs STACK) {% endcomment %}
   <section class="sec products">
     <div class="wrap">
-      {%- if section.settings.prods_eyebrow != blank -%}<div class="eyebrow" style="text-align:center;display:block">{{ section.settings.prods_eyebrow }}</div>{%- endif -%}
-      <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">{{ section.settings.prods_heading }}</h2>
-      {%- if section.settings.prods_lede != blank -%}<p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">{{ section.settings.prods_lede }}</p>{%- endif -%}
+      {%- if section.settings.prods_eyebrow != blank -%}
+        <div class="eyebrow" style="text-align:center;display:block">{{ section.settings.prods_eyebrow }}</div>
+      {%- endif -%}
+      <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">
+        {{ section.settings.prods_heading }}
+      </h2>
+      {%- if section.settings.prods_lede != blank -%}
+        <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">
+          {{ section.settings.prods_lede }}
+        </p>
+      {%- endif -%}
 
       <div class="prod-grid">
         {%- comment -%} CORE PRODUCT CARD {%- endcomment -%}
         <div class="prod-card">
           <div class="prod-img">
-            {%- if section.settings.p1_tag != blank -%}<div class="prod-tag">{{ section.settings.p1_tag }}</div>{%- endif -%}
-            {%- if section.settings.p1_image -%}<img src="{{ section.settings.p1_image | image_url: width: 800 }}" alt="{{ section.settings.p1_title | escape }}">{%- endif -%}
+            {%- if section.settings.p1_tag != blank -%}
+              <div class="prod-tag">{{ section.settings.p1_tag }}</div>
+            {%- endif -%}
+            {%- if section.settings.p1_image -%}
+              <img
+                src="{{ section.settings.p1_image | image_url: width: 800 }}"
+                alt="{{ section.settings.p1_title | escape }}"
+              >
+            {%- endif -%}
           </div>
           <div class="prod-body">
             <div class="prod-h serif">{{ section.settings.p1_title }}</div>
             <div class="prod-d">{{ section.settings.p1_desc }}</div>
             <div class="prod-feat">
-              {%- if section.settings.p1_feat_1 != blank -%}<div class="prod-f">{{ section.settings.p1_feat_1 }}</div>{%- endif -%}
-              {%- if section.settings.p1_feat_2 != blank -%}<div class="prod-f">{{ section.settings.p1_feat_2 }}</div>{%- endif -%}
-              {%- if section.settings.p1_feat_3 != blank -%}<div class="prod-f">{{ section.settings.p1_feat_3 }}</div>{%- endif -%}
+              {%- if section.settings.p1_feat_1 != blank -%}
+                <div class="prod-f">{{ section.settings.p1_feat_1 }}</div>
+              {%- endif -%}
+              {%- if section.settings.p1_feat_2 != blank -%}
+                <div class="prod-f">{{ section.settings.p1_feat_2 }}</div>
+              {%- endif -%}
+              {%- if section.settings.p1_feat_3 != blank -%}
+                <div class="prod-f">{{ section.settings.p1_feat_3 }}</div>
+              {%- endif -%}
             </div>
             <a href="{{ section.settings.p1_cta_url | default: '/products/wlp-1' }}" class="prod-cta">
               {{ section.settings.p1_cta_text | default: 'Shop WLP-1' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
         </div>
@@ -683,22 +2596,52 @@ footer {
         {%- comment -%} STACK PRODUCT CARD {%- endcomment -%}
         <div class="prod-card">
           <div class="prod-img">
-            {%- if section.settings.p2_tag != blank -%}<div class="prod-tag" style="background:var(--blue);color:#fff">{{ section.settings.p2_tag }}</div>{%- endif -%}
-            {%- if section.settings.p2_image -%}<img src="{{ section.settings.p2_image | image_url: width: 800 }}" alt="{{ section.settings.p2_title | escape }}">{%- endif -%}
+            {%- if section.settings.p2_tag != blank -%}
+              <div class="prod-tag" style="background:var(--blue);color:#fff">{{ section.settings.p2_tag }}</div>
+            {%- endif -%}
+            {%- if section.settings.p2_image -%}
+              <img
+                src="{{ section.settings.p2_image | image_url: width: 800 }}"
+                alt="{{ section.settings.p2_title | escape }}"
+              >
+            {%- endif -%}
           </div>
           <div class="prod-body">
-            {%- if section.settings.p2_chip != blank -%}<div class="fourth-chip">{{ section.settings.p2_chip }}</div>{%- endif -%}
+            {%- if section.settings.p2_chip != blank -%}
+              <div class="fourth-chip">{{ section.settings.p2_chip }}</div>
+            {%- endif -%}
             <div class="prod-h serif">{{ section.settings.p2_title }}</div>
             <div class="prod-d">{{ section.settings.p2_desc }}</div>
             <div class="prod-feat">
-              {%- if section.settings.p2_feat_1 != blank -%}<div class="prod-f">{{ section.settings.p2_feat_1 }}</div>{%- endif -%}
-              {%- if section.settings.p2_feat_2 != blank -%}<div class="prod-f">{{ section.settings.p2_feat_2 }}</div>{%- endif -%}
-              {%- if section.settings.p2_feat_3 != blank -%}<div class="prod-f">{{ section.settings.p2_feat_3 }}</div>{%- endif -%}
-              {%- if section.settings.p2_feat_4 != blank -%}<div class="prod-f">{{ section.settings.p2_feat_4 }}</div>{%- endif -%}
+              {%- if section.settings.p2_feat_1 != blank -%}
+                <div class="prod-f">{{ section.settings.p2_feat_1 }}</div>
+              {%- endif -%}
+              {%- if section.settings.p2_feat_2 != blank -%}
+                <div class="prod-f">{{ section.settings.p2_feat_2 }}</div>
+              {%- endif -%}
+              {%- if section.settings.p2_feat_3 != blank -%}
+                <div class="prod-f">{{ section.settings.p2_feat_3 }}</div>
+              {%- endif -%}
+              {%- if section.settings.p2_feat_4 != blank -%}
+                <div class="prod-f">{{ section.settings.p2_feat_4 }}</div>
+              {%- endif -%}
             </div>
-            <a href="{{ section.settings.p2_cta_url | default: '/products/ultimate-weight-management-stack' }}" class="prod-cta stack">
+            <a
+              href="{{ section.settings.p2_cta_url | default: '/products/ultimate-weight-management-stack' }}"
+              class="prod-cta stack"
+            >
               {{ section.settings.p2_cta_text | default: 'Shop The Stack' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
         </div>
@@ -709,103 +2652,337 @@ footer {
   {% comment %} FOOTER DISCLAIMER {% endcomment %}
   <div class="foot">
     <div class="wrap">
-      {%- if section.settings.foot_brand != blank -%}<div class="tm">{{ section.settings.foot_brand }}</div>{%- endif -%}
-      {%- if section.settings.foot_disc_1 != blank -%}<p>{{ section.settings.foot_disc_1 }}</p>{%- endif -%}
-      {%- if section.settings.foot_disc_2 != blank -%}<p>{{ section.settings.foot_disc_2 }}</p>{%- endif -%}
+      {%- if section.settings.foot_brand != blank -%}
+        <div class="tm">{{ section.settings.foot_brand }}</div>
+      {%- endif -%}
+      {%- if section.settings.foot_disc_1 != blank -%}
+        <p>{{ section.settings.foot_disc_1 }}</p>
+      {%- endif -%}
+      {%- if section.settings.foot_disc_2 != blank -%}
+        <p>{{ section.settings.foot_disc_2 }}</p>
+      {%- endif -%}
     </div>
   </div>
+</div>
 
+<!-- Flyout Cart -->
+<div class="flyout-overlay" id="weaFlyOverlay" onclick="closeFlyout()"></div>
+<div class="flyout" id="weaFlyout">
+  <div class="flyout-head">
+    <div class="flyout-title">Added to Cart</div>
+    <button class="flyout-close" onclick="closeFlyout()">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="flyout-body" id="weaFlyBody">
+    <div class="flyout-item">
+      <div class="flyout-img"><img id="weaFlyImg" src="" alt="WLP-1"></div>
+      <div class="flyout-details">
+        <div class="flyout-product" id="weaFlyProduct">WLP-1™</div>
+        <div class="flyout-plan" id="weaFlyPlan">3 Months subscription</div>
+        <div class="flyout-line-price" id="weaFlyPrice">$69</div>
+      </div>
+    </div>
+  </div>
+  <div class="flyout-foot">
+    <div class="flyout-total"><span>Total</span><span id="weaFlyTotal">$69</span></div>
+    <a href="/cart" class="flyout-checkout">Checkout</a>
+  </div>
 </div>
 
 <script>
-(function(){
-  // PDP thumbnail swap (uses data-thumb-src from liquid-rendered images)
-  document.querySelectorAll('#wea-root .pdp-thumb').forEach(function(thumb){
-    thumb.addEventListener('click', function(){
-      var src = thumb.getAttribute('data-thumb-src');
-      if(!src) return;
-      document.querySelectorAll('#wea-root .pdp-thumb').forEach(function(t){t.classList.remove('active')});
-      thumb.classList.add('active');
-      var main = document.getElementById('pdpMain');
-      if(main) main.src = src;
+  (function(){
+    // PDP thumbnail swap (uses data-thumb-src from liquid-rendered images)
+    document.querySelectorAll('#wea-root .pdp-thumb').forEach(function(thumb){
+      thumb.addEventListener('click', function(){
+        var src = thumb.getAttribute('data-thumb-src');
+        if(!src) return;
+        document.querySelectorAll('#wea-root .pdp-thumb').forEach(function(t){t.classList.remove('active')});
+        thumb.classList.add('active');
+        var main = document.getElementById('pdpMain');
+        if(main) main.src = src;
+      });
     });
-  });
 
-  // Calculator
-  var unit='imperial';
-  window.weaSetUnit = function(u){
-    unit = u;
-    document.getElementById('uImp').classList.toggle('on', u==='imperial');
-    document.getElementById('uMet').classList.toggle('on', u==='metric');
-    document.getElementById('weaHImpRow').style.display = u==='imperial'?'':'none';
-    document.getElementById('weaHMetRow').style.display = u==='metric'?'':'none';
-    var ws = document.getElementById('weaSW');
-    var gs = document.getElementById('weaSG');
-    if(u==='metric'){
-      var lbs=parseInt(ws.value); ws.min=45; ws.max=180; ws.value=Math.round(lbs/2.20462);
-      var glbs=parseInt(gs.value); gs.min=2; gs.max=45; gs.value=Math.max(2,Math.round(glbs/2.20462));
-    } else {
-      var kg=parseInt(ws.value); ws.min=120; ws.max=400; ws.value=Math.round(kg*2.20462);
-      var gkg=parseInt(gs.value); gs.min=5; gs.max=100; gs.value=Math.max(5,Math.round(gkg*2.20462));
+    // Calculator
+    var unit='imperial';
+    window.weaSetUnit = function(u){
+      unit = u;
+      document.getElementById('uImp').classList.toggle('on', u==='imperial');
+      document.getElementById('uMet').classList.toggle('on', u==='metric');
+      document.getElementById('weaHImpRow').style.display = u==='imperial'?'':'none';
+      document.getElementById('weaHMetRow').style.display = u==='metric'?'':'none';
+      var ws = document.getElementById('weaSW');
+      var gs = document.getElementById('weaSG');
+      if(u==='metric'){
+        var lbs=parseInt(ws.value); ws.min=45; ws.max=180; ws.value=Math.round(lbs/2.20462);
+        var glbs=parseInt(gs.value); gs.min=2; gs.max=45; gs.value=Math.max(2,Math.round(glbs/2.20462));
+      } else {
+        var kg=parseInt(ws.value); ws.min=120; ws.max=400; ws.value=Math.round(kg*2.20462);
+        var gkg=parseInt(gs.value); gs.min=5; gs.max=100; gs.value=Math.max(5,Math.round(gkg*2.20462));
+      }
+
+    // Purchase type toggle
+    window.weaTogglePurchase = function(mode){
+      document.getElementById('ptSub').classList.toggle('active', mode==='sub');
+      document.getElementById('ptOne').classList.toggle('active', mode==='one');
+      document.getElementById('weaTiers').style.display = mode==='sub' ? '' : 'none';
+      document.getElementById('weaOnetime').style.display = mode==='one' ? '' : 'none';
+    };
+
+    // Tier selection
+    window.weaSelectTier = function(el){
+      var container = el.closest('.tiers');
+      if(!container) return;
+      container.querySelectorAll('.tier').forEach(function(t){t.classList.remove('selected')});
+      el.classList.add('selected');
+    };
+
+    // Flyout cart
+    function openFlyout(product, plan, price, imgSrc){
+      var overlay = document.getElementById('weaFlyOverlay');
+      var flyout = document.getElementById('weaFlyout');
+      var body = document.getElementById('weaFlyBody');
+      var total = document.getElementById('weaFlyTotal');
+      var imgEl = document.getElementById('weaFlyImg');
+      document.getElementById('weaFlyProduct').textContent = product;
+      document.getElementById('weaFlyPlan').textContent = plan;
+      document.getElementById('weaFlyPrice').textContent = price;
+      total.textContent = price;
+      if(imgSrc && imgEl) imgEl.src = imgSrc;
+      overlay.classList.add('open');
+      flyout.classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
+    function closeFlyout(){
+      document.getElementById('weaFlyOverlay').classList.remove('open');
+      document.getElementById('weaFlyout').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Add to Cart
+    document.getElementById('weaAtc').addEventListener('click', function(e){
+      e.preventDefault();
+      var btn = this;
+      var isOnetime = document.getElementById('weaOnetime').style.display !== 'none';
+      var selectedTier;
+      if(isOnetime){
+        selectedTier = document.querySelector('#weaOnetime .tier');
+      } else {
+        selectedTier = document.querySelector('#weaTiers .tier.selected');
+      }
+      if(!selectedTier) return;
+
+      var variantId = selectedTier.getAttribute('data-variant-id');
+      var sellingPlanId = selectedTier.getAttribute('data-selling-plan-id');
+      var tierName = selectedTier.querySelector('.tier-name').textContent;
+      var tierPrice = selectedTier.querySelector('.tier-price').textContent.replace(/\/mo/,'');
+
+      var payload = { items: [{ id: parseInt(variantId, 10), quantity: 1 }] };
+      if(sellingPlanId){
+        payload.items[0].selling_plan = parseInt(sellingPlanId, 10);
+      }
+
+      btn.textContent = 'Adding...';
+      btn.disabled = true;
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res){ if(!res.ok) throw new Error('Cart error'); return res.json(); })
+      .then(function(){
+        btn.innerHTML = 'Add to Cart <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        btn.disabled = false;
+        var planLabel = isOnetime ? 'One-time purchase' : tierName + ' subscription';
+        var imgSrc = '';
+        var mainImg = document.getElementById('pdpMain');
+        if(mainImg) imgSrc = mainImg.src;
+        openFlyout('WLP-1\u2122', planLabel, tierPrice, imgSrc);
+      })
+      .catch(function(err){
+        console.error('Cart add failed:', err);
+        btn.innerHTML = 'Add to Cart <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        btn.disabled = false;
+      });
+    });
+
+    // Smooth scroll for all #buy links
+    document.querySelectorAll('a[href="#buy"]').forEach(function(link){
+      link.addEventListener('click', function(e){
+        e.preventDefault();
+        var target = document.getElementById('buy');
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
     weaCalc();
-  };
+    };
 
-  var paceLow = {{ section.settings.calc_pace_low | default: 1 }};
-  var paceHigh = {{ section.settings.calc_pace_high | default: 2 }};
-  var paceMid = (paceLow + paceHigh) / 2;
-  var monthsCap = {{ section.settings.calc_months_cap | default: 12 }};
+    var paceLow = {{ section.settings.calc_pace_low | default: 1 }};
+    var paceHigh = {{ section.settings.calc_pace_high | default: 2 }};
+    var paceMid = (paceLow + paceHigh) / 2;
+    var monthsCap = {{ section.settings.calc_months_cap | default: 12 }};
 
-  window.weaCalc = function(){
-    var wRaw = parseInt(document.getElementById('weaSW').value);
-    var wLbs = unit==='imperial' ? wRaw : wRaw*2.20462;
-    var uL = unit==='imperial'?'lbs':'kg';
-    document.getElementById('weaDispW').innerHTML = wRaw+' <span>'+uL+'</span>';
-    var hm;
-    if(unit==='imperial'){
-      var ti = parseInt(document.getElementById('weaSH').value);
-      document.getElementById('weaDispH').textContent = Math.floor(ti/12)+"'"+(ti%12)+'"';
-      hm = ti*0.0254;
-    } else {
-      var cm = parseInt(document.getElementById('weaSHC').value);
-      document.getElementById('weaDispHC').innerHTML = cm+' <span>cm</span>';
-      hm = cm/100;
+    window.weaCalc = function(){
+      var wRaw = parseInt(document.getElementById('weaSW').value);
+      var wLbs = unit==='imperial' ? wRaw : wRaw*2.20462;
+      var uL = unit==='imperial'?'lbs':'kg';
+      document.getElementById('weaDispW').innerHTML = wRaw+' <span>'+uL+'</span>';
+      var hm;
+      if(unit==='imperial'){
+        var ti = parseInt(document.getElementById('weaSH').value);
+        document.getElementById('weaDispH').textContent = Math.floor(ti/12)+"'"+(ti%12)+'"';
+        hm = ti*0.0254;
+      } else {
+        var cm = parseInt(document.getElementById('weaSHC').value);
+        document.getElementById('weaDispHC').innerHTML = cm+' <span>cm</span>';
+        hm = cm/100;
+      }
+      var wkg = wLbs/2.20462;
+      var bmi = Math.round(wkg/(hm*hm));
+      document.getElementById('weaBmiWarn').classList.toggle('show', bmi < 26);
+      var goalLbs = parseInt(document.getElementById('weaSG').value);
+      document.getElementById('weaDispG').innerHTML = goalLbs+' <span>'+uL+'</span>';
+      var threeMoLbs = paceMid * 12;
+      var threeMoDisplay = unit==='imperial' ? Math.round(threeMoLbs) : Math.round(threeMoLbs/2.20462);
+      var smallGoal = goalLbs < threeMoDisplay;
+      var endW, headHtml, lab2;
+      if(smallGoal){
+        var weeks = Math.ceil(goalLbs / (unit==='imperial' ? paceMid : paceMid/2.20462));
+        endW = wRaw - goalLbs;
+        document.getElementById('weaOutLab').textContent = 'Your Estimated Timeline';
+        headHtml = 'You could reach your goal in <em style="color:var(--blue);font-style:normal">~'+weeks+' weeks</em>';
+        lab2 = 'Goal weight';
+      } else {
+        endW = wRaw - threeMoDisplay;
+        document.getElementById('weaOutLab').textContent = 'Your 3-Month Potential';
+        headHtml = 'You could lose up to <em style="color:var(--blue);font-style:normal">~'+threeMoDisplay+' '+uL+'</em> in your first 3 months';
+        lab2 = 'After 3 months';
+        var totalMonths = Math.ceil((goalLbs / (unit==='imperial' ? paceMid : paceMid/2.20462)) / 4.33);
+        var timeStr = totalMonths > monthsCap ? monthsCap+'+ months' : '~'+totalMonths+' months';
+        headHtml += '<div style="font-size:13px;color:var(--ink-60);font-weight:400;margin-top:8px">Estimated time to full goal: '+timeStr+'</div>';
+      }
+      document.getElementById('weaOutHead').innerHTML = headHtml;
+      document.getElementById('weaOsLab2').textContent = lab2;
+      document.getElementById('weaOsStart').innerHTML = wRaw+'<span>'+uL+'</span>';
+      document.getElementById('weaOsGoal').innerHTML = endW+'<span>'+uL+'</span>';
+      document.getElementById('weaChartMax').textContent = wRaw+' → '+endW+' '+uL;
+      document.getElementById('weaTxtStart').textContent = wRaw+' '+uL;
+      document.getElementById('weaTxtEnd').textContent = endW+' '+uL;
+    };
+
+
+    // Purchase type toggle
+    window.weaTogglePurchase = function(mode){
+      document.getElementById('ptSub').classList.toggle('active', mode==='sub');
+      document.getElementById('ptOne').classList.toggle('active', mode==='one');
+      document.getElementById('weaTiers').style.display = mode==='sub' ? '' : 'none';
+      document.getElementById('weaOnetime').style.display = mode==='one' ? '' : 'none';
+    };
+
+    // Tier selection
+    window.weaSelectTier = function(el){
+      var container = el.closest('.tiers');
+      if(!container) return;
+      container.querySelectorAll('.tier').forEach(function(t){t.classList.remove('selected')});
+      el.classList.add('selected');
+    };
+
+    // Flyout cart
+    function openFlyout(product, plan, price, imgSrc){
+      var overlay = document.getElementById('weaFlyOverlay');
+      var flyout = document.getElementById('weaFlyout');
+      var body = document.getElementById('weaFlyBody');
+      var total = document.getElementById('weaFlyTotal');
+      var imgEl = document.getElementById('weaFlyImg');
+      document.getElementById('weaFlyProduct').textContent = product;
+      document.getElementById('weaFlyPlan').textContent = plan;
+      document.getElementById('weaFlyPrice').textContent = price;
+      total.textContent = price;
+      if(imgSrc && imgEl) imgEl.src = imgSrc;
+      overlay.classList.add('open');
+      flyout.classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
-    var wkg = wLbs/2.20462;
-    var bmi = Math.round(wkg/(hm*hm));
-    document.getElementById('weaBmiWarn').classList.toggle('show', bmi < 26);
-    var goalLbs = parseInt(document.getElementById('weaSG').value);
-    document.getElementById('weaDispG').innerHTML = goalLbs+' <span>'+uL+'</span>';
-    var threeMoLbs = paceMid * 12;
-    var threeMoDisplay = unit==='imperial' ? Math.round(threeMoLbs) : Math.round(threeMoLbs/2.20462);
-    var smallGoal = goalLbs < threeMoDisplay;
-    var endW, headHtml, lab2;
-    if(smallGoal){
-      var weeks = Math.ceil(goalLbs / (unit==='imperial' ? paceMid : paceMid/2.20462));
-      endW = wRaw - goalLbs;
-      document.getElementById('weaOutLab').textContent = 'Your Estimated Timeline';
-      headHtml = 'You could reach your goal in <em style="color:var(--blue);font-style:normal">~'+weeks+' weeks</em>';
-      lab2 = 'Goal weight';
-    } else {
-      endW = wRaw - threeMoDisplay;
-      document.getElementById('weaOutLab').textContent = 'Your 3-Month Potential';
-      headHtml = 'You could lose up to <em style="color:var(--blue);font-style:normal">~'+threeMoDisplay+' '+uL+'</em> in your first 3 months';
-      lab2 = 'After 3 months';
-      var totalMonths = Math.ceil((goalLbs / (unit==='imperial' ? paceMid : paceMid/2.20462)) / 4.33);
-      var timeStr = totalMonths > monthsCap ? monthsCap+'+ months' : '~'+totalMonths+' months';
-      headHtml += '<div style="font-size:13px;color:var(--ink-60);font-weight:400;margin-top:8px">Estimated time to full goal: '+timeStr+'</div>';
+    function closeFlyout(){
+      document.getElementById('weaFlyOverlay').classList.remove('open');
+      document.getElementById('weaFlyout').classList.remove('open');
+      document.body.style.overflow = '';
     }
-    document.getElementById('weaOutHead').innerHTML = headHtml;
-    document.getElementById('weaOsLab2').textContent = lab2;
-    document.getElementById('weaOsStart').innerHTML = wRaw+'<span>'+uL+'</span>';
-    document.getElementById('weaOsGoal').innerHTML = endW+'<span>'+uL+'</span>';
-    document.getElementById('weaChartMax').textContent = wRaw+' → '+endW+' '+uL;
-    document.getElementById('weaTxtStart').textContent = wRaw+' '+uL;
-    document.getElementById('weaTxtEnd').textContent = endW+' '+uL;
-  };
 
-  weaCalc();
-})();
+    // Add to Cart
+    document.getElementById('weaAtc').addEventListener('click', function(e){
+      e.preventDefault();
+      var btn = this;
+      var isOnetime = document.getElementById('weaOnetime').style.display !== 'none';
+      var selectedTier;
+      if(isOnetime){
+        selectedTier = document.querySelector('#weaOnetime .tier');
+      } else {
+        selectedTier = document.querySelector('#weaTiers .tier.selected');
+      }
+      if(!selectedTier) return;
+
+      var variantId = selectedTier.getAttribute('data-variant-id');
+      var sellingPlanId = selectedTier.getAttribute('data-selling-plan-id');
+      var tierName = selectedTier.querySelector('.tier-name').textContent;
+      var tierPrice = selectedTier.querySelector('.tier-price').textContent.replace(/\/mo/,'');
+
+      var payload = { items: [{ id: parseInt(variantId, 10), quantity: 1 }] };
+      if(sellingPlanId){
+        payload.items[0].selling_plan = parseInt(sellingPlanId, 10);
+      }
+
+      btn.textContent = 'Adding...';
+      btn.disabled = true;
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res){ if(!res.ok) throw new Error('Cart error'); return res.json(); })
+      .then(function(){
+        btn.innerHTML = 'Add to Cart <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        btn.disabled = false;
+        var planLabel = isOnetime ? 'One-time purchase' : tierName + ' subscription';
+        var imgSrc = '';
+        var mainImg = document.getElementById('pdpMain');
+        if(mainImg) imgSrc = mainImg.src;
+        openFlyout('WLP-1\u2122', planLabel, tierPrice, imgSrc);
+      })
+      .catch(function(err){
+        console.error('Cart add failed:', err);
+        btn.innerHTML = 'Add to Cart <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        btn.disabled = false;
+      });
+    });
+
+    // Smooth scroll for all #buy links
+    document.querySelectorAll('a[href="#buy"]').forEach(function(link){
+      link.addEventListener('click', function(e){
+        e.preventDefault();
+        var target = document.getElementById('buy');
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    weaCalc();
+  })();
 </script>
 
 {% schema %}
@@ -1000,7 +3177,7 @@ footer {
       "type": "textarea",
       "id": "hero_heading",
       "label": "Heading (use <em>word</em> for italic/blue)",
-      "default": "Eat less without thinking about it. Burn more <em>without forcing it.</em>"
+      "default": "The GLP-1 support you've been waiting for, <em>in a capsule.</em>"
     },
     {
       "type": "textarea",
@@ -1156,7 +3333,7 @@ footer {
       "type": "textarea",
       "id": "proof3_quote",
       "label": "Card 3 quote",
-      "default": "\"<b>4 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups.\""
+      "default": "\"<b>~9 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups.\""
     },
     {
       "type": "text",

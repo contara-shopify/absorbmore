@@ -1,0 +1,181 @@
+{% comment %}
+    Shopify Input Type - Text (HTML allowed)
+
+    For `text` / `textarea` schema settings where the merchant types raw HTML
+    that should render unescaped, with the same shortcodes the richtext
+    renderer supports.
+
+    Unlike `_input.richtext`, this does NOT assume the content is wrapped in
+    block-level tags (<p>, <h2>, etc.). It outputs whatever you give it,
+    optionally inside a wrapper tag with a class.
+
+    Accepts:
+    - content:            {string} the raw setting value (HTML allowed)
+    - class:              {string} classes added to the wrapper element
+    - tag:                {string} wrapper tag (default 'span')
+    - no_wrap:            {bool}   if true, output content with no wrapper
+    - style:              {string} inline style on the wrapper
+    - html_attributes:    {string} e.g. 'data-foo="bar"'
+    - add_newlines:       {bool}   convert \n -> <br> (useful for textarea)
+    - skip_pluralization: {bool}   skip {s}/{y|ies}/etc. token replacement
+    - escape:             {bool}   escape the entire result
+    - escape_quotes:      {bool}   escape only " in the result
+
+    Usage:
+    {% render '_input.text', content: block.settings.title %}
+    {% render '_input.text', content: block.settings.title, class: 'h2', tag: 'h2' %}
+    {% render '_input.text', content: block.settings.title, no_wrap: true %}
+
+    Shortcodes:
+    [br]                                line break
+    [span.class||text]                  inline <span class="class">text</span>
+    [icon.name.size.color]              theme icon (e.g. [icon.x-mark.16px])
+    [gap.16] / [gap.fill]               horizontal spacer
+    {s} / {y|ies} / {es} / {fe|ves}     pluralizers, based on a number earlier
+                                        in the content
+{% endcomment %}
+
+{%- liquid
+  if content == blank
+    break
+  endif
+
+  if content contains '[br]'
+    assign content = content | replace: '[br]', '<br>'
+  endif
+
+  if content contains '[gap.'
+    for i in (1..15)
+      unless content contains '[gap.'
+        break
+      endunless
+      assign split = content | replace_first: '[gap.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign first = split[0]
+      assign size = split_2[0] | strip | split: '.' | first | replace: 'px', ''
+      assign last = split_2[1]
+      if size == 'fill'
+        assign sizeSpan = '<span style="display: inline-block; flex: 1;"></span>'
+      else
+        assign sizeSpan = '<span style="display: inline-block; padding-left:' | append: size | append: 'px;"></span>'
+      endif
+      assign content = first | append: sizeSpan | append: last
+    endfor
+  endif
+
+  if content contains '[span.'
+    for i in (1..15)
+      unless content contains '[span.'
+        break
+      endunless
+      assign split = content | replace_first: '[span.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign first = split[0]
+      assign class_name = split_2[0] | strip | split: '.' | first | split: '||' | first
+      assign span_content = split_2[0] | strip | split: '||' | last
+      assign last = split_2[1]
+      assign span_item = '<span class="empty:hidden ' | append: class_name | append: '">' | append: span_content | append: '</span>'
+      assign content = first | append: span_item | append: last
+    endfor
+  endif
+
+  if content contains '[icon.'
+    for i in (1..15)
+      unless content contains '[icon.'
+        break
+      endunless
+      assign split = content | replace_first: '[icon.', '|~|split|~|' | split: '|~|split|~|'
+      assign split_2 = split[1] | replace_first: ']', '|~|split|~|' | split: '|~|split|~|'
+      assign prev_content = split[0]
+      assign next_content = split_2[1]
+      assign icon_array = split_2[0] | strip | split: '.'
+      assign icon = icon_array | first
+      assign height = icon_array[1] | replace: ',', '.' | default: '1.25em'
+      unless height contains 'em' or height contains '%'
+        assign height = height | replace: 'px', '' | append: 'px'
+      endunless
+      assign color = icon_array[2] | default: 'currentColor'
+      assign icon_style = 'height: ' | append: height | append: ';width: ' | append: height | append: '; color:' | append: color | append: ';'
+      capture content
+        echo prev_content
+        render '_components.icon', icon: icon, class: 'inline-flex items-center justify-center align-middle', style: icon_style
+        echo next_content
+      endcapture
+    endfor
+  endif
+
+  assign pluarlizer_arr = ''
+  if skip_pluralization != true
+    if content contains '{'
+      assign pluarlizer_arr = '{s}__{y|ies}__{es}__{fe|ves}__{f|ves}' | split: '__'
+    elsif content contains '&lcub;'
+      assign pluarlizer_arr = '&lcub;s&rcub;__&lcub;y|ies&rcub;__&lcub;es&rcub;__&lcub;fe|ves&rcub;__&lcub;f|ves&rcub;' | split: '__'
+    endif
+  endif
+  for pluarlizer in pluarlizer_arr
+    assign tester = pluarlizer | remove: '&lcub;' | remove: '&rcub;' | remove: '{' | remove: '}'
+    assign singular = ''
+    assign plural = tester | split: '|' | last
+    if tester contains '|'
+      assign singular = tester | split: '|' | first
+    endif
+    for i in (1..15)
+      unless content contains pluarlizer
+        break
+      endunless
+      assign split = content | replace_first: pluarlizer, '|~|split|~|' | split: '|~|split|~|'
+      assign first = split[0]
+      assign last = split[1]
+      assign stripped_content = first | strip_html | split: ' ' | reverse
+      assign string_number = ''
+      for word in stripped_content
+        if word contains '0' or word contains '1' or word contains '2' or word contains '3' or word contains '4' or word contains '5' or word contains '6' or word contains '7' or word contains '8' or word contains '9'
+          assign chars = word | split: ''
+          assign started = false
+          for c in chars
+            if c == '0' or c == '1' or c == '2' or c == '3' or c == '4' or c == '5' or c == '6' or c == '7' or c == '8' or c == '9'
+              assign string_number = string_number | append: c
+              assign started = true
+            elsif started
+              break
+            endif
+          endfor
+          break
+        endif
+      endfor
+      assign number = string_number | times: 1
+      if number == 1
+        assign content = first | append: singular | append: last
+      elsif string_number != ''
+        assign content = first | append: plural | append: last
+      else
+        assign content = first | append: last
+      endif
+    endfor
+  endfor
+
+  assign content = content | replace: '®', "<sup style='font-size: 0.7em;'>®</sup>"
+
+  assign has_block_html = false
+  if content contains '<svg' or content contains '<img' or content contains '<video' or content contains '<table' or content contains '<canvas' or content contains '<div' or content contains '<p' or content contains '<br'
+    assign has_block_html = true
+  endif
+  if add_newlines and has_block_html != true
+    assign content = content | newline_to_br
+  endif
+
+  assign wrap_tag = tag | default: 'span'
+  assign class_attr = class | default: '' | strip
+-%}
+
+{%- capture result -%}
+  {%- if no_wrap -%}
+    {{- content -}}
+  {%- else -%}
+    <{{ wrap_tag }}{% if class_attr != '' %} class="_input-text {{ class_attr }}"{% else %} class="_input-text"{% endif %}{% if style != blank %} style="{{ style }}"{% endif %}{% if html_attributes != blank %} {{ html_attributes }}{% endif %}>{{- content -}}</{{ wrap_tag }}>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if escape -%}{{- result | escape | strip_newlines -}}{%- break -%}{%- endif -%}
+{%- if escape_quotes -%}{{- result | replace: '"', '\"' | strip_newlines -}}{%- break -%}{%- endif -%}
+{{- result -}}

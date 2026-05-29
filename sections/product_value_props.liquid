@@ -1,0 +1,543 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = 'product_value_props'
+  assign highlight_text = section.settings.highlight_text
+  assign headline = section.settings.headline
+  assign supporting_text = section.settings.supporting_text
+  assign callout_text = section.settings.callout_text
+  assign callout_link_label = section.settings.callout_link_label
+  assign callout_link_url = section.settings.callout_link_url
+  assign image = section.settings.image
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture section_content %}
+
+  {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+  {% if text_color != blank or background_color != blank %}
+    {% capture css %}
+      & {
+      {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+      {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+      }
+    {% endcapture %}
+  {% endif %}
+
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section data-style-id="{{ section.id }}"
+           {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+           class="relative bg-[#F0EDE7] {{ container_spacing }}">
+
+    <div class="relative grid grid-cols-1 items-center gap-8 xl:grid-cols-3">
+
+      {% if section.blocks.size > 0 and image != blank %}
+        <svg data-pvp-svg
+             aria-hidden="true"
+             class="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible xl:block"></svg>
+        <div data-pvp-halos
+             aria-hidden="true"
+             class="pointer-events-none absolute inset-0 hidden xl:block"></div>
+      {% endif %}
+
+      {%- comment -%} Left column: text content {%- endcomment -%}
+      <div class="flex flex-col gap-5">
+        <div>
+          {% if highlight_text != blank %}
+            <p class="text-[48px] md:text-[64px] font-medium leading-none text-[#4659FF] mb-1.5">{{ highlight_text }}</p>
+          {% endif %}
+          {% if headline != blank %}
+            {% render '_input.richtext', content: headline, class: 'richtext-md' %}
+          {% endif %}
+        </div>
+        {% if supporting_text != blank %}
+          <div class="richtext-md text-[#6A6A6A]">
+            {% render '_input.richtext', content: supporting_text %}
+          </div>
+        {% endif %}
+        {% if callout_text != blank %}
+          <div class="rounded-xl bg-[#F7F5F1] text-[#6A6A6A] px-6 py-4 text-sm leading-snug">
+            {{ callout_text }}
+            {% if callout_link_label != blank and callout_link_url != blank %}
+              <a href="{{ callout_link_url }}" class="mt-1 inline-block text-[#4659FF] underline decoration-dashed underline-offset-2">{{ callout_link_label }}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Center column: product image {%- endcomment -%}
+      <div class="flex justify-center" data-pvp-image-col>
+        {% if image != blank %}
+          {{ image | image_url: width: 600 | image_tag: class: "w-full object-contain", loading: "lazy", widths: "300,400,600" }}
+        {% endif %}
+      </div>
+
+      {%- comment -%} Right column: value props {%- endcomment -%}
+      <ul class="flex flex-col gap-7">
+        {% for block in section.blocks %}
+          {% if block.type == 'value_prop' %}
+            {% render 'product_value_props.value_prop', block: block, forloop: forloop %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+    </div>
+
+  </section>
+
+  {% if section.blocks.size > 0 and image != blank %}
+    <style>
+      .pvp-halo {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        margin-left: -13px;
+        margin-top: -13px;
+        border-radius: 9999px;
+        background: #4659FF;
+        transform: scale(0.46);
+        opacity: 0.5;
+        animation: pvp-halo-pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        will-change: transform, opacity;
+      }
+      @keyframes pvp-halo-pulse {
+        0%   { transform: scale(0.46); opacity: 0.5; }
+        100% { transform: scale(1);    opacity: 0;   }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pvp-halo { animation: none; }
+      }
+    </style>
+    <script>
+    (function () {
+      var section = document.querySelector('[data-style-id="{{ section.id }}"]');
+      if (!section) return;
+
+      var svg = section.querySelector('[data-pvp-svg]');
+      var halosLayer = section.querySelector('[data-pvp-halos]');
+      var imageCol = section.querySelector('[data-pvp-image-col]');
+      var cards = section.querySelectorAll('[data-pvp-card]');
+
+      if (!svg || !halosLayer || !imageCol || !cards.length) return;
+
+      var img = imageCol.querySelector('img');
+
+      function drawLines() {
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        while (halosLayer.firstChild) halosLayer.removeChild(halosLayer.firstChild);
+
+        if (window.innerWidth < 1280) return;
+
+        var svgRect = svg.getBoundingClientRect();
+        var imgEl = imageCol.querySelector('img');
+        if (!imgEl) return;
+
+        var imageRect = imgEl.getBoundingClientRect();
+        var count = cards.length;
+
+        cards.forEach(function (card, i) {
+          var cardRect = card.getBoundingClientRect();
+          var t = count > 1 ? i / (count - 1) : 0.5;
+
+          // Each card can override its dot position via data attributes
+          // (percentages of the image's width / height). Fall back to centered X
+          // and auto-distributed Y when the attribute isn't set.
+          var xPct = parseFloat(card.getAttribute('data-dot-x'));
+          var yPct = parseFloat(card.getAttribute('data-dot-y'));
+          if (isNaN(xPct)) xPct = 50;
+          if (isNaN(yPct)) yPct = (0.1 + t * 0.8) * 100;
+
+          var x1 = imageRect.left + imageRect.width * (xPct / 100) - svgRect.left;
+          var y1 = imageRect.top + imageRect.height * (yPct / 100) - svgRect.top;
+
+          // Target: left edge of card, vertical center
+          var x2 = cardRect.left - svgRect.left;
+          var y2 = cardRect.top + cardRect.height / 2 - svgRect.top;
+
+          // Diagonal from the dot, then horizontal into the card
+          var mx = x1 + (x2 - x1) * 0.4;
+          var points = x1 + ',' + y1 + ' ' + mx + ',' + y2 + ' ' + x2 + ',' + y2;
+
+          var line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+          line.setAttribute('points', points);
+          line.setAttribute('fill', 'none');
+          line.setAttribute('stroke', 'currentColor');
+          line.setAttribute('stroke-width', '1');
+          line.setAttribute('stroke-dasharray', '4 4');
+          line.setAttribute('opacity', '0.35');
+          svg.appendChild(line);
+
+          var halo = document.createElement('div');
+          halo.className = 'pvp-halo';
+          halo.style.left = x1 + 'px';
+          halo.style.top = y1 + 'px';
+          halosLayer.appendChild(halo);
+
+          var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', x1);
+          dot.setAttribute('cy', y1);
+          dot.setAttribute('r', '4.5');
+          dot.setAttribute('fill', '#4659FF');
+          svg.appendChild(dot);
+        });
+      }
+
+      var timer;
+      function scheduleRedraw() {
+        clearTimeout(timer);
+        timer = setTimeout(drawLines, 50);
+      }
+
+      if (!img || img.complete) {
+        drawLines();
+      } else {
+        img.addEventListener('load', drawLines);
+      }
+
+      var ro = new ResizeObserver(scheduleRedraw);
+      ro.observe(section);
+      cards.forEach(function (c) { ro.observe(c); });
+    })();
+    </script>
+  {% endif %}
+
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "Product Value Props",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "highlight_text",
+      "label": "Highlight text",
+      "info": "Large accent text displayed above the headline (e.g. '5X')"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "supporting_text",
+      "label": "Supporting text"
+    },
+    {
+      "type": "header",
+      "content": "Callout"
+    },
+    {
+      "type": "richtext",
+      "id": "callout_text",
+      "label": "Callout text"
+    },
+    {
+      "type": "text",
+      "id": "callout_link_label",
+      "label": "Callout link label"
+    },
+    {
+      "type": "url",
+      "id": "callout_link_url",
+      "label": "Callout link URL"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Center image"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Development Integration",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "select",
+      "id": "generate_presets",
+      "label": "Presets Codegen",
+      "default": "never",
+      "options": [
+        {
+          "value": "never",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "On"
+        },
+        {
+          "value": "manual_override",
+          "label": "Override"
+        }
+      ],
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "category_name",
+      "label": "Category",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    },
+    {
+      "type": "text",
+      "id": "hidden_name_backup",
+      "label": " Hidden Name Backup",
+      "visible_if": "{{ settings.development__dev_mode == 'show_never' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Setting the preset to 'Override' and running the dev tools will override the existing manual preset if the names match. NB: This should be switched off right after updated a Preset!",
+      "visible_if": "{{ settings.development__dev_mode == true }}"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Value Prop",
+      "type": "value_prop",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Card Content"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Enter the icon handle (e.g. check, star, shield)"
+        },
+        {
+          "type": "header",
+          "content": "Dot Position",
+          "info": "Controls where this card's anchor dot sits on the center image."
+        },
+        {
+          "type": "range",
+          "id": "dot_x_percent",
+          "label": "Horizontal position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "dot_y_percent",
+          "label": "Vertical position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:all.empty_char"
+        },
+        {
+          "type": "header",
+          "content": "Block Globals"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS",
+          "default": "& {\n}\n"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Value Props",
+      "settings": {
+        "highlight_text": "5X",
+        "headline": "<p>Maximum Absorption for Maximum Results</p>",
+        "supporting_text": "<p>Most supplements lose potency before they reach your cells. Our formula uses advanced technology to deliver nutrients in micro-particles for optimal absorption and effect.</p>",
+        "callout_text": "<p>Unlock exclusive deals and wellness tips. Discover how Liposomal Nutrients can transform your health.</p>",
+        "callout_link_label": "More Details",
+        "callout_link_url": "",
+        "image": "",
+        "container_spacing": "px-container-md",
+        "text_color": "",
+        "background_color": "",
+        "custom_css": "& {\n  padding-top: 42px;\n  padding-bottom: 60px;\n}\n@media (max-width: 768px) {\n  & {\n    padding-top: 32px;\n    padding-bottom: 48px;\n  }\n}",
+        "section_id": "",
+        "category_name": "",
+        "hidden_name_backup": "Product Value Props"
+      },
+      "blocks": [
+        {
+          "type": "value_prop",
+          "settings": {
+            "text": "Superior Bioavailability",
+            "description": "Engineered to protect nutrients during digestion—so your body absorbs more of what you take.",
+            "icon": "check",
+            "dot_x_percent": 50,
+            "dot_y_percent": 10,
+            "custom_css": "& {\n}"
+          }
+        },
+        {
+          "type": "value_prop",
+          "settings": {
+            "text": "Direct Cellular Uptake",
+            "description": "Liposomal delivery mimics your cell membranes, allowing nutrients to pass through more efficiently.",
+            "icon": "check",
+            "dot_x_percent": 50,
+            "dot_y_percent": 30,
+            "custom_css": "& {\n}"
+          }
+        },
+        {
+          "type": "value_prop",
+          "settings": {
+            "text": "Gentle on the Stomach",
+            "description": "Designed for smooth digestion with no irritation, ensuring maximum comfort and absorption.",
+            "icon": "check",
+            "dot_x_percent": 50,
+            "dot_y_percent": 50,
+            "custom_css": "& {\n}"
+          }
+        },
+        {
+          "type": "value_prop",
+          "settings": {
+            "text": "Faster Results",
+            "description": "By skipping common digestive barriers, liposomes deliver nutrients to your system more quickly.",
+            "icon": "check",
+            "dot_x_percent": 50,
+            "dot_y_percent": 70,
+            "custom_css": "& {\n}"
+          }
+        },
+        {
+          "type": "value_prop",
+          "settings": {
+            "text": "Better Value",
+            "description": "Higher absorption means you get more benefits from every dose—no wasted nutrients.",
+            "icon": "check",
+            "dot_x_percent": 50,
+            "dot_y_percent": 90,
+            "custom_css": "& {\n}"
+          }
+        }
+      ],
+      "category": "Basic"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  },
+  "class": "shopify_section__product_value_props"
+}
+{% endschema %}

@@ -29,6 +29,7 @@
   assign cta_bg = section.settings.cta_bg
   assign cta_color = section.settings.cta_color
   assign cta_border_radius = section.settings.cta_border_radius
+  assign cta_width = section.settings.cta_width
   assign trust_1 = section.settings.trust_1
   assign trust_2 = section.settings.trust_2
   assign trust_3 = section.settings.trust_3
@@ -121,7 +122,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     padding: 18px 40px;
     font-weight: 700;
     font-size: 18px;
@@ -133,6 +135,9 @@
   }
   & .qb__cta:hover {
     opacity: 0.9;
+  }
+  & .qb__cta--full {
+    width: 100%;
   }
 
   & .qb__trust {
@@ -171,9 +176,6 @@
     }
     & .qb__subtext {
       font-size: {{ subtext_size_desktop }}px;
-    }
-    & .qb__cta {
-      width: auto;
     }
   }
 {% endcapture %}
@@ -226,7 +228,7 @@
         {% endif %}
 
         {% if cta_label != blank %}
-          <a href="{{ cta_url }}" class="qb__cta">{{ cta_label }}</a>
+          <a href="{{ cta_url }}" class="qb__cta{% if cta_width == 'full_width' %} qb__cta--full{% endif %}">{{ cta_label }}</a>
         {% endif %}
 
         {% if trust_1 != blank or trust_2 != blank or trust_3 != blank %}
@@ -549,6 +551,22 @@
       "max": 30,
       "step": 2,
       "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "cta_width",
+      "label": "Button width",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ]
     },
     {
       "type": "paragraph",

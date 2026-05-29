@@ -1,0 +1,1105 @@
+{%- comment -%} Memorial Day Sale — Ian variant. Same body as control, hero swapped to Ian portrait + product square split. 35% off sitewide. Ends 2026-05-26 23:59 ET. v1 {%- endcomment -%}
+
+{%- liquid
+  assign discount_pct = section.settings.discount_pct | default: 35
+  assign keep_pct = 100 | minus: discount_pct
+  assign end_iso = section.settings.end_iso | default: '2026-05-26T23:59:59-04:00'
+
+  comment
+    Spotlight handles — best sellers tied to specific benefit hooks.
+    WLP-1, Berberine, Magnesium Glycinate, Vitamin D+K. Keep total under the 20-product all_products cap.
+  endcomment
+  assign spotlight_handles = 'wlp-1,berberine,magnesium-glycinate,vitamin-d-k' | split: ','
+
+  comment
+    Goal buckets for the bubble filter on the shop-all grid.
+  endcomment
+  assign goal_longevity = 'the-best-sellers-stack,longevity,coq10,energy,curcumin,daily-basics,starter-pack,spring-essentials-stack,vitamin-d-k' | split: ','
+  assign goal_metab = 'berberine,hormone-metabolism,wlp-1,weight-management-stack,glp-1-nutrient-support-stack,metabolic-balance-stack' | split: ','
+  assign goal_sleep = 'sleep,calm,magnesium-glycinate,advanced-sleep-recovery-set,magnesium-sleep-bundle,magnesium-calm-bundle,rest-recovery-stack,calm-energy-bundle,best-sellers-bundle' | split: ','
+  assign goal_immunity = 'restore,curcumin,inflammation-immunity,vitamin-d-k,magnesium-restore-bundle' | split: ','
+
+  comment
+    Iteration source for the shop-all grid. Editor populates section.settings.sale_products (bypasses 20-product cap).
+    Fallback to a curated handle list if editor hasn't populated.
+  endcomment
+  assign products_list = section.settings.sale_products
+  assign display_handles = 'wlp-1,berberine,magnesium-glycinate,daily-basics,weight-management-stack,hormone-metabolism,restore,sleep,calm,coq10,vitamin-d-k,advanced-sleep-recovery-set,curcumin,the-best-sellers-stack,starter-pack,longevity,inflammation-immunity,energy,glp-1-nutrient-support-stack,metabolic-balance-stack' | split: ','
+
+  assign meta_handles = 'wlp-1,berberine,magnesium-glycinate,daily-basics,weight-management-stack,hormone-metabolism,restore,best-sellers-bundle,metabolic-balance-stack,sleep,calm,coq10,vitamin-d-k,advanced-sleep-recovery-set,curcumin,the-best-sellers-stack,starter-pack,longevity,inflammation-immunity,energy,glp-1-nutrient-support-stack,magnesium-sleep-bundle,magnesium-calm-bundle,rest-recovery-stack,magnesium-restore-bundle' | split: ','
+  assign pills = 'Weight Management|Hydrate & Detox|Restorative Sleep|Daily Foundations|Weight Management|Metabolism & Hormones|Hydrate & Recovery|Bestseller Bundle|Metabolic Stack|Restorative Sleep|Manage Stress|Energy & Recovery|Immunity & Mood|Sleep + Recovery|Immunity & Antioxidant|Bestseller|Daily Foundations|Longevity|Immunity & Inflammation|Energy & Focus|GLP-1 Support|Sleep & Magnesium|Calm & Magnesium|Rest + Recovery|Hydrate & Recover' | split: '|'
+  assign badges = 'Top Seller|Top Seller|Top Seller|||||Best Value|||||||||||||||||' | split: '|'
+  assign ratings = '4.78|4.84|4.97|4.83|4.85|4.85|4.94|4.92|4.85|4.88|4.94|4.82|4.87|4.91|4.81|4.92|4.89|4.83|4.87|4.86|4.84|4.87|4.88|4.90|4.89' | split: '|'
+  assign reviews = '154|85|368|88|121|121|246|184|94|246|300|64|142|96|71|412|109|88|142|192|58|62|66|82|74' | split: '|'
+
+  comment
+    Tile image overrides where the featured image isn't the right tile shot.
+  endcomment
+  assign override_handles = 'restore,sleep,calm,energy,magnesium-sleep-bundle' | split: ','
+  assign override_urls = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Energy_3de78348-83c6-475b-aa3f-9df089873398.png?v=1768256691&width=960|https://www.absorbmore.com/cdn/shop/files/sleep-bag-mag-bundle.png?v=1768005885&width=960' | split: '|'
+
+  comment
+    Spotlight pre-canned copy. Parallel arrays indexed by spotlight_handles.
+  endcomment
+  assign spot_hooks = 'Appetite + metabolic support|Blood sugar + lipid balance|Deep sleep + nervous system|Daily immune + bone foundation' | split: '|'
+  assign spot_headlines = 'Curb the cravings. Burn smarter.|Stabilize blood sugar. The way your body wants.|The mineral 50% of us are short on.|The sunlight nutrient. Properly absorbed.' | split: '|'
+  assign spot_bodies = 'WLP-1 supports the same GLP-1 pathways that govern appetite and metabolism, without a prescription. Our liposomal delivery means more of it actually reaches your bloodstream.|Berberine is the most-studied natural compound for blood sugar and lipid balance. Our extra-strength 1000mg formula absorbs 6.2x more than standard berberine.|Magnesium runs more than 300 reactions in your body. Most forms barely absorb. Our glycinate-chelated form delivers it where it goes to work for deep sleep, calm nerves, and recovered muscle.|Vitamin D is fat-soluble, but most pills are taken without fat. Our liposomal D+K2 delivers up to 149x more vitamin D into your bloodstream than the standard pill.' | split: '|'
+  assign spot_subs = 'Curb cravings. Burn smarter.|Stabilize blood sugar, naturally.|The mineral most of us are short on.|The sunlight nutrient, properly absorbed.' | split: '|'
+  assign spot_bullets = 'Curbs cravings without a prescription~Supports appetite + metabolism~Liposomal delivery for real absorption||1000mg extra-strength formula~6.2x more absorbable than standard~Supports blood sugar + lipid balance||Chelated for full absorption~Calms the nervous system~Deeper sleep, less morning grog||Liposomal D + K2 combo~Up to 149x more absorbable~Daily bone, immune + mood support' | split: '||'
+
+  comment
+    Matches theme setting `data__product__excluded_pdp_selling_plan_names` so lander shows the same
+    curated cadences as the PDP. Pipe-delimited with leading/trailing pipes for `contains` checks.
+  endcomment
+  assign excluded_plan_names = '|Every 2 Week(s)|Every 1 Month(s)|Every 2 Month(s)|Every 3 Month(s)|Every 6 Month(s)|Every 3 months backend|Every 6 months backend|'
+-%}
+
+{%- comment -%} Build the modal product database. Iterates the same source as the grid so the 20-product
+all_products cap doesn't truncate the JSON when the editor populates `sale_products`. {%- endcomment -%}
+{%- if products_list != blank and products_list.size > 0 -%}
+  {%- assign json_source = products_list -%}
+  {%- assign json_is_objects = true -%}
+{%- else -%}
+  {%- assign json_source = display_handles -%}
+  {%- assign json_is_objects = false -%}
+{%- endif -%}
+{%- capture products_json -%}
+{
+  {%- assign emitted_first = false -%}
+  {%- for entry in json_source -%}
+    {%- if json_is_objects -%}{%- assign p = entry -%}{%- else -%}{%- assign p = all_products[entry] -%}{%- endif -%}
+    {%- if p != blank and p.handle != blank -%}
+      {%- if emitted_first -%},{%- endif -%}{%- assign emitted_first = true -%}
+      {%- assign smart_desc = p.metafields.smart.description | default: p.description | strip_html | truncate: 360 -%}
+      {%- capture bullet_color -%}{{ p.metafields.custom.smart_bullet_point_color }}{%- endcapture -%}
+      {%- if bullet_color == blank -%}{%- capture bullet_color -%}{{ p.metafields.custom.primary_color }}{%- endcapture -%}{%- endif -%}
+      {%- if bullet_color == blank -%}{%- assign bullet_color = '#DB3519' -%}{%- endif -%}
+      {%- assign main_img_src = p.featured_image | image_url: width: 800 -%}
+      {%- case p.handle -%}
+        {%- when 'restore' -%}{%- assign main_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=800' -%}
+        {%- when 'sleep' -%}{%- assign main_img_src = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=800' -%}
+        {%- when 'calm' -%}{%- assign main_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=800' -%}
+        {%- when 'energy' -%}{%- assign main_img_src = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Energy_3de78348-83c6-475b-aa3f-9df089873398.png?v=1768256691&width=800' -%}
+        {%- when 'magnesium-sleep-bundle' -%}{%- assign main_img_src = 'https://www.absorbmore.com/cdn/shop/files/sleep-bag-mag-bundle.png?v=1768005885&width=800' -%}
+      {%- endcase -%}
+      "{{ p.handle }}": {
+        "title": {{ p.title | json }},
+        "handle": {{ p.handle | json }},
+        "price": {{ p.price }},
+        "compare_at_price": {{ p.compare_at_price | default: 0 }},
+        "image": {{ main_img_src | json }},
+        "images": [{%- for img in p.images limit: 8 -%}{{ img | image_url: width: 800 | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+        "description": {{ smart_desc | json }},
+        "bullets": [{%- for b in p.metafields.custom.smart_bullet_points.value -%}{{ b | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+        "bullet_color": {{ bullet_color | json }},
+        "options": [{%- for opt in p.options_with_values -%}{"name": {{ opt.name | json }}, "values": [{%- for v in opt.values -%}{{ v | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+        "variants": [{%- for v in p.variants -%}{"id": {{ v.id }}, "title": {{ v.title | json }}, "price": {{ v.price }}, "option1": {{ v.option1 | json }}, "option2": {{ v.option2 | json }}, "option3": {{ v.option3 | json }}, "available": {{ v.available }}, "selling_plans": [
+          {%- assign first_plan = true -%}
+          {%- for spa in v.selling_plan_allocations -%}
+            {%- assign plan_lookup = '|' | append: spa.selling_plan.name | append: '|' -%}
+            {%- unless excluded_plan_names contains plan_lookup -%}
+              {%- unless first_plan -%},{%- endunless -%}
+              {"id": {{ spa.selling_plan.id }}, "name": {{ spa.selling_plan.name | json }}, "price": {{ spa.price }}}
+              {%- assign first_plan = false -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        ]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+      }
+    {%- endif -%}
+  {%- endfor -%}
+}
+{%- endcapture -%}
+
+<style>
+  .lnd-md { font-family: inherit; color: #0D273E; --md-navy: #0D273E; --md-red: #DB3519; --md-navy-2: #143452; --md-cream: #efe9dd; --md-bg: #f6f6f4; --md-blue: #4659FF; }
+  .lnd-md * { box-sizing: border-box; }
+
+  /* Sticky promo bar with countdown (incl. seconds) */
+  .lnd-md__bar { position: sticky; top: 0; z-index: 50; background: var(--md-red); color: #fff; text-align: center; padding: 8px 14px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; display: flex; gap: 10px 16px; justify-content: center; align-items: center; flex-wrap: wrap; line-height: 1.2; }
+  .lnd-md__bar-headline { display: inline-flex; align-items: center; }
+  .lnd-md__bar-count { display: inline-flex; gap: 4px; align-items: center; font-variant-numeric: tabular-nums; }
+  .lnd-md__bar-count > span:first-child { margin-right: 4px; font-size: 11px; opacity: 0.9; }
+  .lnd-md__bar-count .chip { display: inline-flex; align-items: baseline; gap: 2px; background: rgba(0,0,0,0.22); border: 1px solid rgba(255,255,255,0.22); border-radius: 6px; padding: 4px 6px; min-width: 34px; justify-content: center; }
+  .lnd-md__bar-count .chip b { font-size: 13px; font-weight: 900; line-height: 1; }
+  .lnd-md__bar-count .chip span { font-size: 9px; font-weight: 700; opacity: 0.85; letter-spacing: 0.04em; }
+
+  /* HERO — Ian variant: solid navy bg, image card (Ian + product square) above text on mobile, side-by-side on desktop. */
+  .lnd-md__hero { position: relative; background: linear-gradient(180deg, var(--md-navy) 0%, var(--md-navy-2) 100%); color: #fff; overflow: hidden; }
+  .lnd-md__hero-inner { position: relative; max-width: 1200px; margin: 0 auto; width: 100%; padding: 22px 20px 30px; display: flex; flex-direction: column; gap: 22px; }
+  .lnd-md__hero-media { display: grid; grid-template-columns: 1.55fr 1fr; gap: 10px; align-items: stretch; }
+  .lnd-md__hero-ian { position: relative; border-radius: 16px; overflow: hidden; background: #0b1f30; box-shadow: 0 14px 36px rgba(0,0,0,0.4); }
+  .lnd-md__hero-ian img { display: block; width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/5; }
+  .lnd-md__hero-ian-tag { position: absolute; left: 10px; bottom: 10px; right: 10px; background: rgba(13,39,62,0.7); backdrop-filter: blur(6px); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 8px 10px; border-radius: 10px; line-height: 1.25; border: 1px solid rgba(255,255,255,0.18); }
+  .lnd-md__hero-ian-tag b { display: block; font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; margin-bottom: 2px; }
+  .lnd-md__hero-product { position: relative; border-radius: 16px; overflow: hidden; background: var(--md-red); box-shadow: 0 14px 36px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+  .lnd-md__hero-product img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; aspect-ratio: 4/5; }
+  .lnd-md__hero-product-tag { position: absolute; top: 10px; right: 10px; background: #fff; color: var(--md-red); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; padding: 7px 12px; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
+  .lnd-md__hero-text { text-align: left; max-width: 580px; }
+  .lnd-md__hero-eyebrow { display: inline-block; background: var(--md-red); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; margin: 0 0 14px; line-height: 1.2; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
+  .lnd-md__hero h1 { font-size: 28px; line-height: 1.04; margin: 0 0 10px; font-weight: 900; letter-spacing: -0.02em; }
+  .lnd-md__hero h1 em { color: var(--md-red); font-style: normal; }
+  .lnd-md__hero p.lead { font-size: 14px; opacity: 0.95; margin: 0 0 14px; max-width: 480px; line-height: 1.5; }
+  .lnd-md__hero p.lead b { color: #fff; font-weight: 800; }
+  .lnd-md__hero-rotator { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); border-radius: 14px; padding: 10px 14px; margin: 0 0 14px; max-width: 440px; }
+  .lnd-md__hero-rotator-line { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+  .lnd-md__hero-rotator-line .static { opacity: 0.9; }
+  .lnd-md__hero-rotator-line .dynamic { color: var(--md-red); font-weight: 800; font-size: 18px; transition: opacity 0.35s ease, transform 0.35s ease; display: inline-block; min-width: 110px; }
+  .lnd-md__hero-rotator-line .dynamic.is-out { opacity: 0; transform: translateY(8px); }
+  .lnd-md__hero-bullets { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
+  .lnd-md__hero-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 700; line-height: 1.35; }
+  .lnd-md__hero-bullets li em { color: var(--md-red); font-style: normal; font-weight: 800; }
+  .lnd-md__hero-bullets .check { flex-shrink: 0; width: 22px; height: 22px; background: var(--md-red); color: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; margin-top: 1px; }
+  .lnd-md__hero-cta { display: inline-block; background: var(--md-red); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  .lnd-md__hero-fineprint { font-size: 11px; opacity: 0.7; margin: 10px 0 0; max-width: 460px; line-height: 1.4; }
+
+  /* Value strip */
+  .lnd-md__values { background: #fff; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 18px 16px; }
+  .lnd-md__values-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; }
+  .lnd-md__value { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--md-navy); line-height: 1.3; }
+  .lnd-md__value svg { flex-shrink: 0; color: var(--md-red); }
+
+  /* Absorption brand band */
+  .lnd-md__brand { background: var(--md-bg); padding: 40px 20px; }
+  .lnd-md__brand-inner { max-width: 980px; margin: 0 auto; }
+  .lnd-md__brand-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 10px; }
+  .lnd-md__brand h2 { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; line-height: 1.15; }
+  .lnd-md__brand h2 em { color: var(--md-blue); font-style: normal; }
+  .lnd-md__brand p { font-size: 15px; color: #444; margin: 0 0 16px; line-height: 1.6; }
+  .lnd-md__reasons { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-direction: column; gap: 12px; }
+  .lnd-md__reasons li { display: flex; align-items: flex-start; gap: 14px; background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 14px 16px; }
+  .lnd-md__reasons .num { flex-shrink: 0; width: 28px; height: 28px; background: var(--md-blue); color: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; line-height: 1; }
+  .lnd-md__reasons li > div { font-size: 14px; color: #333; line-height: 1.5; }
+  .lnd-md__reasons b { color: var(--md-navy); font-weight: 800; }
+  .lnd-md__brand-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 22px 0 0; }
+  .lnd-md__brand-stat { background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 18px 14px; text-align: center; }
+  .lnd-md__brand-stat b { display: block; font-size: 32px; font-weight: 900; color: var(--md-blue); line-height: 1; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .lnd-md__brand-stat span { font-size: 12px; color: #555; line-height: 1.35; display: block; }
+
+  /* Testimonial band */
+  .lnd-md__testimonial { background: var(--md-navy); color: #fff; padding: 44px 20px; }
+  .lnd-md__testimonial-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .lnd-md__testimonial-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 12px; }
+  .lnd-md__testimonial-stars { color: #f5b800; font-size: 18px; letter-spacing: 2px; margin: 0 0 14px; }
+  .lnd-md__testimonial-quote { font-size: 20px; font-weight: 600; line-height: 1.4; margin: 0 0 18px; letter-spacing: -0.01em; }
+  .lnd-md__testimonial-author { font-size: 13px; opacity: 0.75; margin: 0; }
+  .lnd-md__testimonial-dots { display: flex; gap: 8px; justify-content: center; margin: 20px 0 0; }
+  .lnd-md__testimonial-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); border: none; cursor: pointer; padding: 0; }
+  .lnd-md__testimonial-dot.is-active { background: var(--md-red); }
+  .lnd-md__testimonial-slide { display: none; min-height: 160px; }
+  .lnd-md__testimonial-slide.is-active { display: block; }
+
+  /* Spotlight cards */
+  .lnd-md__spots { padding: 40px 16px; background: #fff; }
+  .lnd-md__spots-head { max-width: 1200px; margin: 0 auto 22px; text-align: center; }
+  .lnd-md__spots-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 8px; }
+  .lnd-md__spots-head h2 { font-size: 26px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lnd-md__spots-pipe { color: var(--md-red); font-weight: 700; margin: 0 6px; opacity: 0.85; }
+  .lnd-md__spots-head p { font-size: 14px; color: #555; margin: 0; }
+  .lnd-md__spots-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .lnd-md__spot-tile { position: relative; display: flex; flex-direction: column; background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 12px 12px 14px; text-decoration: none; color: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; overflow: hidden; }
+  .lnd-md__spot-tile::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--md-red); border-radius: 16px 16px 0 0; }
+  .lnd-md__spot-tile:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(13,39,62,0.1); border-color: var(--md-navy); }
+  .lnd-md__spot-ribbon { position: absolute; top: 10px; right: 10px; background: var(--md-navy); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; padding: 5px 9px; border-radius: 999px; text-transform: uppercase; z-index: 2; }
+  .lnd-md__spot-tile-img { aspect-ratio: 1/1; background: var(--md-cream); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 8px 0 12px; }
+  .lnd-md__spot-tile-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-md__spot-tile-title { font-size: 16px; font-weight: 800; line-height: 1.2; margin: 0 0 4px; color: var(--md-navy); letter-spacing: -0.01em; }
+  .lnd-md__spot-tile-sub { font-size: 12px; color: #6b6b6b; line-height: 1.35; margin: 0 0 10px; min-height: 32px; }
+  .lnd-md__spot-tile-bullets { list-style: none; padding: 0; margin: 0 0 10px; display: flex; flex-direction: column; gap: 4px; }
+  .lnd-md__spot-tile-bullets li { font-size: 12px; color: #333; line-height: 1.35; padding-left: 16px; position: relative; }
+  .lnd-md__spot-tile-bullets li::before { content: ""; position: absolute; left: 0; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--md-red); }
+  .lnd-md__spot-tile-stars { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; }
+  .lnd-md__spot-tile-stars-glyphs { color: var(--md-navy); font-size: 13px; letter-spacing: 1px; line-height: 1; }
+  .lnd-md__spot-tile-stars-meta { font-size: 11px; color: var(--md-navy); font-weight: 600; }
+  .lnd-md__spot-tile-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+  .lnd-md__spot-tile-price .now { font-size: 17px; font-weight: 800; color: var(--md-navy); font-variant-numeric: tabular-nums; }
+  .lnd-md__spot-tile-price .was { font-size: 13px; color: #9a9a9a; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  .lnd-md__spot-tile-price .off { font-size: 12px; font-weight: 800; color: var(--md-red); }
+
+  /* Bubble filter row */
+  .lnd-md__bubbles-wrap { background: #fff; padding: 26px 0 6px; }
+  .lnd-md__bubbles-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .lnd-md__bubbles-head { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-navy); margin: 0 0 12px; opacity: 0.7; }
+  .lnd-md__bubbles { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .lnd-md__bubbles::-webkit-scrollbar { display: none; }
+  .lnd-md__bubble { flex: 0 0 auto; background: var(--md-cream); color: var(--md-navy); border: 2px solid transparent; padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: -0.005em; cursor: pointer; font: inherit; min-height: 44px; line-height: 1; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; white-space: nowrap; }
+  .lnd-md__bubble[data-goal="all"] { font-weight: 800; }
+  .lnd-md__bubble:hover { border-color: var(--md-navy); }
+  .lnd-md__bubble.is-active { background: var(--md-navy); color: #fff; border-color: var(--md-navy); }
+  .lnd-md__bubble-count { font-size: 11px; font-weight: 600; opacity: 0.6; }
+  .lnd-md__bubble.is-active .lnd-md__bubble-count { opacity: 0.7; color: #fff; }
+
+  /* Grid */
+  .lnd-md__grid-wrap { background: var(--md-bg); padding: 20px 16px 40px; }
+  .lnd-md__grid-head { max-width: 1200px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  .lnd-md__grid-head h2 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  .lnd-md__grid-count { font-size: 13px; color: #666; }
+  .lnd-md__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 1200px; margin: 0 auto; }
+
+  /* Tile */
+  .lnd-md__tile { background: var(--md-cream); border-radius: 14px; padding: 14px 14px 0; position: relative; display: flex; flex-direction: column; cursor: pointer; text-align: left; font: inherit; color: inherit; border: none; transition: transform 0.15s ease, box-shadow 0.15s ease; text-decoration: none; }
+  .lnd-md__tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(13,39,62,0.08); }
+  .lnd-md__tile-badges { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; z-index: 2; overflow: hidden; }
+  .lnd-md__tile-pill { background: #fff; color: var(--md-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+  .lnd-md__tile-badge { background: var(--md-red); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; flex: 0 0 auto; }
+  .lnd-md__tile-lowstock, .lnd-md__spot-lowstock { background: #b91d1d; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 12px rgba(185,29,29,0.32); display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+  .lnd-md__tile-lowstock::before, .lnd-md__spot-lowstock::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.32); }
+  .lnd-md__spot-lowstock { position: absolute; top: 10px; left: 10px; z-index: 3; }
+  .lnd-md__tile-img { aspect-ratio: 1/1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .lnd-md__tile-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-md__tile-info { padding: 12px 4px 14px; }
+  .lnd-md__tile-title { font-size: 17px; font-weight: 700; line-height: 1.2; margin: 0 0 4px; color: var(--md-navy); }
+  .lnd-md__tile-sub { font-size: 13px; color: #6b6b6b; line-height: 1.3; margin: 0 0 8px; min-height: 34px; }
+  .lnd-md__tile-stars { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .lnd-md__tile-stars-glyphs { color: var(--md-navy); font-size: 13px; letter-spacing: 1px; line-height: 1; }
+  .lnd-md__tile-stars-meta { font-size: 12px; color: var(--md-navy); font-weight: 600; }
+  .lnd-md__tile-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .lnd-md__tile-price .now { font-size: 16px; font-weight: 800; color: var(--md-navy); font-variant-numeric: tabular-nums; }
+  .lnd-md__tile-price .was { font-size: 13px; color: #9a9a9a; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  .lnd-md__tile-price .off { font-size: 13px; font-weight: 700; color: var(--md-red); }
+  .lnd-md__tile-price .off::before { content: "·"; margin-right: 4px; color: #9a9a9a; }
+
+  /* Countdown (used in final CTA) */
+  .lnd-md__countdown { display: flex; gap: 8px; margin: 0 0 18px; font-variant-numeric: tabular-nums; }
+  .lnd-md__countdown div { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 10px 8px; text-align: center; min-width: 64px; }
+  .lnd-md__countdown b { display: block; font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+  .lnd-md__countdown span { display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-top: 4px; }
+
+  /* Final CTA */
+  .lnd-md__final { background: var(--md-navy); color: #fff; padding: 44px 20px; text-align: center; }
+  .lnd-md__final h2 { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .lnd-md__final h2 em { color: var(--md-red); font-style: normal; }
+  .lnd-md__final p { font-size: 14px; opacity: 0.85; margin: 0 0 22px; }
+  .lnd-md__final .lnd-md__countdown { justify-content: center; margin-bottom: 22px; }
+  .lnd-md__final-cta { display: inline-block; background: var(--md-red); color: #fff; padding: 14px 30px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+
+  /* Sticky mobile CTA */
+  .lnd-md__mobile-cta { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 60; display: none; }
+  .lnd-md__mobile-cta a { display: block; background: var(--md-red); color: #fff; text-align: center; padding: 14px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .lnd-md__mobile-cta.is-show { display: block; }
+
+  /* Desktop */
+  @media (min-width: 720px) {
+    .lnd-md__hero-inner { flex-direction: row; align-items: center; gap: 48px; padding: 60px 40px; }
+    .lnd-md__hero-text { flex: 1 1 52%; order: 1; }
+    .lnd-md__hero-media { flex: 1 1 48%; order: 2; max-width: 600px; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+    .lnd-md__hero-ian img { aspect-ratio: 4/5; }
+    .lnd-md__hero-ian-tag { left: 14px; right: 14px; bottom: 14px; padding: 10px 12px; font-size: 12px; }
+    .lnd-md__hero-product-tag { top: 14px; right: 14px; font-size: 12px; padding: 8px 13px; }
+    .lnd-md__hero h1 { font-size: 44px; line-height: 1.02; }
+    .lnd-md__hero p.lead { font-size: 16px; }
+    .lnd-md__hero-rotator-line { font-size: 18px; }
+    .lnd-md__hero-rotator-line .dynamic { font-size: 22px; min-width: 140px; }
+    .lnd-md__final .lnd-md__countdown div { min-width: 84px; padding: 14px 12px; }
+    .lnd-md__final .lnd-md__countdown b { font-size: 34px; }
+    .lnd-md__values-inner { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__brand h2 { font-size: 36px; }
+    .lnd-md__brand-stats { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__testimonial-quote { font-size: 24px; }
+    .lnd-md__spots-head h2 { font-size: 34px; }
+    .lnd-md__spots-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .lnd-md__spot-tile { padding: 14px 14px 16px; }
+    .lnd-md__spot-tile-title { font-size: 18px; }
+    .lnd-md__spot-tile-sub { font-size: 13px; min-height: 36px; }
+    .lnd-md__spot-tile-bullets li { font-size: 13px; }
+    .lnd-md__spot-tile-price .now { font-size: 19px; }
+    .lnd-md__bubbles { flex-wrap: wrap; overflow-x: visible; }
+    .lnd-md__grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lnd-md__grid-head h2 { font-size: 28px; }
+    .lnd-md__tile-pill { font-size: 10px; padding: 7px 13px; }
+    .lnd-md__final h2 { font-size: 34px; }
+    .lnd-md__mobile-cta, .lnd-md__mobile-cta.is-show { display: none; }
+  }
+  @media (min-width: 1024px) {
+    .lnd-md__grid { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__tile-title { font-size: 19px; }
+    .lnd-md__tile-sub { font-size: 14px; }
+  }
+
+  /* Quick-add modal — ported from lander-memorial-day-early-access */
+  .lnd-md__modal { position: fixed; inset: 0; z-index: 9999; display: none; align-items: flex-end; justify-content: center; }
+  .lnd-md__modal.is-open { display: flex; }
+  .lnd-md__modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); animation: lnd-md-fade 0.2s ease; }
+  .lnd-md__modal-panel { position: relative; background: #fff; width: 100%; max-width: 720px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; animation: lnd-md-slide 0.25s ease; }
+  @keyframes lnd-md-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes lnd-md-slide { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .lnd-md__modal-close { position: absolute; top: 12px; right: 12px; z-index: 2; background: #fff; border: 1px solid #e6e6e6; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .lnd-md__modal-img { aspect-ratio: 1/1; background: #f6f6f4; max-height: 320px; overflow: hidden; position: relative; }
+  .lnd-md__modal-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-md__thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; scrollbar-width: none; background: #f6f6f4; }
+  .lnd-md__thumbs::-webkit-scrollbar { display: none; }
+  .lnd-md__thumbs:empty { display: none; }
+  .lnd-md__thumb { flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; padding: 0; background: #fff; }
+  .lnd-md__thumb.is-active { border-color: var(--md-navy); }
+  .lnd-md__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-md__modal-body { padding: 18px 20px 24px; }
+  .lnd-md__modal-body h2 { font-size: 22px; font-weight: 800; margin: 0 0 6px; line-height: 1.2; color: var(--md-navy); }
+  .lnd-md__modal-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .lnd-md__modal-price .now { font-size: 22px; font-weight: 800; color: var(--md-red); }
+  .lnd-md__modal-price .was { font-size: 15px; color: #888; text-decoration: line-through; }
+  .lnd-md__modal-price .save { background: var(--md-red); color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; letter-spacing: 0.04em; }
+  .lnd-md__modal-desc { font-size: 14px; color: #444; line-height: 1.55; margin-bottom: 14px; }
+  .lnd-md__bullets { margin: 0 0 18px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .lnd-md__bullets li { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.45; color: var(--md-navy); }
+  .lnd-md__bullets li svg { flex-shrink: 0; }
+  .lnd-md__opt { margin-bottom: 14px; }
+  .lnd-md__opt-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #555; margin-bottom: 6px; }
+  .lnd-md__opt-values { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lnd-md__opt-btn { background: #fff; border: 1.5px solid #d8d8d8; padding: 8px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; font: inherit; }
+  .lnd-md__opt-btn.is-active { border-color: var(--md-navy); background: var(--md-navy); color: #fff; }
+  .lnd-md__opt-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .lnd-md__buy { margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .lnd-md__buy-opt { display: flex; align-items: center; gap: 10px; border: 1.5px solid #d8d8d8; border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 13px; }
+  .lnd-md__buy-opt.is-active { border-color: var(--md-navy); background: #f6f8fb; }
+  .lnd-md__buy-opt input { accent-color: var(--md-navy); }
+  .lnd-md__buy-opt-main { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .lnd-md__buy-opt-title { font-weight: 700; color: var(--md-navy); }
+  .lnd-md__buy-opt-sub { font-size: 12px; color: #666; }
+  .lnd-md__buy-opt-price { font-weight: 700; color: var(--md-red); white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; line-height: 1.1; }
+  .lnd-md__buy-opt-price .was { font-size: 12px; font-weight: 500; color: #888; text-decoration: line-through; }
+  .lnd-md__buy-opt-tag { background: var(--md-red); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 999px; letter-spacing: 0.04em; margin-left: 4px; }
+  .lnd-md__modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .lnd-md__modal-atc { background: var(--md-red); color: #fff; padding: 14px; border-radius: 999px; font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border: none; cursor: pointer; font: inherit; }
+  .lnd-md__modal-atc:hover { background: var(--md-navy); }
+  .lnd-md__modal-atc:disabled { opacity: 0.6; cursor: not-allowed; }
+  .lnd-md__modal-pdp { text-align: center; font-size: 12px; color: #666; text-decoration: underline; }
+  .lnd-md__toast { display: none; background: #0a5a3e; color: #fff; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 13px; font-weight: 600; text-align: center; }
+  .lnd-md__toast.is-show { display: block; }
+  .lnd-md__toast.is-err { background: #b3261e; }
+
+  @media (min-width: 720px) {
+    .lnd-md__modal { align-items: center; }
+    .lnd-md__modal-panel { border-radius: 18px; max-width: 760px; }
+    .lnd-md__modal-panel-inner { display: grid; grid-template-columns: 1fr 1fr; }
+    .lnd-md__modal-img { aspect-ratio: 1/1.05; max-height: none; border-radius: 18px 0 0 18px; }
+    .lnd-md__modal-media { display: flex; flex-direction: column; }
+    .lnd-md__thumbs { padding: 8px 10px 10px; }
+    .lnd-md__modal-body { padding: 32px 28px; }
+  }
+</style>
+
+<section class="lnd-md" data-pct="{{ discount_pct }}" data-end="{{ end_iso }}" data-discount-code="{{ section.settings.discount_code | default: 'MEMORIALDAY' }}">
+
+  {%- comment -%} Sticky promo bar {%- endcomment -%}
+  <div class="lnd-md__bar">
+    <span class="lnd-md__bar-headline">Memorial Day · {{ discount_pct }}% Off Site-Wide · Free Shipping*</span>
+    <span class="lnd-md__bar-count" data-countdown-bar>
+      <span>Ends in</span>
+      <span class="chip"><b data-d>00</b><span>d</span></span>
+      <span class="chip"><b data-h>00</b><span>h</span></span>
+      <span class="chip"><b data-m>00</b><span>m</span></span>
+      <span class="chip"><b data-s>00</b><span>s</span></span>
+    </span>
+  </div>
+
+  {%- comment -%} HERO — Ian variant: split layout (Ian image + product square on right at desktop, stacked image card on top at mobile). {%- endcomment -%}
+  {%- assign ian_img = section.settings.ian_image | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/ian-md-hero.jpg' -%}
+  {%- if section.settings.ian_image -%}{%- assign ian_img = section.settings.ian_image | image_url: width: 1600 -%}{%- endif -%}
+  {%- assign product_img = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/ian-md-product-stack-v2.jpg' -%}
+  {%- if section.settings.product_image -%}{%- assign product_img = section.settings.product_image | image_url: width: 900 -%}{%- endif -%}
+  <div class="lnd-md__hero">
+    <div class="lnd-md__hero-inner">
+      <div class="lnd-md__hero-media">
+        <div class="lnd-md__hero-ian">
+          <img src="{{ ian_img }}" alt="Ian Somerhalder, co-founder of The Absorption Company" loading="eager" width="1500" height="824">
+          <div class="lnd-md__hero-ian-tag"><b>Ian Somerhalder</b>Co-founder · The Absorption Company</div>
+        </div>
+        <div class="lnd-md__hero-product">
+          <img src="{{ product_img }}" alt="The Absorption Company best-sellers — Restore, WLP-1, Magnesium Glycinate, Berberine, Vitamin D3+K2, Calm — 35% off this Memorial Day" loading="eager" width="800" height="1000">
+          <div class="lnd-md__hero-product-tag">35% OFF</div>
+        </div>
+      </div>
+      <div class="lnd-md__hero-text">
+        <div class="lnd-md__hero-eyebrow">{{ section.settings.eyebrow | default: 'Memorial Day Sale: 35% Sitewide + Free Shipping*' }}</div>
+        <h1>{{ section.settings.headline | default: '<p>Save <em>35%</em> on supplements that actually absorb.</p>' }}</h1>
+        <p class="lead">{{ section.settings.subhead | default: "Most supplements don't reach your bloodstream. Ours do. Up to 149x better absorption so you actually feel better. Now <b>35% OFF sitewide</b> + <b>Free shipping</b>*" }}</p>
+
+        <ul class="lnd-md__hero-bullets">
+          <li><span class="check">✓</span><div>Up to <em>149x absorption</em> · clinically formulated</div></li>
+          <li><span class="check">✓</span><div>Built for <em>real results you feel</em> · energy, focus, recovery</div></li>
+          <li><span class="check">✓</span><div>30-day <em>money-back guarantee</em> · cancel anytime</div></li>
+        </ul>
+
+        <div class="lnd-md__hero-rotator" aria-live="polite">
+          <div class="lnd-md__hero-rotator-line">
+            <span class="static">More absorption =</span>
+            <span class="dynamic" data-rotator>more energy</span>
+          </div>
+        </div>
+
+        <a class="lnd-md__hero-cta" href="#md-grid">Shop the sale</a>
+        <p class="lnd-md__hero-fineprint">*Free shipping on US orders over $50. Discount applied automatically at checkout. Ends 5/26.</p>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Value strip {%- endcomment -%}
+  <div class="lnd-md__values">
+    <div class="lnd-md__values-inner">
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg>Up to 149x more absorption</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>30-day money-back guarantee</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7h13l3 4h2v6h-3a2 2 0 1 1-4 0H10a2 2 0 1 1-4 0H3z"/></svg>Free shipping over $50</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Third-party tested</div>
+    </div>
+  </div>
+
+  {%- comment -%} Best-seller spotlights — WLP-1, Berberine, Magnesium, Vitamin D {%- endcomment -%}
+  <div class="lnd-md__spots">
+    <div class="lnd-md__spots-head">
+      <div class="lnd-md__spots-eyebrow">The Most-Loved Four</div>
+      <h2>Bestsellers <span class="lnd-md__spots-pipe">|</span> 35% Off</h2>
+      <p>The four our customers reorder most. Designed to be felt, not just taken.</p>
+    </div>
+    <div class="lnd-md__spots-grid">
+      {%- for h in spotlight_handles -%}
+        {%- assign sp = nil -%}
+        {%- assign sp = all_products[h] -%}
+        {%- if sp != blank and sp.handle != blank -%}
+          {%- assign idx = forloop.index0 -%}
+          {%- assign sale_price = sp.price | times: keep_pct | divided_by: 100 -%}
+          {%- assign img_url = '' -%}
+          {%- for oh in override_handles -%}
+            {%- if oh == sp.handle -%}{%- assign img_url = override_urls[forloop.index0] -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign sp_meta_idx = -1 -%}
+          {%- for mh in meta_handles -%}
+            {%- if mh == sp.handle -%}{%- assign sp_meta_idx = forloop.index0 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign sp_rating = '' -%}
+          {%- assign sp_reviews = '' -%}
+          {%- if sp_meta_idx >= 0 -%}
+            {%- assign sp_rating = ratings[sp_meta_idx] -%}
+            {%- assign sp_reviews = reviews[sp_meta_idx] -%}
+          {%- endif -%}
+          {%- assign sp_sub = spot_subs[idx] -%}
+          {%- assign sp_bullets = spot_bullets[idx] | split: '~' -%}
+          <a class="lnd-md__spot-tile" href="/products/{{ sp.handle }}" data-handle="{{ sp.handle }}" data-modal-open>
+            <span class="lnd-md__spot-ribbon">Bestseller</span>
+            {%- if sp.handle == 'wlp-1' or sp.handle == 'weight-management-stack' -%}<span class="lnd-md__spot-lowstock">Low Stock</span>{%- endif -%}
+            <div class="lnd-md__spot-tile-img">
+              {%- if img_url != blank -%}
+                <img src="{{ img_url }}" alt="{{ sp.title | escape }}" loading="lazy" width="600" height="600">
+              {%- elsif sp.featured_image -%}
+                <img src="{{ sp.featured_image | image_url: width: 600 }}" alt="{{ sp.title | escape }}" loading="lazy" width="600" height="600">
+              {%- endif -%}
+            </div>
+            <h3 class="lnd-md__spot-tile-title">{{ sp.title }}</h3>
+            {%- if sp_sub != blank -%}<p class="lnd-md__spot-tile-sub">{{ sp_sub }}</p>{%- endif -%}
+            <ul class="lnd-md__spot-tile-bullets">
+              {%- for b in sp_bullets -%}<li>{{ b }}</li>{%- endfor -%}
+            </ul>
+            {%- if sp_rating != blank -%}
+              <div class="lnd-md__spot-tile-stars">
+                <span class="lnd-md__spot-tile-stars-glyphs">★★★★★</span>
+                <span class="lnd-md__spot-tile-stars-meta">{{ sp_rating }} ({{ sp_reviews }})</span>
+              </div>
+            {%- endif -%}
+            <div class="lnd-md__spot-tile-price">
+              <span class="now">{{ sale_price | money }}</span>
+              <span class="was">{{ sp.price | money }}</span>
+              <span class="off">{{ discount_pct }}% off</span>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Testimonial component — rotating quotes {%- endcomment -%}
+  <div class="lnd-md__testimonial" data-testimonial>
+    <div class="lnd-md__testimonial-inner">
+      <div class="lnd-md__testimonial-eyebrow">Real Customers · Real Results</div>
+      <div class="lnd-md__testimonial-stars">★★★★★</div>
+      <div class="lnd-md__testimonial-slide is-active">
+        <p class="lnd-md__testimonial-quote">"I've taken magnesium for years and never felt it. With theirs I sleep through the night within a week. The difference is absorption. Finally."</p>
+        <p class="lnd-md__testimonial-author">Lauren M. · Verified Magnesium Glycinate buyer</p>
+      </div>
+      <div class="lnd-md__testimonial-slide">
+        <p class="lnd-md__testimonial-quote">"Dropped ~9 lbs in two months on WLP-1 plus walks. No jitters, no crash. The cravings I used to fight at 3pm just stopped showing up."</p>
+        <p class="lnd-md__testimonial-author">Marcus T. · Verified WLP-1 buyer</p>
+      </div>
+      <div class="lnd-md__testimonial-slide">
+        <p class="lnd-md__testimonial-quote">"My A1C dropped a full point in 90 days. My doctor asked what changed. I told her the berberine actually absorbs."</p>
+        <p class="lnd-md__testimonial-author">Renee K. · Verified Berberine buyer</p>
+      </div>
+      <div class="lnd-md__testimonial-dots">
+        <button class="lnd-md__testimonial-dot is-active" type="button" aria-label="Testimonial 1"></button>
+        <button class="lnd-md__testimonial-dot" type="button" aria-label="Testimonial 2"></button>
+        <button class="lnd-md__testimonial-dot" type="button" aria-label="Testimonial 3"></button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Bubble filter row {%- endcomment -%}
+  <div class="lnd-md__bubbles-wrap" id="md-bubbles">
+    <div class="lnd-md__bubbles-inner">
+      <h2 class="lnd-md__bubbles-head">Shop by goal</h2>
+      <div class="lnd-md__bubbles" role="tablist" aria-label="Filter by goal">
+        <button class="lnd-md__bubble is-active" type="button" data-goal="all" aria-pressed="true">All <span class="lnd-md__bubble-count">{{ meta_handles.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="longevity" aria-pressed="false">Longevity &amp; Performance <span class="lnd-md__bubble-count">{{ goal_longevity.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="metab" aria-pressed="false">Metabolism &amp; Hormones <span class="lnd-md__bubble-count">{{ goal_metab.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="sleep" aria-pressed="false">Sleep &amp; Mood <span class="lnd-md__bubble-count">{{ goal_sleep.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="immunity" aria-pressed="false">Immunity &amp; Inflammation <span class="lnd-md__bubble-count">{{ goal_immunity.size }}</span></button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Shop-all product grid {%- endcomment -%}
+  <div class="lnd-md__grid-wrap" id="md-grid">
+    <div class="lnd-md__grid-head">
+      <h2>Shop the sale</h2>
+      <span class="lnd-md__grid-count" data-grid-count>{{ meta_handles.size }} products</span>
+    </div>
+    <div class="lnd-md__grid" data-grid>
+      {%- if products_list != blank and products_list.size > 0 -%}
+        {%- assign iter_source = products_list -%}
+      {%- else -%}
+        {%- assign iter_source = display_handles -%}
+      {%- endif -%}
+
+      {%- for entry in iter_source -%}
+        {%- if products_list != blank and products_list.size > 0 -%}
+          {%- assign p = entry -%}
+        {%- else -%}
+          {%- assign p = all_products[entry] -%}
+        {%- endif -%}
+
+        {%- if p != blank and p.handle != blank -%}
+          {%- assign meta_idx = -1 -%}
+          {%- for mh in meta_handles -%}
+            {%- if mh == p.handle -%}{%- assign meta_idx = forloop.index0 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+
+          {%- assign pill_text = '' -%}
+          {%- assign badge_text = '' -%}
+          {%- assign rating_val = '' -%}
+          {%- assign reviews_val = '' -%}
+          {%- if meta_idx >= 0 -%}
+            {%- assign pill_text = pills[meta_idx] -%}
+            {%- assign badge_text = badges[meta_idx] -%}
+            {%- assign rating_val = ratings[meta_idx] -%}
+            {%- assign reviews_val = reviews[meta_idx] -%}
+          {%- endif -%}
+
+          {%- assign tile_chips = 'all' -%}
+          {%- if goal_longevity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' longevity' -%}{%- endif -%}
+          {%- if goal_metab contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' metab' -%}{%- endif -%}
+          {%- if goal_sleep contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' sleep' -%}{%- endif -%}
+          {%- if goal_immunity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' immunity' -%}{%- endif -%}
+
+          {%- assign was_price = p.compare_at_price -%}
+          {%- assign now_price = p.price -%}
+          {%- if was_price == nil or was_price <= now_price -%}
+            {%- assign now_price = p.price | times: keep_pct | divided_by: 100 -%}
+            {%- assign was_price = p.price -%}
+          {%- endif -%}
+
+          {%- assign tile_img_url = '' -%}
+          {%- for oh in override_handles -%}
+            {%- if oh == p.handle -%}{%- assign tile_img_url = override_urls[forloop.index0] -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign tile_img = p.featured_image -%}
+
+          {%- assign tile_sub = p.metafields.smart.short_description -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.metafields.smart.tagline -%}{%- endif -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.description | strip_html | truncate: 80 -%}{%- endif -%}
+
+          {%- assign is_low_stock = false -%}
+          {%- if p.handle == 'wlp-1' or p.handle == 'weight-management-stack' -%}{%- assign is_low_stock = true -%}{%- endif -%}
+          <a class="lnd-md__tile" href="/products/{{ p.handle }}" data-chips="{{ tile_chips }}">
+            {%- if pill_text != blank or badge_text != blank or is_low_stock -%}
+              <div class="lnd-md__tile-badges">
+                {%- if pill_text != blank -%}<span class="lnd-md__tile-pill">{{ pill_text }}</span>{%- endif -%}
+                {%- if badge_text != blank -%}<span class="lnd-md__tile-badge">{{ badge_text }}</span>{%- endif -%}
+                {%- if is_low_stock -%}<span class="lnd-md__tile-lowstock">Low Stock</span>{%- endif -%}
+              </div>
+            {%- endif -%}
+            <div class="lnd-md__tile-img">
+              {%- if tile_img_url != blank -%}
+                <img src="{{ tile_img_url }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- elsif tile_img -%}
+                <img src="{{ tile_img | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- endif -%}
+            </div>
+            <div class="lnd-md__tile-info">
+              <h3 class="lnd-md__tile-title">{{ p.title }}</h3>
+              {%- if tile_sub != blank -%}<p class="lnd-md__tile-sub">{{ tile_sub }}</p>{%- endif -%}
+              {%- if rating_val != blank -%}
+                <div class="lnd-md__tile-stars">
+                  <span class="lnd-md__tile-stars-glyphs">★★★★★</span>
+                  <span class="lnd-md__tile-stars-meta">{{ rating_val }} ({{ reviews_val }})</span>
+                </div>
+              {%- endif -%}
+              <div class="lnd-md__tile-price">
+                <span class="now">{{ now_price | money }}</span>
+                <span class="was">{{ was_price | money }}</span>
+                <span class="off">{{ discount_pct }}% off</span>
+              </div>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Final CTA band {%- endcomment -%}
+  <div class="lnd-md__final">
+    <div class="lnd-md__countdown" data-countdown>
+      <div><b data-d>00</b><span>Days</span></div>
+      <div><b data-h>00</b><span>Hours</span></div>
+      <div><b data-m>00</b><span>Minutes</span></div>
+      <div><b data-s>00</b><span>Seconds</span></div>
+    </div>
+    <h2>{{ discount_pct }}% off ends soon. <em>The absorption stays.</em></h2>
+    <p>One sale a year on the whole catalog. Take the bestsellers home for 35% less.</p>
+    <a class="lnd-md__final-cta" href="#md-grid">Shop the sale</a>
+  </div>
+
+  {%- comment -%} Sticky mobile CTA {%- endcomment -%}
+  <div class="lnd-md__mobile-cta" data-mobile-cta>
+    <a href="#md-grid">Shop {{ discount_pct }}% off</a>
+  </div>
+
+  {%- comment -%} Quick-add modal {%- endcomment -%}
+  <div class="lnd-md__modal" data-modal aria-hidden="true" role="dialog">
+    <div class="lnd-md__modal-backdrop" data-modal-close></div>
+    <div class="lnd-md__modal-panel">
+      <button class="lnd-md__modal-close" data-modal-close aria-label="Close">×</button>
+      <div class="lnd-md__modal-panel-inner">
+        <div class="lnd-md__modal-media">
+          <div class="lnd-md__modal-img"><img data-modal-img src="" alt=""></div>
+          <div class="lnd-md__thumbs" data-modal-thumbs></div>
+        </div>
+        <div class="lnd-md__modal-body">
+          <div class="lnd-md__toast" data-toast></div>
+          <h2 data-modal-title></h2>
+          <div class="lnd-md__modal-price">
+            <span class="now" data-modal-now></span>
+            <span class="was" data-modal-was></span>
+            <span class="save" data-modal-save></span>
+          </div>
+          <p class="lnd-md__modal-desc" data-modal-desc></p>
+          <ul class="lnd-md__bullets" data-modal-bullets></ul>
+          <div data-modal-options></div>
+          <div class="lnd-md__buy" data-modal-buy></div>
+          <div class="lnd-md__modal-actions">
+            <button class="lnd-md__modal-atc" data-modal-atc type="button">Add to cart</button>
+            <a class="lnd-md__modal-pdp" data-modal-pdp href="#">See full product details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script id="lnd-md-data" type="application/json">{{ products_json | strip_newlines }}</script>
+
+<script>
+(function(){
+  var root = document.querySelector('.lnd-md');
+  if (!root) return;
+
+  var END = new Date(root.dataset.end).getTime();
+
+  function tick() {
+    var diff = Math.max(0, END - Date.now());
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+    root.querySelectorAll('[data-d]').forEach(function(el){ el.textContent = pad(d); });
+    root.querySelectorAll('[data-h]').forEach(function(el){ el.textContent = pad(h); });
+    root.querySelectorAll('[data-m]').forEach(function(el){ el.textContent = pad(m); });
+    root.querySelectorAll('[data-s]').forEach(function(el){ el.textContent = pad(s); });
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Cycling benefits rotator
+  var rotator = root.querySelector('[data-rotator]');
+  var words = ['more energy', 'more vitality', 'better sleep', 'sharper focus', 'faster recovery', 'stronger immunity', 'deeper rest', 'more benefits'];
+  var wi = 0;
+  if (rotator) {
+    setInterval(function(){
+      rotator.classList.add('is-out');
+      setTimeout(function(){
+        wi = (wi + 1) % words.length;
+        rotator.textContent = words[wi];
+        rotator.classList.remove('is-out');
+      }, 350);
+    }, 2200);
+  }
+
+  // Testimonial rotator
+  var tWrap = root.querySelector('[data-testimonial]');
+  if (tWrap) {
+    var slides = tWrap.querySelectorAll('.lnd-md__testimonial-slide');
+    var dots = tWrap.querySelectorAll('.lnd-md__testimonial-dot');
+    var ti = 0;
+    function showTestimonial(i) {
+      slides.forEach(function(s, j){ s.classList.toggle('is-active', i === j); });
+      dots.forEach(function(d, j){ d.classList.toggle('is-active', i === j); });
+      ti = i;
+    }
+    dots.forEach(function(d, j){ d.addEventListener('click', function(){ showTestimonial(j); }); });
+    setInterval(function(){ showTestimonial((ti + 1) % slides.length); }, 6000);
+  }
+
+  // Bubble filter
+  var bubbles = root.querySelectorAll('.lnd-md__bubble');
+  var tiles = root.querySelectorAll('.lnd-md__tile');
+  var gridCount = root.querySelector('[data-grid-count]');
+  function applyFilter(filter) {
+    var visible = 0;
+    tiles.forEach(function(t){
+      var has = (' ' + t.dataset.chips + ' ').indexOf(' ' + filter + ' ') !== -1;
+      t.style.display = has ? '' : 'none';
+      if (has) visible++;
+    });
+    if (gridCount) gridCount.textContent = visible + ' product' + (visible === 1 ? '' : 's');
+  }
+  bubbles.forEach(function(b){
+    b.addEventListener('click', function(){
+      var goal = b.dataset.goal;
+      bubbles.forEach(function(x){ x.classList.remove('is-active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('is-active');
+      b.setAttribute('aria-pressed','true');
+      applyFilter(goal);
+    });
+  });
+
+  // Sticky mobile CTA on scroll
+  var mobile = root.querySelector('[data-mobile-cta]');
+  var hero = root.querySelector('.lnd-md__hero');
+  function onScroll(){
+    if (!hero || !mobile) return;
+    var heroBottom = hero.getBoundingClientRect().bottom;
+    if (heroBottom < 0) { mobile.classList.add('is-show'); }
+    else { mobile.classList.remove('is-show'); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // -----------------------------------------------------------------
+  // Quick-add modal — same UX as Memorial Day Early Access lander
+  // -----------------------------------------------------------------
+  var PCT = parseInt(root.dataset.pct, 10) || 35;
+  var KEEP = (100 - PCT) / 100;
+  var DISCOUNT = root.dataset.discountCode;
+  var DATA = {};
+  try { DATA = JSON.parse(document.getElementById('lnd-md-data').textContent); } catch(e) { DATA = {}; }
+
+  function money(cents){ return '$' + (cents/100).toFixed(2).replace(/\.00$/,''); }
+
+  function applyDiscount() {
+    if (!DISCOUNT) return Promise.resolve(null);
+    return fetch('/discount/' + DISCOUNT + '?redirect=/cart.js', { credentials: 'same-origin' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+  function refreshThemeCart() {
+    if (window._cart && typeof window._cart.get === 'function') {
+      try { window._cart.get(true); } catch(e){}
+    }
+  }
+  applyDiscount().then(refreshThemeCart);
+  setTimeout(function(){ try { document.dispatchEvent(new Event('pointerover')); } catch(e){} }, 600);
+
+  var modal = root.querySelector('[data-modal]');
+  if (!modal) return;
+  var modalImg = modal.querySelector('[data-modal-img]');
+  var modalThumbs = modal.querySelector('[data-modal-thumbs]');
+  var modalTitle = modal.querySelector('[data-modal-title]');
+  var modalNow = modal.querySelector('[data-modal-now]');
+  var modalWas = modal.querySelector('[data-modal-was]');
+  var modalSave = modal.querySelector('[data-modal-save]');
+  var modalDesc = modal.querySelector('[data-modal-desc]');
+  var modalBullets = modal.querySelector('[data-modal-bullets]');
+  var modalOptions = modal.querySelector('[data-modal-options]');
+  var modalBuy = modal.querySelector('[data-modal-buy]');
+  var modalAtc = modal.querySelector('[data-modal-atc]');
+  var modalPdp = modal.querySelector('[data-modal-pdp]');
+  var toast = modal.querySelector('[data-toast]');
+  var currentProduct = null;
+  var selected = {};
+  var purchaseType = 'subscription';
+
+  function hasAnySellingPlan(p) {
+    if (!p || !p.variants) return false;
+    return p.variants.some(function(v){ return v.selling_plans && v.selling_plans.length; });
+  }
+  function variantSellingPlan(v) {
+    return (v && v.selling_plans && v.selling_plans.length) ? v.selling_plans[0] : null;
+  }
+  function findVariant() {
+    if (!currentProduct || !currentProduct.variants) return null;
+    if (currentProduct.variants.length === 1) return currentProduct.variants[0];
+    return currentProduct.variants.find(function(v) {
+      return (!selected.option1 || v.option1 === selected.option1)
+          && (!selected.option2 || v.option2 === selected.option2)
+          && (!selected.option3 || v.option3 === selected.option3);
+    }) || null;
+  }
+  function updatePrice() {
+    if (!currentProduct) return;
+    var v = findVariant();
+    var basePrice = v ? v.price : currentProduct.price;
+    var sp = v ? variantSellingPlan(v) : null;
+    if (purchaseType === 'subscription' && sp) {
+      modalNow.textContent = money(Math.round(basePrice * KEEP));
+      modalWas.textContent = money(basePrice);
+      modalWas.style.display = '';
+      modalSave.textContent = 'SAVE ' + PCT + '%';
+      modalSave.style.display = '';
+    } else {
+      modalNow.textContent = money(Math.round(basePrice * KEEP));
+      modalWas.textContent = money(basePrice);
+      modalWas.style.display = '';
+      modalSave.textContent = 'SAVE ' + PCT + '%';
+      modalSave.style.display = '';
+    }
+    renderBuyOptions();
+  }
+  function renderBuyOptions() {
+    if (!currentProduct) { modalBuy.innerHTML = ''; return; }
+    var v = findVariant();
+    var sp = v ? variantSellingPlan(v) : null;
+    if (!sp) { modalBuy.innerHTML = ''; modalBuy.style.display = 'none'; return; }
+    modalBuy.style.display = 'flex';
+    var basePrice = v ? v.price : currentProduct.price;
+    var salePrice = money(Math.round(basePrice * KEEP));
+    var wasPrice = money(basePrice);
+    var planLabel = sp.name || 'Subscribe & save';
+    var priceHtml = '<span class="was">' + wasPrice + '</span><span>' + salePrice + '</span>';
+    modalBuy.innerHTML =
+      '<label class="lnd-md__buy-opt ' + (purchaseType === 'subscription' ? 'is-active' : '') + '" data-buy="subscription">' +
+        '<input type="radio" name="lnd-md-buy" value="subscription"' + (purchaseType === 'subscription' ? ' checked' : '') + '>' +
+        '<span class="lnd-md__buy-opt-main">' +
+          '<span class="lnd-md__buy-opt-title">' + planLabel + ' <span class="lnd-md__buy-opt-tag">BEST VALUE</span></span>' +
+          '<span class="lnd-md__buy-opt-sub">Auto-deliver. Cancel anytime.</span>' +
+        '</span>' +
+        '<span class="lnd-md__buy-opt-price">' + priceHtml + '</span>' +
+      '</label>' +
+      '<label class="lnd-md__buy-opt ' + (purchaseType === 'onetime' ? 'is-active' : '') + '" data-buy="onetime">' +
+        '<input type="radio" name="lnd-md-buy" value="onetime"' + (purchaseType === 'onetime' ? ' checked' : '') + '>' +
+        '<span class="lnd-md__buy-opt-main">' +
+          '<span class="lnd-md__buy-opt-title">One-time purchase</span>' +
+          '<span class="lnd-md__buy-opt-sub">Just this once.</span>' +
+        '</span>' +
+        '<span class="lnd-md__buy-opt-price">' + priceHtml + '</span>' +
+      '</label>';
+    modalBuy.querySelectorAll('[data-buy]').forEach(function(el){
+      el.addEventListener('click', function(){
+        purchaseType = el.dataset.buy;
+        updatePrice();
+      });
+    });
+  }
+  function renderOptions(p) {
+    modalOptions.innerHTML = '';
+    selected = {};
+    if (!p.options || p.options.length === 0 || (p.options.length === 1 && p.options[0].name === 'Title')) return;
+    p.options.forEach(function(opt, idx) {
+      var wrap = document.createElement('div'); wrap.className = 'lnd-md__opt';
+      var label = document.createElement('span'); label.className = 'lnd-md__opt-label';
+      label.textContent = opt.name; wrap.appendChild(label);
+      var values = document.createElement('div'); values.className = 'lnd-md__opt-values';
+      opt.values.forEach(function(val, vidx) {
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'lnd-md__opt-btn'; btn.textContent = val;
+        btn.dataset.optIdx = idx; btn.dataset.optValue = val;
+        btn.addEventListener('click', function() {
+          selected['option' + (idx + 1)] = val;
+          values.querySelectorAll('.lnd-md__opt-btn').forEach(function(b){ b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+          updatePrice();
+        });
+        values.appendChild(btn);
+      });
+      if (opt.values.length) {
+        selected['option' + (idx + 1)] = opt.values[0];
+        values.children[0].classList.add('is-active');
+      }
+      wrap.appendChild(values);
+      modalOptions.appendChild(wrap);
+    });
+  }
+  function renderThumbs(p) {
+    modalThumbs.innerHTML = '';
+    var imgs = (p.images || []).filter(function(s){ return !!s; });
+    if (imgs.length < 2) return;
+    imgs.forEach(function(src, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lnd-md__thumb' + (i === 0 ? ' is-active' : '');
+      btn.innerHTML = '<img src="' + src + '" alt="" loading="lazy">';
+      btn.addEventListener('click', function() {
+        modalImg.src = src;
+        modalThumbs.querySelectorAll('.lnd-md__thumb').forEach(function(t){ t.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+      });
+      modalThumbs.appendChild(btn);
+    });
+  }
+  function normalizeBullets(raw) {
+    if (!raw || !raw.length) return [];
+    var out = [];
+    raw.forEach(function(item) {
+      if (item == null) return;
+      if (typeof item === 'string') {
+        var trimmed = item.trim();
+        if (trimmed.charAt(0) === '{' && trimmed.indexOf('"type"') !== -1 && trimmed.indexOf('"children"') !== -1) {
+          try { walkRich(JSON.parse(trimmed), out); return; } catch(e) {}
+        }
+        out.push(item);
+      } else if (typeof item === 'object') {
+        walkRich(item, out);
+      }
+    });
+    return out.filter(function(s){ return s && s.trim().length; });
+  }
+  function walkRich(node, out) {
+    if (!node) return;
+    if (node.type === 'list-item' || node.type === 'listItem' || node.type === 'listitem') {
+      out.push(collectText(node));
+      return;
+    }
+    if (node.children && node.children.length) node.children.forEach(function(c){ walkRich(c, out); });
+  }
+  function collectText(node) {
+    if (!node) return '';
+    if (typeof node === 'string') return node;
+    if (node.type === 'text') return node.value || '';
+    if (node.children && node.children.length) return node.children.map(collectText).join('');
+    return '';
+  }
+  function openModal(handle) {
+    var p = DATA[handle]; if (!p) { window.location.href = '/products/' + handle; return; }
+    currentProduct = p;
+    selected = {};
+    modalImg.src = p.image || '';
+    modalImg.alt = p.title;
+    renderThumbs(p);
+    modalTitle.textContent = p.title;
+    modalDesc.textContent = p.description || '';
+    modalBullets.innerHTML = '';
+    var color = (p.bullet_color && /^#[0-9a-fA-F]{3,8}$/.test(p.bullet_color)) ? p.bullet_color : '#DB3519';
+    var bullets = normalizeBullets(p.bullets);
+    bullets.forEach(function(b){
+      var li = document.createElement('li');
+      li.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M13.3327 9.33301C13.3327 12.2785 10.9449 14.6663 7.99935 14.6663C5.05383 14.6663 2.66602 12.2785 2.66602 9.33301C2.66602 8.62574 2.80369 7.95063 3.05369 7.33301C3.84488 5.37845 7.99935 1.33301 7.99935 1.33301C7.99935 1.33301 12.1538 5.37845 12.945 7.33301C13.195 7.95063 13.3327 8.62574 13.3327 9.33301Z" fill="' + color + '" stroke="' + color + '" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>';
+      li.querySelector('span').textContent = b;
+      modalBullets.appendChild(li);
+    });
+    modalBullets.style.display = modalBullets.children.length ? 'flex' : 'none';
+    modalPdp.href = '/products/' + p.handle;
+    toast.className = 'lnd-md__toast';
+    toast.textContent = '';
+    modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+    purchaseType = hasAnySellingPlan(p) ? 'subscription' : 'onetime';
+    renderOptions(p);
+    renderBuyOptions();
+    updatePrice();
+    document.body.style.overflow = 'hidden';
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function openCartDrawer() {
+    var cartLink = document.querySelector('a[href$="#modal--cart-drawer"]');
+    if (cartLink) { try { cartLink.click(); return; } catch(e){} }
+    try {
+      var store = window.Alpine && window.Alpine.store && window.Alpine.store('modal');
+      if (store && typeof store.setId === 'function' && window.modalsLoaded) {
+        store.setId('cart-drawer');
+      }
+    } catch(e){}
+  }
+  function showAddError(msg) {
+    toast.className = 'lnd-md__toast is-show is-err';
+    toast.textContent = msg || 'Could not add to cart.';
+    modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+  }
+
+  // Intercept tile clicks → open modal. Capture phase + stopImmediatePropagation
+  // beats any theme link/prefetch handler on the bubble phase.
+  document.addEventListener('click', function(e) {
+    var tile = e.target.closest('[data-modal-open]');
+    if (!tile) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openModal(tile.dataset.handle);
+  }, true);
+
+  root.addEventListener('click', function(e) {
+    if (e.target.closest('[data-modal-close]')) {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+
+  modalAtc.addEventListener('click', function() {
+    var v = findVariant();
+    if (!v) return showAddError('Please choose all options.');
+    if (!v.available) return showAddError('Sold out — try another option.');
+    modalAtc.disabled = true; modalAtc.textContent = 'Adding...';
+
+    var item = { id: v.id, quantity: 1 };
+    var sp = variantSellingPlan(v);
+    if (purchaseType === 'subscription' && sp) item.selling_plan = sp.id;
+    var payload = { items: [item] };
+
+    var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+    var p = themeAdd && typeof themeAdd.then === 'function'
+      ? themeAdd
+      : fetch('/cart/add.js?smart_theme=true', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+          body: JSON.stringify(payload)
+        }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+
+    p.then(function(res) {
+      if (res && res.cart_error) return showAddError(res && res.description);
+      modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+      closeModal();
+      refreshThemeCart();
+      setTimeout(openCartDrawer, 100);
+      applyDiscount().then(refreshThemeCart).catch(function(){});
+    }).catch(function(err) {
+      showAddError(err && (err.description || err.message));
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Lander · MD Sale Ian",
+  "settings": [
+    { "type": "header", "content": "Offer" },
+    { "type": "number", "id": "discount_pct", "label": "Discount %", "default": 35 },
+    { "type": "text", "id": "discount_code", "label": "Discount code (auto-applied on visit)", "default": "MEMORIALDAY" },
+    { "type": "text", "id": "end_iso", "label": "End date (ISO 8601)", "default": "2026-05-26T23:59:59-04:00" },
+    { "type": "header", "content": "Hero copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Memorial Day Sale: 35% Sitewide + Free Shipping*" },
+    { "type": "richtext", "id": "headline", "label": "Headline (use <em> for red accent)", "default": "<p>Save 35% on supplements that <em>actually absorb.</em></p>" },
+    { "type": "textarea", "id": "subhead", "label": "Subhead", "default": "Most supplements never reach your bloodstream. Ours do. Up to 149x more absorption. So 35% off means more benefits, not a smaller bottle." },
+    { "type": "header", "content": "Hero images (Ian variant)" },
+    { "type": "image_picker", "id": "ian_image", "label": "Ian portrait (4:5 ratio recommended)" },
+    { "type": "image_picker", "id": "product_image", "label": "Product square (1:1 ratio recommended)" },
+    { "type": "header", "content": "Products on sale" },
+    { "type": "product_list", "id": "sale_products", "label": "Products in the shop-all grid", "limit": 50 }
+  ],
+  "presets": [
+    { "name": "Lander · MD Sale Ian" }
+  ]
+}
+{% endschema %}

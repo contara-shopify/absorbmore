@@ -1,0 +1,365 @@
+.clinicians-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.clinicians-modal[aria-hidden='false'] {
+  display: flex;
+  pointer-events: auto;
+}
+
+.clinicians-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-modal-backdrop-color, rgba(0, 0, 0, 0.5));
+  backdrop-filter: var(--color-modal-backdrop-blur, blur(8px));
+  -webkit-backdrop-filter: var(--color-modal-backdrop-blur, blur(8px));
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.clinicians-modal[aria-hidden='false'] .clinicians-modal__overlay {
+  opacity: 1;
+}
+
+.clinicians-modal__dialog {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 24px);
+  max-width: 100%;
+  max-height: calc(100dvh - 48px);
+  margin: 24px auto;
+  background-color: #fff;
+  color: inherit;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.24);
+  transform: translateY(16px);
+  opacity: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.clinicians-modal[aria-hidden='false'] .clinicians-modal__dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal {
+    align-items: center;
+  }
+
+  .clinicians-modal__dialog {
+    width: calc(100% - 40px);
+    max-width: var(--clinicians-modal-max-width, 760px);
+    max-height: calc(100dvh - 80px);
+    margin: 40px auto;
+    border-radius: 14px;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  .clinicians-modal[aria-hidden='false'] .clinicians-modal__dialog {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.clinicians-modal__header {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  height: 64px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0 10px;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__header {
+    grid-template-columns: 48px 1fr 48px;
+    height: 72px;
+    padding: 0 16px;
+  }
+}
+
+.clinicians-modal__icon-button {
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.clinicians-modal__icon-button:hover,
+.clinicians-modal__icon-button:focus-visible {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.clinicians-modal__icon-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.clinicians-modal__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clinicians-modal__logo {
+  display: block;
+  width: auto;
+  height: 22px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__logo {
+    height: 26px;
+  }
+}
+
+.clinicians-modal__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__body {
+    padding: 28px 32px 36px;
+  }
+}
+
+/* FAQ */
+.clinicians-modal__faq {
+  display: grid;
+  gap: 4px;
+}
+
+.clinicians-modal__faq-question {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__faq-question {
+    gap: 24px;
+    font-size: 20px;
+  }
+}
+
+.clinicians-modal__faq-plus {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 25px;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__faq-plus {
+    width: 38px;
+    height: 38px;
+    font-size: 28px;
+  }
+}
+
+.clinicians-modal__faq-question[aria-expanded='true'] .clinicians-modal__faq-plus {
+  transform: rotate(45deg);
+}
+
+.clinicians-modal__faq-answer {
+  padding: 0 0 10px 0;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__faq-answer {
+    padding-right: 54px;
+  }
+}
+
+.clinicians-modal__faq-answer p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* Clinicians list */
+.clinicians-modal__clinicians {
+  margin: 24px -24px -24px;
+  padding: 28px 24px;
+  background: rgba(0, 0, 0, 0.025);
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinicians {
+    margin: 28px -32px -36px;
+    padding: 32px;
+  }
+}
+
+.clinicians-modal__clinicians-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinicians-title {
+    font-size: 22px;
+  }
+}
+
+.clinicians-modal__clinicians-text {
+  margin: 0 0 22px;
+  max-width: 640px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinicians-text {
+    font-size: 16px;
+  }
+}
+
+.clinicians-modal__clinicians-text a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.clinicians-modal__clinician-card {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: start;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinician-card {
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+  }
+}
+
+.clinicians-modal__clinician-image {
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinician-image {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.clinicians-modal__clinician-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.clinicians-modal__clinician-content {
+  min-width: 0;
+}
+
+.clinicians-modal__clinician-content a {
+  display: block;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.clinicians-modal__clinician-content > span {
+  display: block;
+  margin-top: 3px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+}
+
+.clinicians-modal__clinician-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  width: fit-content;
+  grid-column: 2;
+}
+
+@media (min-width: 768px) {
+  .clinicians-modal__clinician-button {
+    min-height: 42px;
+    padding: 0 18px;
+    grid-column: auto;
+  }
+}
+
+.clinicians-modal__extra:empty {
+  display: none;
+}
+
+html.clinicians-modal-open,
+body.clinicians-modal-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clinicians-modal__overlay,
+  .clinicians-modal__dialog,
+  .clinicians-modal__faq-plus {
+    transition: none;
+  }
+}

@@ -97,8 +97,8 @@
         x-init="$nextTick(() => { document.documentElement.style.setProperty(`--height-{{ section.id }}`, $el.offsetHeight + 'px') });"
         @resize.window="$nextTick(() => { document.documentElement.style.setProperty(`--height-{{ section.id }}`, $el.offsetHeight + 'px') });"
         x-cloak
-        x-show="progress > 0"
-        :class="progress > 0 ? ($modal.id ? 'z-[10]' : 'z-[2147483645] pointer-events-auto') : 'pointer-events-none'"
+        x-show="$data.progress > 0"
+        :class="$data.progress > 0 ? ($modal.id ? 'z-[10]' : 'z-[10] pointer-events-auto') : 'pointer-events-none'"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
         x-transition:leave-start="opacity-100"
@@ -115,36 +115,38 @@
           initiated: false
         }"
         x-effect="() => {
-         progress = $scrollProgress.progress.get($el.closest(`.shopify-section`));
-         if (progress && progress > 0 ) {
+         $data.progress = $scrollProgress.progress.get($el.closest(`.shopify-section`));
+         if ($data.progress && $data.progress > 0 ) {
              $nextTick(() => { requestAnimationFrame(() => { document.documentElement.style.setProperty(`--height-{{ section.id }}`, $el.offsetHeight + 'px') }) });
          }
-         if (!initiated && _stores.main_product) {
-          initiated = true;
-          state = _stores.main_product?.state;
-          pdp = _stores.main_product?.pdp;
-          handleAddToCart = _stores.main_product?.handleAddToCart;
-          handleBackInStockNotification = _stores.main_product?.handleBackInStockNotification;
-          styleDynamicBuyButton = _stores.main_product?.styleDynamicBuyButton;
-          setSelectedVariant = _stores.main_product?.setSelectedVariant;
-          setProductOption = _stores.main_product?.setProductOption;
-          setSiblingProduct = _stores.main_product?.setSiblingProduct;
-          setSellingPlan = _stores.main_product?.setSellingPlan;
-          scrollToMediaById = _stores.main_product?.scrollToMediaById;
-          getContentLabels = _stores.main_product?.getContentLabels;
-          getDiscountLabel = _stores.main_product?.getDiscountLabel;
-          getDynamicText = _stores.main_product?.getDynamicText;
-          getDynamicValue = _stores.main_product?.getDynamicValue;
-          getDynamicValueWithFallbacks = _stores.main_product?.getDynamicValueWithFallbacks;
-          getCTAButtonProps = _stores.main_product?.getCTAButtonProps;
-          updateProductState = _stores.main_product?.updateProductState;
-          setDynamicPrice = _stores.main_product?.setDynamicPrice;
-          handleImageSelection = _stores.main_product?.handleImageSelection;
+         if (!$data.initiated && _stores.main_product) {
+          $data.initiated = true;
+          Object.assign($data, {
+            state: _stores.main_product?.state,
+            pdp: _stores.main_product?.pdp,
+            handleAddToCart: _stores.main_product?.handleAddToCart,
+            handleBackInStockNotification: _stores.main_product?.handleBackInStockNotification,
+            styleDynamicBuyButton: _stores.main_product?.styleDynamicBuyButton,
+            setSelectedVariant: _stores.main_product?.setSelectedVariant,
+            setProductOption: _stores.main_product?.setProductOption,
+            setSiblingProduct: _stores.main_product?.setSiblingProduct,
+            setSellingPlan: _stores.main_product?.setSellingPlan,
+            scrollToMediaById: _stores.main_product?.scrollToMediaById,
+            getContentLabels: _stores.main_product?.getContentLabels,
+            getDiscountLabel: _stores.main_product?.getDiscountLabel,
+            getDynamicText: _stores.main_product?.getDynamicText,
+            getDynamicValue: _stores.main_product?.getDynamicValue,
+            getDynamicValueWithFallbacks: _stores.main_product?.getDynamicValueWithFallbacks,
+            getCTAButtonProps: _stores.main_product?.getCTAButtonProps,
+            updateProductState: _stores.main_product?.updateProductState,
+            setDynamicPrice: _stores.main_product?.setDynamicPrice,
+            handleImageSelection: _stores.main_product?.handleImageSelection
+          });
           }
         }"
       {% else %}
         x-data="{ ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle')), ..._sections.initParallax($el), progress: $scrollProgress.progress.get($el.closest(`.shopify-section`)) }"
-        x-effect="progress = $scrollProgress.progress.get($el.closest(`.shopify-section`))"
+        x-effect="$data.progress = $scrollProgress.progress.get($el.closest(`.shopify-section`))"
       {% endif %}
       data-product-handle="{{ _product.handle | default: product.handle }}">
     {% content_for 'blocks' %}

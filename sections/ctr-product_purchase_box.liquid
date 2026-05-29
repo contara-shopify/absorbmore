@@ -724,75 +724,83 @@
       data-product-id="{{ product.id }}"
       data-variant-id="{{ variant.id }}"
       data-default-subscription="true"
-      x-data="{
-        ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
-        galleryIndex: 0,
-        giftModalOpen: false,
-        mobileStickyVisible: false,
-        selectedVariantId: +`{{ variant.id }}`,
-        moPrice: {
-          monthly: '{{ section.settings.mo_price_monthly | escape }}',
-          threeMonth: '{{ section.settings.mo_price_3month | escape }}',
-          sixMonth: '{{ section.settings.mo_price_6month | escape }}'
-        },
-        getManualMoPrice() {
-          const plan = this.pdp?.selected_selling_plan;
-          if (!plan) return null;
-          const title = (this.pdp?.selected_variant?.title || '').toLowerCase();
-          if (/6[\s-]*month/.test(title)) return this.moPrice.sixMonth || null;
-          if (/3[\s-]*month/.test(title)) return this.moPrice.threeMonth || null;
-          return this.moPrice.monthly || null;
-        },
-        selectDefaultPlan() {
-          const allocations = this.pdp?.selling_plan_allocations || [];
-          const matchedPlan = allocations.find((allocation) => /60\s*day/i.test(allocation?.selling_plan?.name || ''));
-          const targetPlan = matchedPlan?.selling_plan || allocations[0]?.selling_plan;
-          if (targetPlan?.id && this.pdp?.selected_selling_plan?.id !== targetPlan.id) {
-            this.setSellingPlan(targetPlan.id);
-          }
-        },
-        handleVariantChange(selectEl) {
-          const variantId = +selectEl.value;
-          const sellingPlanId = +(selectEl.selectedOptions?.[0]?.dataset.sellingPlanId || 0);
-          const useSubscription = !!this.pdp?.selected_selling_plan?.id || !!this.pdp?.product?.requires_selling_plan;
+      x-data="
+        {
+          ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), true),
+          galleryIndex: 0,
+          giftModalOpen: false,
+          mobileStickyVisible: false,
+          selectedVariantId: +`{{ variant.id }}`,
+          moPrice: {
+            monthly: '{{ section.settings.mo_price_monthly | escape }}',
+            threeMonth: '{{ section.settings.mo_price_3month | escape }}',
+            sixMonth: '{{ section.settings.mo_price_6month | escape }}'
+          },
+          getManualMoPrice() {
+            const plan = this.pdp?.selected_selling_plan;
+            if (!plan) return null;
+            const title = (this.pdp?.selected_variant?.title || '').toLowerCase();
+            if (/6[\s-]*month/.test(title)) return this.moPrice.sixMonth || null;
+            if (/3[\s-]*month/.test(title)) return this.moPrice.threeMonth || null;
+            return this.moPrice.monthly || null;
+          },
+          selectDefaultPlan() {
+            const allocations = this.pdp?.selling_plan_allocations || [];
+            const matchedPlan = allocations.find((allocation) => /60\s*day/i.test(allocation?.selling_plan?.name || ''));
+            const targetPlan = matchedPlan?.selling_plan || allocations[0]?.selling_plan;
+            if (targetPlan?.id && this.pdp?.selected_selling_plan?.id !== targetPlan.id) {
+              this.setSellingPlan(targetPlan.id);
+            }
+          },
+          handleVariantChange(selectEl) {
+            const variantId = +selectEl.value;
+            const sellingPlanId = +(selectEl.selectedOptions?.[0]?.dataset.sellingPlanId || 0);
+            const useSubscription = !!this.pdp?.selected_selling_plan?.id || !!this.pdp?.product?.requires_selling_plan;
 
-          this.selectedVariantId = variantId;
-          this.setSelectedVariant(variantId);
+            this.selectedVariantId = variantId;
+            this.setSelectedVariant(variantId);
 
-          if (useSubscription) {
-            this.$nextTick(() => {
-              this.setSellingPlan(sellingPlanId || this.pdp?.selected_variant?.selling_plan_allocations?.[0]?.selling_plan?.id || undefined);
+            if (useSubscription) {
+              this.$nextTick(() => {
+                const allowedSellingPlanId = this.pdp?.selling_plan_allocations?.some(
+                  (allocation) => allocation?.selling_plan?.id === sellingPlanId
+                )
+                  ? sellingPlanId
+                  : undefined;
+                this.setSellingPlan(allowedSellingPlanId || this.pdp?.selling_plan_allocations?.[0]?.selling_plan?.id || undefined);
+              });
+            }
+          },
+          toggleSubscription() {
+            if (this.pdp?.selected_selling_plan?.id) {
+              this.setSellingPlan(undefined);
+              return;
+            }
+            this.selectDefaultPlan();
+          },
+          initPurchaseBox() {
+            this.selectDefaultPlan();
+            this.$watch('pdp.selected_variant?.id', (value) => {
+              this.selectedVariantId = +(value || 0);
             });
-          }
-        },
-        toggleSubscription() {
-          if (this.pdp?.selected_selling_plan?.id) {
-            this.setSellingPlan(undefined);
-            return;
-          }
-          this.selectDefaultPlan();
-        },
-        initPurchaseBox() {
-          this.selectDefaultPlan();
-          this.$watch('pdp.selected_variant?.id', (value) => {
-            this.selectedVariantId = +(value || 0);
-          });
 
-          if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) {
-            return;
+            if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) {
+              return;
+            }
+
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                this.mobileStickyVisible = !entry.isIntersecting;
+              },
+              { threshold: 0.2 }
+            );
+
+            observer.observe(this.$refs.primaryCta);
           }
-
-          const observer = new IntersectionObserver(
-            ([entry]) => {
-              this.mobileStickyVisible = !entry.isIntersecting;
-            },
-            { threshold: 0.2 }
-          );
-
-          observer.observe(this.$refs.primaryCta);
         }
-      }"
-      x-init="initPurchaseBox()">
+      "
+      x-init="initPurchaseBox()"
+    >
       <input type="hidden" name="form_type" value="product">
       <input type="hidden" name="utf8" value="✓">
       <input type="hidden" name="id" value="{{ variant.id }}" :value="pdp.selected_variant?.id">
@@ -801,18 +809,48 @@
       <div class="ctr-ppb__gallery-layout">
         <div class="ctr-ppb__thumbs" aria-label="Product images">
           {% if image_1 != blank %}
-            <button type="button" class="ctr-ppb__thumb is-active" :class="{ 'is-active': galleryIndex === 0 }" @click="galleryIndex = 0" aria-label="View image 1">
-              {{ image_1 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb is-active"
+              :class="{ 'is-active': galleryIndex === 0 }"
+              @click="galleryIndex = 0"
+              aria-label="View image 1"
+            >
+              {{
+                image_1
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
           {% if image_2 != blank %}
-            <button type="button" class="ctr-ppb__thumb" :class="{ 'is-active': galleryIndex === 1 }" @click="galleryIndex = 1" aria-label="View image 2">
-              {{ image_2 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb"
+              :class="{ 'is-active': galleryIndex === 1 }"
+              @click="galleryIndex = 1"
+              aria-label="View image 2"
+            >
+              {{
+                image_2
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
           {% if image_3 != blank %}
-            <button type="button" class="ctr-ppb__thumb" :class="{ 'is-active': galleryIndex === 2 }" @click="galleryIndex = 2" aria-label="View image 3">
-              {{ image_3 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title }}
+            <button
+              type="button"
+              class="ctr-ppb__thumb"
+              :class="{ 'is-active': galleryIndex === 2 }"
+              @click="galleryIndex = 2"
+              aria-label="View image 3"
+            >
+              {{
+                image_3
+                | image_url: width: 180
+                | image_tag: loading: 'lazy', widths: '90,120,180', sizes: '64px', alt: title
+              }}
             </button>
           {% endif %}
         </div>
@@ -820,17 +858,41 @@
         <div class="ctr-ppb__hero-image">
           {% if image_1 != blank %}
             <div x-show="galleryIndex === 0">
-              {{ image_1 | image_url: width: 1600 | image_tag: loading: 'eager', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_1
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'eager',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
           {% if image_2 != blank %}
             <div x-cloak x-show="galleryIndex === 1">
-              {{ image_2 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_2
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
           {% if image_3 != blank %}
             <div x-cloak x-show="galleryIndex === 2">
-              {{ image_3 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480,720,960,1200,1600', sizes: '(max-width: 989px) 100vw, 52vw', alt: title }}
+              {{
+                image_3
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '480,720,960,1200,1600',
+                  sizes: '(max-width: 989px) 100vw, 52vw',
+                  alt: title
+              }}
             </div>
           {% endif %}
         </div>
@@ -862,10 +924,10 @@
         {% endif %}
 
         {% if section.settings.frontrow_product_id != blank %}
-          <div class="ctr-ppb__frontrow">
-            <script async type="text/javascript" src="https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"></script>
-            <iframe class="iframe-frontrow" id="iframe-frontrow-quant" frameborder="0" src="https://app.thefrontrowhealth.com/api/widgets?presentation_type=quant&product_id={{ section.settings.frontrow_product_id }}"></iframe>
-          </div>
+          {% render 'ctr-frontrow-widget',
+            product_id: section.settings.frontrow_product_id,
+            iframe_id: 'iframe-frontrow-quant-' | append: section.id
+          %}
         {% endif %}
 
         {% if section.settings.show_urgency_badge and section.settings.urgency_badge_text != blank %}
@@ -874,13 +936,19 @@
 
         <ul class="ctr-ppb__benefits">
           {% if section.settings.benefit_1 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_1 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_1 | escape }}</span>
+            </li>
           {% endif %}
           {% if section.settings.benefit_2 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_2 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_2 | escape }}</span>
+            </li>
           {% endif %}
           {% if section.settings.benefit_3 != blank %}
-            <li><span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_3 | escape }}</span></li>
+            <li>
+              <span class="ctr-ppb__benefits-marker"></span><span>{{ section.settings.benefit_3 | escape }}</span>
+            </li>
           {% endif %}
         </ul>
 
@@ -892,33 +960,39 @@
               role="switch"
               :aria-checked="!!pdp.selected_selling_plan?.id"
               :aria-label="(pdp.selected_selling_plan?.id ? 'Disable' : 'Enable') + ' subscription'"
-              @click="toggleSubscription()"></button>
+              @click="toggleSubscription()"
+            ></button>
             <div class="ctr-ppb__purchase-title-wrap">
               <span class="ctr-ppb__purchase-title">{{ section.settings.subscription_title | escape }}</span>
               {% if section.settings.subscription_badge_text != blank %}
-                <span class="ctr-ppb__save-badge"
-                x-show="(pdp.selected_compare_at_price || 0) > (pdp.selected_price || 0)"
-                x-text="'Save ' + Math.round((1 - (pdp.selected_price || 0) / (pdp.selected_compare_at_price || 1)) * 100) + '%'">
-                {{ section.settings.subscription_badge_text | escape }}
+                <span
+                  class="ctr-ppb__save-badge"
+                  x-show="(pdp.selected_compare_at_price || 0) > (pdp.selected_price || 0)"
+                  x-text="'Save ' + Math.round((1 - (pdp.selected_price || 0) / (pdp.selected_compare_at_price || 1)) * 100) + '%'"
+                >
+                  {{ section.settings.subscription_badge_text | escape }}
                 </span>
               {% endif %}
             </div>
 
             <div class="ctr-ppb__price-wrap">
-
               <!-- Line 1: /mo price (only when subscription active + override set) -->
-              <span class="ctr-ppb__mo-price"
+              <span
+                class="ctr-ppb__mo-price"
                 x-cloak
                 x-show="!!pdp.selected_selling_plan?.id && !!getManualMoPrice()"
-                x-text="getManualMoPrice() + '/mo'"></span>
+                x-text="getManualMoPrice() + '/mo'"
+              ></span>
 
               <!-- Line 2: compare-at strikethrough + regular price side by side -->
               <div class="ctr-ppb__price-row">
-                
-                <span class="ctr-ppb__sale-price"
-                  x-text="utils.formatMoney(pdp.selected_price || 0)">{{ variant.price | money }}</span>
+                <span
+                  class="ctr-ppb__sale-price"
+                  x-text="utils.formatMoney(pdp.selected_price || 0)"
+                >
+                  {{- variant.price | money -}}
+                </span>
               </div>
-
             </div>
           </div>
 
@@ -926,26 +1000,39 @@
             class="ctr-ppb__plan-select"
             aria-label="Delivery option"
             @change="handleVariantChange($event.target)"
-            :value="selectedVariantId">
+            :value="selectedVariantId"
+          >
             {% for product_variant in product.variants %}
               <option
                 value="{{ product_variant.id }}"
                 data-selling-plan-id="{{ product_variant.selling_plan_allocations.first.selling_plan.id }}"
-                {% if product_variant.id == variant.id %}selected{% endif %}>
-                {{ product_variant.title }}{% if product_variant.metafields.custom.choose_supply_variant_subheading != blank %} - {{ product_variant.metafields.custom.choose_supply_variant_subheading }}{% endif %}
+                {% if product_variant.id == variant.id %}
+                  selected
+                {% endif %}
+              >
+                {{ product_variant.title -}}
+                {%- if product_variant.metafields.custom.choose_supply_variant_subheading != blank %}
+                  - {{ product_variant.metafields.custom.choose_supply_variant_subheading -}}
+                {%- endif %}
               </option>
             {% endfor %}
           </select>
 
           <ul class="ctr-ppb__subscription-perks">
             {% if section.settings.subscription_perk_1 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_1 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_1 | escape }}</span>
+              </li>
             {% endif %}
             {% if section.settings.subscription_perk_2 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_2 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_2 | escape }}</span>
+              </li>
             {% endif %}
             {% if section.settings.subscription_perk_3 != blank %}
-              <li><span>✓</span><span>{{ section.settings.subscription_perk_3 | escape }}</span></li>
+              <li>
+                <span>✓</span><span>{{ section.settings.subscription_perk_3 | escape }}</span>
+              </li>
             {% endif %}
           </ul>
         </div>
@@ -956,24 +1043,50 @@
             <p class="ctr-ppb__gift-copy">
               {{ section.settings.gift_callout_text | escape }}
               {% if section.settings.gift_callout_link_text != blank %}
-                <a href="#" @click.prevent="giftModalOpen = true">{{ section.settings.gift_callout_link_text | escape }}</a>
+                <a href="#" @click.prevent="giftModalOpen = true">
+                  {{- section.settings.gift_callout_link_text | escape -}}
+                </a>
               {% endif %}
             </p>
           </div>
           <div class="ctr-ppb__gift-images">
             {% if section.settings.gift_image_1 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_1 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_1
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
             {% if section.settings.gift_image_2 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_2 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_2
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
             {% if section.settings.gift_image_3 != blank %}
               <div class="ctr-ppb__gift-image">
-                {{ section.settings.gift_image_3 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '52px', alt: section.settings.gift_callout_heading }}
+                {{
+                  section.settings.gift_image_3
+                  | image_url: width: 240
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '120,180,240',
+                    sizes: '52px',
+                    alt: section.settings.gift_callout_heading
+                }}
               </div>
             {% endif %}
           </div>
@@ -984,12 +1097,17 @@
           class="ctr-ppb__cta"
           x-ref="primaryCta"
           :disabled="pdp.isAdding || pdp.soldOut"
-          @click="handleAddToCart($event)">
-          <span x-text="pdp.soldOut
-          ? '{{ section.settings.sold_out_text | escape }}'
-          : '{{ section.settings.cta_text | escape }} - ' + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? getManualMoPrice() + '/mo' : utils.formatMoney(pdp.selected_price || 0))">
-          {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
-        </span>
+          @click="handleAddToCart($event)"
+        >
+          <span
+            x-text="
+              pdp.soldOut
+              ? '{{ section.settings.sold_out_text | escape }}'
+              : '{{ section.settings.cta_text | escape }} - ' + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? getManualMoPrice() + '/mo' : utils.formatMoney(pdp.selected_price || 0))
+            "
+          >
+            {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
+          </span>
         </button>
 
         <div class="ctr-ppb__trust-row">
@@ -1036,16 +1154,26 @@
             {% assign has_gift_1 = false %}
             {% assign has_gift_2 = false %}
             {% assign has_gift_3 = false %}
-            {% if section.settings.modal_gift_image_1 != blank or section.settings.modal_gift_label_1 != blank %}{% assign has_gift_1 = true %}{% endif %}
-            {% if section.settings.modal_gift_image_2 != blank or section.settings.modal_gift_label_2 != blank %}{% assign has_gift_2 = true %}{% endif %}
-            {% if section.settings.modal_gift_image_3 != blank or section.settings.modal_gift_label_3 != blank %}{% assign has_gift_3 = true %}{% endif %}
+            {% if section.settings.modal_gift_image_1 != blank or section.settings.modal_gift_label_1 != blank -%}
+              {%- assign has_gift_1 = true -%}
+            {%- endif %}
+            {% if section.settings.modal_gift_image_2 != blank or section.settings.modal_gift_label_2 != blank -%}
+              {%- assign has_gift_2 = true -%}
+            {%- endif %}
+            {% if section.settings.modal_gift_image_3 != blank or section.settings.modal_gift_label_3 != blank -%}
+              {%- assign has_gift_3 = true -%}
+            {%- endif %}
 
             {% if has_gift_1 or has_gift_2 or has_gift_3 %}
               <div class="ctr-ppb__modal-gifts">
                 {% if has_gift_1 %}
                   <div class="ctr-ppb__modal-gift">
                     {% if section.settings.modal_gift_image_1 != blank %}
-                      {{ section.settings.modal_gift_image_1 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                      {{
+                        section.settings.modal_gift_image_1
+                        | image_url: width: 240
+                        | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px'
+                      }}
                     {% endif %}
                     {% if section.settings.modal_gift_label_1 != blank %}
                       <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_1 }}</div>
@@ -1055,7 +1183,11 @@
                 {% if has_gift_2 %}
                   <div class="ctr-ppb__modal-gift">
                     {% if section.settings.modal_gift_image_2 != blank %}
-                      {{ section.settings.modal_gift_image_2 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                      {{
+                        section.settings.modal_gift_image_2
+                        | image_url: width: 240
+                        | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px'
+                      }}
                     {% endif %}
                     {% if section.settings.modal_gift_label_2 != blank %}
                       <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_2 }}</div>
@@ -1065,7 +1197,11 @@
                 {% if has_gift_3 %}
                   <div class="ctr-ppb__modal-gift">
                     {% if section.settings.modal_gift_image_3 != blank %}
-                      {{ section.settings.modal_gift_image_3 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                      {{
+                        section.settings.modal_gift_image_3
+                        | image_url: width: 240
+                        | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px'
+                      }}
                     {% endif %}
                     {% if section.settings.modal_gift_label_3 != blank %}
                       <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_3 }}</div>
@@ -1080,13 +1216,19 @@
             {% endif %}
 
             {% assign has_gift_4 = false %}
-            {% if section.settings.modal_gift_image_4 != blank or section.settings.modal_gift_label_4 != blank %}{% assign has_gift_4 = true %}{% endif %}
+            {% if section.settings.modal_gift_image_4 != blank or section.settings.modal_gift_label_4 != blank -%}
+              {%- assign has_gift_4 = true -%}
+            {%- endif %}
 
             {% if has_gift_4 %}
               <div class="ctr-ppb__modal-gifts ctr-ppb__modal-gifts--single">
                 <div class="ctr-ppb__modal-gift">
                   {% if section.settings.modal_gift_image_4 != blank %}
-                    {{ section.settings.modal_gift_image_4 | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px' }}
+                    {{
+                      section.settings.modal_gift_image_4
+                      | image_url: width: 240
+                      | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '100px'
+                    }}
                   {% endif %}
                   {% if section.settings.modal_gift_label_4 != blank %}
                     <div class="ctr-ppb__modal-gift-label">{{ section.settings.modal_gift_label_4 }}</div>
@@ -1106,16 +1248,21 @@
             type="submit"
             class="ctr-ppb__sticky-button"
             :disabled="pdp.isAdding || pdp.soldOut"
-            @click="handleAddToCart($event)">
-            <span x-text="pdp.soldOut
-              ? '{{ section.settings.sold_out_text | escape }}'
-              : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0) + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? ' (' + getManualMoPrice() + '/mo)' : '')">
+            @click="handleAddToCart($event)"
+          >
+            <span
+              x-text="
+                pdp.soldOut
+                ? '{{ section.settings.sold_out_text | escape }}'
+                : '{{ section.settings.cta_text | escape }} - ' + utils.formatMoney(pdp.selected_price || 0) + (!!pdp.selected_selling_plan?.id && !!getManualMoPrice() ? ' (' + getManualMoPrice() + '/mo)' : '')
+              "
+            >
               {{ section.settings.cta_text | escape }} - {{ variant.price | money }}
             </span>
           </button>
         </div>
-        </div>
-      </form>
+      </div>
+    </form>
   </section>
 {% endif %}
 

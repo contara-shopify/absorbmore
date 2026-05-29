@@ -1,0 +1,458 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+  assign scroll_target = section.settings.cta_scroll_target | strip
+  if scroll_target == blank
+    assign scroll_target = 'purchase'
+  endif
+  unless scroll_target contains '#'
+    assign cta_href = '#' | append: scroll_target
+  else
+    assign cta_href = scroll_target
+  endunless
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  & .ctr-audience__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  & .ctr-audience__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, {{ section.settings.image_column_width }}%);
+    gap: {{ section.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  & .ctr-audience__content {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.content_gap }}px;
+    min-width: 0;
+  }
+
+  & .ctr-audience__heading {
+    margin: 0;
+    font-size: {{ section.settings.heading_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  & .ctr-audience__heading p { margin: 0; }
+
+  & .ctr-audience__copy {
+    margin: 0;
+    font-size: {{ section.settings.copy_size_desktop }}px;
+    line-height: 1.45;
+    color: {{ section.settings.copy_color }};
+  }
+
+  & .ctr-audience__copy p { margin: 0; }
+
+  & .ctr-audience__list-box {
+    background: {{ section.settings.list_box_bg }};
+    border-radius: {{ section.settings.list_box_radius }}px;
+    padding: {{ section.settings.list_box_padding }}px;
+  }
+
+  & .ctr-audience__list {
+    margin: 0;
+    padding: 0 0 0 1.15em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.bullet_gap }}px;
+  }
+
+  & .ctr-audience__list li {
+    font-size: {{ section.settings.bullet_size_desktop }}px;
+    line-height: 1.45;
+    color: {{ section.settings.bullet_color }};
+    padding-left: 0.15em;
+  }
+
+  & .ctr-audience__list li::marker {
+    color: {{ section.settings.bullet_marker_color }};
+  }
+
+  & .ctr-audience__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: {{ section.settings.cta_max_width }}px;
+    min-height: {{ section.settings.cta_min_height }}px;
+    padding: {{ section.settings.cta_padding_y }}px {{ section.settings.cta_padding_x }}px;
+    border-radius: {{ section.settings.cta_radius }}px;
+    background: {{ section.settings.cta_bg }};
+    color: {{ section.settings.cta_text_color }};
+    font-size: {{ section.settings.cta_size_desktop }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  & .ctr-audience__cta:hover {
+    opacity: 0.92;
+  }
+
+  & .ctr-audience__media {
+    min-width: 0;
+  }
+
+  & .ctr-audience__media-frame {
+    border-radius: {{ section.settings.image_radius }}px;
+    overflow: hidden;
+    aspect-ratio: {{ section.settings.image_aspect_desktop }};
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  & .ctr-audience__media-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 1023px) {
+    & {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    & .ctr-audience__grid {
+      grid-template-columns: 1fr;
+      gap: {{ section.settings.column_gap_mobile }}px;
+    }
+
+    & .ctr-audience__media {
+      order: -1;
+    }
+
+    & .ctr-audience__content {
+      gap: {{ section.settings.content_gap_mobile }}px;
+    }
+
+    & .ctr-audience__heading {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+
+    & .ctr-audience__copy {
+      font-size: {{ section.settings.copy_size_mobile }}px;
+    }
+
+    & .ctr-audience__list-box {
+      padding: {{ section.settings.list_box_padding_mobile }}px;
+      border-radius: {{ section.settings.list_box_radius_mobile }}px;
+    }
+
+    & .ctr-audience__list li {
+      font-size: {{ section.settings.bullet_size_mobile }}px;
+    }
+
+    & .ctr-audience__cta {
+      max-width: none;
+      font-size: {{ section.settings.cta_size_mobile }}px;
+    }
+
+    & .ctr-audience__media-frame {
+      aspect-ratio: {{ section.settings.image_aspect_mobile }};
+      border-radius: {{ section.settings.image_radius_mobile }}px;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_audience_split"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-audience {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-audience__inner">
+    <div class="ctr-audience__grid">
+      <div class="ctr-audience__content">
+        {% if section.settings.heading != blank %}
+          <div class="ctr-audience__heading">{{ section.settings.heading }}</div>
+        {% endif %}
+
+        {% if section.settings.copy != blank %}
+          <div class="ctr-audience__copy">{{ section.settings.copy }}</div>
+        {% endif %}
+
+        {% if section.blocks.size > 0 %}
+          <div class="ctr-audience__list-box">
+            <ul class="ctr-audience__list">
+              {% for block in section.blocks %}
+                {% if block.settings.text != blank %}
+                  <li {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if section.settings.cta_label != blank %}
+          <a
+            class="ctr-audience__cta"
+            href="{{ cta_href }}"
+            data-audience-scroll-cta
+          >
+            {{ section.settings.cta_label | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+      {% if section.settings.image != blank or section.settings.image_mobile != blank %}
+        {%- liquid
+          assign audience_mobile_image = section.settings.image_mobile
+          if audience_mobile_image == blank
+            assign audience_mobile_image = section.settings.image
+          endif
+        -%}
+        <div class="ctr-audience__media">
+          <div class="ctr-audience__media-frame">
+            {% if section.settings.image != blank and section.settings.image_mobile != blank %}
+              <picture>
+                <source
+                    media="(min-width: 1024px)"
+                    srcset="
+                      {{ section.settings.image | image_url: width: 900 }} 900w,
+                      {{ section.settings.image | image_url: width: 1200 }} 1200w,
+                      {{ section.settings.image | image_url: width: 1600 }} 1600w
+                    "
+                    sizes="(min-width: 1024px) {{ section.settings.image_column_width }}vw, 100vw"
+                  >
+                {{
+                  audience_mobile_image
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '400,600,800,1000,1200',
+                    sizes: '(max-width: 1023px) 100vw, 46vw',
+                    alt: section.settings.image_alt
+                }}
+              </picture>
+            {% elsif section.settings.image != blank %}
+              {{
+                section.settings.image
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '600,800,1000,1200,1600',
+                  sizes: '(max-width: 1023px) 100vw, 46vw',
+                  alt: section.settings.image_alt
+              }}
+            {% elsif audience_mobile_image != blank %}
+              {{
+                audience_mobile_image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '400,600,800,1000,1200',
+                  sizes: '100vw',
+                  alt: section.settings.image_alt
+              }}
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-style-id="{{ section.id }}"]');
+    if (!root) return;
+
+    var cta = root.querySelector('[data-audience-scroll-cta]');
+    if (!cta) return;
+
+    cta.addEventListener('click', function (event) {
+      var href = cta.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+
+      var id = href.slice(1);
+      var target =
+        document.getElementById(id) ||
+        document.getElementById('shopify-section-' + id) ||
+        document.querySelector(href);
+
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "CTR Audience Split",
+  "tag": "section",
+  "class": "shopify_section__ctr_audience_split",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1240, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "range", "id": "image_column_width", "label": "Image column width (desktop)", "default": 46, "min": 34, "max": 56, "step": 1, "unit": "%" },
+    { "type": "range", "id": "column_gap", "label": "Column gap - desktop", "default": 48, "min": 16, "max": 120, "step": 4, "unit": "px" },
+    { "type": "range", "id": "column_gap_mobile", "label": "Column gap - mobile", "default": 28, "min": 12, "max": 80, "step": 2, "unit": "px" },
+    { "type": "color", "id": "background_color", "label": "Background (full bleed)", "default": "#8b2e2e" },
+    { "type": "color", "id": "text_color", "label": "Heading color", "default": "#ffffff" },
+    { "type": "range", "id": "padding_top", "label": "Padding top - desktop", "default": 72, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom - desktop", "default": 72, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top - mobile", "default": 32, "min": 0, "max": 140, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom - mobile", "default": 40, "min": 0, "max": 140, "step": 4, "unit": "px" },
+    { "type": "range", "id": "content_gap", "label": "Gap between content blocks - desktop", "default": 24, "min": 8, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "content_gap_mobile", "label": "Gap between content blocks - mobile", "default": 20, "min": 8, "max": 48, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Content" },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>For women who want to feel like themselves again.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Supporting copy",
+      "default": "<p>Not a quick fix. Not a crash diet. Just a smarter daily routine that works with your body's natural rhythms so energy, cravings, and stress stop feeling like things you have to manage every single day.</p>"
+    },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_size_desktop", "label": "Heading size - desktop", "default": 44, "min": 24, "max": 72, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size - mobile", "default": 30, "min": 22, "max": 48, "step": 1, "unit": "px" },
+    { "type": "range", "id": "copy_size_desktop", "label": "Copy size - desktop", "default": 17, "min": 13, "max": 24, "step": 1, "unit": "px" },
+    { "type": "range", "id": "copy_size_mobile", "label": "Copy size - mobile", "default": 15, "min": 13, "max": 22, "step": 1, "unit": "px" },
+    { "type": "color", "id": "copy_color", "label": "Copy color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Bullet list box" },
+    { "type": "color", "id": "list_box_bg", "label": "List box background", "default": "#702828" },
+    { "type": "range", "id": "list_box_radius", "label": "List box radius - desktop", "default": 12, "min": 0, "max": 32, "step": 1, "unit": "px" },
+    { "type": "range", "id": "list_box_radius_mobile", "label": "List box radius - mobile", "default": 12, "min": 0, "max": 28, "step": 1, "unit": "px" },
+    { "type": "range", "id": "list_box_padding", "label": "List box padding - desktop", "default": 24, "min": 12, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "list_box_padding_mobile", "label": "List box padding - mobile", "default": 20, "min": 10, "max": 40, "step": 2, "unit": "px" },
+    { "type": "color", "id": "bullet_color", "label": "Bullet text color", "default": "#ffffff" },
+    { "type": "color", "id": "bullet_marker_color", "label": "Bullet marker color", "default": "#ffffff" },
+    { "type": "range", "id": "bullet_size_desktop", "label": "Bullet size - desktop", "default": 16, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "bullet_size_mobile", "label": "Bullet size - mobile", "default": 15, "min": 12, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "bullet_gap", "label": "Gap between bullets", "default": 12, "min": 4, "max": 28, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image - desktop" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Image - mobile", "info": "Falls back to desktop image if empty." },
+    { "type": "text", "id": "image_alt", "label": "Image alt text", "default": "Woman walking outdoors in golden hour light" },
+    { "type": "text", "id": "image_aspect_desktop", "label": "Image aspect ratio - desktop", "default": "4 / 5" },
+    { "type": "text", "id": "image_aspect_mobile", "label": "Image aspect ratio - mobile", "default": "4 / 5" },
+    { "type": "range", "id": "image_radius", "label": "Image radius - desktop", "default": 18, "min": 0, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "image_radius_mobile", "label": "Image radius - mobile", "default": 16, "min": 0, "max": 32, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "CTA" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Add the Stack to Cart" },
+    {
+      "type": "text",
+      "id": "cta_scroll_target",
+      "label": "Scroll target ID",
+      "default": "purchase",
+      "info": "Element ID to scroll to (without #). Set the same Section ID on your purchase box section, e.g. purchase."
+    },
+    { "type": "color", "id": "cta_bg", "label": "Button background", "default": "#4d61ff" },
+    { "type": "color", "id": "cta_text_color", "label": "Button text color", "default": "#ffffff" },
+    { "type": "range", "id": "cta_max_width", "label": "Button max width - desktop", "default": 520, "min": 200, "max": 720, "step": 10, "unit": "px" },
+    { "type": "range", "id": "cta_min_height", "label": "Button min height", "default": 52, "min": 40, "max": 72, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_padding_x", "label": "Button padding horizontal", "default": 24, "min": 12, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_padding_y", "label": "Button padding vertical", "default": 14, "min": 8, "max": 28, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_radius", "label": "Button radius", "default": 10, "min": 0, "max": 24, "step": 1, "unit": "px" },
+    { "type": "range", "id": "cta_size_desktop", "label": "Button text size - desktop", "default": 17, "min": 14, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "cta_size_mobile", "label": "Button text size - mobile", "default": 16, "min": 14, "max": 20, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "bullet",
+      "name": "Bullet",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "You want consistent energy without depending on caffeine to get through the afternoon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Audience Split",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "bullet",
+          "settings": {
+            "text": "You want consistent energy without depending on caffeine to get through the afternoon"
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "text": "You're tired of late-night cravings that undo a good day"
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "text": "You know stress is affecting your sleep and your sleep is affecting everything else"
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "text": "You want to actually feel the difference, not just hope you do"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

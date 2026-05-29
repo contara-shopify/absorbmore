@@ -1,0 +1,859 @@
+{%- comment -%}
+  PFD2 — Advertorial listicle for Magnesium Glycinate | 8x Absorbable. Mid-funnel paid traffic.
+  Hook: "5 Bad Habits That Won't Survive Your First Week of High-Absorption Magnesium" — "we're sorry" reframe,
+  consequences shaped as guilty pleasures. Audience: mag-aware buyers who've tried cheap oxide and felt nothing.
+  Brand voice: declarative, no em dashes, no exclamation points, dry humor.
+  Compliance: structure/function claims marked with <sup>*</sup>. No medical/disease claims.
+{%- endcomment -%}
+
+{%- liquid
+  assign hero_img      = section.settings.hero_img      | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign product_img   = section.settings.product_img   | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign img_1         = section.settings.img_1         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign img_2         = section.settings.img_2         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign img_3         = section.settings.img_3         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign img_4         = section.settings.img_4         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+  assign img_5         = section.settings.img_5         | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Magnesium-Glycinate.png?v=1774483977'
+
+  comment
+    Buybox: mirrors the live PDP. Three bottle-count tiers, all priced at $18.20/bottle (35% off $28).
+    Selling plans verified 2026-05-24 from live DOM. "Every 2 months" cadence.
+    NOTE: 35% off is Memorial Day promo (ends 2026-05-25). Update to 10% base discount after.
+  endcomment
+  assign cart_1bot     = section.settings.cart_1bot     | default: '/cart/52439421976865:1?selling_plan=691154485537'
+  assign cart_2bot     = section.settings.cart_2bot     | default: '/cart/52439422009633:1?selling_plan=691154518305'
+  assign cart_3bot     = section.settings.cart_3bot     | default: '/cart/52439422042401:1?selling_plan=691154551073'
+
+  assign price_1bot_per   = section.settings.price_1bot_per   | default: '$18.20/bottle'
+  assign price_1bot_was   = section.settings.price_1bot_was   | default: '$28.00'
+  assign price_1bot_total = section.settings.price_1bot_total | default: '$18.20 total'
+  assign price_1bot_save  = section.settings.price_1bot_save  | default: 'save $9.80'
+  assign discount_1bot    = section.settings.discount_1bot    | default: '35'
+
+  assign price_2bot_per   = section.settings.price_2bot_per   | default: '$18.20/bottle'
+  assign price_2bot_was   = section.settings.price_2bot_was   | default: '$56.00'
+  assign price_2bot_total = section.settings.price_2bot_total | default: '$36.40 total'
+  assign price_2bot_save  = section.settings.price_2bot_save  | default: 'save $19.60'
+  assign discount_2bot    = section.settings.discount_2bot    | default: '35'
+
+  assign price_3bot_per   = section.settings.price_3bot_per   | default: '$18.20/bottle'
+  assign price_3bot_was   = section.settings.price_3bot_was   | default: '$84.00'
+  assign price_3bot_total = section.settings.price_3bot_total | default: '$54.60 total'
+  assign price_3bot_save  = section.settings.price_3bot_save  | default: 'save $29.40'
+  assign discount_3bot    = section.settings.discount_3bot    | default: '35'
+
+  assign rating        = section.settings.rating        | default: '4.0'
+  assign review_count  = section.settings.review_count  | default: '80+'
+  assign byline        = section.settings.byline        | default: 'By The Absorption Company Editorial'
+  assign pub_date      = section.settings.pub_date      | default: 'May 2026'
+  assign read_time     = section.settings.read_time     | default: '5 min read'
+
+  comment
+    Hero copy. Schema-editable so the H1 can be swapped to message-match each ad creative
+    without a code change.
+  endcomment
+  assign kicker_text   = section.settings.kicker_text   | default: 'Before You Reach for Another Bottle of Magnesium'
+  assign headline_html = section.settings.headline_html | default: "We're Sorry In Advance: 5 Bad Habits That Won't Survive Your First Week of <em>High-Absorption Magnesium</em>."
+  assign dek_html      = section.settings.dek_html      | default: '<p>Most magnesium on the shelf is magnesium oxide, which absorbs at roughly 4%. Ours is <b>magnesium glycinate, formulated to absorb 8x more</b>.<sup>*</sup> Fair warning about what happens when it actually works.</p>'
+  assign lede_text     = section.settings.lede_text     | default: 'Before you start, we owe you five honest warnings about the things you have been quietly enjoying that high-absorption magnesium is about to take away.'
+  assign hero_cta_text = section.settings.hero_cta_text | default: 'See plans'
+
+  comment
+    Optional asset slots. All render hide-if-empty so the page still works pre-asset.
+  endcomment
+  assign ugc_video_url     = section.settings.ugc_video_url
+  assign ugc_video_poster  = section.settings.ugc_video_poster
+  assign ugc_video_caption = section.settings.ugc_video_caption | default: 'Watch: real customer, 3 weeks in.'
+  assign founder_name      = section.settings.founder_name
+  assign founder_title     = section.settings.founder_title     | default: 'Founder, The Absorption Company'
+  assign founder_quote     = section.settings.founder_quote
+  assign founder_img       = section.settings.founder_img
+
+  assign klaviyo_company_id = section.settings.klaviyo_company_id
+  assign klaviyo_list_id    = section.settings.klaviyo_list_id
+  assign email_head         = section.settings.email_head    | default: 'Not ready yet?'
+  assign email_sub          = section.settings.email_sub     | default: 'Get the magnesium absorption brief in your inbox. Why oxide fails, why glycinate works, and what 8x absorption actually means.'
+  assign email_cta          = section.settings.email_cta     | default: 'Send it to me'
+-%}
+
+<style>
+  .pfd2 { --ink:#0B1220; --paper:#FBFAF6; --cream:#F4EFE4; --line:#E4DFD2; --blue:#4659FF; --blue-deep:#2C3FD9; --red:#E1225C; --gold:#C99A33; --mute:#5E6470;
+    color:var(--ink); background:var(--paper);  -webkit-font-smoothing:antialiased; line-height:1.55; font-size:17px; }
+  .pfd2 *{box-sizing:border-box}
+  .pfd2 img{max-width:100%;display:block;height:auto}
+  .pfd2 a{color:inherit;text-decoration:none}
+  .pfd2 .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+  .pfd2 .wrap-wide{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- DISCLOSURE BAR ---------- */
+  .pfd2-disc{background:#0B1220;color:#fff;font-size:12px;text-align:center;padding:8px 16px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+  .pfd2-disc span{opacity:.7;margin-right:8px}
+
+  /* ---------- MASTHEAD ---------- */
+  .pfd2-mast{background:#fff;border-bottom:1px solid var(--line);padding:14px 0}
+  .pfd2-mast__row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .pfd2-mast__logo{font-weight:700;font-size:18px;letter-spacing:.01em;color:var(--ink)}
+  .pfd2-mast__tag{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);font-weight:600}
+
+  /* ---------- ARTICLE HEAD ---------- */
+  .pfd2-art{padding:36px 0 24px}
+  .pfd2-art__kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 14px}
+  .pfd2-art h1{font-weight:700;font-size:clamp(30px,5.6vw,46px);line-height:1.08;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink)}
+  .pfd2-art h1 em{font-style:italic;color:var(--blue)}
+  .pfd2-art__dek{font-size:clamp(17px,2.2vw,20px);line-height:1.45;color:#2D3340;margin:0 0 22px;font-weight:400}
+  .pfd2-art__dek b{color:var(--ink);font-weight:600}
+  .pfd2-art__meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:var(--mute);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin:0 0 24px}
+  .pfd2-art__meta b{color:var(--ink);font-weight:600}
+  .pfd2-art__meta span{display:flex;align-items:center;gap:6px}
+
+  /* ---------- HERO IMAGE ---------- */
+  .pfd2-heroimg{margin:0 0 28px;border-radius:6px;overflow:hidden;background:var(--cream)}
+  .pfd2-heroimg img{width:100%;aspect-ratio:16/10;object-fit:cover}
+  .pfd2-heroimg figcaption{font-size:13px;color:var(--mute);padding:10px 4px 0;line-height:1.4}
+  .pfd2-heroimg figcaption b{color:var(--ink);font-weight:600}
+
+  /* ---------- BODY ---------- */
+  .pfd2-body{padding:0 0 16px}
+  .pfd2-body p{margin:0 0 18px;font-size:17px;line-height:1.65;color:#1E2330}
+  .pfd2-body p.lede{font-size:19px;line-height:1.55;color:var(--ink);font-weight:500}
+  .pfd2-body p.lede::first-letter{font-size:54px;font-weight:700;float:left;line-height:.9;padding:6px 10px 0 0;color:var(--blue)}
+  .pfd2-body strong{font-weight:700;color:var(--ink)}
+
+  /* ---------- SECTION IMAGE ---------- */
+  .pfd2-secimg{margin:8px 0 22px;border-radius:6px;overflow:hidden;background:var(--cream)}
+  .pfd2-secimg img{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .pfd2-secimg figcaption{font-size:12px;color:var(--mute);padding:8px 4px 0;line-height:1.4;font-style:italic}
+
+  /* ---------- NUMBERED SORRY BLOCKS ---------- */
+  .pfd2-sorry{padding:28px 0 28px;border-top:1px solid var(--line)}
+  .pfd2-sorry__num{font-size:64px;font-weight:700;line-height:1;color:var(--blue);margin:0 0 6px;letter-spacing:-.03em}
+  .pfd2-sorry__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--mute);font-weight:700;margin:0 0 6px}
+  .pfd2-sorry h2{font-weight:700;font-size:clamp(24px,4vw,32px);line-height:1.15;letter-spacing:-.01em;margin:0 0 18px;color:var(--ink)}
+  .pfd2-sorry h2 em{font-style:italic;color:var(--blue)}
+  .pfd2-sorry p{margin:0 0 16px;font-size:17px;line-height:1.65;color:#1E2330}
+  .pfd2-sorry__pull{border-left:4px solid var(--blue);background:var(--cream);padding:16px 18px;margin:18px 0;font-size:16px;line-height:1.5;color:var(--ink);border-radius:0 4px 4px 0}
+  .pfd2-sorry__pull b{font-weight:700;color:var(--blue-deep)}
+  .pfd2-sorry__pull .stat{display:block;font-size:28px;font-weight:700;color:var(--blue-deep);line-height:1;margin:0 0 4px}
+
+  /* ---------- INLINE CTA (after sorry #3) ---------- */
+  .pfd2-inline-cta{background:var(--ink);color:#fff;border-radius:8px;padding:24px 22px;margin:24px 0;text-align:center}
+  .pfd2-inline-cta p{margin:0 0 14px;font-size:16px;line-height:1.45;color:#E8ECF4}
+  .pfd2-inline-cta p b{color:#fff;font-weight:700}
+  .pfd2-inline-cta a{display:inline-block;background:var(--blue);color:#fff;padding:13px 24px;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+  .pfd2-inline-cta__price{display:block;font-size:12px;color:#9AA4BC;margin-top:8px;letter-spacing:.04em}
+  .pfd2-inline-cta__price b{color:#fff;font-weight:700}
+
+  /* ---------- PRODUCT REVEAL ---------- */
+  .pfd2-reveal{background:var(--cream);padding:48px 0;border-top:1px solid var(--line);margin-top:32px}
+  .pfd2-reveal__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 12px;text-align:center}
+  .pfd2-reveal h2{font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink);text-align:center}
+  .pfd2-reveal h2 em{font-style:italic;color:var(--blue)}
+  .pfd2-reveal__sub{text-align:center;font-size:17px;line-height:1.55;color:#2D3340;max-width:560px;margin:0 auto 28px}
+  .pfd2-reveal__three{display:grid;grid-template-columns:1fr;gap:14px;max-width:640px;margin:0 auto 0}
+  @media(min-width:680px){.pfd2-reveal__three{grid-template-columns:repeat(3,1fr)}}
+  .pfd2-reveal__card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 16px;text-align:center}
+  .pfd2-reveal__card b{display:block;font-size:26px;font-weight:700;color:var(--blue);line-height:1;margin:0 0 6px}
+  .pfd2-reveal__card span{display:block;font-size:13px;color:var(--mute);line-height:1.4;font-weight:500}
+
+  /* ---------- BUYBOX ---------- */
+  .pfd2-buy{padding:48px 0;background:#fff}
+  .pfd2-buy__head{text-align:center;margin:0 0 22px}
+  .pfd2-buy__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:800;margin:0 0 10px}
+  .pfd2-buy h2{font-weight:700;font-size:clamp(26px,4.6vw,36px);line-height:1.1;margin:0 0 8px;color:var(--ink)}
+  .pfd2-buy__sub{font-size:15px;color:var(--mute);margin:0 auto;max-width:520px}
+  .pfd2-buy__label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);font-weight:700;max-width:720px;margin:0 auto 10px;padding:0 4px}
+
+  .pfd2-buy__list{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .pfd2-row{position:relative;display:block;padding:18px 18px 16px;border-bottom:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s ease}
+  .pfd2-row:last-child{border-bottom:0}
+  .pfd2-row:hover{background:#FBFAF6}
+  .pfd2-row--best{background:#F4EFE4}
+  .pfd2-row--best:hover{background:#EDE6D4}
+
+  .pfd2-row__top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 6px}
+  .pfd2-row__left{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .pfd2-row__namerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pfd2-row__radio{width:18px;height:18px;border:2px solid #B7BBC4;border-radius:999px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:#fff;margin-right:2px}
+  .pfd2-row--best .pfd2-row__radio{border-color:var(--ink)}
+  .pfd2-row--best .pfd2-row__radio:after{content:"";width:9px;height:9px;background:var(--ink);border-radius:999px;display:block}
+  .pfd2-row__name{font-size:19px;font-weight:700;color:var(--ink);line-height:1.1}
+  .pfd2-row__pill{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;padding:4px 9px;border-radius:4px;line-height:1}
+  .pfd2-row__pill--save{background:var(--red);color:#fff}
+  .pfd2-row__pill--pop{background:#4E78D1;color:#fff}
+  .pfd2-row__pill--best{background:#4E78D1;color:#fff}
+  .pfd2-row__desc{font-size:14px;line-height:1.4;color:#3D4452;max-width:380px;margin:0}
+  .pfd2-row__assure{font-size:13px;line-height:1.4;color:var(--mute);margin:0}
+
+  .pfd2-row__right{text-align:right;flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:120px}
+  .pfd2-row__per{font-size:22px;font-weight:700;color:var(--ink);line-height:1.1;white-space:nowrap}
+  .pfd2-row__totline{font-size:13px;color:#3D4452;white-space:nowrap}
+  .pfd2-row__was{text-decoration:line-through;color:var(--mute);margin-right:4px}
+  .pfd2-row__save{font-size:13px;color:var(--blue-deep);font-weight:600;white-space:nowrap}
+
+  .pfd2-row__cta{display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;padding:11px 18px;border-radius:6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:10px}
+  .pfd2-row--best .pfd2-row__cta{background:var(--blue)}
+  .pfd2-row__cta:after{content:" →";margin-left:6px}
+
+  @media(max-width:480px){
+    .pfd2-row__top{flex-direction:column;align-items:stretch}
+    .pfd2-row__right{align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;gap:6px 12px}
+    .pfd2-row__per{font-size:20px}
+  }
+
+  .pfd2-buy__assure{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:center;align-items:center;font-size:13px;color:var(--mute);margin:16px auto 0;max-width:720px}
+  .pfd2-buy__assure span{display:inline-flex;align-items:center;gap:6px}
+  .pfd2-buy__assure svg{width:16px;height:16px;color:var(--blue)}
+
+  /* ---------- REVIEWS BAND ---------- */
+  .pfd2-rev{padding:44px 0;background:var(--cream);border-top:1px solid var(--line)}
+  .pfd2-rev__head{text-align:center;margin:0 0 24px}
+  .pfd2-rev__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 6px}
+  .pfd2-rev h2{font-size:clamp(22px,3.6vw,28px);font-weight:700;margin:0 0 6px;color:var(--ink)}
+  .pfd2-rev__stars-row{display:flex;justify-content:center;align-items:center;gap:8px;font-size:14px;color:var(--mute)}
+  .pfd2-stars{display:inline-block;color:var(--gold);letter-spacing:1px;font-size:16px}
+  .pfd2-stars:before{content:"★★★★★"}
+  .pfd2-rev__grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:1000px;margin:0 auto}
+  @media(min-width:720px){.pfd2-rev__grid{grid-template-columns:repeat(3,1fr)}}
+  .pfd2-quote{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 18px}
+  .pfd2-quote__stars{margin:0 0 8px}
+  .pfd2-quote p{font-size:16px;line-height:1.55;color:#1E2330;margin:0 0 12px}
+  .pfd2-quote__name{font-size:13px;font-weight:700;color:var(--ink)}
+  .pfd2-quote__verif{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:4px;margin-top:2px}
+  .pfd2-quote__verif svg{width:13px;height:13px;color:var(--blue)}
+
+  /* ---------- FAQ ---------- */
+  .pfd2-faq{padding:48px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd2-faq__head{text-align:center;margin:0 0 24px}
+  .pfd2-faq h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0;color:var(--ink)}
+  .pfd2-faq__list{max-width:720px;margin:0 auto}
+  .pfd2-faq__item{border-bottom:1px solid var(--line)}
+  .pfd2-faq__item summary{list-style:none;cursor:pointer;padding:18px 36px 18px 0;font-size:16px;font-weight:600;color:var(--ink);position:relative}
+  .pfd2-faq__item summary::-webkit-details-marker{display:none}
+  .pfd2-faq__item summary:after{content:"+";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--blue);font-weight:700;line-height:1}
+  .pfd2-faq__item[open] summary:after{content:"–"}
+  .pfd2-faq__item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:#2D3340}
+
+  /* ---------- CLOSE / FINAL CTA ---------- */
+  .pfd2-close{padding:56px 0;background:var(--ink);color:#fff;text-align:center}
+  .pfd2-close__kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:#A4B0CF;font-weight:700;margin:0 0 10px}
+  .pfd2-close h2{font-size:clamp(28px,5vw,40px);font-weight:700;margin:0 0 12px;color:#fff;line-height:1.1}
+  .pfd2-close h2 em{font-style:italic;color:#9EA9FF}
+  .pfd2-close p{font-size:16px;color:#C9D1E2;max-width:520px;margin:0 auto 22px;line-height:1.5}
+  .pfd2-close a{display:inline-flex;align-items:center;background:var(--blue);color:#fff;padding:15px 28px;border-radius:8px;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.05em}
+  .pfd2-close a:after{content:" →";margin-left:6px}
+
+  /* ---------- DISCLAIMER ---------- */
+  .pfd2-disclaim{padding:24px 0 80px;background:#fff;border-top:1px solid var(--line)}
+  .pfd2-disclaim p{font-size:12px;line-height:1.55;color:var(--mute);max-width:720px;margin:0 auto 10px}
+  .pfd2-disclaim a{color:var(--blue-deep);text-decoration:underline}
+
+  /* ---------- HERO ABOVE-FOLD RATING + CTA ROW ---------- */
+  .pfd2-hero-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:0 0 18px}
+  .pfd2-hero-row__rating{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+  .pfd2-hero-row__rating b{color:var(--ink);font-weight:700}
+  .pfd2 a.pfd2-hero-row__cta{display:inline-flex;align-items:center;background:var(--blue);color:#fff;padding:11px 18px;border-radius:6px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;min-height:44px}
+  .pfd2 a.pfd2-hero-row__cta:after{content:" ↓";margin-left:6px}
+  .pfd2 a.pfd2-hero-row__cta:hover{background:var(--blue-deep);color:#fff}
+
+  /* ---------- UGC VIDEO ---------- */
+  .pfd2-ugc{margin:0 0 28px;border-radius:6px;overflow:hidden;background:#0B1220;position:relative}
+  .pfd2-ugc video{width:100%;display:block;aspect-ratio:9/16;max-height:640px;object-fit:cover;background:#0B1220}
+  @media(min-width:680px){.pfd2-ugc video{aspect-ratio:4/5;max-height:720px}}
+  .pfd2-ugc figcaption{font-size:13px;color:var(--mute);padding:10px 4px 0;line-height:1.4}
+  .pfd2-ugc figcaption b{color:var(--ink);font-weight:600}
+
+  /* ---------- FOUNDER BAND ---------- */
+  .pfd2-founder{margin:28px 0;padding:22px;background:var(--cream);border-radius:8px;border:1px solid var(--line);display:flex;gap:18px;align-items:center}
+  .pfd2-founder img{width:84px;height:84px;border-radius:999px;object-fit:cover;flex:0 0 auto;border:2px solid #fff;box-shadow:0 1px 4px rgba(11,18,32,.08)}
+  .pfd2-founder__copy{flex:1;min-width:0}
+  .pfd2-founder__quote{font-size:16px;line-height:1.45;color:var(--ink);font-style:italic;margin:0 0 8px;font-weight:500}
+  .pfd2-founder__name{font-size:13px;color:var(--ink);font-weight:700;line-height:1.2}
+  .pfd2-founder__title{font-size:12px;color:var(--mute);line-height:1.3}
+  @media(max-width:520px){.pfd2-founder{flex-direction:column;text-align:center;gap:14px}.pfd2-founder img{width:72px;height:72px}}
+
+  /* ---------- ABSORPTION COMPARISON ---------- */
+  .pfd2-comp{padding:44px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd2-comp__head{text-align:center;margin:0 0 24px}
+  .pfd2-comp__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd2-comp h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0 0 8px;color:var(--ink);line-height:1.15}
+  .pfd2-comp__sub{font-size:15px;color:#3D4452;max-width:540px;margin:0 auto}
+  .pfd2-comp__grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:860px;margin:0 auto}
+  @media(min-width:720px){.pfd2-comp__grid{grid-template-columns:1fr 1fr}}
+  .pfd2-comp__card{border:1px solid var(--line);border-radius:8px;padding:24px 20px;background:#fff}
+  .pfd2-comp__card--ours{border-color:var(--blue);background:#F4F5FF;position:relative}
+  .pfd2-comp__card--ours:before{content:"OURS";position:absolute;top:-10px;left:18px;background:var(--blue);color:#fff;font-size:10px;font-weight:800;letter-spacing:.14em;padding:4px 8px;border-radius:3px}
+  .pfd2-comp__label{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px}
+  .pfd2-comp__form{font-size:21px;font-weight:700;color:var(--ink);margin:0 0 4px;letter-spacing:-.005em}
+  .pfd2-comp__rate{font-size:36px;font-weight:700;color:var(--blue-deep);line-height:1;margin:6px 0 10px}
+  .pfd2-comp__card:not(.pfd2-comp__card--ours) .pfd2-comp__rate{color:var(--mute)}
+  .pfd2-comp__detail{font-size:14px;line-height:1.5;color:#1E2330;margin:0}
+
+  /* ---------- TIMELINE ---------- */
+  .pfd2-time{padding:44px 0;background:var(--cream);border-top:1px solid var(--line)}
+  .pfd2-time__head{text-align:center;margin:0 0 26px}
+  .pfd2-time__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd2-time h2{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0;color:var(--ink);line-height:1.15}
+  .pfd2-time__grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:880px;margin:0 auto;position:relative}
+  @media(min-width:720px){.pfd2-time__grid{grid-template-columns:repeat(3,1fr)}}
+  .pfd2-time__card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px 18px;position:relative}
+  .pfd2-time__when{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep);margin:0 0 6px}
+  .pfd2-time__what{font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;margin:0 0 8px;letter-spacing:-.005em}
+  .pfd2-time__detail{font-size:14px;line-height:1.55;color:#1E2330;margin:0}
+  .pfd2-time__detail sup{font-size:9px}
+
+  /* ---------- EMAIL CAPTURE ---------- */
+  .pfd2-email{padding:44px 0;background:#fff;border-top:1px solid var(--line)}
+  .pfd2-email__inner{max-width:560px;margin:0 auto;text-align:center}
+  .pfd2-email__kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mute);font-weight:700;margin:0 0 8px}
+  .pfd2-email h2{font-size:clamp(22px,3.6vw,28px);font-weight:700;margin:0 0 8px;color:var(--ink);line-height:1.2}
+  .pfd2-email p{font-size:15px;color:#3D4452;margin:0 0 18px;line-height:1.5}
+  .pfd2-email__form{display:flex;flex-direction:column;gap:8px;max-width:440px;margin:0 auto}
+  @media(min-width:520px){.pfd2-email__form{flex-direction:row}}
+  .pfd2-email__input{flex:1;min-height:48px;padding:0 14px;font-size:16px;border:1px solid #C9CFDA;border-radius:6px;color:var(--ink);background:#fff;font-family:inherit}
+  .pfd2-email__input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(70,89,255,.18)}
+  .pfd2-email__btn{min-height:48px;padding:0 22px;background:var(--ink);color:#fff;border:0;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font-family:inherit}
+  .pfd2-email__btn:hover{background:var(--blue-deep)}
+  .pfd2-email__legal{font-size:11px;color:var(--mute);margin:12px 0 0;line-height:1.4}
+  .pfd2-email__msg{display:none;font-size:14px;margin:14px 0 0;padding:10px 14px;border-radius:6px;line-height:1.4}
+  .pfd2-email__msg--ok{display:block;color:#0B5E2E;background:#E6F4EC;border:1px solid #B6DDC6}
+  .pfd2-email__msg--err{display:block;color:#962040;background:#FBE6EC;border:1px solid #F3B9C7}
+
+  /* ---------- STICKY MOBILE CTA ---------- */
+  .pfd2-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px env(safe-area-inset-bottom);z-index:90;box-shadow:0 -6px 18px rgba(11,18,32,.08);display:flex;align-items:center;gap:10px}
+  .pfd2-sticky__copy{flex:1;min-width:0}
+  .pfd2-sticky__copy b{display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.2}
+  .pfd2-sticky__copy span{display:block;font-size:11px;color:var(--mute);line-height:1.3}
+  .pfd2-sticky a{flex:0 0 auto;background:var(--blue);color:#fff;padding:14px 20px;border-radius:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;min-height:48px;display:inline-flex;align-items:center}
+  @media(min-width:880px){.pfd2-sticky{display:none}}
+  .pfd2{padding-bottom:88px}
+  @media(min-width:880px){.pfd2{padding-bottom:0}}
+</style>
+
+<div class="pfd2">
+
+  <!-- ARTICLE HEAD -->
+  <article class="pfd2-art">
+    <div class="wrap">
+      <p class="pfd2-art__kicker">{{ kicker_text }}</p>
+      <h1>{{ headline_html }}</h1>
+      <div class="pfd2-art__dek">{{ dek_html }}</div>
+
+      <div class="pfd2-hero-row">
+        <div class="pfd2-hero-row__rating">
+          <span class="pfd2-stars"></span>
+          <span><b>{{ rating }}</b> average rating{% if review_count != blank %} · {{ review_count }} reviews{% endif %}</span>
+        </div>
+        <a class="pfd2-hero-row__cta" href="#buy">{{ hero_cta_text }}</a>
+      </div>
+
+      <div class="pfd2-art__meta">
+        {%- if byline != blank -%}<span><b>{{ byline }}</b></span>{%- endif -%}
+        <span>Updated {{ pub_date }}</span>
+        <span>{{ read_time }}</span>
+      </div>
+
+      <figure class="pfd2-heroimg">
+        <img src="{{ hero_img }}" alt="Morning light, woman waking up unhurried." loading="eager" fetchpriority="high" decoding="async" width="1200" height="750">
+        <figcaption><b>Above:</b> Most people take magnesium and feel nothing. Here is what happens when it actually works.</figcaption>
+      </figure>
+
+      {%- if ugc_video_url != blank -%}
+      <figure class="pfd2-ugc">
+        <video
+          src="{{ ugc_video_url }}"
+          {%- if ugc_video_poster != blank %} poster="{{ ugc_video_poster }}"{% endif -%}
+          controls playsinline preload="metadata"
+          aria-label="Customer testimonial video"></video>
+        <figcaption><b>Watch:</b> {{ ugc_video_caption }}</figcaption>
+      </figure>
+      {%- endif -%}
+
+      <div class="pfd2-body">
+        <p class="lede">{{ lede_text }}</p>
+      </div>
+    </div>
+
+    <!-- ============ #1 DOOMSCROLLING ============ -->
+    <div class="wrap">
+      <section class="pfd2-sorry">
+        <div class="pfd2-sorry__num">01</div>
+        <h2>Sorry, you will not finish your <em>2 a.m. doomscroll</em>.</h2>
+        <figure class="pfd2-secimg">
+          <img src="{{ img_1 }}" alt="A phone screen lighting up a dim bedroom, the user already drifting." loading="lazy" width="900" height="675">
+        </figure>
+        <p>You will not make it to the end of your feed. You will not even make it to the second ad break.</p>
+        <p>Magnesium glycinate calms the nervous system through the GABA pathway, the same wind-down signal your body uses on its own.<sup>*</sup> When the dose actually absorbs, your phone is still at 84% when you are already out.</p>
+        <p>We are not sorry about your screen time average dropping. We are a little sorry about the TikToks you will miss.</p>
+        <div class="pfd2-sorry__pull">
+          <b>Calms the nervous system, naturally.</b><sup>*</sup> No 10 mg melatonin sledgehammer. No morning fog.
+        </div>
+      </section>
+
+      <!-- ============ #2 3 PM COFFEE ============ -->
+      <section class="pfd2-sorry">
+        <div class="pfd2-sorry__num">02</div>
+        <h2>Sorry, you will not need your <em>3 p.m. coffee</em>.</h2>
+        <figure class="pfd2-secimg">
+          <img src="{{ img_2 }}" alt="A coffee cup on a sunlit kitchen counter, late afternoon." loading="lazy" width="900" height="675">
+        </figure>
+        <p>The afternoon dip exists because you did not actually recover overnight.</p>
+        <p>Deep sleep is when the body restores energy at the cellular level, and that process runs on magnesium.<sup>*</sup> When sleep finally works the way it is supposed to, 3 p.m. feels the same as 11 a.m.</p>
+        <p>We are sorry you will not get to enjoy your little pick-me-up. You will not need it.</p>
+        <div class="pfd2-sorry__pull">
+          <b>Recovery you can feel by afternoon.</b><sup>*</sup> Coffee becomes a choice, not a survival tool.
+        </div>
+      </section>
+
+      {%- if founder_quote != blank -%}
+      <aside class="pfd2-founder">
+        {%- if founder_img != blank -%}
+          <img src="{{ founder_img }}" alt="{{ founder_name }}, {{ founder_title }}" loading="lazy" width="84" height="84">
+        {%- endif -%}
+        <div class="pfd2-founder__copy">
+          <p class="pfd2-founder__quote">"{{ founder_quote }}"</p>
+          <div class="pfd2-founder__name">{{ founder_name }}</div>
+          <div class="pfd2-founder__title">{{ founder_title }}</div>
+        </div>
+      </aside>
+      {%- endif -%}
+
+      <!-- ============ #3 "I'M TOO SORE" ============ -->
+      <section class="pfd2-sorry">
+        <div class="pfd2-sorry__num">03</div>
+        <h2>Sorry, the <em>"I'm too sore" excuse</em> is gone.</h2>
+        <figure class="pfd2-secimg">
+          <img src="{{ img_3 }}" alt="A woman walking briskly outdoors in afternoon light, mid-stride." loading="lazy" width="900" height="675">
+        </figure>
+        <p>The free pass that gets you out of Tuesday cardio, the Saturday hike, and any plan you were not excited about anyway. Nobody questions it. Everyone has felt it.</p>
+        <p>Magnesium glycinate is what your muscles actually use to relax after they contract.<sup>*</sup> Less mag, more spasm and stiffness. More mag, the soreness drops from a 7 to a 3.</p>
+        <p>We are sorry. You are going to have to find a new excuse.</p>
+        <div class="pfd2-sorry__pull">
+          <b>Muscle relaxation, post-workout recovery.</b><sup>*</sup> The same mechanism, just enough magnesium to actually reach it.
+        </div>
+      </section>
+
+      <!-- INLINE CTA -->
+      <div class="pfd2-inline-cta">
+        <p><b>Two more apologies to go.</b> Or skip ahead.</p>
+        <a href="#buy">See plans</a>
+        <span class="pfd2-inline-cta__price">From <b>{{ price_1bot_per }}</b> · <b>{{ discount_1bot }}% off</b> · Cancel anytime</span>
+      </div>
+
+      <!-- ============ #4 4 PM EMOTIONAL SNACK ============ -->
+      <section class="pfd2-sorry">
+        <div class="pfd2-sorry__num">04</div>
+        <h2>Sorry, the <em>4 p.m. emotional snack</em> is over.</h2>
+        <figure class="pfd2-secimg">
+          <img src="{{ img_4 }}" alt="A hand reaching into a desk drawer of snacks, mid-afternoon." loading="lazy" width="900" height="675">
+        </figure>
+        <p>The handful of M&Ms that "helps you push through." The afternoon sugar grab that is actually your cortisol crashing because your body has been running on stress hormones since 7 a.m.</p>
+        <p>Magnesium helps regulate the stress response and supports a calmer baseline mood.<sup>*</sup> Steadier cortisol means a steadier appetite. A steadier appetite means the 4 p.m. snack stops being emotional support.</p>
+        <p>We are sorry. The chocolate will still be there. You just will not need it the way you needed it.</p>
+        <div class="pfd2-sorry__pull">
+          <b>Mood and stress support, daily.</b><sup>*</sup> The grab is a symptom. The cortisol is the cause.
+        </div>
+      </section>
+
+      <!-- ============ #5 THE NIGHTCAP ============ -->
+      <section class="pfd2-sorry">
+        <div class="pfd2-sorry__num">05</div>
+        <h2>Sorry, you will not need the <em>nightcap</em>.</h2>
+        <figure class="pfd2-secimg">
+          <img src="{{ img_5 }}" alt="A wine glass on a bedside table, lamp glow, late evening." loading="lazy" width="900" height="675">
+        </figure>
+        <p>The glass of wine that takes the edge off and "helps you fall asleep." Alcohol actually fragments sleep. You crash hard, then wake up at 3 a.m. when it metabolizes.</p>
+        <p>Magnesium gets you to sleep through your body's own pathway, not by sedating it.<sup>*</sup> You wake up rested, not foggy.</p>
+        <p>We are a little sorry about the wine. We are not sorry about the 3 a.m. wake-up. You are getting the part of the ritual that actually worked.</p>
+        <div class="pfd2-sorry__pull">
+          <b>Sleep onset without the alcohol or melatonin tax.</b><sup>*</sup> Wind down because your body is ready, not because it was overridden.
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <!-- ============ PRODUCT REVEAL ============ -->
+  <section class="pfd2-reveal">
+    <div class="wrap">
+      <p class="pfd2-reveal__kicker">So, what is in the bottle.</p>
+      <h2>Magnesium glycinate. <em>8x more absorbable.</em></h2>
+      <p class="pfd2-reveal__sub">Most magnesium on the shelf is magnesium oxide, which absorbs at roughly 4%. Out of a 500 mg dose, your body sees about 20 mg. That is why you took it for three weeks and felt nothing.</p>
+      <p class="pfd2-reveal__sub">Ours is magnesium glycinate, formulated to absorb <b>8x more than the standard</b>.<sup>*</sup> More absorption equals more benefits. That is the whole company.</p>
+      <div class="pfd2-reveal__three">
+        <div class="pfd2-reveal__card"><b>Sleep</b><span>Calms the nervous system, supports sleep onset.<sup>*</sup></span></div>
+        <div class="pfd2-reveal__card"><b>Recovery</b><span>Supports muscle relaxation and post-workout soreness.<sup>*</sup></span></div>
+        <div class="pfd2-reveal__card"><b>Mood</b><span>Supports a calmer stress response and steady mood.<sup>*</sup></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABSORPTION COMPARISON ============ -->
+  <section class="pfd2-comp">
+    <div class="wrap-wide">
+      <div class="pfd2-comp__head">
+        <p class="pfd2-comp__kicker">The form is the difference</p>
+        <h2>Why the magnesium in your medicine cabinet did nothing.</h2>
+        <p class="pfd2-comp__sub">Mineral form is what determines absorption. Oxide is cheap. Glycinate is bound to glycine, a small amino acid that the gut already knows how to absorb.</p>
+      </div>
+      <div class="pfd2-comp__grid">
+        <div class="pfd2-comp__card">
+          <p class="pfd2-comp__label">The standard</p>
+          <p class="pfd2-comp__form">Magnesium oxide</p>
+          <p class="pfd2-comp__rate">~4%</p>
+          <p class="pfd2-comp__detail">Cheap, widely sold, but bonded so poorly that almost none of it reaches the bloodstream. The rest passes through. Often causes a laxative effect at higher doses.</p>
+        </div>
+        <div class="pfd2-comp__card pfd2-comp__card--ours">
+          <p class="pfd2-comp__label">The Absorption Company</p>
+          <p class="pfd2-comp__form">Magnesium glycinate</p>
+          <p class="pfd2-comp__rate">8x more</p>
+          <p class="pfd2-comp__detail">Bound to glycine, an amino acid your gut already absorbs efficiently. <b>8x more bioavailable</b> than the standard.<sup>*</sup> No laxative effect. The full daily dose lands where it is supposed to.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHAT TO EXPECT TIMELINE ============ -->
+  <section class="pfd2-time">
+    <div class="wrap-wide">
+      <div class="pfd2-time__head">
+        <p class="pfd2-time__kicker">What to expect</p>
+        <h2>Night 1 to Week 4.</h2>
+      </div>
+      <div class="pfd2-time__grid">
+        <div class="pfd2-time__card">
+          <p class="pfd2-time__when">Night 1</p>
+          <p class="pfd2-time__what">You fall asleep faster.</p>
+          <p class="pfd2-time__detail">Most customers feel a calmer, easier wind-down the first night they take it. No grogginess on the other side.<sup>*</sup></p>
+        </div>
+        <div class="pfd2-time__card">
+          <p class="pfd2-time__when">Week 1</p>
+          <p class="pfd2-time__what">Soreness eases. Snacks quiet down.</p>
+          <p class="pfd2-time__detail">As serum levels build, the post-workout shuffle eases and the 4 p.m. emotional snack stops calling.<sup>*</sup></p>
+        </div>
+        <div class="pfd2-time__card">
+          <p class="pfd2-time__when">Week 4</p>
+          <p class="pfd2-time__what">A different baseline.</p>
+          <p class="pfd2-time__detail">By the fourth week, the bad habits the magnesium is replacing have lost their grip. You forget you used to need them.<sup>*</sup></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUYBOX ============ -->
+  <section class="pfd2-buy" id="buy">
+    <div class="wrap-wide">
+      <div class="pfd2-buy__head">
+        <p class="pfd2-buy__kicker">Choose your supply</p>
+        <h2>Start the apology process.</h2>
+        <p class="pfd2-buy__sub">Subscribe and save. Skip, swap, or cancel anytime. 30-day money-back guarantee on every order.</p>
+      </div>
+
+      <p class="pfd2-buy__label">Subscribe and save · {{ discount_1bot }}% off every order</p>
+      <div class="pfd2-buy__list">
+
+        <a class="pfd2-row" href="{{ cart_1bot }}">
+          <div class="pfd2-row__top">
+            <div class="pfd2-row__left">
+              <div class="pfd2-row__namerow">
+                <span class="pfd2-row__radio"></span>
+                <span class="pfd2-row__name">1 Bottle</span>
+                <span class="pfd2-row__pill pfd2-row__pill--save">Save {{ discount_1bot }}%</span>
+              </div>
+              <p class="pfd2-row__desc">A 2-month supply, delivered every 2 months.<br>Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd2-row__right">
+              <span class="pfd2-row__per">{{ price_1bot_per }}</span>
+              <span class="pfd2-row__totline"><span class="pfd2-row__was">{{ price_1bot_was }}</span>{{ price_1bot_total }}</span>
+              <span class="pfd2-row__save">{{ price_1bot_save }}</span>
+            </div>
+          </div>
+          <span class="pfd2-row__cta">Start with 1</span>
+        </a>
+
+        <a class="pfd2-row pfd2-row--best" href="{{ cart_2bot }}">
+          <div class="pfd2-row__top">
+            <div class="pfd2-row__left">
+              <div class="pfd2-row__namerow">
+                <span class="pfd2-row__radio"></span>
+                <span class="pfd2-row__name">2 Bottles</span>
+                <span class="pfd2-row__pill pfd2-row__pill--pop">Most Popular</span>
+                <span class="pfd2-row__pill pfd2-row__pill--save">Save {{ discount_2bot }}%</span>
+              </div>
+              <p class="pfd2-row__desc">A 4-month supply, delivered every 4 months.<br>Free shipping. Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd2-row__right">
+              <span class="pfd2-row__per">{{ price_2bot_per }}</span>
+              <span class="pfd2-row__totline"><span class="pfd2-row__was">{{ price_2bot_was }}</span>{{ price_2bot_total }}</span>
+              <span class="pfd2-row__save">{{ price_2bot_save }}</span>
+            </div>
+          </div>
+          <span class="pfd2-row__cta">Start 2-Bottle Plan</span>
+        </a>
+
+        <a class="pfd2-row" href="{{ cart_3bot }}">
+          <div class="pfd2-row__top">
+            <div class="pfd2-row__left">
+              <div class="pfd2-row__namerow">
+                <span class="pfd2-row__radio"></span>
+                <span class="pfd2-row__name">3 Bottles</span>
+                <span class="pfd2-row__pill pfd2-row__pill--best">Best Value</span>
+                <span class="pfd2-row__pill pfd2-row__pill--save">Save {{ discount_3bot }}%</span>
+              </div>
+              <p class="pfd2-row__desc">A 6-month supply, delivered every 6 months.<br>Free shipping. Pause or cancel anytime.</p>
+            </div>
+            <div class="pfd2-row__right">
+              <span class="pfd2-row__per">{{ price_3bot_per }}</span>
+              <span class="pfd2-row__totline"><span class="pfd2-row__was">{{ price_3bot_was }}</span>{{ price_3bot_total }}</span>
+              <span class="pfd2-row__save">{{ price_3bot_save }}</span>
+            </div>
+          </div>
+          <span class="pfd2-row__cta">Start 3-Bottle Plan</span>
+        </a>
+
+      </div>
+
+      <div class="pfd2-buy__assure">
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v7c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg> 30-day money-back guarantee</span>
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7h13l5 5v5h-2a3 3 0 11-6 0H10a3 3 0 11-6 0H3V7zm14 3v3h2l-2-3z"/></svg> Free shipping on orders $50+</span>
+        <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Made in the USA, third-party tested</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="pfd2-rev">
+    <div class="wrap-wide">
+      <div class="pfd2-rev__head">
+        <p class="pfd2-rev__kicker">Verified customers</p>
+        <h2>Real people. Real apologies.</h2>
+        <div class="pfd2-rev__stars-row">
+          <span class="pfd2-stars"></span>
+          <span>{{ rating }} stars{% if review_count != blank %} · {{ review_count }} reviews{% endif %}</span>
+        </div>
+      </div>
+      <div class="pfd2-rev__grid">
+        <div class="pfd2-quote">
+          <div class="pfd2-quote__stars pfd2-stars"></div>
+          <p>"I have tried five different magnesium brands and felt nothing. Within three nights of switching to this one I was sleeping through the night. Totally different experience."</p>
+          <div class="pfd2-quote__name">Erin H.</div>
+          <div class="pfd2-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="pfd2-quote">
+          <div class="pfd2-quote__stars pfd2-stars"></div>
+          <p>"Wake up actually rested instead of fighting through the morning. The afternoon energy slump is also way less brutal. I noticed within a week."</p>
+          <div class="pfd2-quote__name">Marcus T.</div>
+          <div class="pfd2-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="pfd2-quote">
+          <div class="pfd2-quote__stars pfd2-stars"></div>
+          <p>"Took this every night after leg day for a month and the soreness went from miserable to manageable. Plus I sleep better. Not going back to oxide."</p>
+          <div class="pfd2-quote__name">Jenny R.</div>
+          <div class="pfd2-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- if klaviyo_company_id != blank and klaviyo_list_id != blank -%}
+  <!-- ============ EMAIL CAPTURE (Klaviyo native client subscriptions) ============ -->
+  <section class="pfd2-email" id="email">
+    <div class="wrap">
+      <div class="pfd2-email__inner">
+        <p class="pfd2-email__kicker">Stay close</p>
+        <h2>{{ email_head }}</h2>
+        <p>{{ email_sub }}</p>
+        <form class="pfd2-email__form" id="pfd2-email-form" novalidate>
+          <label for="pfd2-email-input" style="position:absolute;left:-9999px">Email address</label>
+          <input class="pfd2-email__input" id="pfd2-email-input" type="email" name="email" required autocomplete="email" placeholder="you@email.com">
+          <button class="pfd2-email__btn" type="submit">{{ email_cta }}</button>
+        </form>
+        <p class="pfd2-email__msg" id="pfd2-email-ok" role="status" style="display:none">Thanks. The absorption brief is on its way.</p>
+        <p class="pfd2-email__msg pfd2-email__msg--err" id="pfd2-email-err" role="alert" style="display:none">Could not subscribe. Please check your email and try again.</p>
+        <p class="pfd2-email__legal">We email roughly once a week. Unsubscribe anytime. Your address is never sold.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var form = document.getElementById('pfd2-email-form');
+      if (!form) return;
+      var ok = document.getElementById('pfd2-email-ok');
+      var err = document.getElementById('pfd2-email-err');
+      var btn = form.querySelector('button[type="submit"]');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        ok.style.display = 'none';
+        err.style.display = 'none';
+        var email = form.querySelector('input[name="email"]').value.trim();
+        if (!email || email.indexOf('@') === -1) {
+          err.textContent = 'Please enter a valid email address.';
+          err.style.display = 'block';
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        fetch('https://a.klaviyo.com/client/subscriptions/?company_id={{ klaviyo_company_id }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'revision': '2024-10-15'
+          },
+          body: JSON.stringify({
+            data: {
+              type: 'subscription',
+              attributes: {
+                profile: { data: { type: 'profile', attributes: { email: email } } },
+                custom_source: 'PFD2 Magnesium Sorrys Advertorial'
+              },
+              relationships: { list: { data: { type: 'list', id: '{{ klaviyo_list_id }}' } } }
+            }
+          })
+        }).then(function(r){
+          btn.disabled = false;
+          btn.textContent = '{{ email_cta }}';
+          if (r.ok || r.status === 202) {
+            form.style.display = 'none';
+            ok.style.display = 'block';
+          } else {
+            err.style.display = 'block';
+          }
+        }).catch(function(){
+          btn.disabled = false;
+          btn.textContent = '{{ email_cta }}';
+          err.style.display = 'block';
+        });
+      });
+    })();
+  </script>
+  {%- endif -%}
+
+  <!-- ============ FAQ ============ -->
+  <section class="pfd2-faq">
+    <div class="wrap">
+      <div class="pfd2-faq__head">
+        <h2>Questions, honestly answered.</h2>
+      </div>
+      <div class="pfd2-faq__list">
+        <details class="pfd2-faq__item">
+          <summary>What makes this different from the magnesium I already take?</summary>
+          <p>The form. Most magnesium on the shelf is <b>magnesium oxide</b>, which absorbs at roughly 4%. Ours is <b>magnesium glycinate</b>, bound to the amino acid glycine, which your gut already absorbs efficiently. The result: <b>8x more absorption</b> than the standard.<sup>*</sup> If you have been taking magnesium for a while and felt nothing, this is usually why.</p>
+        </details>
+        <details class="pfd2-faq__item">
+          <summary>When will I feel it?</summary>
+          <p>Most customers notice an easier wind-down the first night they take it. Soreness, mood, and snack-craving changes typically show up within the first one to two weeks as serum magnesium levels build.<sup>*</sup></p>
+        </details>
+        <details class="pfd2-faq__item">
+          <summary>Will it make me groggy in the morning?</summary>
+          <p>No. Unlike melatonin, magnesium glycinate does not sedate you. It supports your body's own wind-down pathway through GABA, which means you fall asleep because you are actually tired and wake up rested, not foggy.<sup>*</sup></p>
+        </details>
+        <details class="pfd2-faq__item">
+          <summary>Does it cause a laxative effect?</summary>
+          <p>No. The laxative effect people associate with magnesium comes from <b>magnesium oxide</b> (and citrate at higher doses) when the unabsorbed mineral draws water into the gut. Magnesium glycinate is well-absorbed and does not have that effect at our recommended dose.</p>
+        </details>
+        <details class="pfd2-faq__item">
+          <summary>Can I take it with other supplements or medications?</summary>
+          <p>Magnesium glycinate is broadly safe and pairs well with most supplements. As with any new supplement, talk to your doctor first if you are pregnant, nursing, or on prescription medication, especially blood pressure or muscle relaxants.</p>
+        </details>
+        <details class="pfd2-faq__item">
+          <summary>What if it does not work for me?</summary>
+          <p>Every order is backed by a <b>30-day money-back guarantee</b>. If you do not feel a difference, email us within 30 days of delivery for a full refund.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="pfd2-close">
+    <div class="wrap">
+      <p class="pfd2-close__kicker">Last apology</p>
+      <h2>You have been <em>warned</em>.</h2>
+      <p>If easier sleep, less soreness, fewer afternoon snack crashes, and a calmer baseline sound like problems you can live with, this is two capsules a night. Most customers start with the 2-bottle plan, because that is when the habit changes really start to settle in.</p>
+      <a href="#buy">Get high-absorption magnesium</a>
+    </div>
+  </section>
+
+  <!-- ============ DISCLAIMER ============ -->
+  <div class="pfd2-disclaim">
+    <div class="wrap">
+      <p><sup>*</sup> These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Individual results vary.</p>
+      <p>Magnesium absorption comparison reflects published research on the relative bioavailability of magnesium glycinate vs. magnesium oxide. Talk to your healthcare provider before starting any new supplement, particularly if you are pregnant, nursing, or taking prescription medication.</p>
+    </div>
+  </div>
+
+  <!-- ============ STICKY MOBILE CTA ============ -->
+  <div class="pfd2-sticky">
+    <div class="pfd2-sticky__copy">
+      <b>Magnesium Glycinate · 2-Bottle Plan</b>
+      <span>{{ price_2bot_per }} · {{ price_2bot_save }} · 35% off today</span>
+    </div>
+    <a href="#buy">Choose plan</a>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "PFD2 Magnesium Sorrys",
+  "tag": "section",
+  "class": "pfd2-section",
+  "settings": [
+    { "type": "header", "content": "Hero copy (swap to message-match each ad)" },
+    { "type": "text",     "id": "kicker_text",   "label": "Kicker (small red eyebrow)",   "default": "Before You Reach for Another Bottle of Magnesium" },
+    { "type": "richtext", "id": "headline_html", "label": "H1 headline (HTML allowed)",   "default": "<p>We're Sorry In Advance: 5 Bad Habits That Won't Survive Your First Week of <em>High-Absorption Magnesium</em>.</p>" },
+    { "type": "richtext", "id": "dek_html",      "label": "Dek / sub-headline (HTML)",    "default": "<p>Most magnesium on the shelf is magnesium oxide, which absorbs at roughly 4%. Ours is <b>magnesium glycinate, formulated to absorb 8x more</b>. Fair warning about what happens when it actually works.</p>" },
+    { "type": "text",     "id": "lede_text",     "label": "Lede paragraph (drop-cap)",    "default": "Before you start, we owe you five honest warnings about the things you have been quietly enjoying that high-absorption magnesium is about to take away." },
+    { "type": "text",     "id": "hero_cta_text", "label": "Above-fold CTA label",         "default": "See plans" },
+    { "type": "header", "content": "Article meta" },
+    { "type": "text", "id": "byline",    "label": "Byline",        "default": "By The Absorption Company Editorial" },
+    { "type": "text", "id": "pub_date",  "label": "Publish date",  "default": "May 2026" },
+    { "type": "text", "id": "read_time", "label": "Read time",     "default": "5 min read" },
+    { "type": "header", "content": "UGC video (optional, hides if empty)" },
+    { "type": "url",  "id": "ugc_video_url",     "label": "Customer video URL (mp4)" },
+    { "type": "url",  "id": "ugc_video_poster",  "label": "Video poster image" },
+    { "type": "text", "id": "ugc_video_caption", "label": "Video caption",  "default": "Real customer, 3 weeks in." },
+    { "type": "header", "content": "Founder band (optional, hides if empty)" },
+    { "type": "text", "id": "founder_name",  "label": "Founder name" },
+    { "type": "text", "id": "founder_title", "label": "Founder title", "default": "Founder, The Absorption Company" },
+    { "type": "textarea", "id": "founder_quote", "label": "Founder quote (no quotes needed)" },
+    { "type": "url",  "id": "founder_img",   "label": "Founder headshot" },
+    { "type": "header", "content": "Imagery" },
+    { "type": "url",  "id": "hero_img",    "label": "Hero image (article)" },
+    { "type": "url",  "id": "product_img", "label": "Product image" },
+    { "type": "url",  "id": "img_1",       "label": "Sorry #1 — Doomscroll image" },
+    { "type": "url",  "id": "img_2",       "label": "Sorry #2 — 3pm coffee image" },
+    { "type": "url",  "id": "img_3",       "label": "Sorry #3 — Too sore image" },
+    { "type": "url",  "id": "img_4",       "label": "Sorry #4 — 4pm snack image" },
+    { "type": "url",  "id": "img_5",       "label": "Sorry #5 — Nightcap image" },
+    { "type": "header", "content": "Buybox links + prices" },
+    { "type": "url",  "id": "cart_1bot",     "label": "1-bottle sub cart URL" },
+    { "type": "url",  "id": "cart_2bot",     "label": "2-bottle sub cart URL" },
+    { "type": "url",  "id": "cart_3bot",     "label": "3-bottle sub cart URL" },
+    { "type": "text", "id": "discount_1bot",      "label": "1-bottle discount %",          "default": "35" },
+    { "type": "text", "id": "price_1bot_per",     "label": "1-bottle per-bottle price",    "default": "$18.20/bottle" },
+    { "type": "text", "id": "price_1bot_was",     "label": "1-bottle was-price",           "default": "$28.00" },
+    { "type": "text", "id": "price_1bot_total",   "label": "1-bottle total line",          "default": "$18.20 total" },
+    { "type": "text", "id": "price_1bot_save",    "label": "1-bottle save callout",        "default": "save $9.80" },
+    { "type": "text", "id": "discount_2bot",      "label": "2-bottle discount %",          "default": "35" },
+    { "type": "text", "id": "price_2bot_per",     "label": "2-bottle per-bottle price",    "default": "$18.20/bottle" },
+    { "type": "text", "id": "price_2bot_was",     "label": "2-bottle was-price",           "default": "$56.00" },
+    { "type": "text", "id": "price_2bot_total",   "label": "2-bottle total line",          "default": "$36.40 total" },
+    { "type": "text", "id": "price_2bot_save",    "label": "2-bottle save callout",        "default": "save $19.60" },
+    { "type": "text", "id": "discount_3bot",      "label": "3-bottle discount %",          "default": "35" },
+    { "type": "text", "id": "price_3bot_per",     "label": "3-bottle per-bottle price",    "default": "$18.20/bottle" },
+    { "type": "text", "id": "price_3bot_was",     "label": "3-bottle was-price",           "default": "$84.00" },
+    { "type": "text", "id": "price_3bot_total",   "label": "3-bottle total line",          "default": "$54.60 total" },
+    { "type": "text", "id": "price_3bot_save",    "label": "3-bottle save callout",        "default": "save $29.40" },
+    { "type": "header", "content": "Social proof" },
+    { "type": "text", "id": "rating",       "label": "Star rating",   "default": "4.0" },
+    { "type": "text", "id": "review_count", "label": "Review count",  "default": "80+" },
+    { "type": "header", "content": "Email capture (Klaviyo, optional)" },
+    { "type": "paragraph", "content": "Get the public company_id from Klaviyo > Account > Public API Key, and the list_id from Lists > [list] > Settings. Block hides until both are filled." },
+    { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo public company_id" },
+    { "type": "text", "id": "klaviyo_list_id",    "label": "Klaviyo list_id (target list)" },
+    { "type": "text", "id": "email_head",         "label": "Capture headline", "default": "Not ready yet?" },
+    { "type": "textarea", "id": "email_sub",      "label": "Capture sub-copy", "default": "Get the magnesium absorption brief in your inbox. Why oxide fails, why glycinate works, and what 8x absorption actually means." },
+    { "type": "text", "id": "email_cta",          "label": "Capture button label", "default": "Send it to me" }
+  ],
+  "presets": [{ "name": "PFD2 Magnesium Sorrys" }]
+}
+{% endschema %}

@@ -1,0 +1,1164 @@
+{%- comment -%} Memorial Day VIP Early Access — 35% off sitewide via Intelligems, ends 2026-05-20 23:59 ET v41 countdown-compact {%- endcomment -%}
+
+{%- liquid
+  assign discount_pct = section.settings.discount_pct | default: 35
+  assign keep_pct = 100 | minus: discount_pct
+  assign end_iso = section.settings.end_iso | default: '2026-05-20T23:59:59-04:00'
+  assign srs_url = '/products/summer-ready-stack'
+  assign srs_url_3mo = srs_url | append: '?variant=52671161499937'
+  assign srs_url_1mo = srs_url | append: '?variant=52671161467169'
+
+  comment
+    Shopify's `all_products[handle]` global has a hard 20-unique-product limit per template render.
+    Keep the combined list <= 20 unique handles or products beyond the limit render as the previous one.
+  endcomment
+  assign bestsellers = 'wlp-1,berberine,restore,weight-management-stack,summer-ready-stack,magnesium-glycinate,vitamin-d-k,hormone-metabolism' | split: ','
+  assign powder_handles = '|restore|sleep|calm|energy|'
+  assign weight = 'weight-management-stack,wlp-1,glp-1-nutrient-support-stack,hormone-metabolism,metabolic-balance-stack,berberine' | split: ','
+  assign sleep_mood = 'sleep,magnesium-sleep-bundle,rest-recovery-stack,advanced-sleep-recovery-set,calm' | split: ','
+  assign longevity = 'longevity,daily-basics,vitamin-d-k,starter-pack' | split: ','
+  assign immunity = 'curcumin,inflammation-immunity' | split: ','
+  assign all_handles = bestsellers | concat: weight | concat: sleep_mood | concat: longevity | concat: immunity
+
+  comment
+    Matches theme setting `data__product__excluded_pdp_selling_plan_names` so the lander shows the same curated
+    subscription cadences as the PDP. Pipe-delimited with leading + trailing pipe so we can use a single `contains` check.
+  endcomment
+  assign excluded_plan_names = '|Every 2 Week(s)|Every 1 Month(s)|Every 2 Month(s)|Every 3 Month(s)|Every 6 Month(s)|Every 3 months backend|Every 6 months backend|'
+-%}
+
+<style>
+  .lnd-mday { font-family: inherit; color: #0D273E; --mday-navy: #0D273E; --mday-red: #DB3519; --mday-navy-2: #143452; }
+  .lnd-mday * { box-sizing: border-box; }
+  .lnd-mday__bar { position: sticky; top: 0; z-index: 50; background: var(--mday-red); color: #fff; text-align: center; padding: 8px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .lnd-mday__hero { background: #0D273E; color: #fff; padding: 36px 20px 48px; }
+  .lnd-mday__hero-inner { max-width: 1200px; margin: 0 auto; }
+  .lnd-mday__countdown { display: flex; gap: 8px; justify-content: center; margin: 0 auto 20px; }
+  .lnd-mday__countdown div { background: var(--mday-red); border: 1px solid rgba(255,255,255,0.18); min-width: 64px; padding: 8px 10px; border-radius: 10px; text-align: center; box-shadow: 0 8px 18px rgba(219,53,25,0.24); }
+  .lnd-mday__countdown b { display: block; font-size: 26px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .lnd-mday__countdown span { font-size: 9px; text-transform: uppercase; opacity: 0.85; letter-spacing: 0.08em; margin-top: 3px; display: block; }
+  .lnd-mday__hero-grid { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; max-width: 980px; margin: 0 auto; }
+  .lnd-mday__hero-media { position: relative; max-width: 320px; margin: 0 auto; aspect-ratio: 1/1; border-radius: 18px; overflow: hidden; background: rgba(255,255,255,0.06); }
+  .lnd-mday__hero-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mday__hero-media .lnd-mday__hero-badge { position: absolute; top: 14px; right: 14px; background: #fff; color: var(--mday-red); border-radius: 14px; padding: 10px 14px; text-align: center; line-height: 1; transform: rotate(6deg); box-shadow: 0 10px 22px rgba(13,39,62,0.28); }
+  .lnd-mday__hero-media .lnd-mday__hero-badge b { display: block; font-size: 28px; font-weight: 900; letter-spacing: -0.03em; }
+  .lnd-mday__hero-media .lnd-mday__hero-badge span { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; }
+  .lnd-mday__hero-media .lnd-mday__hero-ship { position: absolute; left: 14px; bottom: 14px; background: rgba(255,255,255,0.95); color: var(--mday-navy); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; }
+  .lnd-mday__hero-media .lnd-mday__hero-ship sup { color: var(--mday-red); }
+  .lnd-mday__hero-center { text-align: center; }
+  .lnd-mday__hero-center .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; }
+  .lnd-mday__hero-center h1 { font-size: 40px; line-height: 1.02; margin: 0 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+  .lnd-mday__hero-center h1 em { color: var(--mday-red); font-style: normal; }
+  .lnd-mday__hero-center p { font-size: 14px; opacity: 0.8; margin: 0 auto; max-width: 380px; line-height: 1.5; }
+  .lnd-mday__hero-center .lnd-mday__hero-fine { font-size: 11px; opacity: 0.55; margin-top: 14px; max-width: 380px; }
+  .lnd-mday__hero-center .lnd-mday__hero-fine sup { color: var(--mday-red); margin-right: 2px; }
+  .lnd-mday__hero-benefits { list-style: none; padding: 0; margin: 14px auto 0; max-width: 380px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+  .lnd-mday__hero-benefits li { position: relative; padding: 0 0 0 26px; font-size: 14px; line-height: 1.35; color: rgba(255,255,255,0.92); font-weight: 500; }
+  .lnd-mday__hero-benefits li b { color: var(--mday-red); font-weight: 800; }
+  .lnd-mday__hero-benefits li::before { content: ""; position: absolute; left: 0; top: 2px; width: 18px; height: 18px; background: var(--mday-red); border-radius: 999px; }
+  .lnd-mday__hero-benefits li::after { content: ""; position: absolute; left: 4px; top: 7px; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); }
+  .lnd-mday__hero-shop-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mday-red); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 15px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin: 18px 0 0; box-shadow: 0 12px 28px rgba(219,53,25,0.36); transition: transform 0.15s ease, box-shadow 0.15s ease; min-height: 48px; }
+  .lnd-mday__hero-shop-cta:hover { transform: translateY(-1px); box-shadow: 0 16px 32px rgba(219,53,25,0.44); color: #fff; }
+  .lnd-mday__hero-rotator { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 10px 14px; margin: 16px auto 0; max-width: 380px; backdrop-filter: blur(4px); }
+  .lnd-mday__hero-rotator-line { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; color: #fff; }
+  .lnd-mday__hero-rotator-line .static { opacity: 0.85; }
+  .lnd-mday__hero-rotator-line .dynamic { color: var(--mday-red); font-weight: 800; font-size: 17px; transition: opacity 0.35s ease, transform 0.35s ease; display: inline-block; min-width: 130px; }
+  .lnd-mday__hero-rotator-line .dynamic.is-out { opacity: 0; transform: translateY(8px); }
+  .lnd-mday__hero-stack { text-align: center; }
+  .lnd-mday__hero-stack-label { font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mday-red); margin-bottom: 10px; }
+  .lnd-mday__hero-stack-card { background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 14px; max-width: 320px; margin: 0 auto; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; text-align: left; font: inherit; color: #0D273E; width: 100%; display: block; }
+  .lnd-mday__hero-stack-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.25); transform: translateY(-2px); }
+  .lnd-mday__hero-stack-img { aspect-ratio: 1/1; background: #f6f6f4; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .lnd-mday__hero-stack-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mday__hero-stack-title { font-size: 16px; font-weight: 800; margin: 0 0 6px; color: #0D273E; }
+  .lnd-mday__hero-stack-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .lnd-mday__hero-stack-price .now { font-size: 20px; font-weight: 800; color: #0D273E; }
+  .lnd-mday__hero-stack-price .was { font-size: 13px; color: #888; text-decoration: line-through; }
+  .lnd-mday__hero-stack-price .off { font-size: 12px; font-weight: 700; color: var(--mday-red); }
+  .lnd-mday__hero-stack-cta { display: block; text-align: center; background: var(--mday-red); color: #fff; padding: 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  @media (min-width: 880px) {
+    .lnd-mday__hero { padding: 56px 28px 64px; }
+    .lnd-mday__hero-grid { grid-template-columns: 0.9fr 1.3fr; gap: 48px; text-align: left; align-items: center; }
+    .lnd-mday__hero-center { text-align: left; }
+    .lnd-mday__hero-center p { margin-left: 0; max-width: none; }
+    .lnd-mday__hero-media { max-width: 380px; margin: 0; }
+    .lnd-mday__hero-media .lnd-mday__hero-badge b { font-size: 36px; }
+    .lnd-mday__hero-media .lnd-mday__hero-badge span { font-size: 10px; margin-top: 5px; }
+    .lnd-mday__countdown { margin-bottom: 40px; }
+    .lnd-mday__countdown div { min-width: 96px; padding: 18px 14px; }
+    .lnd-mday__countdown b { font-size: 44px; }
+    .lnd-mday__hero-center h1 { font-size: 52px; }
+    .lnd-mday__hero-center p { font-size: 15px; }
+    .lnd-mday__hero-benefits { margin-left: 0; }
+    .lnd-mday__hero-rotator { margin-left: 0; }
+  }
+  .lnd-mday__row { padding: 28px 0 8px; scroll-margin-top: 60px; }
+  .lnd-mday__row-head { padding: 0 20px; }
+  .lnd-mday__row-head h2 { font-size: 22px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.01em; color: var(--mday-red); }
+  .lnd-mday__row-head p { font-size: 13px; color: #555; margin: 0; }
+  .lnd-mday__scroll { display: flex; gap: 12px; padding: 18px 20px 24px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .lnd-mday__scroll::-webkit-scrollbar { display: none; }
+  .lnd-mday__card { flex: 0 0 70%; max-width: 260px; scroll-snap-align: start; background: #fff; border: 1px solid #ececec; border-radius: 14px; overflow: hidden; position: relative; display: flex; flex-direction: column; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; text-align: left; padding: 0; font: inherit; color: inherit; }
+  .lnd-mday__card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .lnd-mday__card-img { aspect-ratio: 1/1; background: #f6f6f4; overflow: hidden; }
+  .lnd-mday__card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mday__callout { position: absolute; top: 10px; left: 10px; background: #fff; border: 1px solid #0D273E; color: #0D273E; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 999px; z-index: 1; text-transform: uppercase; max-width: calc(100% - 20px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lnd-mday__low-stock { position: absolute; top: 10px; right: 10px; background: var(--mday-red); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 999px; z-index: 2; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 12px rgba(219,53,25,0.32); }
+  .lnd-mday__card-body { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; }
+  .lnd-mday__card-title { font-size: 14px; font-weight: 700; line-height: 1.25; margin: 0 0 4px; }
+  .lnd-mday__card-sub { font-size: 12px; color: #555; line-height: 1.3; margin: 0 0 10px; min-height: 30px; }
+  .lnd-mday__card-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .lnd-mday__card-price .now { font-size: 17px; font-weight: 800; color: #0D273E; }
+  .lnd-mday__card-price .was { font-size: 13px; color: #888; text-decoration: line-through; }
+  .lnd-mday__card-price .off { font-size: 12px; font-weight: 700; color: var(--mday-red); }
+  .lnd-mday__card-more { display: block; text-align: center; font-size: 11px; font-weight: 700; color: var(--mday-navy); opacity: 0.62; letter-spacing: 0.06em; text-transform: uppercase; margin: auto 0 8px; line-height: 1; }
+  .lnd-mday__card:hover .lnd-mday__card-more { opacity: 0.9; color: var(--mday-red); }
+  .lnd-mday__cta { display: block; text-align: center; background: #0D273E; color: #fff; text-decoration: none; padding: 10px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; margin-top: 0; border: none; cursor: pointer; }
+  .lnd-mday__cta:hover { background: var(--mday-red); }
+  .lnd-mday__footer { background: #f6f6f4; padding: 36px 20px 44px; text-align: center; margin-top: 24px; }
+  .lnd-mday__footer h3 { font-size: 22px; margin: 0 0 8px; font-weight: 800; letter-spacing: -0.01em; }
+  .lnd-mday__footer p { font-size: 13px; color: #555; margin: 0 auto 18px; max-width: 480px; line-height: 1.5; }
+  .lnd-mday__footer a.lnd-mday__cta { display: inline-block; padding: 12px 24px; }
+  .lnd-mday__footer-fine { font-size: 11px; color: #888; margin: 22px auto 0; max-width: 520px; line-height: 1.5; }
+
+  /* Modal */
+  .lnd-mday__modal { position: fixed; inset: 0; z-index: 9999; display: none; align-items: flex-end; justify-content: center; }
+  .lnd-mday__modal.is-open { display: flex; }
+  .lnd-mday__modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); animation: lnd-fade 0.2s ease; }
+  .lnd-mday__modal-panel { position: relative; background: #fff; width: 100%; max-width: 720px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; animation: lnd-slide 0.25s ease; }
+  @keyframes lnd-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes lnd-slide { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .lnd-mday__modal-close { position: absolute; top: 12px; right: 12px; z-index: 2; background: #fff; border: 1px solid #e6e6e6; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .lnd-mday__modal-img { aspect-ratio: 1/1; background: #fff; max-height: 360px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+  .lnd-mday__modal-img img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+  .lnd-mday__thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; scrollbar-width: none; background: #f6f6f4; }
+  .lnd-mday__thumbs::-webkit-scrollbar { display: none; }
+  .lnd-mday__thumbs:empty { display: none; }
+  .lnd-mday__thumb { flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; padding: 0; background: #fff; }
+  .lnd-mday__thumb.is-active { border-color: var(--mday-navy); }
+  .lnd-mday__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mday__modal-body { padding: 18px 20px 24px; }
+  .lnd-mday__modal-body h2 { font-size: 22px; font-weight: 800; margin: 0 0 6px; line-height: 1.2; }
+  .lnd-mday__modal-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+  .lnd-mday__modal-price .now { font-size: 22px; font-weight: 800; color: var(--mday-red); }
+  .lnd-mday__modal-price .was { font-size: 15px; color: #888; text-decoration: line-through; }
+  .lnd-mday__modal-price .save { background: var(--mday-red); color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; letter-spacing: 0.04em; }
+  .lnd-mday__modal-desc { font-size: 14px; color: #444; line-height: 1.55; margin-bottom: 14px; }
+  .lnd-mday__bullets { margin: 0 0 18px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .lnd-mday__bullets li { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.45; color: var(--mday-navy); }
+  .lnd-mday__bullets li svg { flex-shrink: 0; }
+  .lnd-mday__opt { margin-bottom: 14px; }
+  .lnd-mday__opt-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #555; margin-bottom: 6px; }
+  .lnd-mday__opt-values { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lnd-mday__opt-btn { background: #fff; border: 1.5px solid #d8d8d8; padding: 8px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; font: inherit; }
+  .lnd-mday__opt-btn.is-active { border-color: #0D273E; background: #0D273E; color: #fff; }
+  .lnd-mday__opt-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .lnd-mday__buy { margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .lnd-mday__buy-opt { display: flex; align-items: center; gap: 10px; border: 1.5px solid #d8d8d8; border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 13px; }
+  .lnd-mday__buy-opt.is-active { border-color: var(--mday-navy); background: #f6f8fb; }
+  .lnd-mday__buy-opt input { accent-color: var(--mday-navy); }
+  .lnd-mday__buy-opt-main { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .lnd-mday__buy-opt-title { font-weight: 700; }
+  .lnd-mday__buy-opt-sub { font-size: 12px; color: #666; }
+  .lnd-mday__buy-opt-price { font-weight: 700; color: var(--mday-red); white-space: nowrap; }
+  .lnd-mday__buy-opt-tag { background: var(--mday-red); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 999px; letter-spacing: 0.04em; margin-left: 4px; }
+  .lnd-mday__modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .lnd-mday__modal-actions .lnd-mday__cta { padding: 14px; font-size: 14px; }
+  .lnd-mday__modal-pdp { text-align: center; font-size: 12px; color: #666; text-decoration: underline; }
+  .lnd-mday__toast { display: none; background: #0a5a3e; color: #fff; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 13px; font-weight: 600; text-align: center; }
+  .lnd-mday__toast.is-show { display: block; }
+  .lnd-mday__toast.is-err { background: #b3261e; }
+  .lnd-mday__toast a { color: #fff; text-decoration: underline; margin-left: 6px; }
+
+  @media (min-width: 768px) {
+    .lnd-mday__hero { padding: 72px 32px 80px; }
+    .lnd-mday__hero h1 { font-size: 56px; }
+    .lnd-mday__hero p { font-size: 17px; }
+    .lnd-mday__countdown div { min-width: 84px; padding: 12px 10px; }
+    .lnd-mday__countdown b { font-size: 32px; }
+    .lnd-mday__row-head { padding: 0 32px; }
+    .lnd-mday__row-head h2 { font-size: 28px; }
+    .lnd-mday__scroll { padding: 22px 32px 32px; gap: 18px; overflow-x: visible; flex-wrap: wrap; scroll-snap-type: none; }
+    .lnd-mday__card { flex: 0 1 calc(25% - 14px); max-width: none; }
+    .lnd-mday__modal { align-items: center; }
+    .lnd-mday__modal-panel { border-radius: 18px; max-width: 760px; }
+    .lnd-mday__modal-panel-inner { display: grid; grid-template-columns: 1fr 1fr; }
+    .lnd-mday__modal-img { aspect-ratio: 1/1.05; max-height: none; border-radius: 18px 0 0 18px; }
+    .lnd-mday__modal-img img { object-fit: contain; }
+    .lnd-mday__modal-media { display: flex; flex-direction: column; }
+    .lnd-mday__thumbs { padding: 8px 10px 10px; }
+    .lnd-mday__modal-body { padding: 32px 28px; }
+  }
+
+  /* Summer Ready Stack buybox — ported from lander-summer-ready-stack-md-sale */
+  .lnd-mday .lnd-srs__buybox { --sale-navy: #0D273E; --sale-red: #DB3519; --sale-navy-2: #143452; --sale-cream: #efe9dd; --sale-bg: #f6f6f4; --sale-gold: #d4a23a; background: var(--sale-bg); padding: 36px 16px 44px; font-family: inherit; color: var(--sale-navy); }
+  .lnd-mday .lnd-srs__buybox * { box-sizing: border-box; }
+  .lnd-mday .lnd-srs__buybox-inner { position: relative; max-width: 780px; margin: 0 auto; background: #fff; border-radius: 22px; padding: 22px 18px 24px; box-shadow: 0 20px 50px rgba(13,39,62,0.10); border: 1px solid #ececec; overflow: hidden; }
+  .lnd-mday .lnd-srs__bb-sale-badge { position: absolute; top: 12px; right: 12px; background: var(--sale-red); color: #fff; padding: 8px 11px; border-radius: 12px; text-align: center; line-height: 1; box-shadow: 0 8px 20px rgba(219,53,25,0.32); transform: rotate(6deg); z-index: 3; }
+  .lnd-mday .lnd-srs__bb-sale-badge b { display: block; font-size: 20px; font-weight: 900; letter-spacing: -0.03em; }
+  .lnd-mday .lnd-srs__bb-sale-badge span { display: block; font-size: 8px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 3px; opacity: 0.95; }
+  .lnd-mday .lnd-srs__bb-limited { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(90deg, #0D273E 0%, #1a3854 100%); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 78px 11px 14px; border-radius: 12px; margin: 0 0 18px; text-align: center; line-height: 1.3; }
+  .lnd-mday .lnd-srs__bb-limited::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--sale-red); box-shadow: 0 0 0 4px rgba(219,53,25,0.28); animation: lndsrsDot 1.2s ease-in-out infinite; flex: 0 0 auto; }
+  .lnd-mday .lnd-srs__bb-limited b { font-weight: 900; color: #ffd16e; letter-spacing: 0.16em; }
+  @keyframes lndsrsDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .lnd-mday .lnd-srs__bb-head { padding-bottom: 16px; border-bottom: 1px solid #f0f0ec; margin-bottom: 18px; }
+  .lnd-mday .lnd-srs__bb-thumbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .lnd-mday .lnd-srs__bb-thumb { background: var(--sale-cream); border-radius: 14px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; padding: 14px; max-height: 116px; position: relative; }
+  .lnd-mday .lnd-srs__bb-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-mday .lnd-srs__bb-thumb-flag { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--sale-red); color: #fff; font-size: 8px; font-weight: 900; letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px; text-transform: uppercase; line-height: 1; white-space: nowrap; box-shadow: 0 4px 10px rgba(219,53,25,0.32); }
+  .lnd-mday .lnd-srs__bb-thumb-cap { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sale-navy); opacity: 0.7; }
+  .lnd-mday .lnd-srs__bb-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sale-red); margin-bottom: 6px; display: inline-flex; align-items: center; gap: 8px; }
+  .lnd-mday .lnd-srs__bb-eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sale-red); display: inline-block; }
+  .lnd-mday .lnd-srs__bb-h2 { font-size: 24px; font-weight: 900; margin: 0 0 4px; letter-spacing: -0.01em; line-height: 1.1; color: var(--sale-navy); }
+  .lnd-mday .lnd-srs__bb-stack-line { font-size: 13px; font-weight: 700; color: var(--sale-red); margin: 0 0 8px; letter-spacing: 0.01em; }
+  .lnd-mday .lnd-srs__bb-sub { font-size: 13px; color: #4a4a4a; margin: 0; line-height: 1.45; }
+  .lnd-mday .lnd-srs__bb-stars { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-top: 8px; font-size: 12px; color: var(--sale-navy); font-weight: 600; }
+  .lnd-mday .lnd-srs__bb-stars-glyphs { color: #d4a23a; letter-spacing: 1px; line-height: 1; flex: 0 0 auto; }
+  .lnd-mday .lnd-srs__bb-stars > span:last-child { flex: 1 1 auto; min-width: 0; }
+  .lnd-mday .lnd-srs__bb-plan-label { font-size: 10px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sale-navy); margin: 0 0 10px; opacity: 0.65; }
+  .lnd-mday .lnd-srs__bb-plans { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 18px; }
+  .lnd-mday .lnd-srs__bb-plan { position: relative; border: 2px solid #e5e5e5; border-radius: 16px; padding: 16px 14px 14px 44px; cursor: pointer; display: block; transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease; background: #fff; }
+  .lnd-mday .lnd-srs__bb-plan input { position: absolute; opacity: 0; pointer-events: none; }
+  .lnd-mday .lnd-srs__bb-plan::before { content: ""; position: absolute; left: 14px; top: 20px; width: 20px; height: 20px; border-radius: 999px; border: 2px solid #c5c5c5; background: #fff; box-sizing: border-box; }
+  .lnd-mday .lnd-srs__bb-plan.is-selected { border-color: var(--sale-red); background: linear-gradient(180deg, #fff 0%, rgba(219,53,25,0.035) 100%); box-shadow: 0 8px 22px rgba(219,53,25,0.10); }
+  .lnd-mday .lnd-srs__bb-plan.is-selected::before { border-color: var(--sale-red); background: var(--sale-red); }
+  .lnd-mday .lnd-srs__bb-plan-badge { position: absolute; top: -10px; right: 14px; background: var(--sale-red); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 5px 10px; border-radius: 999px; text-transform: uppercase; line-height: 1; }
+  .lnd-mday .lnd-srs__bb-plan-badge--save { font-size: 12px; font-weight: 900; letter-spacing: 0.04em; padding: 7px 14px; top: -14px; box-shadow: 0 8px 18px rgba(219,53,25,0.32); }
+  .lnd-mday .lnd-srs__bb-plan.is-best { border-color: var(--sale-red); box-shadow: 0 12px 28px rgba(219,53,25,0.16); }
+  .lnd-mday .lnd-srs__bb-plan-save-xl { font-size: 15px; font-weight: 900; color: var(--sale-red); letter-spacing: -0.01em; }
+  .lnd-mday .lnd-srs__bb-plan-strike { color: #888; text-decoration: line-through; font-weight: 700; }
+  .lnd-mday .lnd-srs__bb-plan-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .lnd-mday .lnd-srs__bb-plan-name { font-size: 16px; font-weight: 800; color: var(--sale-navy); line-height: 1.1; }
+  .lnd-mday .lnd-srs__bb-plan-cadence { font-size: 11px; color: #888; font-weight: 600; margin-top: 3px; line-height: 1.3; }
+  .lnd-mday .lnd-srs__bb-plan-priceblock { text-align: right; flex: 0 0 auto; }
+  .lnd-mday .lnd-srs__bb-plan-pmo { display: flex; align-items: baseline; gap: 2px; justify-content: flex-end; line-height: 1; }
+  .lnd-mday .lnd-srs__bb-plan-pmo-amt { font-size: 26px; font-weight: 800; color: var(--sale-navy); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .lnd-mday .lnd-srs__bb-plan-pmo-unit { font-size: 12px; color: #777; font-weight: 700; }
+  .lnd-mday .lnd-srs__bb-plan-total { font-size: 11px; color: #888; margin-top: 5px; line-height: 1.3; font-weight: 600; }
+  .lnd-mday .lnd-srs__bb-plan-total b { color: var(--sale-red); font-weight: 800; }
+  .lnd-mday .lnd-srs__bb-gifts-inline { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; margin-top: 12px; border-top: 1px dashed #ececec; }
+  .lnd-mday .lnd-srs__bb-plan:not(.is-selected) .lnd-srs__bb-gifts-inline { display: none; }
+  .lnd-mday .lnd-srs__bb-plan:not(.is-selected) .lnd-srs__bb-gifts-summary { display: flex; align-items: center; gap: 6px; padding-top: 10px; margin-top: 10px; border-top: 1px dashed #ececec; font-size: 11px; font-weight: 700; color: var(--sale-navy); }
+  .lnd-mday .lnd-srs__bb-plan.is-selected .lnd-srs__bb-gifts-summary { display: none; }
+  .lnd-mday .lnd-srs__bb-gifts-summary .pill { background: var(--sale-gold); color: var(--sale-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 999px; text-transform: uppercase; line-height: 1; }
+  .lnd-mday .lnd-srs__bb-plan-name { white-space: nowrap; }
+  .lnd-mday .lnd-srs__bb-gift-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--sale-navy); font-weight: 600; line-height: 1.3; }
+  .lnd-mday .lnd-srs__bb-gift-row.is-feature { background: linear-gradient(135deg, #FFF7E0 0%, #FFE9A8 100%); border-radius: 10px; padding: 8px 10px; margin: 4px -4px; border: 1.5px solid #ffd16e; }
+  .lnd-mday .lnd-srs__bb-gift-row.is-feature .val { color: #6b5a2a; }
+  .lnd-mday .lnd-srs__bb-gift-mini { width: 36px; height: 36px; background: var(--sale-cream); border-radius: 8px; padding: 4px; flex: 0 0 auto; }
+  .lnd-mday .lnd-srs__bb-gift-mini img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-mday .lnd-srs__bb-gift-row .val { color: #999; font-weight: 600; font-size: 11px; }
+  .lnd-mday .lnd-srs__bb-gift-row .today { color: var(--sale-red); font-weight: 800; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lnd-mday .lnd-srs__bb-gift-row .free { background: var(--sale-gold); color: var(--sale-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px; text-transform: uppercase; margin-left: auto; flex: 0 0 auto; line-height: 1; }
+  .lnd-mday .lnd-srs__bb-cta { display: flex; justify-content: center; align-items: baseline; gap: 10px; background: var(--sale-red); color: #fff; padding: 18px 24px; border-radius: 999px; font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; min-height: 48px; box-shadow: 0 10px 26px rgba(219,53,25,0.32); margin-bottom: 12px; flex-wrap: wrap; width: 100%; border: 0; cursor: pointer; font-family: inherit; }
+  .lnd-mday .lnd-srs__bb-cta:hover { background: #c42d12; }
+  .lnd-mday .lnd-srs__bb-cta:disabled, .lnd-mday .lnd-srs__bb-cta.is-loading { opacity: 0.8; cursor: wait; }
+  .lnd-mday .lnd-srs__bb-cta-price { font-size: 12px; font-weight: 700; opacity: 0.88; letter-spacing: 0.02em; text-transform: none; }
+  .lnd-mday .lnd-srs__bb-cta-note { text-align: center; font-size: 11px; color: #777; margin: 0 0 16px; line-height: 1.4; }
+  .lnd-mday .lnd-srs__bb-cta-note b { color: var(--sale-navy); font-weight: 700; }
+  .lnd-mday .lnd-srs__bb-trust { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; padding: 14px 0; border-top: 1px solid #f0f0ec; list-style: none; margin: 0; }
+  .lnd-mday .lnd-srs__bb-trust li { padding-left: 22px; position: relative; font-size: 11px; color: #555; line-height: 1.4; font-weight: 600; }
+  .lnd-mday .lnd-srs__bb-trust li::before { content: ""; position: absolute; left: 0; top: 2px; width: 14px; height: 14px; border-radius: 999px; background: var(--sale-cream); }
+  .lnd-mday .lnd-srs__bb-trust li::after { content: ""; position: absolute; left: 3px; top: 6px; width: 8px; height: 4px; border-left: 2px solid var(--sale-red); border-bottom: 2px solid var(--sale-red); transform: rotate(-45deg); }
+  .lnd-mday .lnd-srs__bb-why { border-top: 1px solid #f0f0ec; margin: 0; }
+  .lnd-mday .lnd-srs__bb-why summary { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sale-navy); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 14px 0 12px; }
+  .lnd-mday .lnd-srs__bb-why summary::-webkit-details-marker { display: none; }
+  .lnd-mday .lnd-srs__bb-why summary::after { content: "+"; font-size: 18px; color: var(--sale-red); font-weight: 400; line-height: 1; }
+  .lnd-mday .lnd-srs__bb-why[open] summary::after { content: "−"; }
+  .lnd-mday .lnd-srs__bb-why-body { font-size: 13px; color: #444; line-height: 1.55; padding: 0 0 14px; }
+  .lnd-mday .lnd-srs__bb-why-body p { margin: 0 0 8px; }
+  .lnd-mday .lnd-srs__bb-why-body p:last-child { margin-bottom: 0; }
+  .lnd-mday .lnd-srs__bb-why-body b { color: var(--sale-navy); font-weight: 800; }
+
+  @media (min-width: 720px) {
+    .lnd-mday .lnd-srs__buybox-inner { padding: 32px 32px 28px; max-width: 820px; }
+    .lnd-mday .lnd-srs__bb-sale-badge { top: 24px; right: 24px; padding: 16px 20px; border-radius: 14px; }
+    .lnd-mday .lnd-srs__bb-sale-badge b { font-size: 36px; }
+    .lnd-mday .lnd-srs__bb-sale-badge span { font-size: 10px; margin-top: 6px; }
+    .lnd-mday .lnd-srs__bb-limited { font-size: 12px; padding: 13px 16px; }
+    .lnd-mday .lnd-srs__bb-head { padding-bottom: 22px; margin-bottom: 22px; }
+    .lnd-mday .lnd-srs__bb-thumbs { grid-template-columns: repeat(4, 1fr); max-width: 480px; margin: 0 auto 18px; }
+    .lnd-mday .lnd-srs__bb-thumb { max-height: 140px; }
+    .lnd-mday .lnd-srs__bb-h2 { font-size: 30px; }
+    .lnd-mday .lnd-srs__bb-stack-line { font-size: 14px; }
+    .lnd-mday .lnd-srs__bb-sub { font-size: 14px; }
+    .lnd-mday .lnd-srs__bb-plans { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .lnd-mday .lnd-srs__bb-plan-pmo-amt { font-size: 30px; }
+    .lnd-mday .lnd-srs__bb-trust { grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
+  }
+
+  /* Summer Ready Stack feature module (legacy — kept for fallback styles) */
+  .lnd-mdaystack { background: #f6f6f4; padding: 36px 20px; }
+  .lnd-mdaystack__inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; }
+  .lnd-mdaystack__media { position: relative; background: #fff; border-radius: 16px; overflow: hidden; aspect-ratio: 1/1; }
+  .lnd-mdaystack__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mdaystack__tag { position: absolute; top: 14px; left: 14px; background: var(--mday-red); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; z-index: 1; }
+  .lnd-mdaystack__body { padding: 4px 4px 8px; color: #0D273E; }
+  .lnd-mdaystack__eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mday-red); margin-bottom: 12px; }
+  .lnd-mdaystack__title { font-size: 30px; line-height: 1.05; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 12px; }
+  .lnd-mdaystack__sub { font-size: 15px; line-height: 1.55; color: #444; margin: 0 0 20px; }
+  .lnd-mdaystack__chips { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; }
+  .lnd-mdaystack__chip { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 10px 12px; }
+  .lnd-mdaystack__chip-img { flex: 0 0 52px; width: 52px; height: 52px; background: #f6f6f4; border-radius: 8px; overflow: hidden; }
+  .lnd-mdaystack__chip-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lnd-mdaystack__chip-meta { display: flex; flex-direction: column; min-width: 0; }
+  .lnd-mdaystack__chip-name { font-size: 14px; font-weight: 700; line-height: 1.2; }
+  .lnd-mdaystack__chip-role { font-size: 12px; color: #666; margin-top: 2px; }
+  .lnd-mdaystack__price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .lnd-mdaystack__now { font-size: 30px; font-weight: 800; color: #0D273E; line-height: 1; }
+  .lnd-mdaystack__was { font-size: 15px; color: #888; text-decoration: line-through; }
+  .lnd-mdaystack__save { background: var(--mday-red); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .lnd-mdaystack__cta { display: block; width: 100%; background: #0D273E; color: #fff; border: none; padding: 16px; border-radius: 999px; font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background 0.15s ease; }
+  .lnd-mdaystack__cta:hover { background: var(--mday-red); }
+  .lnd-mdaystack__cta.is-loading { opacity: 0.7; pointer-events: none; }
+  .lnd-mdaystack__note { font-size: 12px; color: #666; margin: 10px 0 0; text-align: center; }
+  @media (min-width: 880px) {
+    .lnd-mdaystack { padding: 64px 28px; }
+    .lnd-mdaystack__inner { grid-template-columns: 1fr 1.1fr; gap: 56px; }
+    .lnd-mdaystack__title { font-size: 40px; }
+  }
+</style>
+
+{%- capture products_json -%}
+{
+  {%- assign emitted_first = false -%}
+  {%- for h in all_handles -%}{%- assign p = nil -%}{%- assign p = all_products[h] -%}{%- if p != blank and p.handle != blank -%}
+  {%- if emitted_first -%},{%- endif -%}{%- assign emitted_first = true -%}
+    {%- assign sale_price = p.price | times: keep_pct | divided_by: 100 -%}
+    {%- assign smart_desc = p.metafields.smart.description | default: p.description | strip_html | truncate: 360 -%}
+    {%- capture bullet_color -%}{{ p.metafields.custom.smart_bullet_point_color }}{%- endcapture -%}
+    {%- if bullet_color == blank -%}{%- capture bullet_color -%}{{ p.metafields.custom.primary_color }}{%- endcapture -%}{%- endif -%}
+    {%- if bullet_color == blank -%}{%- capture bullet_color -%}{{ p.metafields.custom.card_accent_color }}{%- endcapture -%}{%- endif -%}
+    {%- if bullet_color == blank -%}{%- assign bullet_color = '#4659FF' -%}{%- endif -%}
+    {%- assign main_img_src = p.featured_image | image_url: width: 800 -%}
+    {%- case p.handle -%}
+      {%- when 'restore' -%}{%- assign main_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=800' -%}
+      {%- when 'sleep' -%}{%- assign main_img_src = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=800' -%}
+      {%- when 'calm' -%}{%- assign main_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=800' -%}
+    {%- endcase -%}
+    "{{ p.handle }}": {
+      "title": {{ p.title | json }},
+      "handle": {{ p.handle | json }},
+      "price": {{ p.price }},
+      "sale_price": {{ sale_price }},
+      "image": {{ main_img_src | json }},
+      "images": [{%- for img in p.images limit: 8 -%}{{ img | image_url: width: 800 | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+      "description": {{ smart_desc | json }},
+      "bullets": [{%- for b in p.metafields.custom.smart_bullet_points.value -%}{{ b | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+      "bullet_color": {{ bullet_color | json }},
+      "options": [{%- for opt in p.options_with_values -%}{"name": {{ opt.name | json }}, "values": [{%- for v in opt.values -%}{{ v | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+      "variants": [{%- for v in p.variants -%}{"id": {{ v.id }}, "title": {{ v.title | json }}, "price": {{ v.price }}, "option1": {{ v.option1 | json }}, "option2": {{ v.option2 | json }}, "option3": {{ v.option3 | json }}, "available": {{ v.available }}, "selling_plans": [
+        {%- assign first_plan = true -%}
+        {%- for spa in v.selling_plan_allocations -%}
+          {%- assign plan_lookup = '|' | append: spa.selling_plan.name | append: '|' -%}
+          {%- unless excluded_plan_names contains plan_lookup -%}
+            {%- unless first_plan -%},{%- endunless -%}
+            {"id": {{ spa.selling_plan.id }}, "name": {{ spa.selling_plan.name | json }}, "price": {{ spa.price }}}
+            {%- assign first_plan = false -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      ]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+    }
+  {%- endif -%}{%- endfor -%}
+}
+{%- endcapture -%}
+
+<section class="lnd-mday" data-end="{{ end_iso }}" data-pct="{{ discount_pct }}">
+  <div class="lnd-mday__bar">Memorial Day Sale | 35% Off Sitewide + Free Shipping<sup>*</sup></div>
+
+  {%- assign hero_stack = all_products['the-best-sellers-stack'] -%}
+  {%- if hero_stack.handle == blank -%}{%- assign hero_stack = all_products[bestsellers[0]] -%}{%- endif -%}
+  {%- assign hero_stack_sale = hero_stack.price | times: keep_pct | divided_by: 100 -%}
+
+  <div class="lnd-mday__hero">
+    <div class="lnd-mday__hero-inner">
+      <div class="lnd-mday__countdown" data-countdown>
+        <div><b data-h>00</b><span>Hours</span></div>
+        <div><b data-m>00</b><span>Minutes</span></div>
+        <div><b data-s>00</b><span>Seconds</span></div>
+      </div>
+
+      <div class="lnd-mday__hero-grid">
+        <div class="lnd-mday__hero-media">
+          <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/lander-mday-hero.jpg?v=1779224278" alt="The Absorption Company bestsellers — Memorial Day VIP Early Access" loading="lazy" width="1200" height="1200">
+          <div class="lnd-mday__hero-badge"><b>{{ discount_pct }}%</b><span>Off Site-wide</span></div>
+        </div>
+
+        <div class="lnd-mday__hero-center">
+          <div class="eyebrow">VIP Early Access</div>
+          <h1>{{ section.settings.headline | default: 'Memorial Day. <em>Early.</em>' }}</h1>
+          <p>{{ section.settings.subhead | default: 'VIP Early Access: Get first dibs on 35% off site-wide until midnight May 20th. Grab yours before we sell out.' }}</p>
+
+          <ul class="lnd-mday__hero-benefits">
+            <li>Up to <b>149x absorption</b> — clinically formulated</li>
+            <li>Built for <b>real results you feel</b> — energy, focus, recovery</li>
+            <li>30-day <b>money-back guarantee</b> · cancel anytime</li>
+          </ul>
+
+          <a class="lnd-mday__hero-shop-cta" href="#shop-categories">Shop 35% Off</a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Summer Ready Stack buy box — ported from lander-summer-ready-stack-md-sale {%- endcomment -%}
+  <div class="lnd-srs__buybox" id="offer">
+    <div class="lnd-srs__buybox-inner">
+      <div class="lnd-srs__bb-sale-badge"><b>{{ discount_pct }}%</b><span>Off</span></div>
+      <div class="lnd-srs__bb-limited"><b>Limited Edition</b> · Only available during Memorial Day Sale</div>
+      <div class="lnd-srs__bb-head">
+        <div class="lnd-srs__bb-thumbs">
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977" alt="WLP-1" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">WLP-1</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png" alt="Berberine" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Berberine</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=600" alt="Restore" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Restore</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <span class="lnd-srs__bb-thumb-flag">Free w/ 3-month</span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416&width=960" alt="Vitamin D3+K2" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Vitamin D3+K2</span>
+          </div>
+        </div>
+        <div class="lnd-srs__bb-title">
+          <div class="lnd-srs__bb-eyebrow">Featured Stack · 35% off</div>
+          <h2 class="lnd-srs__bb-h2">The Summer Ready Stack</h2>
+          <div class="lnd-srs__bb-stack-line">WLP-1 + Berberine + Restore</div>
+          <p class="lnd-srs__bb-sub">Cravings, blood sugar, and hydration. The three levers that decide what your body looks like by July. Engineered for up to 149x absorption.</p>
+        </div>
+      </div>
+
+      <div class="lnd-srs__bb-plan-label">Pick your plan</div>
+      <div class="lnd-srs__bb-plans" data-plans>
+        <label class="lnd-srs__bb-plan" data-plan="monthly" data-variant="52671161467169" data-url="{{ srs_url_1mo }}" data-price="$139.75 total">
+          <input type="radio" name="srs-plan" value="monthly">
+          <div class="lnd-srs__bb-plan-top">
+            <div>
+              <div class="lnd-srs__bb-plan-name">1-Month</div>
+              <div class="lnd-srs__bb-plan-cadence">Ships every 30 days</div>
+            </div>
+            <div class="lnd-srs__bb-plan-priceblock">
+              <div class="lnd-srs__bb-plan-pmo">
+                <span class="lnd-srs__bb-plan-pmo-amt">$139.75</span>
+                <span class="lnd-srs__bb-plan-pmo-unit">/mo</span>
+              </div>
+              <div class="lnd-srs__bb-plan-total">$139.75 total · <b>35% off $215</b></div>
+            </div>
+          </div>
+          <div class="lnd-srs__bb-gifts-summary"><span class="pill">3 Free Gifts</span><span>Frother + Bottle + Tote</span></div>
+          <div class="lnd-srs__bb-gifts-inline">
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/frother_f4fa120c-fdb7-42d8-a882-40ee3cf2e953.jpg?v=1776218337" alt="Frother" loading="lazy" width="36" height="36"></span>
+              <span>3 Speed Frother <span class="val">($15 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bottle.jpg?v=1761661705" alt="Stainless steel water bottle" loading="lazy" width="36" height="36"></span>
+              <span>Stainless Steel Water Bottle <span class="val">(order 2)</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bag.jpg?v=1761662490" alt="Tote bag" loading="lazy" width="36" height="36"></span>
+              <span>Summer Tote Bag <span class="val">(order 3)</span></span>
+              <span class="free">Free</span>
+            </div>
+          </div>
+        </label>
+        <label class="lnd-srs__bb-plan is-selected is-best" data-plan="3mo" data-variant="52671161499937" data-url="{{ srs_url_3mo }}" data-price="$419.25 total">
+          <span class="lnd-srs__bb-plan-badge lnd-srs__bb-plan-badge--save">Save $327.75</span>
+          <input type="radio" name="srs-plan" value="3mo" checked>
+          <div class="lnd-srs__bb-plan-top">
+            <div>
+              <div class="lnd-srs__bb-plan-name">3-Month</div>
+              <div class="lnd-srs__bb-plan-cadence">Ships every 90 days</div>
+            </div>
+            <div class="lnd-srs__bb-plan-priceblock">
+              <div class="lnd-srs__bb-plan-pmo">
+                <span class="lnd-srs__bb-plan-pmo-amt">$139.75</span>
+                <span class="lnd-srs__bb-plan-pmo-unit">/mo</span>
+              </div>
+              <div class="lnd-srs__bb-plan-total">$419.25 total · <s class="lnd-srs__bb-plan-strike">$747</s> · <b class="lnd-srs__bb-plan-save-xl">Save $327.75</b></div>
+            </div>
+          </div>
+          <div class="lnd-srs__bb-gifts-summary"><span class="pill">4 Free Gifts</span><span>D3+K2 + Frother + Bottle + Tote ($102 value)</span></div>
+          <div class="lnd-srs__bb-gifts-inline">
+            <div class="lnd-srs__bb-gift-row is-feature">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416&width=960" alt="Vitamin D3+K2" loading="lazy" width="36" height="36"></span>
+              <span><b>Vitamin D3+K2</b> <span class="val">($32 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/frother_f4fa120c-fdb7-42d8-a882-40ee3cf2e953.jpg?v=1776218337" alt="Frother" loading="lazy" width="36" height="36"></span>
+              <span>3 Speed Frother <span class="val">($15 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bottle.jpg?v=1761661705" alt="Stainless steel water bottle" loading="lazy" width="36" height="36"></span>
+              <span>Stainless Steel Water Bottle <span class="val">(order 2)</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bag.jpg?v=1761662490" alt="Tote bag" loading="lazy" width="36" height="36"></span>
+              <span>Summer Tote Bag <span class="val">(order 3)</span></span>
+              <span class="free">Free</span>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <button type="button" class="lnd-srs__bb-cta" id="lnd-srs-bb-cta" data-handle="summer-ready-stack" data-variant="52671161499937">Add to cart <span class="lnd-srs__bb-cta-price" id="lnd-srs-bb-cta-price">$419.25 total</span></button>
+      <p class="lnd-srs__bb-cta-note"><b>Free gifts</b> auto-added at checkout. Cancel anytime.</p>
+
+      <ul class="lnd-srs__bb-trust">
+        <li>Free shipping</li>
+        <li>30-day guarantee</li>
+        <li>Cancel anytime</li>
+        <li>Up to 20x more absorption</li>
+      </ul>
+
+      <details class="lnd-srs__bb-why">
+        <summary>Why this stack works</summary>
+        <div class="lnd-srs__bb-why-body">
+          <p><b>WLP-1.</b> Boosts natural GLP-1 by 321%. 22.3% fewer cravings. ~9 lbs in 4 weeks on average.</p>
+          <p><b>Berberine.</b> Extra-strength liposomal. AMPK activation, steadier glucose, cleaner energy.</p>
+          <p><b>Restore.</b> Replaces the electrolytes, vitamins, and minerals depleted as you cut. Lose the weight, keep the nutrients.</p>
+          <p>Only 16% of standard supplements absorb. The Summer Ready Stack uses liposomes, nanoparticles, and chelated minerals to deliver up to 149x the dose your body actually gets.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  {%- assign cat_titles = 'Bestsellers|Weight Management & Metabolism|Sleep & Mood Support|Longevity & Performance|Immunity & Inflammation' | split: '|' -%}
+  {%- assign cat_subs = 'The ones our subscribers reorder most.|GLP-1 support, hormone balance, and metabolic stacks.|Wind down, repair, wake up sharper.|Built for the long game.|Calm the fire, fortify the defense.' | split: '|' -%}
+
+  {%- for idx in (0..4) -%}
+    {%- case idx -%}
+      {%- when 0 -%}{%- assign group = bestsellers -%}
+      {%- when 1 -%}{%- assign group = weight -%}
+      {%- when 2 -%}{%- assign group = sleep_mood -%}
+      {%- when 3 -%}{%- assign group = longevity -%}
+      {%- when 4 -%}{%- assign group = immunity -%}
+    {%- endcase -%}
+    <div class="lnd-mday__row"{% if idx == 0 %} id="shop-categories"{% endif %}>
+      <div class="lnd-mday__row-head"><div><h2>{{ cat_titles[idx] }}</h2><p>{{ cat_subs[idx] }}</p></div></div>
+      <div class="lnd-mday__scroll">
+        {%- for h in group -%}{%- assign p = nil -%}{%- assign p = all_products[h] -%}{%- if p != blank and p.handle != blank -%}
+          {%- assign tile_price = p.price -%}
+          {%- assign default_variant_id = '' -%}
+          {%- assign pipe_handle = '|' | append: p.handle | append: '|' -%}
+          {%- if powder_handles contains pipe_handle -%}
+            {%- for v in p.variants -%}
+              {%- if p.handle == 'energy' -%}
+                {%- if v.option1 contains '28 Stick' and v.available -%}
+                  {%- assign tile_price = v.price -%}{%- assign default_variant_id = v.id -%}{%- break -%}
+                {%- endif -%}
+              {%- else -%}
+                {%- if v.option1 == 'Bag' and v.option2 contains '28 Serving' and v.available -%}
+                  {%- assign tile_price = v.price -%}{%- assign default_variant_id = v.id -%}{%- break -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- assign sale_price = tile_price | times: keep_pct | divided_by: 100 -%}
+          {%- assign card_badge = p.metafields.custom.card_badge -%}
+          {%- assign smart_short = p.metafields.smart.short_description.value | default: p.metafields.smart.short_description -%}
+          {%- assign card_sub = smart_short -%}
+          {%- if card_sub == blank or card_sub contains '"type":"root"' -%}{%- assign card_sub = p.metafields.smart.description | strip_html | truncate: 90 -%}{%- endif -%}
+          {%- if card_sub == blank -%}{%- assign card_sub = p.metafields.custom.tagline | strip_html | truncate: 90 -%}{%- endif -%}
+          <div class="lnd-mday__card" role="button" tabindex="0" data-handle="{{ p.handle }}"{% if default_variant_id != '' %} data-default-variant="{{ default_variant_id }}"{% endif %}>
+            {%- if card_badge != blank -%}<span class="lnd-mday__callout">{{ card_badge }}</span>{%- endif -%}
+            {%- assign low_stock_handles = '|wlp-1|weight-management-stack|magnesium-glycinate|daily-basics|metabolic-balance-stack|magnesium-calm-bundle|magnesium-restore-bundle|magnesium-sleep-bundle|' -%}
+            {%- assign pipe_ls_handle = '|' | append: p.handle | append: '|' -%}
+            {%- if low_stock_handles contains pipe_ls_handle -%}<span class="lnd-mday__low-stock">Low Stock</span>{%- endif -%}
+            {%- assign card_img_src = p.featured_image | image_url: width: 400 -%}
+            {%- case p.handle -%}
+              {%- when 'restore' -%}{%- assign card_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=400' -%}
+              {%- when 'sleep' -%}{%- assign card_img_src = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=400' -%}
+              {%- when 'calm' -%}{%- assign card_img_src = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=400' -%}
+            {%- endcase -%}
+            <div class="lnd-mday__card-img">{%- if card_img_src != blank -%}<img src="{{ card_img_src }}" alt="{{ p.title | escape }}" loading="lazy" width="400" height="400">{%- endif -%}</div>
+            <div class="lnd-mday__card-body">
+              <h3 class="lnd-mday__card-title">{{ p.title }}</h3>
+              {%- if card_sub != blank -%}<p class="lnd-mday__card-sub">{{ card_sub }}</p>{%- endif -%}
+              <div class="lnd-mday__card-price">
+                <span class="now">{{ sale_price | money }}</span>
+                <span class="was">{{ tile_price | money }}</span>
+                <span class="off">· {{ discount_pct }}% off</span>
+              </div>
+              <span class="lnd-mday__card-more" aria-hidden="true">Details ›</span>
+              <button type="button" class="lnd-mday__cta" data-card-atc data-handle="{{ p.handle }}">Add to cart</button>
+            </div>
+          </div>
+        {%- endif -%}{%- endfor -%}
+      </div>
+    </div>
+  {%- endfor -%}
+
+  <div class="lnd-mday__footer">
+    <h3>{{ section.settings.footer_headline | default: 'Early access ends midnight, May 20.' }}</h3>
+    <p>{{ section.settings.footer_sub | default: 'After that, the doors open to everyone. Take care of your stack first.' }}</p>
+    <a class="lnd-mday__cta" href="/collections/all">Shop the full catalog</a>
+    <p class="lnd-mday__footer-fine"><sup>*</sup> Free standard shipping on US orders $50+. Discount auto-applies in cart.</p>
+  </div>
+
+  <div class="lnd-mday__modal" data-modal aria-hidden="true" role="dialog">
+    <div class="lnd-mday__modal-backdrop" data-modal-close></div>
+    <div class="lnd-mday__modal-panel">
+      <button class="lnd-mday__modal-close" data-modal-close aria-label="Close">×</button>
+      <div class="lnd-mday__modal-panel-inner">
+        <div class="lnd-mday__modal-media">
+          <div class="lnd-mday__modal-img"><img data-modal-img src="" alt=""></div>
+          <div class="lnd-mday__thumbs" data-modal-thumbs></div>
+        </div>
+        <div class="lnd-mday__modal-body">
+          <div class="lnd-mday__toast" data-toast></div>
+          <h2 data-modal-title></h2>
+          <div class="lnd-mday__modal-price">
+            <span class="now" data-modal-now></span>
+            <span class="was" data-modal-was></span>
+            <span class="save" data-modal-save></span>
+          </div>
+          <p class="lnd-mday__modal-desc" data-modal-desc></p>
+          <ul class="lnd-mday__bullets" data-modal-bullets></ul>
+          <div data-modal-options></div>
+          <div class="lnd-mday__buy" data-modal-buy></div>
+          <div class="lnd-mday__modal-actions">
+            <button class="lnd-mday__cta" data-modal-atc type="button">Add to cart</button>
+            <a class="lnd-mday__modal-pdp" data-modal-pdp href="#">See full product details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script id="lnd-mday-data" type="application/json">{{ products_json | strip_newlines }}</script>
+
+<script>
+(function() {
+  var root = document.querySelector('.lnd-mday');
+  if (!root) return;
+  var DISCOUNT = root.dataset.discountCode;
+  var END = new Date(root.dataset.end).getTime();
+  var PCT = parseInt(root.dataset.pct, 10);
+  var KEEP = (100 - PCT) / 100;
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('lnd-mday-data').textContent); } catch(e) { DATA = {}; }
+  var POWDER_HANDLES = { restore:1, sleep:1, calm:1, energy:1 };
+
+  // Apply discount + force cart recalc so line-level discount allocations populate.
+  function applyDiscount() {
+    return fetch('/discount/' + DISCOUNT + '?redirect=/cart.js', { credentials: 'same-origin' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+  function refreshThemeCart() {
+    if (window._cart && typeof window._cart.get === 'function') {
+      try { window._cart.get(true); } catch(e){}
+    }
+  }
+  applyDiscount().then(refreshThemeCart);
+  // Warm up the lazy modal section so cart drawer is ready when ATC fires.
+  setTimeout(function(){ try { document.dispatchEvent(new Event('pointerover')); } catch(e){} }, 600);
+
+  function money(cents){ return '$' + (cents/100).toFixed(2).replace(/\.00$/,''); }
+  function pad(n){ return n<10?'0'+n:''+n; }
+  function tick(){
+    var h = root.querySelector('[data-h]'),
+        m = root.querySelector('[data-m]'), s = root.querySelector('[data-s]'),
+        bar = root.querySelector('[data-countdown-bar]');
+    var diff = Math.max(0, END - Date.now());
+    var totalHrs = Math.floor(diff/3600000),
+        mins = Math.floor((diff%3600000)/60000), secs = Math.floor((diff%60000)/1000);
+    if(h) h.textContent = pad(totalHrs);
+    if(m) m.textContent = pad(mins);
+    if(s) s.textContent = pad(secs);
+    if(bar) {
+      bar.textContent = diff === 0 ? 'now' : totalHrs+'h '+pad(mins)+'m';
+    }
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Cycling benefits rotator
+  var rotator = root.querySelector('[data-rotator]');
+  var rotWords = ['more energy', 'sharper focus', 'better sleep', 'faster recovery', 'steadier mood', 'stronger immunity', 'cleaner workouts', 'real results'];
+  var rotIdx = 0;
+  if (rotator) {
+    setInterval(function(){
+      rotator.classList.add('is-out');
+      setTimeout(function(){
+        rotIdx = (rotIdx + 1) % rotWords.length;
+        rotator.textContent = rotWords[rotIdx];
+        rotator.classList.remove('is-out');
+      }, 350);
+    }, 2200);
+  }
+
+  // Modal
+  var modal = root.querySelector('[data-modal]');
+  var modalImg = modal.querySelector('[data-modal-img]');
+  var modalThumbs = modal.querySelector('[data-modal-thumbs]');
+  var modalTitle = modal.querySelector('[data-modal-title]');
+  var modalNow = modal.querySelector('[data-modal-now]');
+  var modalWas = modal.querySelector('[data-modal-was]');
+  var modalSave = modal.querySelector('[data-modal-save]');
+  var modalDesc = modal.querySelector('[data-modal-desc]');
+  var modalBullets = modal.querySelector('[data-modal-bullets]');
+  var modalPanel = modal.querySelector('.lnd-mday__modal-panel');
+  var modalOptions = modal.querySelector('[data-modal-options]');
+  var modalBuy = modal.querySelector('[data-modal-buy]');
+  var modalAtc = modal.querySelector('[data-modal-atc]');
+  var modalPdp = modal.querySelector('[data-modal-pdp]');
+  var toast = modal.querySelector('[data-toast]');
+  var currentProduct = null;
+  var selected = {};
+  var purchaseType = 'subscription';
+
+  function openModal(handle) {
+    var p = DATA[handle]; if (!p) return;
+    currentProduct = p;
+    selected = {};
+    if (POWDER_HANDLES[handle]) {
+      if (handle === 'energy') {
+        selected.option1 = '28 Sticks';
+      } else {
+        selected.option1 = 'Bag';
+        selected.option2 = '28 Servings';
+      }
+    }
+    modalImg.src = p.image || '';
+    modalImg.alt = p.title;
+    renderThumbs(p);
+    modalTitle.textContent = p.title;
+    modalDesc.textContent = p.description || '';
+    modalBullets.innerHTML = '';
+    var color = (p.bullet_color && /^#[0-9a-fA-F]{3,8}$/.test(p.bullet_color)) ? p.bullet_color : '#4659FF';
+    var bullets = normalizeBullets(p.bullets);
+    bullets.forEach(function(b){
+      var li = document.createElement('li');
+      li.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M13.3327 9.33301C13.3327 12.2785 10.9449 14.6663 7.99935 14.6663C5.05383 14.6663 2.66602 12.2785 2.66602 9.33301C2.66602 8.62574 2.80369 7.95063 3.05369 7.33301C3.84488 5.37845 7.99935 1.33301 7.99935 1.33301C7.99935 1.33301 12.1538 5.37845 12.945 7.33301C13.195 7.95063 13.3327 8.62574 13.3327 9.33301Z" fill="' + color + '" stroke="' + color + '" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>';
+      li.querySelector('span').textContent = b;
+      modalBullets.appendChild(li);
+    });
+    modalBullets.style.display = modalBullets.children.length ? 'flex' : 'none';
+    modalPdp.href = '/products/' + p.handle;
+    toast.className = 'lnd-mday__toast';
+    toast.textContent = '';
+    modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+    purchaseType = hasAnySellingPlan(p) ? 'subscription' : 'onetime';
+    renderOptions(p);
+    renderBuyOptions();
+    updatePrice();
+    document.body.style.overflow = 'hidden';
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function renderThumbs(p) {
+    modalThumbs.innerHTML = '';
+    var imgs = (p.images || []).filter(function(s){ return !!s; });
+    if (imgs.length < 2) return;
+    imgs.forEach(function(src, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lnd-mday__thumb' + (i === 0 ? ' is-active' : '');
+      btn.innerHTML = '<img src="' + src + '" alt="" loading="lazy">';
+      btn.addEventListener('click', function() {
+        modalImg.src = src;
+        modalThumbs.querySelectorAll('.lnd-mday__thumb').forEach(function(t){ t.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+      });
+      modalThumbs.appendChild(btn);
+    });
+  }
+  function hasAnySellingPlan(p) {
+    if (!p || !p.variants) return false;
+    return p.variants.some(function(v){ return v.selling_plans && v.selling_plans.length; });
+  }
+  function variantSellingPlan(v) {
+    return (v && v.selling_plans && v.selling_plans.length) ? v.selling_plans[0] : null;
+  }
+  function updatePrice() {
+    if (!currentProduct) return;
+    var v = findVariant();
+    var basePrice = v ? v.price : currentProduct.price;
+    var sp = v ? variantSellingPlan(v) : null;
+    var keep = KEEP;
+    if (purchaseType === 'subscription' && sp) {
+      modalNow.textContent = money(basePrice * keep);
+      modalWas.textContent = money(basePrice);
+      modalWas.style.display = '';
+      modalSave.textContent = 'SAVE ' + PCT + '%';
+      modalSave.style.display = '';
+    } else {
+      modalNow.textContent = money(basePrice);
+      modalWas.textContent = '';
+      modalWas.style.display = 'none';
+      modalSave.textContent = '';
+      modalSave.style.display = 'none';
+    }
+    renderBuyOptions();
+  }
+  function renderBuyOptions() {
+    if (!currentProduct) { modalBuy.innerHTML = ''; return; }
+    var v = findVariant();
+    var sp = v ? variantSellingPlan(v) : null;
+    if (!sp) { modalBuy.innerHTML = ''; modalBuy.style.display = 'none'; return; }
+    modalBuy.style.display = 'flex';
+    var basePrice = v ? v.price : currentProduct.price;
+    var subPrice = money(basePrice * KEEP);
+    var oneTimePrice = money(basePrice);
+    var planLabel = sp.name || 'Subscribe & save';
+    modalBuy.innerHTML =
+      '<label class="lnd-mday__buy-opt ' + (purchaseType === 'subscription' ? 'is-active' : '') + '" data-buy="subscription">' +
+        '<input type="radio" name="lnd-buy" value="subscription"' + (purchaseType === 'subscription' ? ' checked' : '') + '>' +
+        '<span class="lnd-mday__buy-opt-main">' +
+          '<span class="lnd-mday__buy-opt-title">' + planLabel + ' <span class="lnd-mday__buy-opt-tag">BEST VALUE</span></span>' +
+          '<span class="lnd-mday__buy-opt-sub">Auto-deliver. Cancel anytime.</span>' +
+        '</span>' +
+        '<span class="lnd-mday__buy-opt-price">' + subPrice + '</span>' +
+      '</label>' +
+      '<label class="lnd-mday__buy-opt ' + (purchaseType === 'onetime' ? 'is-active' : '') + '" data-buy="onetime">' +
+        '<input type="radio" name="lnd-buy" value="onetime"' + (purchaseType === 'onetime' ? ' checked' : '') + '>' +
+        '<span class="lnd-mday__buy-opt-main">' +
+          '<span class="lnd-mday__buy-opt-title">One-time purchase</span>' +
+          '<span class="lnd-mday__buy-opt-sub">Just this once.</span>' +
+        '</span>' +
+        '<span class="lnd-mday__buy-opt-price">' + oneTimePrice + '</span>' +
+      '</label>';
+    modalBuy.querySelectorAll('[data-buy]').forEach(function(el){
+      el.addEventListener('click', function(){
+        purchaseType = el.dataset.buy;
+        updatePrice();
+      });
+    });
+  }
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function valueCompatible(p, idx, val) {
+    if (!p.variants) return true;
+    return p.variants.some(function(v) {
+      if (!v.available) return false;
+      if (v['option' + (idx + 1)] !== val) return false;
+      for (var k = 0; k < p.options.length; k++) {
+        if (k === idx) continue;
+        var sel = selected['option' + (k + 1)];
+        if (sel && v['option' + (k + 1)] !== sel) return false;
+      }
+      return true;
+    });
+  }
+  function renderOptions(p) {
+    modalOptions.innerHTML = '';
+    if (!p.options || p.options.length === 0 || (p.options.length === 1 && p.options[0].name === 'Title')) return;
+    p.options.forEach(function(opt, idx) {
+      var wrap = document.createElement('div'); wrap.className = 'lnd-mday__opt';
+      var label = document.createElement('span'); label.className = 'lnd-mday__opt-label';
+      label.textContent = opt.name; wrap.appendChild(label);
+      var values = document.createElement('div'); values.className = 'lnd-mday__opt-values';
+      var visibleVals = opt.values.filter(function(v){ return valueCompatible(p, idx, v); });
+      if (!visibleVals.length) visibleVals = opt.values.slice();
+      // If current selection isn't in visibleVals, reset it to the first available
+      if (selected['option' + (idx + 1)] && visibleVals.indexOf(selected['option' + (idx + 1)]) === -1) {
+        selected['option' + (idx + 1)] = visibleVals[0];
+      }
+      if (!selected['option' + (idx + 1)]) {
+        selected['option' + (idx + 1)] = visibleVals[0];
+      }
+      visibleVals.forEach(function(v) {
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'lnd-mday__opt-btn'; btn.textContent = v;
+        btn.dataset.optIdx = idx; btn.dataset.optValue = v;
+        if (v === selected['option' + (idx + 1)]) btn.classList.add('is-active');
+        btn.addEventListener('click', function() {
+          selected['option' + (idx + 1)] = v;
+          renderOptions(p);
+          updatePrice();
+        });
+        values.appendChild(btn);
+      });
+      wrap.appendChild(values);
+      modalOptions.appendChild(wrap);
+    });
+  }
+  function findVariant() {
+    if (!currentProduct || !currentProduct.variants) return null;
+    if (currentProduct.variants.length === 1) return currentProduct.variants[0];
+    return currentProduct.variants.find(function(v) {
+      return (!selected.option1 || v.option1 === selected.option1)
+          && (!selected.option2 || v.option2 === selected.option2)
+          && (!selected.option3 || v.option3 === selected.option3);
+    }) || null;
+  }
+
+  root.addEventListener('click', function(e) {
+    var atcBtn = e.target.closest('[data-card-atc]');
+    if (atcBtn) { e.preventDefault(); e.stopPropagation(); directAtcFromCard(atcBtn); return; }
+    var stackBtn = e.target.closest('[data-stack-add]');
+    if (stackBtn) { e.preventDefault(); addStackToCart(stackBtn); return; }
+    var card = e.target.closest('.lnd-mday__card[data-handle]');
+    if (card) { e.preventDefault(); openModal(card.dataset.handle); return; }
+    if (e.target.closest('[data-modal-close]')) { e.preventDefault(); closeModal(); return; }
+  });
+  root.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest('.lnd-mday__card[role="button"]');
+    if (card && !e.target.closest('[data-card-atc]')) { e.preventDefault(); openModal(card.dataset.handle); }
+  });
+
+  function directAtcFromCard(btn) {
+    var handle = btn.getAttribute('data-handle');
+    var prod = DATA[handle];
+    if (!prod || !prod.variants || !prod.variants.length) { openModal(handle); return; }
+    var card = btn.closest('.lnd-mday__card');
+    var defaultVid = card && card.getAttribute('data-default-variant');
+    var v = null;
+    if (defaultVid) {
+      for (var j = 0; j < prod.variants.length; j++) {
+        if (String(prod.variants[j].id) === String(defaultVid) && prod.variants[j].available) { v = prod.variants[j]; break; }
+      }
+    }
+    if (!v) {
+      for (var i = 0; i < prod.variants.length; i++) { if (prod.variants[i].available) { v = prod.variants[i]; break; } }
+    }
+    if (!v) v = prod.variants[0];
+    var item = { id: v.id, quantity: 1 };
+    if (v.selling_plans && v.selling_plans.length) item.selling_plan = v.selling_plans[0].id;
+    var origLabel = btn.textContent;
+    btn.classList.add('is-loading'); btn.disabled = true; btn.textContent = 'Adding...';
+    var payload = { items: [item] };
+    var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+    var p = themeAdd && typeof themeAdd.then === 'function'
+      ? themeAdd
+      : fetch('/cart/add.js?smart_theme=true', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+          body: JSON.stringify(payload)
+        }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+    p.then(function(){
+      btn.classList.remove('is-loading'); btn.disabled = false; btn.textContent = origLabel;
+      refreshThemeCart();
+      setTimeout(openCartDrawer, 100);
+      applyDiscount().then(refreshThemeCart).catch(function(){});
+    }).catch(function(){
+      btn.classList.remove('is-loading'); btn.disabled = false; btn.textContent = origLabel;
+      openModal(handle);
+    });
+  }
+
+  // Buybox plan switcher
+  var planLabels = root.querySelectorAll('.lnd-srs__bb-plan');
+  var bbCta = root.querySelector('#lnd-srs-bb-cta');
+  var bbCtaPrice = root.querySelector('#lnd-srs-bb-cta-price');
+  planLabels.forEach(function(p){
+    p.addEventListener('click', function(){
+      planLabels.forEach(function(x){
+        x.classList.remove('is-selected');
+        var i = x.querySelector('input'); if (i) i.checked = false;
+      });
+      p.classList.add('is-selected');
+      var i = p.querySelector('input'); if (i) i.checked = true;
+      var price = p.getAttribute('data-price');
+      var variant = p.getAttribute('data-variant');
+      if (bbCta && variant) bbCta.setAttribute('data-variant', variant);
+      if (bbCtaPrice && price) bbCtaPrice.textContent = price;
+    });
+  });
+
+  if (bbCta) {
+    bbCta.addEventListener('click', function(e){
+      e.preventDefault();
+      var handle = bbCta.getAttribute('data-handle') || 'summer-ready-stack';
+      var variantId = parseInt(bbCta.getAttribute('data-variant'), 10);
+      var prod = DATA[handle];
+      var fallbackUrl = (root.querySelector('.lnd-srs__bb-plan.is-selected') || {}).getAttribute
+        ? root.querySelector('.lnd-srs__bb-plan.is-selected').getAttribute('data-url')
+        : null;
+      if (!prod || !prod.variants || !prod.variants.length || !variantId) {
+        if (fallbackUrl) window.location.href = fallbackUrl;
+        return;
+      }
+      var v = null;
+      for (var k = 0; k < prod.variants.length; k++) { if (prod.variants[k].id === variantId) { v = prod.variants[k]; break; } }
+      if (!v) {
+        if (fallbackUrl) window.location.href = fallbackUrl;
+        return;
+      }
+      var item = { id: v.id, quantity: 1 };
+      if (v.selling_plans && v.selling_plans.length) item.selling_plan = v.selling_plans[0].id;
+      var origLabel = bbCta.innerHTML;
+      bbCta.classList.add('is-loading');
+      bbCta.disabled = true;
+      bbCta.textContent = 'Adding...';
+      var payload = { items: [item] };
+      var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+      var p = themeAdd && typeof themeAdd.then === 'function'
+        ? themeAdd
+        : fetch('/cart/add.js?smart_theme=true', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+            body: JSON.stringify(payload)
+          }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+      p.then(function(){
+        bbCta.classList.remove('is-loading'); bbCta.disabled = false; bbCta.innerHTML = origLabel;
+        refreshThemeCart();
+        setTimeout(openCartDrawer, 100);
+        applyDiscount().then(refreshThemeCart).catch(function(){});
+      }).catch(function(){
+        bbCta.classList.remove('is-loading'); bbCta.disabled = false; bbCta.innerHTML = origLabel;
+        if (fallbackUrl) window.location.href = fallbackUrl;
+      });
+    });
+  }
+
+  function normalizeBullets(raw) {
+    if (!raw || !raw.length) return [];
+    var out = [];
+    raw.forEach(function(item) {
+      if (item == null) return;
+      if (typeof item === 'string') {
+        var trimmed = item.trim();
+        if (trimmed.charAt(0) === '{' && trimmed.indexOf('"type"') !== -1 && trimmed.indexOf('"children"') !== -1) {
+          try { walkRich(JSON.parse(trimmed), out); return; } catch(e) {}
+        }
+        out.push(item);
+      } else if (typeof item === 'object') {
+        walkRich(item, out);
+      }
+    });
+    return out.filter(function(s){ return s && s.trim().length; });
+  }
+  function walkRich(node, out) {
+    if (!node) return;
+    if (node.type === 'list-item' || node.type === 'listItem' || node.type === 'listitem') {
+      out.push(collectText(node));
+      return;
+    }
+    if (node.children && node.children.length) node.children.forEach(function(c){ walkRich(c, out); });
+  }
+  function collectText(node) {
+    if (!node) return '';
+    if (typeof node === 'string') return node;
+    if (node.type === 'text') return node.value || '';
+    if (node.children && node.children.length) {
+      return node.children.map(collectText).join('');
+    }
+    return '';
+  }
+
+  function addStackToCart(btn) {
+    var handles = (btn.dataset.handles || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    var items = [];
+    for (var i = 0; i < handles.length; i++) {
+      var prod = DATA[handles[i]];
+      if (!prod || !prod.variants || !prod.variants.length) continue;
+      var v = null;
+      for (var j = 0; j < prod.variants.length; j++) { if (prod.variants[j].available) { v = prod.variants[j]; break; } }
+      if (!v) v = prod.variants[0];
+      items.push({ id: v.id, quantity: 1 });
+    }
+    if (!items.length) return;
+    var origLabel = btn.textContent;
+    btn.classList.add('is-loading');
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
+    var payload = { items: items };
+    var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+    var p = themeAdd && typeof themeAdd.then === 'function'
+      ? themeAdd
+      : fetch('/cart/add.js?smart_theme=true', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+          body: JSON.stringify(payload)
+        }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+    p.then(function() {
+      btn.classList.remove('is-loading'); btn.disabled = false; btn.textContent = origLabel;
+      refreshThemeCart();
+      setTimeout(openCartDrawer, 100);
+      applyDiscount().then(refreshThemeCart).catch(function(){});
+    }).catch(function() {
+      btn.classList.remove('is-loading'); btn.disabled = false; btn.textContent = origLabel;
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+
+  function openCartDrawer() {
+    // Most reliable: click the theme's cart icon — it handles both modal loading and opening.
+    var cartLink = document.querySelector('a[href$="#modal--cart-drawer"]');
+    if (cartLink) {
+      try { cartLink.click(); return; } catch(e){}
+    }
+    try {
+      var store = window.Alpine && window.Alpine.store && window.Alpine.store('modal');
+      if (store && typeof store.setId === 'function' && window.modalsLoaded) {
+        store.setId('cart-drawer');
+      }
+    } catch(e){}
+  }
+  function showAddError(msg) {
+    toast.className = 'lnd-mday__toast is-show is-err';
+    toast.textContent = msg || 'Could not add to cart.';
+    modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+  }
+
+  modalAtc.addEventListener('click', function() {
+    var v = findVariant();
+    if (!v) return showAddError('Please choose all options.');
+    if (!v.available) return showAddError('Sold out — try another option.');
+    modalAtc.disabled = true; modalAtc.textContent = 'Adding...';
+
+    var item = { id: v.id, quantity: 1 };
+    var sp = variantSellingPlan(v);
+    if (purchaseType === 'subscription' && sp) item.selling_plan = sp.id;
+    var payload = { items: [item] };
+
+    // Prefer theme's Alpine-aware add — it updates $cart.state so badge + drawer reflect change.
+    var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+    var p = themeAdd && typeof themeAdd.then === 'function'
+      ? themeAdd
+      : fetch('/cart/add.js?smart_theme=true', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+          body: JSON.stringify(payload)
+        }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+
+    p.then(function(res) {
+      if (res && res.cart_error) return showAddError(res && res.description);
+      modalAtc.disabled = false; modalAtc.textContent = 'Add to cart';
+      closeModal();
+      refreshThemeCart();
+      setTimeout(openCartDrawer, 100);
+      // Re-apply discount in background so line-level allocation appears (don't block UX).
+      applyDiscount().then(refreshThemeCart).catch(function(){});
+    }).catch(function(err) {
+      showAddError(err && (err.description || err.message));
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Memorial Day Early Access",
+  "settings": [
+    { "type": "number", "id": "discount_pct", "label": "Discount %", "default": 35 },
+    { "type": "text", "id": "end_iso", "label": "End time (ISO 8601)", "default": "2026-05-20T23:59:59-04:00" },
+    { "type": "html", "id": "headline", "label": "Hero headline", "default": "Memorial Day. <em>Early.</em>" },
+    { "type": "textarea", "id": "subhead", "label": "Hero subhead", "default": "VIP Early Access: Get first dibs on 35% off site-wide until midnight May 20th. Grab yours before we sell out." },
+    { "type": "text", "id": "footer_headline", "label": "Footer headline", "default": "Early access ends midnight, May 20." },
+    { "type": "textarea", "id": "footer_sub", "label": "Footer subtext", "default": "After that, the doors open to everyone. Take care of your stack first." }
+  ],
+  "presets": [{ "name": "Memorial Day Early Access" }]
+}
+{% endschema %}

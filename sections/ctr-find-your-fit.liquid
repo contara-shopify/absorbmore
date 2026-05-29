@@ -1,0 +1,1232 @@
+{%- comment -%} CTR Find Your Fit {%- endcomment -%}
+{%- liquid
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+  assign filter_tabs = section.settings.filter_tabs
+  assign container_spacing = section.settings.container_spacing
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign card_bg = section.settings.card_bg
+  assign accent_color = section.settings.accent_color
+  assign button_bg = section.settings.button_bg
+  assign button_color = section.settings.button_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    {% if bg_color != blank and bg_color.alpha != 0 %}background-color: {{ bg_color }};{% endif %}
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    padding-top: 48px;
+    padding-bottom: 64px;
+  }
+
+  & * {
+    box-sizing: border-box;
+  }
+
+  & .ctr-fyf__inner {
+    width: 100%;
+    {% comment %} max-width: 1440px; {% endcomment %}
+    margin: 0 auto;
+  }
+
+  & .ctr-fyf__heading {
+    margin: 0 0 20px;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  & .ctr-fyf__subheading {
+    max-width: 760px;
+    margin: 0 0 28px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  & .ctr-fyf__subheading p {
+    margin: 0;
+  }
+
+  & .ctr-fyf__tabs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  & .ctr-fyf__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  & .ctr-fyf__tab {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(26, 26, 26, 0.56);
+    padding: 10px 16px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+  }
+
+  & .ctr-fyf__tab.is-active {
+    background: #111111;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  & .ctr-fyf__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  & .ctr-fyf__block {
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  & .ctr-fyf__block.is-hidden {
+    display: none;
+  }
+
+  & .ctr-fyf__scenario {
+    height: 100%;
+    {% if card_bg != blank and card_bg.alpha != 0 %}background-color: {{ card_bg }};{% endif %}
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+      padding: 24px;
+    }
+  }
+
+  & .ctr-fyf__scenario-icon {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 24px;
+  }
+
+  & .ctr-fyf__scenario-icon img,
+  & .ctr-fyf__scenario-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  & .ctr-fyf__scenario-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  & .ctr-fyf__scenario-text {
+    margin: 0 0 22px;
+    color: #707070;
+    font-size: 14px;
+    line-height: 1.4;
+    flex-grow: 1;
+  }
+
+  & .ctr-fyf__scenario-text p {
+    margin: 0;
+  }
+
+  & .ctr-fyf__badges {
+    display: flex; 
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  & .ctr-fyf__badge { 
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid currentColor;
+    {% comment %} background: color-mix(in srgb, currentColor 8%, transparent); {% endcomment %}
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  & .ctr-fyf__anchor {
+    display: inline-flex;
+    margin-bottom: 22px;
+    color: {{ accent_color }};
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  & .ctr-fyf__product {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  & .ctr-fyf__stock {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    border-radius: 999px;
+    background: #ef2c72;
+    color: #ffffff;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  & .ctr-fyf__product-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 230px;
+    padding: 0;
+    background: #fbfaf7;
+  }
+
+  & .ctr-fyf__product-image,
+  & .ctr-fyf__product-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  & .ctr-fyf__product-image img {
+    display: block;
+    width: 350px;
+    max-width: 100%;
+    height: 230px;
+    object-fit: contain;
+  }
+
+  & .ctr-fyf__product-body {
+    padding: 16px 20px 20px;
+  }
+
+  & .ctr-fyf__product-title {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+
+  & .ctr-fyf__product-desc {
+    margin: 0 0 12px;
+    color: rgba(26, 26, 26, 0.68);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  & .ctr-fyf__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    --star-size: 12px;
+    --star-gap: 2px;
+    --star-size-with-gap: calc(var(--star-size) + var(--star-gap));
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  & .ctr-fyf__rating meter {
+    display: block;
+    width: calc(var(--star-size-with-gap) * 5 - var(--star-gap));
+    height: var(--star-size);
+    border: 0;
+    background: var(--color-review-stars-base--hex, rgba(26, 26, 26, 0.16));
+    mask: var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star);
+    mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+    -webkit-mask: var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star);
+    -webkit-mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  & .ctr-fyf__rating meter::-webkit-meter-bar {
+    height: var(--star-size);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  & .ctr-fyf__rating meter::-webkit-meter-optimum-value {
+    height: var(--star-size);
+    background: var(--color-review-stars--hex, currentColor);
+    mask: var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star);
+    mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+    -webkit-mask: var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star), var(--icon-star);
+    -webkit-mask-position: calc(var(--star-size-with-gap) * 0) 0, calc(var(--star-size-with-gap) * 1) 0, calc(var(--star-size-with-gap) * 2) 0, calc(var(--star-size-with-gap) * 3) 0, calc(var(--star-size-with-gap) * 4) 0;
+  }
+
+  & .ctr-fyf__rating meter:-moz-meter-optimum::-moz-meter-bar {
+    height: var(--star-size);
+    background: var(--color-review-stars--hex, currentColor);
+  }
+
+  & .ctr-fyf__pill-group {
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(26, 26, 26, 0.12);
+    border-radius: 999px;
+    background: #ffffff;
+    margin-bottom: 14px;
+  }
+
+  & .ctr-fyf__pill {
+    flex: 1 1 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(26, 26, 26, 0.58);
+    padding: 11px 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  & .ctr-fyf__pill.is-active {
+    background: #111111;
+    color: #ffffff;
+  }
+
+  & .ctr-fyf__price-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    min-height: 24px;
+  }
+
+  & .ctr-fyf__price {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  & .ctr-fyf__compare {
+    color: rgba(26, 26, 26, 0.42);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: line-through;
+  }
+
+  & .ctr-fyf__discount {
+    display: none;
+    border-radius: 999px;
+    background: #4659ff;
+    color: #ffffff;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  & .ctr-fyf__discount.is-visible {
+    display: inline-flex;
+  }
+
+  & .ctr-fyf__atc {
+    width: 100%;
+    border: 0;
+    border-radius: 7px;
+    background: {{ button_bg }};
+    color: {{ button_color }};
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  & .ctr-fyf__atc:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  & .ctr-fyf__promo {
+    position: relative;
+    display: flex;
+    min-height: 520px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #4659ff;
+    color: #ffffff;
+  }
+
+  & .ctr-fyf__promo-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  & .ctr-fyf__promo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.62) 100%);
+  }
+
+  & .ctr-fyf__promo-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 28px;
+  }
+
+  & .ctr-fyf__promo-eyebrow {
+    width: fit-content;
+    margin-bottom: 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  & .ctr-fyf__promo-title {
+    margin: 0 0 12px;
+    font-size: 36px;
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  & .ctr-fyf__promo-text {
+    margin: 0 0 22px;
+    max-width: 480px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  & .ctr-fyf__promo-text p {
+    margin: 0;
+  }
+
+  & .ctr-fyf__promo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-radius: 7px;
+    background: #4659ff;
+    color: #ffffff;
+    padding: 15px 18px;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  @media (min-width: 768px) {
+    & {
+      padding-top: 72px;
+      padding-bottom: 96px;
+    }
+
+    & .ctr-fyf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    & .ctr-fyf__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    & .ctr-fyf__promo--span-2 {
+      grid-column: span 2;
+    }
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="ctr-fyf__inner {{ container_spacing }}">
+      {%- if heading != blank -%}
+        <h2 class="ctr-fyf__heading">{{ heading }}</h2>
+      {%- endif -%}
+
+      {%- if subheading != blank -%}
+        <div class="ctr-fyf__subheading">{{ subheading }}</div>
+      {%- endif -%}
+
+      <div class="ctr-fyf__tabs" role="tablist" aria-label="Find your fit filters">
+        <button class="ctr-fyf__tab is-active" type="button" data-filter-tab="all">Shop All</button>
+        {%- for tab in filter_tabs -%}
+          {%- assign tab_label = tab.badges_filter_tab.value | default: tab.system.handle -%}
+          {%- if tab_label != blank -%}
+            <button class="ctr-fyf__tab" type="button" data-filter-tab="{{ tab_label | handleize }}">{{ tab_label }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="ctr-fyf__grid" data-fyf-grid>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'scenario' -%}
+              {%- liquid
+                assign product = block.settings.product
+                assign icon_metaobject = block.settings.icon
+                assign scenario_title = block.settings.scenario_title
+                assign scenario_text = block.settings.scenario_text
+                assign cta_label = block.settings.cta_label
+                assign stock_badge = block.settings.stock_badge
+                assign review_text = block.settings.review_text
+                assign product_description = block.settings.product_description
+                assign badges = block.settings.badges
+                assign reviews_rating_path = settings.data__product__reviews_rating | replace: " ", '' | split: "."
+                assign reviews_rating = product.metafields[reviews_rating_path.first][reviews_rating_path.last].value
+                assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 0 | times: 1.0
+                assign reviews_count_path = settings.data__product__reviews_count | replace: " ", '' | split: "."
+                assign reviews_count = product.metafields[reviews_count_path.first][reviews_count_path.last].value | default: 0 | times: 1
+                assign reviews_content = ''
+                if reviews_rating > 0 and reviews_count > 0
+                  assign reviews_content = reviews_rating | append: ' (' | append: reviews_count | append: ')'
+                elsif review_text != blank
+                  assign reviews_content = review_text
+                endif
+                assign tags_attr = ''
+                for badge in badges
+                  assign badge_filter_label = badge.badges_filter_tab.value | default: badge.system.handle
+                  assign badge_filter_handle = badge_filter_label | handleize
+                  assign tags_attr = tags_attr | append: badge_filter_handle | append: ' '
+                endfor
+                assign product_anchor = 'fyf-product-' | append: section.id | append: '-' | append: block.id
+              -%}
+
+              <article class="ctr-fyf__block ctr-fyf__block--scenario" data-filter-tags="{{ tags_attr | strip }}" {{ block.shopify_attributes }}>
+                <div class="ctr-fyf__scenario">
+                  {%- if icon_metaobject != blank and icon_metaobject.icon.value != blank -%}
+                    <div class="ctr-fyf__scenario-icon">
+                      <img
+                        src="{{ icon_metaobject.icon.value | image_url: width: 96 }}"
+                        alt=""
+                        loading="lazy"
+                        width="96"
+                        height="96"
+                      >
+                    </div>
+                  {%- endif -%}
+
+                  {%- if scenario_title != blank -%}
+                    <h3 class="ctr-fyf__scenario-title">{{ scenario_title }}</h3>
+                  {%- endif -%}
+
+                  {%- if scenario_text != blank -%}
+                    <div class="ctr-fyf__scenario-text">{{ scenario_text }}</div>
+                  {%- endif -%}
+
+                  {%- if badges != blank -%}
+                    <div class="ctr-fyf__badges">
+                      {%- for badge in badges -%}
+                        {%- liquid
+                          assign badge_label = badge.badges_filter_tab.value | default: badge.system.handle
+                          assign badge_color = badge.badges_filter_color.value
+                        -%}
+                        {%- if badge_label != blank -%}
+                          <span class="ctr-fyf__badge" 
+                            {% if badge_color != blank %}style="color: {{ badge_color }}"{% endif %}>
+                            {{ badge_label }}
+                          </span>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if product != blank -%}
+                    <a class="ctr-fyf__anchor" href="#{{ product_anchor }}">
+                      {%- if cta_label != blank -%}
+                        {{ cta_label }}
+                      {%- else -%}
+                        Start with {{ product.title }} ↓
+                      {%- endif -%}
+                    </a>
+
+                    {%- capture product_json -%}
+                      {
+                        "title": {{ product.title | json }},
+                        "available": {{ product.available | json }},
+                        "variants": [
+                          {%- for variant in product.variants -%}
+                            {
+                              "id": {{ variant.id | json }},
+                              "title": {{ variant.title | json }},
+                              "available": {{ variant.available | json }},
+                              "price": {{ variant.price | json }},
+                              "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+                              "selling_plans": [
+                                {%- for allocation in variant.selling_plan_allocations -%}
+                                  {
+                                    "id": {{ allocation.selling_plan.id | json }},
+                                    "name": {{ allocation.selling_plan.name | json }},
+                                    "price": {{ allocation.price | json }},
+                                    "compare_at_price": {{ allocation.compare_at_price | default: variant.compare_at_price | default: variant.price | json }}
+                                  }{%- unless forloop.last -%},{%- endunless -%}
+                                {%- endfor -%}
+                              ]
+                            }{%- unless forloop.last -%},{%- endunless -%}
+                          {%- endfor -%}
+                        ]
+                      }
+                    {%- endcapture -%}
+
+                    <div
+                      id="{{ product_anchor }}"
+                      class="ctr-fyf__product"
+                      data-fyf-product
+                      data-product="{{ product_json | strip_newlines | escape }}"
+                    >
+                      {%- if stock_badge != blank -%}
+                        <span class="ctr-fyf__stock">{{ stock_badge }}</span>
+                      {%- endif -%}
+
+                      <a href="{{ product.url }}" class="ctr-fyf__product-image" aria-label="{{ product.title | escape }}">
+                        {%- if product.featured_image != blank -%}
+                          <img
+                            src="{{ product.featured_image | image_url: width: 700 }}"
+                            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                            loading="lazy"
+                            width="{{ product.featured_image.width }}"
+                            height="{{ product.featured_image.height }}"
+                          >
+                        {%- endif -%}
+                      </a>
+
+                      <div class="ctr-fyf__product-body">
+                        <h4 class="ctr-fyf__product-title">
+                          <a href="{{ product.url }}">{{ product.title }}</a>
+                        </h4>
+
+                        <p class="ctr-fyf__product-desc">
+                          {%- if product_description != blank -%}
+                            {{ product_description }}
+                          {%- else -%}
+                            {{ product.description | strip_html | truncate: 130 }}
+                          {%- endif -%}
+                        </p>
+
+                        {%- if reviews_content != blank -%}
+                          <label class="ctr-fyf__rating" aria-label="Product Rating">
+                            <meter
+                              class="relative block appearance-none shrink-0"
+                              value="{{ reviews_rating | default: 0 }}"
+                              min="0"
+                              max="5"
+                            >
+                              <span><span>{{ reviews_rating }}</span>/<span>5</span></span>
+                            </meter>
+                            <span>{{ reviews_content }}</span>
+                          </label>
+                        {%- endif -%}
+
+                        <div class="ctr-fyf__pill-group" data-selling-plan-group hidden></div>
+                        <div class="ctr-fyf__pill-group" data-variant-group hidden></div>
+
+                        <div class="ctr-fyf__price-row">
+                          <span class="ctr-fyf__price" data-price></span>
+                          <span class="ctr-fyf__compare" data-compare></span>
+                          <span class="ctr-fyf__discount" data-discount></span>
+                        </div>
+
+                        <button class="ctr-fyf__atc" type="button" data-atc>+ Add To Cart</button>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </article>
+
+            {%- when 'promo' -%}
+              {%- liquid
+                assign promo_tags = block.settings.filter_tags
+                assign promo_tags_attr = ''
+                for tag in promo_tags
+                  assign tag_label = tag.badges_filter_tab.value | default: tag.system.handle
+                  assign tag_handle = tag_label | handleize
+                  assign promo_tags_attr = promo_tags_attr | append: tag_handle | append: ' '
+                endfor
+                assign promo_image = block.settings.image
+              -%}
+              <article
+                class="ctr-fyf__block ctr-fyf__block--promo {% if block.settings.column_span == '2' %}ctr-fyf__promo--span-2{% endif %}"
+                data-filter-tags="{{ promo_tags_attr | strip }}"
+                data-promo-show-all="{{ block.settings.show_on_all_filters }}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="ctr-fyf__promo" {% if block.settings.background_color != blank and block.settings.background_color.alpha != 0 %}style="background-color: {{ block.settings.background_color }}"{% endif %}>
+                  {%- if promo_image != blank -%}
+                    <img
+                      class="ctr-fyf__promo-image"
+                      src="{{ promo_image | image_url: width: 1200 }}"
+                      alt="{{ promo_image.alt | default: block.settings.headline | escape }}"
+                      loading="lazy"
+                      width="{{ promo_image.width }}"
+                      height="{{ promo_image.height }}"
+                    >
+                  {%- endif -%}
+                  <div class="ctr-fyf__promo-content">
+                    {%- if block.settings.eyebrow != blank -%}
+                      <div class="ctr-fyf__promo-eyebrow">{{ block.settings.eyebrow }}</div>
+                    {%- endif -%}
+                    {%- if block.settings.headline != blank -%}
+                      <h3 class="ctr-fyf__promo-title">{{ block.settings.headline }}</h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="ctr-fyf__promo-text">{{ block.settings.text }}</div>
+                    {%- endif -%}
+                    {%- if block.settings.cta_label != blank and block.settings.cta_url != blank -%}
+                      <a class="ctr-fyf__promo-button" href="{{ block.settings.cta_url }}">{{ block.settings.cta_label }}</a>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </article>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      var root = document.querySelector('[data-style-id="{{ section.id }}"]');
+      if (!root) return;
+
+      function formatMoney(cents) {
+        var value = Number(cents || 0) / 100;
+        return '$' + value.toFixed(2).replace(/\.00$/, '');
+      }
+
+      function discountPercent(price, compare) {
+        price = Number(price || 0);
+        compare = Number(compare || 0);
+        if (!compare || compare <= price) return 0;
+        return Math.round((compare - price) / compare * 100);
+      }
+
+      function openCartDrawer() {
+        if (window._stores && window._stores.modal && typeof window._stores.modal.setId === 'function') {
+          window._stores.modal.setId('modal--cart-drawer');
+          return;
+        }
+        if (location.hash !== '#modal--cart-drawer') {
+          location.hash = 'modal--cart-drawer';
+          return;
+        }
+        location.hash = '';
+        setTimeout(function() {
+          location.hash = 'modal--cart-drawer';
+        }, 0);
+      }
+
+      root.querySelectorAll('[data-filter-tab]').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var filter = tab.dataset.filterTab;
+          root.querySelectorAll('[data-filter-tab]').forEach(function(btn) {
+            btn.classList.toggle('is-active', btn === tab);
+          });
+          root.querySelectorAll('.ctr-fyf__block').forEach(function(block) {
+            var tags = (block.dataset.filterTags || '').split(/\s+/).filter(Boolean);
+            var promoShowsAll = block.dataset.promoShowAll === 'true';
+            var visible = filter === 'all' || promoShowsAll || tags.indexOf(filter) !== -1;
+            block.classList.toggle('is-hidden', !visible);
+          });
+        });
+      });
+
+      root.querySelectorAll('.ctr-fyf__anchor').forEach(function(anchor) {
+        anchor.addEventListener('click', function(event) {
+          var target = root.querySelector(anchor.getAttribute('href'));
+          if (!target) return;
+          event.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+
+      root.querySelectorAll('[data-fyf-product]').forEach(function(card) {
+        var data;
+        try {
+          data = JSON.parse(card.dataset.product || '{}');
+        } catch (error) {
+          return;
+        }
+
+        var variants = data.variants || [];
+        var selectedVariant = variants[0] || null;
+        var purchaseType = selectedVariant && selectedVariant.selling_plans && selectedVariant.selling_plans.length ? 'subscription' : 'one-time';
+        var selectedPlan = selectedVariant && selectedVariant.selling_plans ? selectedVariant.selling_plans[0] : null;
+
+        var planGroup = card.querySelector('[data-selling-plan-group]');
+        var variantGroup = card.querySelector('[data-variant-group]');
+        var priceNode = card.querySelector('[data-price]');
+        var compareNode = card.querySelector('[data-compare]');
+        var discountNode = card.querySelector('[data-discount]');
+        var atc = card.querySelector('[data-atc]');
+
+        function hasSellingPlans() {
+          return variants.some(function(variant) {
+            return variant.selling_plans && variant.selling_plans.length;
+          });
+        }
+
+        function currentPlan() {
+          if (!selectedVariant || !selectedVariant.selling_plans || !selectedVariant.selling_plans.length) return null;
+          return selectedVariant.selling_plans[0];
+        }
+
+        function currentPriceData() {
+          var plan = purchaseType === 'subscription' ? currentPlan() : null;
+          if (plan) {
+            return {
+              price: plan.price,
+              compare: plan.compare_at_price || selectedVariant.compare_at_price || selectedVariant.price,
+              plan: plan
+            };
+          }
+          return {
+            price: selectedVariant ? selectedVariant.price : 0,
+            compare: selectedVariant ? selectedVariant.compare_at_price : 0,
+            plan: null
+          };
+        }
+
+        function renderControls() {
+          if (hasSellingPlans()) {
+            planGroup.hidden = false;
+            planGroup.innerHTML = '';
+            [
+              { value: 'subscription', label: 'Subscribe & Save' },
+              { value: 'one-time', label: 'One-time purchase' }
+            ].forEach(function(option) {
+              var button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'ctr-fyf__pill' + (purchaseType === option.value ? ' is-active' : '');
+              button.textContent = option.label;
+              button.addEventListener('click', function() {
+                purchaseType = option.value;
+                selectedPlan = currentPlan();
+                renderControls();
+                renderPrice();
+              });
+              planGroup.appendChild(button);
+            });
+          }
+
+          if (variants.length > 1 || (variants[0] && variants[0].title !== 'Default Title')) {
+            variantGroup.hidden = false;
+            variantGroup.innerHTML = '';
+            variants.slice(0, 3).forEach(function(variant) {
+              var button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'ctr-fyf__pill' + (selectedVariant && selectedVariant.id === variant.id ? ' is-active' : '');
+              button.textContent = variant.title;
+              button.disabled = !variant.available;
+              button.addEventListener('click', function() {
+                selectedVariant = variant;
+                selectedPlan = currentPlan();
+                if (purchaseType === 'subscription' && !selectedPlan) purchaseType = 'one-time';
+                renderControls();
+                renderPrice();
+              });
+              variantGroup.appendChild(button);
+            });
+          }
+        }
+
+        function renderPrice() {
+          if (!selectedVariant) return;
+          var priceData = currentPriceData();
+          var pct = discountPercent(priceData.price, priceData.compare);
+          priceNode.textContent = formatMoney(priceData.price);
+          compareNode.textContent = pct ? formatMoney(priceData.compare) : '';
+          discountNode.textContent = pct ? 'Save ' + pct + '%' : '';
+          discountNode.classList.toggle('is-visible', !!pct);
+          atc.disabled = !selectedVariant.available;
+          atc.textContent = selectedVariant.available ? '+ Add To Cart - ' + formatMoney(priceData.price) : 'Sold Out';
+        }
+
+        atc.addEventListener('click', function() {
+          if (!selectedVariant || !selectedVariant.available) return;
+          var priceData = currentPriceData();
+          var item = { id: selectedVariant.id, quantity: 1 };
+          if (priceData.plan) item.selling_plan = priceData.plan.id;
+          atc.disabled = true;
+          atc.textContent = 'Adding...';
+
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ items: [item] })
+          })
+            .then(function(response) {
+              return response.json().then(function(json) {
+                if (!response.ok) throw json;
+                return json;
+              });
+            })
+            .then(function() {
+              atc.disabled = false;
+              atc.textContent = 'Added';
+              if (window._cart && typeof window._cart.get === 'function') {
+                try { window._cart.get(true); } catch (error) {}
+              }
+              openCartDrawer();
+              setTimeout(renderPrice, 1400);
+            })
+            .catch(function(error) {
+              atc.disabled = false;
+              atc.textContent = error && error.description ? error.description : 'Could not add';
+              setTimeout(renderPrice, 1800);
+            });
+        });
+
+        renderControls();
+        renderPrice();
+      });
+    })();
+  </script>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Find Your Fit",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find your fit."
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Supporting paragraph",
+      "default": "<p>Three different goals. Three different entry points. Pick the one that sounds like you.</p>"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "filter_tabs",
+      "label": "Filter tabs",
+      "metaobject_type": "weight_management_info"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "default": "px-container-md",
+      "options": [
+        {
+          "value": "px-container-xs",
+          "label": "Extra Small"
+        },
+        {
+          "value": "px-container-sm",
+          "label": "Small"
+        },
+        {
+          "value": "px-container-md",
+          "label": "Medium"
+        },
+        {
+          "value": "px-container-lg",
+          "label": "Large"
+        },
+        {
+          "value": "px-container-gutter",
+          "label": "Gutter Only"
+        },
+        {
+          "value": "px-container-fullwidth",
+          "label": "Fullwidth"
+        }
+      ],
+      "label": "Container Spacing"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f7f6f2"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "card_bg",
+      "label": "Scenario card background",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#4659ff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "scenario",
+      "name": "Scenario product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "metaobject",
+          "id": "icon",
+          "label": "Card icon",
+          "metaobject_type": "weight_management_info_icons"
+        },
+        {
+          "type": "text",
+          "id": "scenario_title",
+          "label": "Scenario header",
+          "default": "You're on or curious about GLP-1s"
+        },
+        {
+          "type": "richtext",
+          "id": "scenario_text",
+          "label": "Supporting paragraph",
+          "default": "<p>GLP-1 medications change how your body processes nutrients. Pick the stack that fits your goals.</p>"
+        },
+        {
+          "type": "metaobject_list",
+          "id": "badges",
+          "label": "Category badges",
+          "metaobject_type": "weight_management_info"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "CTA label override"
+        },
+        {
+          "type": "text",
+          "id": "stock_badge",
+          "label": "Product image stock badge",
+          "default": "Low stock"
+        },
+        {
+          "type": "textarea",
+          "id": "product_description",
+          "label": "Product short description"
+        },
+        {
+          "type": "text",
+          "id": "review_text",
+          "label": "Review fallback text",
+          "default": "4.84/5 (152 reviews)"
+        }
+      ]
+    },
+    {
+      "type": "promo",
+      "name": "Promo card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow tag"
+        },
+        {
+          "type": "text",
+          "id": "headline",
+          "label": "Title",
+          "default": "Absorbed better. Felt faster."
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Every formula here is built with Capsoli technology, designed for better absorption.</p>"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Button label",
+          "default": "Shop The Full Stack"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "column_span",
+          "label": "Column span",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "1 column"
+            },
+            {
+              "value": "2",
+              "label": "2 columns"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "show_on_all_filters",
+          "label": "Show on all filters",
+          "default": true
+        },
+        {
+          "type": "metaobject_list",
+          "id": "filter_tags",
+          "label": "Filter tags",
+          "metaobject_type": "weight_management_info"
+        },
+        {
+          "type": "color",
+          "alpha": true,
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#4659ff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Find Your Fit",
+      "blocks": [
+        {
+          "type": "scenario"
+        },
+        {
+          "type": "scenario",
+          "settings": {
+            "scenario_title": "You want to curb cravings and stabilize energy",
+            "scenario_text": "<p>Blood sugar swings drive most cravings and afternoon crashes.</p>",
+            "stock_badge": ""
+          }
+        },
+        {
+          "type": "scenario",
+          "settings": {
+            "scenario_title": "You want full-spectrum support in one stack",
+            "scenario_text": "<p>Combine appetite control, metabolism, and nutrient replenishment.</p>",
+            "stock_badge": "4 stock left"
+          }
+        },
+        {
+          "type": "scenario",
+          "settings": {
+            "scenario_title": "You're stressed, not just hungry",
+            "scenario_text": "<p>Stress can drive cravings and fat storage. Pick support for the whole loop.</p>",
+            "stock_badge": "Back in stock"
+          }
+        },
+        {
+          "type": "promo"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

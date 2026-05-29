@@ -6,7 +6,7 @@
 
   .faq-accordion {
     width: 100%;
-    font-family: "Inter", -apple-system, sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
   }
 
   .faq-item {
@@ -33,7 +33,7 @@
   }
 
   .faq-label {
-    font-family: var(--typography-family-tertiary, "Suisse Intl");
+    font-family: var(--typography-family-tertiary, 'Suisse Intl');
     font-size: var(--typography-richtext-md-p1, 16px);
     font-style: normal;
     font-weight: 500;
@@ -49,7 +49,7 @@
 
   .faq-icon::before,
   .faq-icon::after {
-    content: "";
+    content: '';
     position: absolute;
     background: #1a1a1a;
     border-radius: 1px;
@@ -81,7 +81,7 @@
   .faq-panel {
     display: none;
     padding: 0 0 14px;
-    font-family: "Suisse Intl", Sans-Serif;
+    font-family: 'Suisse Intl', Sans-Serif;
     font-size: var(--typography-richtext-md-p1, 16px);
     font-style: normal;
     font-weight: 400;
@@ -130,7 +130,13 @@
           assign answer_value = block.settings[answer_key]
         %}
         {% if question_value != blank %}
-          {% assign panel_id = 'faq-panel-' | append: section.id | append: '-' | append: block.id | append: '-' | append: i %}
+          {% assign panel_id = 'faq-panel-'
+            | append: section.id
+            | append: '-'
+            | append: block.id
+            | append: '-'
+            | append: i
+          %}
           <div class="faq-item{% if i == 1 %} is-open{% endif %}" data-faq-item>
             <button
               class="faq-trigger"
@@ -140,9 +146,19 @@
               data-faq-trigger
             >
               <span class="faq-label">{{ question_value | escape }}</span>
-              <i data-animated-icon="" class="faq-icon relative flex shrink-0 items-center justify-center h-2.5 w-2.5" aria-hidden="true">
-                <span class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-2.5 rotate-0" :class="collapsible.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-180'"></span>
-                <span class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-2.5 rotate-0" :class="collapsible.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-90'"></span>
+              <i
+                data-animated-icon=""
+                class="faq-icon relative flex shrink-0 items-center justify-center h-2.5 w-2.5"
+                aria-hidden="true"
+              >
+                <span
+                  class="absolute rounded-full bg-current transition-all duration-200 h-0.5 w-2.5 rotate-0"
+                  :class="collapsible?.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-180'"
+                ></span>
+                <span
+                  class="absolute origin-center rounded-full bg-current transition-all h-0.5 w-2.5 rotate-0"
+                  :class="collapsible?.open_accordion &amp;&amp; !collapsible.closing ? 'rotate-0' : '-rotate-90'"
+                ></span>
               </i>
             </button>
             {% if answer_value != blank %}
@@ -151,7 +167,9 @@
                 class="faq-panel"
                 role="region"
                 aria-label="{{ question_value | escape }}"
-                {% if i != 1 %}hidden{% endif %}
+                {% if i != 1 %}
+                  hidden
+                {% endif %}
                 data-faq-panel
               >
                 {{ answer_value }}

@@ -1,0 +1,509 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "main_product"
+
+  assign _product = section.settings.product
+  assign supports_addon_products = section.settings.supports_addon_products
+  assign default_select_selling_plan = section.settings.default_select_selling_plan
+  assign default_variant_metafield = section.settings.default_variant_metafield
+
+  assign ribbon_size = section.settings.ribbon_size
+  assign ribbon_size_mobile = section.settings.ribbon_size_mobile
+  assign title_size_desktop = section.settings.title_size_desktop
+  assign title_size_mobile = section.settings.title_size_mobile
+  assign subtitle_size = section.settings.subtitle_size
+  assign rating_size = section.settings.rating_size
+  assign trust_callout_size = section.settings.trust_callout_size
+  assign stock_alert_size = section.settings.stock_alert_size
+  assign bullets_size = section.settings.bullets_size
+  assign gifts_size = section.settings.gifts_size
+  assign atc_size = section.settings.atc_size
+  assign footer_size = section.settings.footer_size
+
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% liquid
+  assign product = section.settings.product | default: product
+  assign product_form_id = 'product-details-form-' | append: section.id
+
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products[0]
+  endif
+
+  if section.settings.default_variant_metafield != blank
+    assign variant_namespace = section.settings.default_variant_metafield | strip | split: "." | first
+    assign variant_key = section.settings.default_variant_metafield | strip | split: "." | last
+    assign variant = product.metafields[variant_namespace][variant_key].value | default: variant
+  endif
+
+  assign variant = variant | default: product.selected_or_first_available_variant | default: product.variants.first
+
+  assign splitter = '|~|SPLIT|~|'
+  assign maxOptions = product.options_with_values.size | minus: 1
+
+  capture blocks_content
+    content_for "blocks"
+  endcapture
+
+  assign final_content = blocks_content
+
+  for i in (0..maxOptions)
+    assign match_by_name = '<product-option ' | append: i | append: ' by_name>'
+    assign match_by_index = '<product-option ' | append: i | append: ' by_index>'
+    assign match_fallback_option = '<product-option ' | append: i | append: ' fallback_options>'
+    if blocks_content contains match_by_name
+      assign blocks_content_array = final_content | replace_first: match_by_name, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+      continue
+    endif
+    if blocks_content contains match_by_index
+      assign blocks_content_array = final_content | replace_first: match_by_index, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+      continue
+    endif
+    if blocks_content contains match_fallback_option
+      assign blocks_content_array = final_content | replace_first: match_fallback_option, splitter | split: splitter
+      assign pre_content = blocks_content_array | first
+      assign option_content_array = blocks_content_array | last | replace_first: '</product-option>', splitter | split: splitter
+      assign option_content = option_content_array | first
+      assign post_content = option_content_array | last
+      assign final_content = pre_content | append: option_content | append: post_content
+      continue
+    endif
+  endfor
+
+  assign blocks_content_array = final_content | split: '</product-option>'
+  assign cleaned_final_content = ''
+  for part in blocks_content_array
+    assign pre_option = part | split: '<product-option' | first
+    assign cleaned_final_content = cleaned_final_content | append: pre_option
+  endfor
+%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --pb-ribbon: {{ ribbon_size }}px;
+    --pb-ribbon-m: {{ ribbon_size_mobile }}px;
+    --pb-title-d: {{ title_size_desktop }}px;
+    --pb-title-m: {{ title_size_mobile }}px;
+    --pb-subtitle: {{ subtitle_size }}px;
+    --pb-rating: {{ rating_size }}px;
+    --pb-trust-callout: {{ trust_callout_size }}px;
+    --pb-stock-alert: {{ stock_alert_size }}px;
+    --pb-bullets: {{ bullets_size }}px;
+    --pb-gifts: {{ gifts_size }}px;
+    --pb-atc: {{ atc_size }}px;
+    --pb-footer: {{ footer_size }}px;
+  }
+{%- endcapture -%}
+
+{% capture section_content %}
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <form
+      method="post"
+      action="/cart/add"
+      accept-charset="UTF-8"
+      enctype="multipart/form-data"
+      novalidate="novalidate"
+      id="{{ product_form_id }}"
+      data-section-type="main_product"
+      data-style-id="{{ section.id }}--{{ block.id }}" {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+      x-data="{ ..._sections.initMainProduct($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')) }"
+      {% if request.design_mode != true %}
+        x-defer="intersect"
+      {% endif %}
+      data-product-handle="{{ product.handle }}"
+      data-product-id="{{ product.id }}"
+      data-variant-id="{{ variant.id }}"
+      {% if default_select_selling_plan %}
+        data-default-subscription="true"
+      {% endif %}
+      class="shopify-product-form ctr-product-box relative {{ container_spacing }}">
+    <input type="hidden" name="form_type" value="product">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden"
+           x-ignore
+           name="id"
+           value="{{ variant.id }}"
+           x-init="$el.closest('form')?.addEventListener('submit',(e)=> { e.preventDefault(); e.stopPropagation(); })"
+           :value="pdp.selected_variant?.id">
+    <input
+        type="hidden"
+        x-ignore
+        name="selling_plan"
+        {% if default_select_selling_plan %}
+          value="{{ product.selected_selling_plan.id }}"
+        {% else %}
+          value=""
+        {% endif %}
+        :value="pdp.selected_selling_plan?.id || ''" />
+    {{ cleaned_final_content }}
+  </form>
+
+  {% if request.design_mode %}
+    <script type="application/json"
+            data-product-data="{{ product.handle }}"
+            data-primary-product-data="{{ product.handle }}">{%- render '_json.product', product: product -%}</script>
+  {% endif %}
+{% endcapture %}
+
+{% if section_content contains '/break"></script>' %}
+  {% break %}
+{% endif %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Product Box",
+  "class": "shopify_section__main_product shopify_section__ctr_product_box",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    {
+      "type": "range", "id": "supports_addon_products", "label": "This never shows on purpose",
+      "default": 1, "min": 1, "max": 3, "step": 1,
+      "visible_if": "{{ settings.always_hide_this_setting }}"
+    },
+    { "type": "checkbox", "id": "default_select_selling_plan", "label": "Set Subscription as default", "default": true },
+    {
+      "type": "text", "id": "default_variant_metafield", "label": "Default variant metafield",
+      "default": "smart.default_variant",
+      "info": "Metafield 'namespace.key'. Type 'variant_reference', added to Product."
+    },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "paragraph", "content": "Font sizes apply to the matching blocks in the preset. For other blocks, edit the block's Custom CSS." },
+    { "type": "range", "id": "ribbon_size", "label": "B2G1 ribbon size", "min": 10, "max": 18, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "ribbon_size_mobile", "label": "B2G1 ribbon size (mobile)", "min": 10, "max": 18, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "title_size_desktop", "label": "Title size (desktop)", "min": 20, "max": 56, "step": 1, "default": 32, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile", "label": "Title size (mobile)", "min": 18, "max": 40, "step": 1, "default": 24, "unit": "px" },
+    { "type": "range", "id": "rating_size", "label": "Rating size", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "subtitle_size", "label": "Subtitle size", "min": 12, "max": 20, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "trust_callout_size", "label": "Clinician trust callout size", "min": 11, "max": 16, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "stock_alert_size", "label": "Stock alert size", "min": 11, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "bullets_size", "label": "Bullets size", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "gifts_size", "label": "Spring gifts callout size", "min": 11, "max": 18, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "atc_size", "label": "Add to Cart button size", "min": 14, "max": 24, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "footer_size", "label": "Trust footer size", "min": 10, "max": 16, "step": 1, "default": 12, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ],
+      "label": "Container Spacing"
+    },
+    { "type": "color", "alpha": true, "id": "text_color", "label": "Text color" },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding-top: 32px;\n  padding-bottom: 48px;\n}\n@media (min-width: 1024px) {\n  & {\n    padding-top: 56px;\n    padding-bottom: 80px;\n    display: grid;\n    grid-template-columns: 7fr 5fr;\n    gap: 0 32px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section Id" }
+  ],
+  "blocks": [
+    { "type": "slider" },
+    { "type": "richtext" },
+    { "type": "_main_product__container" },
+    { "type": "_main_product__collapsible_container" },
+    { "type": "_main_product__availability" },
+    { "type": "_main_product__selected_plan_duration" },
+    { "type": "_main_product__gallery" },
+    { "type": "_main_product__thumbnails" },
+    { "type": "_main_product__price" },
+    { "type": "_main_product__rating" },
+    { "type": "_main_product__quantity_selector" },
+    { "type": "_main_product__custom_quantity_selector" },
+    { "type": "_main_product__add_to_cart_button" },
+    { "type": "_main_product__cta_button" },
+    { "type": "_main_product__description" },
+    { "type": "_main_product__option__color" },
+    { "type": "_main_product__option__color_w_caption" },
+    { "type": "_main_product__option__radio" },
+    { "type": "_main_product__option__radio_detailed" },
+    { "type": "_main_product__option__select" },
+    { "type": "_main_product__variant_selector__color" },
+    { "type": "_main_product__variant_selector__radio" },
+    { "type": "_main_product__variant_selector__select" },
+    { "type": "_main_product__sibling__color" },
+    { "type": "_main_product__sibling__radio" },
+    { "type": "_main_product__sibling__select" },
+    { "type": "_main_product__sibling__color_select" },
+    { "type": "_main_product__sibling__scent_sidebar" },
+    { "type": "_main_product__subscribe__button_select" },
+    { "type": "_main_product__subscribe__button_card" },
+    { "type": "_main_product__subscribe__button_switch" },
+    { "type": "_main_product__subscribe__toggle_card" },
+    { "type": "_main_product__payment_terms" },
+    { "type": "_main_product__dynamic_buy_button" },
+    { "type": "_main_product__dynamic_text" },
+    { "type": "_main_product__image" },
+    { "type": "_main_product__labels" },
+    { "type": "_main_product__waterdrop_list" },
+    { "type": "_main_product__gift_card_recipient" },
+    { "type": "_main_product__bundle_variants" },
+    { "type": "_main_product__choose_supply" },
+    { "type": "_main_product__free_from" },
+    { "type": "_main_product__also_reported" },
+    { "type": "_main_product__faq" },
+    { "type": "_main_product__stat_strip" },
+    { "type": "_main_product__choose_plan" },
+    { "type": "_main_product__buy_once" },
+    { "type": "_main_product__benefits" },
+    { "type": "_main_product__clinical_results" },
+    { "type": "_main_product__gallery_button" },
+    { "type": "_main_product__rebuy_popup" },
+    { "type": "_main_product__addons_atc_button" },
+    { "type": "@app" },
+    { "type": "@theme" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Product Box — LP B2G1",
+      "category": "Custom",
+      "settings": {
+        "product": "{{ closest.product }}",
+        "default_select_selling_plan": true,
+        "default_variant_metafield": "smart.default_variant",
+        "container_spacing": "px-container-md",
+        "background_color": "#FFFFFF",
+        "section_id": "purchase",
+        "ribbon_size": 12,
+        "title_size_desktop": 32,
+        "title_size_mobile": 24,
+        "rating_size": 14,
+        "subtitle_size": 16,
+        "trust_callout_size": 13,
+        "stock_alert_size": 14,
+        "bullets_size": 14,
+        "gifts_size": 13,
+        "atc_size": 17,
+        "footer_size": 12
+      },
+      "blocks": [
+        {
+          "type": "_main_product__container",
+          "name": "Gallery Container",
+          "settings": {
+            "custom_css": "& {\n  margin: 0;\n  padding: 0;\n  position: relative;\n}\n@media (min-width: 1024px) {\n  & {\n    width: 100%;\n    max-width: 720px;\n    height: max-content;\n    position: sticky;\n    top: calc(var(--header-height-offset) + 24px);\n    transition: top 200ms ease-in-out;\n  }\n}\n@media (max-width: 1023px) {\n  & {\n    margin-bottom: 24px;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "_main_product__gallery",
+              "settings": {
+                "filter_images": "show_all",
+                "hide_image_alt": "hide-image",
+                "scroll_to_selected_variant_image": true,
+                "additional_view": "media_gallery",
+                "infinite_scroll": "off",
+                "slider_scroll_snap": "snap-mandatory [&>*]:snap-start",
+                "slider_overflow_container": "mobile",
+                "scrollbar_class": "scrollbar-no-buttons",
+                "scroll_pagination_class": "scroll-pagination",
+                "quick_view_visibility": "default",
+                "custom_css": "& .image-wrapper {\n  aspect-ratio: 1;\n}\n@media (min-width: 1024px) {\n  & .scroll-pagination {\n    display: none;\n  }\n}"
+              }
+            },
+            {
+                "type": "_main_product__thumbnails",
+                "settings": {
+                    "thumbnail_filter_images": "show_all",
+                    "hide_image_alt": "hide-image",
+                    "select_variant_on_click": true,
+                    "scrollbar_class": "scrollbar",
+                    "quick_view_visibility": "default",
+                    "custom_css": "& {\n  margin-top: 16px;\n  display: grid;\n  grid-auto-columns: 80px;\n  grid-auto-flow: column;\n  gap: 12px;\n  overflow-x: auto;\n}\n& button {\n  width: 100%;\n  aspect-ratio: 1;\n  border: 1px solid transparent;\n  padding: 0;\n  background: transparent;\n  cursor: pointer;\n  overflow: hidden;\n}\n& button.active {\n  border-color: #3F2021;\n}\n& img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n@media (max-width: 749px) {\n  & {\n    grid-auto-columns: 64px;\n    gap: 8px;\n  }\n}"
+                }
+                },
+            {
+              "type": "_main_product__labels",
+              "name": "Gallery Badges",
+              "settings": {
+                "content_source": "product.metafields.smart.labels",
+                "label_class__content": "label-primary",
+                "label_type__discounts": "value",
+                "label_class__discount": "label-secondary",
+                "label_type__low_inventory": "hide",
+                "label_type__out_of_stock": "hide",
+                "label_type__preorder": "hide",
+                "quick_view_visibility": "default",
+                "custom_css": "& {\n  position: absolute;\n  top: 14px;\n  left: 14px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  z-index: 2;\n  pointer-events: none;\n}"
+              }
+            }
+          ]
+        },
+        {
+          "type": "_main_product__container",
+          "name": "Content",
+          "settings": {
+            "custom_css": "& {\n  display: flex;\n  flex-direction: column;\n}\n@media (min-width: 1024px) {\n  & {\n    width: 100%;\n    max-width: 540px;\n    margin-left: auto;\n  }\n}"
+          },
+          "blocks": [
+            {
+              "type": "richtext",
+              "name": "B2G1 ribbon",
+              "settings": {
+                "title": "<p><strong>BUY 2 GET 1 FREE</strong></p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  display: inline-block;\n  background: #A6192E;\n  color: #fff;\n  padding: 5px 12px;\n  border-radius: 4px;\n  letter-spacing: 0.08em;\n  margin-bottom: 12px;\n  width: max-content;\n  align-self: flex-start;\n}\n& p {\n  margin: 0;\n  font-size: var(--pb-ribbon);\n  line-height: 1.2;\n}",
+                "hide_if_empty": "container"
+              }
+            },
+            {
+              "type": "_main_product__dynamic_text",
+              "name": "Title",
+              "settings": {
+                "title": "<h1><strong>{{ closest.product.title }}</strong></h1>",
+                "css_class": "richtext-md",
+                "link_to_product": false,
+                "custom_css": "& {\n  margin-bottom: 6px;\n}\n& h1, & h2, & p {\n  font-size: var(--pb-title-d);\n  line-height: 1.1;\n  margin: 0;\n}\n@media (max-width: 749px) {\n  & h1, & h2, & p {\n    font-size: var(--pb-title-m);\n  }\n}"
+              }
+            },
+            {
+              "type": "_main_product__rating",
+              "settings": {
+                "reviews_heading": "[rating]/5 from [count]+ verified reviews",
+                "css_class": "richtext-md",
+                "icon": "star",
+                "custom_css": "& {\n  --star-size: 16px;\n  --star-gap: 2px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 14px;\n}\n& p {\n  font-size: var(--pb-rating);\n  margin: 0;\n}"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Subtitle",
+              "settings": {
+                "title": "<p>Curbs appetite and sugar cravings, boosts metabolism, and supports healthy insulin function without spikes, crashes, or GI distress. 6.2x better absorption for real results you can feel.</p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  margin-bottom: 16px;\n  color: #555;\n}\n& p {\n  font-size: var(--pb-subtitle);\n  line-height: 1.45;\n  margin: 0;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Clinician trust",
+              "settings": {
+                "title": "<p><strong>900+ clinicians</strong> shared our products on FrontrowMD, with no compensation.</p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  margin-bottom: 16px;\n  padding: 10px 14px;\n  background: #F5F1EA;\n  border-radius: 8px;\n}\n& p {\n  font-size: var(--pb-trust-callout);\n  line-height: 1.4;\n  margin: 0;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Stock alert",
+              "settings": {
+                "title": "<p>Only 87 bundles left</p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  margin-bottom: 16px;\n}\n& p {\n  font-size: var(--pb-stock-alert);\n  font-weight: 600;\n  color: #A6192E;\n  margin: 0;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Bullets",
+              "settings": {
+                "title": "<ul><li>Curbs cravings and supports healthy weight</li><li>Steady energy and balanced blood sugar all day</li><li>6.2x better absorption, gentle on your stomach</li></ul>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  margin-bottom: 20px;\n}\n& ul {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n& li {\n  position: relative;\n  padding-left: 24px;\n  font-size: var(--pb-bullets);\n  line-height: 1.4;\n}\n& li::before {\n  content: '\\2713';\n  position: absolute;\n  left: 0;\n  top: 0;\n  color: #3F8A2E;\n  font-weight: 700;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "_main_product__subscribe__toggle_card",
+              "settings": {
+                "label": "Subscribe & Save [value]",
+                "label_class": "richtext-md font-semibold",
+                "price_class": "richtext-md h4 font-bold",
+                "compare_at_price_class": "richtext-md h6",
+                "price_calculation": "normal",
+                "currency_display": "store_default",
+                "select_class": "input-select",
+                "highlights": "<p>[icon.check-active.image] <strong>30% off today</strong></p><p>[icon.check-active.image] <strong>3 bottles now, then 2 bottles every 60 days</strong></p><p>[icon.check-active.image] <strong>Update, pause, or cancel anytime</strong></p><p>[icon.check-active.image] <strong>Get FREE gifts valued at $55</strong></p>",
+                "no_subscription_highlights": "<p>[icon.x-active.image] <strong>30% off today</strong></p><p>[icon.x-active.image] <strong>FREE gifts valued at $55</strong></p><p>[icon.x-active.image] <strong>Subscriber-only pricing</strong></p>",
+                "highlights_class": "richtext-md",
+                "default_selection": "subscription",
+                "background_color": "#F5F1EA",
+                "custom_css": "& {\n  margin-bottom: 16px;\n  padding: 16px;\n  border: 1px solid #E5DFD2;\n  border-radius: 10px;\n}\n& .input-select {\n  min-width: 200px;\n}\n@media (max-width: 749px) {\n  & .input-select {\n    width: 100%;\n  }\n}"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Spring gifts callout",
+              "settings": {
+                "title": "<p><strong>Spring Special: FREE Gifts with Subscription</strong><br/><span>Gifts to elevate and complete your daily ritual. <a href=\"#gifts\">See gifts →</a></span></p>",
+                "content_class": "richtext-md",
+                "text_alignment": "inherit",
+                "custom_css": "& {\n  margin-bottom: 18px;\n  padding: 12px 14px;\n  background: #FFF8E6;\n  border-radius: 8px;\n}\n& p {\n  margin: 0;\n  font-size: var(--pb-gifts);\n  line-height: 1.4;\n}\n& span {\n  color: #6b6b6b;\n}\n& a {\n  text-decoration: underline;\n  color: inherit;\n}\n& a:hover {\n  opacity: 0.8;\n}",
+                "hide_if_empty": "none"
+              }
+            },
+            {
+              "type": "_main_product__add_to_cart_button",
+              "settings": {
+                "add_to_cart_content": "Add to Cart  •  [total]  [compare_at_total]",
+                "quantity_price": true,
+                "add_to_cart_class": "button-primary",
+                "out_of_stock_content": "Out of Stock",
+                "out_of_stock_class": "button-primary",
+                "enable_back_in_stock_notifications": true,
+                "custom_css": "& {\n  margin-bottom: 14px;\n}\n& button {\n  width: 100%;\n  padding: 18px 24px;\n  font-size: var(--pb-atc);\n  font-weight: 700;\n  border-radius: 10px;\n}"
+              }
+            },
+            {
+              "type": "richtext",
+              "name": "Trust footer",
+              "settings": {
+                "title": "<p>✓ Free shipping on orders $50+ &nbsp;&nbsp; ✓ HSA/FSA Eligible &nbsp;&nbsp; ✓ 30-day money-back guarantee</p>",
+                "content_class": "richtext-md",
+                "text_alignment": "center",
+                "custom_css": "& {\n  color: #666;\n}\n& p {\n  font-size: var(--pb-footer);\n  line-height: 1.5;\n  margin: 0;\n}",
+                "hide_if_empty": "none"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "custom.global",
+      "custom.header",
+      "custom.modal",
+      "custom.card",
+      "custom.head",
+      "custom.megamenu"
+    ]
+  }
+}
+{% endschema %}

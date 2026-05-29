@@ -13,6 +13,60 @@
   assign container_width = section.settings.container_width
   assign custom_css = section.settings.custom_css
   assign section_id = section.settings.section_id
+
+  assign image = section.settings.image
+  assign image_url_alt = section.settings.image_url
+  assign image_aspect = section.settings.image_aspect
+  assign image_radius = section.settings.image_radius
+  assign image_bg = section.settings.image_bg
+
+  assign desktop_image_position = section.settings.desktop_image_position
+  assign desktop_image_size = section.settings.desktop_image_size
+  assign mobile_image_position = section.settings.mobile_image_position
+  assign column_gap_desktop = section.settings.column_gap_desktop
+  assign column_gap_mobile = section.settings.column_gap_mobile
+  assign two_col_max_width = section.settings.two_col_max_width
+  assign align_columns = section.settings.align_columns
+
+  # Resolve image source
+  assign img_src = ''
+  if image
+    assign img_src = image | image_url: width: 1400
+  elsif image_url_alt != blank
+    assign img_src = image_url_alt
+  endif
+  assign has_image = false
+  if img_src != blank
+    assign has_image = true
+  endif
+
+  # Resolve column ratios + flex order
+  if desktop_image_size == 'larger'
+    assign image_flex_d = 7
+    assign content_flex_d = 5
+  elsif desktop_image_size == 'smaller'
+    assign image_flex_d = 5
+    assign content_flex_d = 7
+  else
+    assign image_flex_d = 1
+    assign content_flex_d = 1
+  endif
+
+  if desktop_image_position == 'left'
+    assign image_order_d = 1
+    assign content_order_d = 2
+  else
+    assign image_order_d = 2
+    assign content_order_d = 1
+  endif
+
+  if mobile_image_position == 'above'
+    assign image_order_m = 1
+    assign content_order_m = 2
+  else
+    assign image_order_m = 2
+    assign content_order_m = 1
+  endif
 -%}
 
 {% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
@@ -25,8 +79,44 @@
     padding: 48px 24px;
   }
 
+  /* Layout wrapper — applies in both modes; only switches to 2-col when image present */
+  & .faq__layout {
+    display: flex;
+    flex-direction: column;
+    gap: {{ column_gap_mobile }}px;
+    width: 100%;
+  }
+  & .faq__image-col { order: {{ image_order_m }}; }
+  & .faq__content-col { order: {{ content_order_m }}; min-width: 0; }
+
+  /* Image */
+  & .faq__image-wrap {
+    aspect-ratio: {{ image_aspect }};
+    border-radius: {{ image_radius }}px;
+    overflow: hidden;
+    background: {{ image_bg }};
+    width: 100%;
+  }
+  & .faq__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Default container (single-column mode) */
   & .faq__container {
     max-width: {{ container_width }}px;
+    margin: 0 auto;
+  }
+
+  /* When 2-col mode: container fills its column instead of being centered at 720px */
+  & .faq__layout--has-image .faq__container {
+    max-width: none;
+    margin: 0;
+  }
+  & .faq__layout--has-image {
+    max-width: {{ two_col_max_width }}px;
     margin: 0 auto;
   }
 
@@ -130,6 +220,23 @@
     & .faq__question-text {
       font-size: {{ question_size_desktop }}px;
     }
+
+    /* 2-col activation on desktop */
+    & .faq__layout--has-image {
+      flex-direction: row;
+      gap: {{ column_gap_desktop }}px;
+      align-items: {{ align_columns }};
+    }
+    & .faq__layout--has-image .faq__image-col {
+      order: {{ image_order_d }};
+      flex: {{ image_flex_d }} 1 0;
+      min-width: 0;
+    }
+    & .faq__layout--has-image .faq__content-col {
+      order: {{ content_order_d }};
+      flex: {{ content_flex_d }} 1 0;
+      min-width: 0;
+    }
   }
 {% endcapture %}
 
@@ -142,42 +249,56 @@
     data-style-id="{{ section.id }}"
     {% if section_id != blank %}id="{{ section_id }}"{% endif %}
   >
-    <div class="faq__container">
+    <div class="faq__layout{% if has_image %} faq__layout--has-image{% else %} faq__layout--single{% endif %}">
 
-      {% if headline != blank %}
-        <h2 class="faq__headline">{{ headline }}</h2>
-      {% endif %}
-
-      {% for block in section.blocks %}
-        {%- liquid
-          assign question = block.settings.question
-          assign answer = block.settings.answer
-        -%}
-
-        <div
-          class="faq__item"
-          x-data="{ open: false }"
-          {{ block.shopify_attributes }}
-        >
-          <button
-            class="faq__question"
-            @click="open = !open"
-            :aria-expanded="open"
-          >
-            <span class="faq__question-text">{{ question }}</span>
-            <span class="faq__icon" :class="open ? 'faq__icon--open' : ''">
-              <span></span>
-              <span></span>
-            </span>
-          </button>
-
-          <div class="faq__answer-wrapper" :class="open ? 'faq__answer-wrapper--open' : ''">
-            <div class="faq__answer">
-              <div class="faq__answer-inner">{{ answer }}</div>
-            </div>
+      {% if has_image %}
+        <div class="faq__image-col">
+          <div class="faq__image-wrap">
+            <img src="{{ img_src }}" alt="{{ headline | strip_html | escape }}" loading="lazy" class="faq__image" />
           </div>
         </div>
-      {% endfor %}
+      {% endif %}
+
+      <div class="faq__content-col">
+        <div class="faq__container">
+
+          {% if headline != blank %}
+            <h2 class="faq__headline">{{ headline }}</h2>
+          {% endif %}
+
+          {% for block in section.blocks %}
+            {%- liquid
+              assign question = block.settings.question
+              assign answer = block.settings.answer
+            -%}
+
+            <div
+              class="faq__item"
+              x-data="{ open: false }"
+              {{ block.shopify_attributes }}
+            >
+              <button
+                class="faq__question"
+                @click="open = !open"
+                :aria-expanded="open"
+              >
+                <span class="faq__question-text">{{ question }}</span>
+                <span class="faq__icon" :class="open ? 'faq__icon--open' : ''">
+                  <span></span>
+                  <span></span>
+                </span>
+              </button>
+
+              <div class="faq__answer-wrapper" :class="open ? 'faq__answer-wrapper--open' : ''">
+                <div class="faq__answer">
+                  <div class="faq__answer-inner">{{ answer }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+      </div>
 
     </div>
   </section>
@@ -281,6 +402,145 @@
     },
     {
       "type": "header",
+      "content": "Image (optional)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add an image to display the FAQ section as two columns. Leave blank to keep the single-column layout."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (upload)"
+    },
+    {
+      "type": "text",
+      "id": "image_url",
+      "label": "Image URL (alternative)",
+      "info": "Use this if your image is already hosted externally. Falls back to the uploaded image above when blank."
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect ratio",
+      "default": "4/5",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/5", "label": "Portrait (4:5)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "3/2", "label": "Photo (3:2)" },
+        { "value": "16/9", "label": "Widescreen (16:9)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "image_bg",
+      "label": "Image placeholder color",
+      "default": "#F3E8E8"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Layout (with image)"
+    },
+    {
+      "type": "paragraph",
+      "content": "These settings only apply when an image is set."
+    },
+    {
+      "type": "select",
+      "id": "desktop_image_position",
+      "label": "Image position (desktop)",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "desktop_image_size",
+      "label": "Image size (desktop)",
+      "default": "equal",
+      "options": [
+        { "value": "smaller", "label": "Smaller than FAQ" },
+        { "value": "equal", "label": "Equal to FAQ" },
+        { "value": "larger", "label": "Larger than FAQ" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_position",
+      "label": "Image position (mobile)",
+      "default": "above",
+      "options": [
+        { "value": "above", "label": "Above FAQ" },
+        { "value": "below", "label": "Below FAQ" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align_columns",
+      "label": "Vertical alignment (desktop)",
+      "default": "flex-start",
+      "info": "How the image and FAQ align vertically when their heights differ.",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "stretch", "label": "Stretch (match heights)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "column_gap_desktop",
+      "label": "Gap between columns (desktop)",
+      "min": 16,
+      "max": 96,
+      "step": 4,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Gap between columns (mobile)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "two_col_max_width",
+      "label": "Max width when image is shown (px)",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "default": 1200,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
       "content": "Section"
     },
     {
@@ -297,7 +557,8 @@
       "min": 480,
       "max": 1200,
       "step": 20,
-      "unit": "px"
+      "unit": "px",
+      "info": "Only applies when no image is set (single-column mode)."
     },
     {
       "type": "textarea",

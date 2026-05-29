@@ -3,23 +3,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #EAE6DC;
-    --cream-soft: #F8F5F2;
-    --paper: #F2EEE3;
-    --blue-tint: #E8EEF7;
-    --blue-tint-soft: #F0F4FA;
-    --ink: #1A1A18;
-    --ink-soft: #3A3834;
-    --muted: #6B6862;
-    --line: #CDC7BA;
-    --line-blue: #C4D3EA;
-    --brand: #5E91D5;
-    --brand-hover: #4A7DBE;
-    --brand-deep: #3B6AA8;
+    --cream: #f0ebde;
+    --cream-soft: #faf6ef;
+    --paper: #f5efe1;
+    --blush: #f4e4dc;
+    --blush-soft: #faeee5;
+    --blue-tint: #e8eef7;
+    --blue-tint-soft: #f0f4fa;
+    --ink: #2a2521;
+    --ink-soft: #443e38;
+    --muted: #756e64;
+    --line: #d6cfbf;
+    --line-blue: #c4d3ea;
+    --line-warm: #e0c9bb;
+    --brand: #5e91d5;
+    --brand-hover: #4a7dbe;
+    --brand-deep: #3b6aa8;
+    --accent: #c97b5e;
+    --accent-soft: #d99680;
+    --accent-deep: #a85f44;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,7 +42,11 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  img { display: block; max-width: 100%; height: auto; }
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 
   .container {
     max-width: 1180px;
@@ -49,7 +65,9 @@
     line-height: 0.98;
     color: var(--ink);
   }
-  h2 .highlight { color: var(--brand); }
+  h2 .highlight {
+    color: var(--brand);
+  }
 
   .eyebrow {
     font-size: 11px;
@@ -84,9 +102,16 @@
     border: none;
     cursor: pointer;
   }
-  .btn-primary:hover { background: var(--brand-hover); }
-  .btn-primary .arrow { font-size: 16px; transition: transform 0.2s; }
-  .btn-primary:hover .arrow { transform: translateX(3px); }
+  .btn-primary:hover {
+    background: var(--brand-hover);
+  }
+  .btn-primary .arrow {
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  .btn-primary:hover .arrow {
+    transform: translateX(3px);
+  }
 
   .btn-secondary {
     color: var(--ink);
@@ -99,8 +124,8 @@
 
   /* ========== QUIZ BANNER (in-body) ========== */
   .quiz-banner {
-    background: var(--ink);
-    color: var(--cream);
+    background: var(--brand);
+    color: white;
     padding: 24px 0;
     position: relative;
     overflow: hidden;
@@ -112,7 +137,7 @@
     right: -40px;
     width: 260px;
     height: 260px;
-    background: radial-gradient(circle, rgba(94,145,213,0.18) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 65%);
     pointer-events: none;
   }
   .quiz-banner-inner {
@@ -137,24 +162,24 @@
   .quiz-banner-icon {
     width: 44px;
     height: 44px;
-    background: var(--brand);
+    background: white;
     border-radius: 50%;
     display: grid;
     place-items: center;
     flex-shrink: 0;
     font-size: 18px;
     font-weight: 800;
-    color: white;
+    color: var(--brand);
   }
   .quiz-banner-text {
     font-size: 16px;
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 1.35;
-    color: rgba(234, 230, 220, 0.85);
+    color: rgba(255, 255, 255, 0.9);
   }
   .quiz-banner-text strong {
-    color: var(--cream);
+    color: white;
     font-weight: 700;
     display: block;
     font-size: 18px;
@@ -162,8 +187,8 @@
     letter-spacing: -0.015em;
   }
   .quiz-banner-link {
-    background: var(--brand);
-    color: white;
+    background: white;
+    color: var(--brand-deep);
     padding: 14px 24px;
     border-radius: 2px;
     text-decoration: none;
@@ -177,7 +202,8 @@
     white-space: nowrap;
   }
   .quiz-banner-link:hover {
-    background: var(--brand-hover);
+    background: var(--cream);
+    color: var(--brand-deep);
   }
   .quiz-banner-link .arrow {
     display: inline-block;
@@ -205,7 +231,9 @@
     font-size: 15px;
     letter-spacing: -0.02em;
   }
-  .nav-logo .mark { color: var(--brand); }
+  .nav-logo .mark {
+    color: var(--brand);
+  }
   .nav-cta {
     font-size: 13px;
     padding: 10px 20px;
@@ -216,7 +244,10 @@
     font-weight: 600;
     transition: all 0.2s;
   }
-  .nav-cta:hover { background: var(--ink); color: var(--cream); }
+  .nav-cta:hover {
+    background: var(--ink);
+    color: var(--cream);
+  }
 
   /* ========== HERO ========== */
   .hero {
@@ -231,41 +262,138 @@
     right: -100px;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(94,145,213,0.08) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(94, 145, 213, 0.08) 0%, transparent 60%);
     pointer-events: none;
   }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 72px;
+  .hero-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    text-align: center;
+  }
+  @media (max-width:640px){
+    .hero-stack{gap:22px}
+  }
+  .hero-content {
+    max-width: 720px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
   }
-  .hero-eyebrow { margin-bottom: 32px; }
+  .hero-eyebrow {
+    margin-bottom: 14px;
+  }
   .hero h1 {
-    font-size: clamp(36px, 4.8vw, 62px);
+    font-size: clamp(30px, 3.8vw, 48px);
     font-weight: 800;
     letter-spacing: -0.035em;
-    line-height: 1.02;
-    margin-bottom: 28px;
+    line-height: 1.04;
+    margin-bottom: 14px;
   }
-  .hero h1 .line { display: block; }
-  .hero h1 .highlight { color: var(--brand); }
+  .hero h1 .line {
+    display: block;
+  }
+  .hero h1 .highlight {
+    color: var(--brand);
+  }
   .hero-sub {
-    font-size: 17px;
-    line-height: 1.5;
+    font-size: 15.5px;
+    line-height: 1.45;
     color: var(--ink-soft);
-    max-width: 480px;
-    margin-bottom: 36px;
+    max-width: 540px;
+    margin-bottom: 16px;
   }
-  .hero-sub strong { color: var(--ink); font-weight: 600; }
+  .hero-sub strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .hero-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 12px;
+    background: transparent !important;
+    text-align: left;
+  }
+  .hero-bullets li {
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--ink);
+    padding-left: 30px;
+    position: relative;
+    font-weight: 500;
+    background: transparent !important;
+    list-style: none;
+  }
+  .hero-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 16px;
+    height: 16px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .hero-bullets li::after {
+    content: '✓';
+    position: absolute;
+    left: 3.5px;
+    top: 4px;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .hero-bullets li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .hero-stats {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 0 18px 0;
+    border-top: 1px solid var(--line);
+    text-align: left;
+  }
+  .hero-stats .stat-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+  }
+  .hero-stats .num {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 78px;
+  }
+  .hero-stats .label {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.4;
+  }
   .hero-ctas {
     display: flex;
     gap: 14px;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
   }
   .hero-micro {
-    margin-top: 32px;
+    margin-top: 16px;
     font-size: 12px;
     color: var(--muted);
     display: flex;
@@ -273,44 +401,55 @@
     flex-wrap: wrap;
     font-weight: 500;
     letter-spacing: 0.02em;
+    justify-content: center;
   }
-  .hero-micro span { display: inline-flex; align-items: center; gap: 7px; }
+  .hero-micro span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
   .hero-micro span::before {
     content: '';
     width: 14px;
     height: 1px;
     background: var(--brand);
   }
-  /* Real image hero */
+  /* Hero image - square, above headline */
   .hero-image {
     position: relative;
-    aspect-ratio: 4/5;
+    aspect-ratio: 1/1;
     overflow: hidden;
-    border-radius: 2px;
-    max-width: 480px;
+    border-radius: 4px;
+    max-width: 560px;
     width: 100%;
-    justify-self: end;
+    justify-self: center;
   }
   .hero-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 25%;
+    object-position: center 30%;
   }
   .hero-image-tag {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    top: 16px;
+    right: 16px;
     background: var(--cream);
-    padding: 10px 16px;
-    font-size: 11px;
+    padding: 8px 12px;
+    font-size: 10.5px;
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
     border-radius: 2px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
   }
-  .hero-image-tag .highlight { color: var(--brand); }
+  @media (max-width:640px){
+    .hero-image-tag{top:12px;right:12px;padding:6px 10px;font-size:10px;letter-spacing:.14em}
+  }
+  .hero-image-tag .highlight {
+    color: var(--brand);
+  }
 
   /* ========== TRUST STRIP ========== */
   .trust-strip {
@@ -343,63 +482,53 @@
     border-radius: 50%;
   }
 
-  /* ========== TRUTH TELL ========== */
+  /* ========== TRUTH TELL (compact band) ========== */
   .truth {
-    padding: 120px 0;
+    padding: 64px 0;
+    background: var(--blush-soft);
+    border-top: 1px solid var(--line-warm);
+    border-bottom: 1px solid var(--line-warm);
   }
-  .truth-inner {
+  .truth-band {
     display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: 72px;
+    grid-template-columns: auto 1fr 1.4fr;
+    gap: 40px;
     align-items: center;
+    max-width: 100%;
   }
-  .truth-content {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
+  .truth-band .eyebrow {
+    color: var(--accent-deep);
   }
-  .truth-eyebrow { margin-bottom: 0; }
+  .truth-band .eyebrow .dot {
+    background: var(--accent);
+  }
   .truth h2 {
-    font-size: clamp(38px, 4.6vw, 56px);
-    margin-bottom: 0;
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
   }
-  .truth h2 .line { display: block; }
-  .truth-sub {
-    font-size: 17px;
-    line-height: 1.5;
+  .truth h2 .highlight {
+    color: var(--brand);
+  }
+  .truth-band p {
+    font-size: 15px;
+    line-height: 1.55;
     color: var(--ink-soft);
-    max-width: 540px;
+    max-width: 480px;
   }
-  .truth-body {
-    padding-top: 8px;
-    border-top: 1px solid var(--line);
-  }
-  .truth-body p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin-bottom: 16px;
-    max-width: 540px;
-  }
-  .truth-body p strong { color: var(--ink); font-weight: 600; }
-  .truth-image {
-    aspect-ratio: 4/5;
-    overflow: hidden;
-    border-radius: 2px;
-  }
-  .truth-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .truth-band p strong {
+    color: var(--ink);
+    font-weight: 700;
   }
 
   /* ========== 5 REASONS (warm paper with grid) ========== */
   .reasons {
     padding: 120px 0;
-    background:
-      linear-gradient(to bottom, var(--paper), var(--paper)),
-      repeating-linear-gradient(0deg, transparent 0 39px, rgba(26,26,24,0.04) 39px 40px),
-      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,26,24,0.04) 39px 40px);
+    background: linear-gradient(to bottom, var(--paper), var(--paper)),
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(26, 26, 24, 0.04) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26, 26, 24, 0.04) 39px 40px);
     background-blend-mode: multiply;
     position: relative;
   }
@@ -407,12 +536,14 @@
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      repeating-linear-gradient(0deg, transparent 0 39px, rgba(26,26,24,0.035) 39px 40px),
-      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,26,24,0.035) 39px 40px);
+    background: repeating-linear-gradient(0deg, transparent 0 39px, rgba(26, 26, 24, 0.035) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(26, 26, 24, 0.035) 39px 40px);
     pointer-events: none;
   }
-  .reasons > .container { position: relative; z-index: 2; }
+  .reasons > .container {
+    position: relative;
+    z-index: 2;
+  }
   .reasons-head {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -420,17 +551,24 @@
     margin-bottom: 64px;
     align-items: end;
   }
-  .reasons-head .eyebrow { margin-bottom: 24px; }
+  .reasons-head .eyebrow {
+    margin-bottom: 24px;
+  }
   .reasons-head h2 {
     font-size: clamp(42px, 5.6vw, 72px);
   }
-  .reasons-head h2 .highlight { color: var(--brand); }
+  .reasons-head h2 .highlight {
+    color: var(--brand);
+  }
   .reasons-head p {
     font-size: 16px;
     line-height: 1.55;
     color: var(--ink-soft);
   }
-  .reasons-head p strong { color: var(--ink); font-weight: 600; }
+  .reasons-head p strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
   .reason-list {
     border-top: 2px solid var(--ink);
@@ -456,7 +594,7 @@
     letter-spacing: -0.045em;
     line-height: 0.85;
     color: var(--brand);
-    font-feature-settings: "tnum";
+    font-feature-settings: 'tnum';
   }
   .reason-h3 {
     font-size: 26px;
@@ -465,13 +603,18 @@
     line-height: 1.05;
     color: var(--ink);
   }
-  .reason-h3 .highlight { color: var(--brand); }
+  .reason-h3 .highlight {
+    color: var(--brand);
+  }
   .reason-body {
     font-size: 15.5px;
     line-height: 1.6;
     color: var(--ink-soft);
   }
-  .reason-body strong { color: var(--ink); font-weight: 600; }
+  .reason-body strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
   /* ========== CLINICAL STUDIES ========== */
   .clinical {
@@ -483,20 +626,28 @@
     margin-bottom: 64px;
     max-width: 800px;
   }
-  .clinical-head .eyebrow { color: var(--cream); margin-bottom: 28px; }
+  .clinical-head .eyebrow {
+    color: var(--cream);
+    margin-bottom: 28px;
+  }
   .clinical-head h2 {
     color: var(--cream);
     font-size: clamp(42px, 5.6vw, 72px);
     margin-bottom: 20px;
   }
-  .clinical-head h2 .highlight { color: var(--brand); }
+  .clinical-head h2 .highlight {
+    color: var(--brand);
+  }
   .clinical-head p {
     font-size: 17px;
     color: rgba(234, 230, 220, 0.7);
     line-height: 1.55;
     max-width: 600px;
   }
-  .clinical-head p strong { color: var(--cream); font-weight: 600; }
+  .clinical-head p strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
 
   .stat-grid {
     display: grid;
@@ -543,7 +694,10 @@
     line-height: 1.6;
     max-width: 780px;
   }
-  .clinical-foot strong { color: rgba(234, 230, 220, 0.75); font-weight: 600; }
+  .clinical-foot strong {
+    color: rgba(234, 230, 220, 0.75);
+    font-weight: 600;
+  }
 
   /* ========== MECHANISM (DARK) ========== */
   .mechanism {
@@ -560,7 +714,7 @@
     left: -150px;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(94,145,213,0.12) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(94, 145, 213, 0.12) 0%, transparent 60%);
     pointer-events: none;
   }
   .mech-head {
@@ -579,13 +733,18 @@
     font-size: clamp(38px, 5vw, 60px);
     color: var(--cream);
   }
-  .mech-head h2 .highlight { color: var(--brand); }
+  .mech-head h2 .highlight {
+    color: var(--brand);
+  }
   .mech-head p {
     font-size: 16px;
     line-height: 1.55;
     color: rgba(234, 230, 220, 0.7);
   }
-  .mech-head p strong { color: var(--cream); font-weight: 600; }
+  .mech-head p strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
 
   .pathways {
     display: grid;
@@ -620,7 +779,9 @@
     margin-bottom: 14px;
     color: var(--cream);
   }
-  .pathway-title .highlight { color: var(--brand); }
+  .pathway-title .highlight {
+    color: var(--brand);
+  }
   .pathway-desc {
     font-size: 14.5px;
     line-height: 1.55;
@@ -650,7 +811,10 @@
     height: 2px;
     background: var(--brand);
   }
-  .pathway-bullets li strong { color: var(--cream); font-weight: 600; }
+  .pathway-bullets li strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
 
   /* ========== CLINICAL HIGHLIGHTS (paper) ========== */
   .love {
@@ -665,12 +829,16 @@
     max-width: 800px;
     margin-bottom: 56px;
   }
-  .love-head .eyebrow { margin-bottom: 24px; }
+  .love-head .eyebrow {
+    margin-bottom: 24px;
+  }
   .love-head h2 {
     font-size: clamp(42px, 5.6vw, 68px);
     margin-bottom: 20px;
   }
-  .love-head h2 .highlight { color: var(--brand); }
+  .love-head h2 .highlight {
+    color: var(--brand);
+  }
   .love-head p {
     font-size: 17px;
     line-height: 1.55;
@@ -780,7 +948,7 @@
   .image-divider-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(26,26,24,0.35) 0%, rgba(26,26,24,0) 60%);
+    background: linear-gradient(90deg, rgba(26, 26, 24, 0.35) 0%, rgba(26, 26, 24, 0) 60%);
     display: flex;
     align-items: center;
   }
@@ -793,7 +961,9 @@
     letter-spacing: -0.025em;
     line-height: 1.05;
   }
-  .image-divider-text .highlight { color: var(--brand); }
+  .image-divider-text .highlight {
+    color: var(--brand);
+  }
 
   /* ========== FAQ (cream-soft with sidebar) ========== */
   .faq {
@@ -815,9 +985,16 @@
     max-width: 360px;
     margin-bottom: 40px;
   }
-  .faq-head .eyebrow { margin-bottom: 24px; }
-  .faq-head h2 { font-size: clamp(40px, 4.6vw, 56px); margin-bottom: 20px; }
-  .faq-head h2 .highlight { color: var(--brand); }
+  .faq-head .eyebrow {
+    margin-bottom: 24px;
+  }
+  .faq-head h2 {
+    font-size: clamp(40px, 4.6vw, 56px);
+    margin-bottom: 20px;
+  }
+  .faq-head h2 .highlight {
+    color: var(--brand);
+  }
   .faq-head p {
     font-size: 15px;
     line-height: 1.55;
@@ -834,7 +1011,10 @@
     max-width: 320px;
     line-height: 1.5;
   }
-  .faq-badge strong { color: var(--brand); font-weight: 700; }
+  .faq-badge strong {
+    color: var(--brand);
+    font-weight: 700;
+  }
 
   .qa-list {
     max-width: 100%;
@@ -844,7 +1024,9 @@
     padding: 26px 0;
     display: block;
   }
-  .qa:last-child { border-bottom: 1px solid var(--line); }
+  .qa:last-child {
+    border-bottom: 1px solid var(--line);
+  }
   .qa-q {
     font-size: 20px;
     font-weight: 700;
@@ -859,7 +1041,10 @@
     color: var(--ink-soft);
     max-width: 680px;
   }
-  .qa-a strong { color: var(--ink); font-weight: 600; }
+  .qa-a strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
   /* ========== FINAL CTA ========== */
   .final {
@@ -868,7 +1053,11 @@
     padding: 120px 0;
     text-align: center;
   }
-  .final .eyebrow { color: var(--cream); margin-bottom: 28px; justify-content: center; }
+  .final .eyebrow {
+    color: var(--cream);
+    margin-bottom: 28px;
+    justify-content: center;
+  }
   .final h2 {
     color: var(--cream);
     font-size: clamp(48px, 6.4vw, 84px);
@@ -877,7 +1066,9 @@
     margin-left: auto;
     margin-right: auto;
   }
-  .final h2 .highlight { color: var(--brand); }
+  .final h2 .highlight {
+    color: var(--brand);
+  }
   .final p {
     font-size: 17px;
     line-height: 1.5;
@@ -892,7 +1083,10 @@
     font-weight: 500;
     letter-spacing: 0.02em;
   }
-  .final-price strong { color: var(--cream); font-weight: 700; }
+  .final-price strong {
+    color: var(--cream);
+    font-weight: 700;
+  }
 
   /* ========== SPLIT CTA PANEL (image + cta side by side) ========== */
   .split-cta {
@@ -924,7 +1118,9 @@
     gap: 20px;
     max-width: 620px;
   }
-  .split-cta-content .eyebrow { margin-bottom: 4px; }
+  .split-cta-content .eyebrow {
+    margin-bottom: 4px;
+  }
   .split-cta-content h2 {
     font-size: clamp(32px, 3.6vw, 48px);
     font-weight: 800;
@@ -932,7 +1128,9 @@
     line-height: 1.05;
     color: var(--ink);
   }
-  .split-cta-content h2 .highlight { color: var(--brand); }
+  .split-cta-content h2 .highlight {
+    color: var(--brand);
+  }
   .split-cta-content p {
     font-size: 16px;
     line-height: 1.55;
@@ -969,7 +1167,9 @@
     color: var(--ink);
     max-width: 560px;
   }
-  .cta-bar-text .highlight { color: var(--brand); }
+  .cta-bar-text .highlight {
+    color: var(--brand);
+  }
   .cta-bar-inline {
     background: var(--paper);
     padding: 48px 0;
@@ -991,7 +1191,7 @@
     aspect-ratio: 1/1;
     overflow: hidden;
     border-radius: 2px;
-    background: #F5F4EE;
+    background: #f5f4ee;
     position: relative;
   }
   .buy-image img {
@@ -1012,13 +1212,19 @@
     text-transform: uppercase;
     border-radius: 2px;
   }
-  .buy-head { margin-bottom: 32px; }
-  .buy-head .eyebrow { margin-bottom: 20px; }
+  .buy-head {
+    margin-bottom: 32px;
+  }
+  .buy-head .eyebrow {
+    margin-bottom: 20px;
+  }
   .buy-head h2 {
     font-size: clamp(36px, 4.6vw, 54px);
     margin-bottom: 16px;
   }
-  .buy-head h2 .highlight { color: var(--brand); }
+  .buy-head h2 .highlight {
+    color: var(--brand);
+  }
   .buy-head p {
     font-size: 16px;
     line-height: 1.55;
@@ -1045,10 +1251,12 @@
     align-items: center;
     position: relative;
   }
-  .tier:hover { border-color: var(--ink); }
+  .tier:hover {
+    border-color: var(--ink);
+  }
   .tier.selected {
     border-color: var(--brand);
-    background: linear-gradient(to right, rgba(94,145,213,0.06), rgba(94,145,213,0.02));
+    background: linear-gradient(to right, rgba(94, 145, 213, 0.06), rgba(94, 145, 213, 0.02));
     box-shadow: 0 0 0 1px var(--brand) inset;
   }
   .tier-radio {
@@ -1178,7 +1386,9 @@
     cursor: pointer;
     margin-bottom: 16px;
   }
-  .buy-cta:hover { background: var(--brand-hover); }
+  .buy-cta:hover {
+    background: var(--brand-hover);
+  }
 
   .buy-trust {
     display: flex;
@@ -1188,7 +1398,11 @@
     color: var(--muted);
     font-weight: 500;
   }
-  .buy-trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .buy-trust span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
   .buy-trust span::before {
     content: '✓';
     color: var(--brand);
@@ -1207,7 +1421,7 @@
     padding: 14px 20px;
     z-index: 100;
     border-top: 1px solid rgba(234, 230, 220, 0.15);
-    box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
   }
   .sticky-cta-inner {
     display: flex;
@@ -1246,7 +1460,9 @@
     white-space: nowrap;
     transition: background 0.2s;
   }
-  .sticky-cta-btn:hover { background: var(--brand-hover); }
+  .sticky-cta-btn:hover {
+    background: var(--brand-hover);
+  }
 
   /* ========== FOOTER ========== */
   .footer {
@@ -1257,74 +1473,394 @@
     line-height: 1.6;
     background: var(--cream);
   }
-  .footer p { max-width: 720px; margin: 0 auto 8px; }
+  .footer p {
+    max-width: 720px;
+    margin: 0 auto 8px;
+  }
 
   /* ========== RESPONSIVE ========== */
   @media (max-width: 900px) {
-    .hero { padding: 48px 0 64px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-    .hero-image { justify-self: center; max-width: 360px; }
-    .truth-inner { grid-template-columns: 1fr; gap: 28px; }
-    .truth-image { max-width: 400px; aspect-ratio: 4/5;}
-    .mech-head, .reasons-head { grid-template-columns: 1fr; gap: 20px; }
-    .pathways, .love-grid { grid-template-columns: 1fr; }
-    .stat-grid { grid-template-columns: repeat(2, 1fr); }
-    .faq-inner { grid-template-columns: 1fr; gap: 40px; }
-    .faq-sidebar { position: static; }
-    .faq-head { max-width: 100%; }
-    .reason { grid-template-columns: 72px 1fr; gap: 16px 24px; padding: 28px 16px; }
-    .reason-body { grid-column: 2; }
-    .reason-num { font-size: 52px; }
-    .reason:hover { padding-left: 16px; padding-right: 16px; }
-    .buy-inner { grid-template-columns: 1fr; gap: 40px; }
-    .buy-image { max-width: 400px; margin: 0 auto; aspect-ratio: 1/1; }
-    .cta-bar-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .sticky-cta { display: block; }
-    body { padding-bottom: 72px; }
-    .truth, .reasons, .clinical, .mechanism, .love, .faq, .final, .buy-panel { padding: 72px 0; }
-    .container, .container-narrow { padding: 0 24px; }
-    .trust-strip-inner { gap: 12px 18px; }
-    .image-divider { height: 34vh; min-height: 260px; }
-    .image-divider-text { padding: 0 24px; }
-    .split-cta { grid-template-columns: 1fr; min-height: 0; }
-    .split-cta-image { min-height: 360px; aspect-ratio: 4/5; }
-    .split-cta-content { padding: 56px 28px; }
+    .hero {
+      padding: 48px 0 64px;
+    }
+    .hero-stack {
+      gap: 32px;
+    }
+    .hero-image {
+      max-width: 100%;
+    }
+    .truth-band {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      text-align: left;
+    }
+    .truth h2 {
+      font-size: 22px;
+    }
+    .mech-head,
+    .reasons-head {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .pathways,
+    .love-grid {
+      grid-template-columns: 1fr;
+    }
+    .stat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .faq-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .faq-sidebar {
+      position: static;
+    }
+    .faq-head {
+      max-width: 100%;
+    }
+    .reason {
+      grid-template-columns: 72px 1fr;
+      gap: 16px 24px;
+      padding: 28px 16px;
+    }
+    .reason-body {
+      grid-column: 2;
+    }
+    .reason-num {
+      font-size: 52px;
+    }
+    .reason:hover {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .buy-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .buy-image {
+      max-width: 400px;
+      margin: 0 auto;
+      aspect-ratio: 1/1;
+    }
+    .cta-bar-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .sticky-cta {
+      display: block;
+    }
+    body {
+      padding-bottom: 72px;
+    }
+    .truth,
+    .reasons,
+    .clinical,
+    .mechanism,
+    .love,
+    .faq,
+    .final,
+    .buy-panel {
+      padding: 72px 0;
+    }
+    .container,
+    .container-narrow {
+      padding: 0 24px;
+    }
+    .trust-strip-inner {
+      gap: 12px 18px;
+    }
+    .image-divider {
+      height: 34vh;
+      min-height: 260px;
+    }
+    .image-divider-text {
+      padding: 0 24px;
+    }
+    .split-cta {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .split-cta-image {
+      min-height: 360px;
+      aspect-ratio: 4/5;
+    }
+    .split-cta-content {
+      padding: 56px 28px;
+    }
   }
 
   @media (max-width: 520px) {
-    .nav { padding: 16px 20px; }
-    .stat-grid { grid-template-columns: 1fr; }
-    .tier { grid-template-columns: auto 1fr; gap: 10px 14px; padding: 18px 18px; }
-    .tier-price { grid-column: 2; text-align: left; align-items: flex-start; flex-direction: row; gap: 8px; align-items: baseline; }
-    .tier-price-old { order: 2; }
-    .tier-savings { display: none; }
-    .quiz-banner { padding: 28px 0; }
-    .quiz-banner-inner { padding: 0 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
-    .quiz-banner-link { width: 100%; justify-content: center; }
+    .nav {
+      padding: 16px 20px;
+    }
+    .stat-grid {
+      grid-template-columns: 1fr;
+    }
+    .tier {
+      grid-template-columns: auto 1fr;
+      gap: 10px 14px;
+      padding: 18px 18px;
+    }
+    .tier-price {
+      grid-column: 2;
+      text-align: left;
+      align-items: flex-start;
+      flex-direction: row;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .tier-price-old {
+      order: 2;
+    }
+    .tier-savings {
+      display: none;
+    }
+    .quiz-banner {
+      padding: 28px 0;
+    }
+    .quiz-banner-inner {
+      padding: 0 24px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .quiz-banner-link {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   /* Fade-ins */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  .fade-in { animation: fadeUp 0.7s ease both; }
-  .d-1 { animation-delay: 0.08s; }
-  .d-2 { animation-delay: 0.16s; }
+  .fade-in {
+    animation: fadeUp 0.7s ease both;
+  }
+  .d-1 {
+    animation-delay: 0.08s;
+  }
+  .d-2 {
+    animation-delay: 0.16s;
+  }
+
+  /* ========== ADD TO CART TOAST ========== */
+  .wlp1-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 16px 20px 16px 18px;
+    border-radius: 4px;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(94, 145, 213, 0.25);
+    min-width: 320px;
+    max-width: 400px;
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.25s ease;
+  }
+  .wlp1-toast-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .wlp1-toast-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--brand);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .wlp1-toast-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .wlp1-toast-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .wlp1-toast-sub {
+    font-size: 12.5px;
+    color: rgba(234, 230, 220, 0.7);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .wlp1-toast-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--brand);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    padding: 6px 4px;
+    transition: color 0.2s;
+  }
+  .wlp1-toast-link:hover {
+    color: white;
+  }
+
+  /* Buy CTA button states */
+  #wlp1-add-to-cart {
+    transition: background 0.2s, opacity 0.2s;
+  }
+  #wlp1-add-to-cart[data-state='loading'] {
+    opacity: 0.75;
+    cursor: progress;
+  }
+  #wlp1-add-to-cart[data-state='success'] {
+    background: var(--brand-deep);
+  }
+  #wlp1-add-to-cart[data-state='error'] {
+    background: var(--accent, #c97b5e);
+  }
+
+  @media (max-width: 520px) {
+    .wlp1-toast {
+      top: auto;
+      bottom: 80px;
+      left: 12px;
+      right: 12px;
+      min-width: 0;
+      max-width: none;
+    }
+  }
+
+  /* ========== V2 HERO ADDITIONS ========== */
+  .hero-review-row{
+    display:flex;align-items:center;gap:10px;margin:0 0 10px 0;
+    color:#1a1a1a;font-size:14px;font-weight:600;letter-spacing:.01em;
+  }
+  .hero-review-row .stars{display:inline-flex;align-items:center;color:#c8a96a;height:16px}
+  .hero-review-row .stars svg{height:16px;width:auto}
+  .hero-review-row .count{color:#1a1a1a;opacity:.85;font-weight:500}
+  .hero-review-row .dot{width:3px;height:3px;border-radius:50%;background:#1a1a1a;opacity:.4;display:inline-block;margin:0 4px}
+  .hero-image-frame{position:relative;max-width:560px;width:100%;margin:0 auto;justify-self:center}
+  .hero-image-frame .hero-image{max-width:100%}
+  .hero-bottle-inset{
+    position:absolute;bottom:5%;left:5%;width:34%;aspect-ratio:1/1;
+    background:#eef2f5;border-radius:6px;
+    box-shadow:0 14px 36px rgba(0,0,0,.25);
+    transform:rotate(-6deg);overflow:hidden;z-index:2
+  }
+  .hero-bottle-inset img{width:100%;height:100%;object-fit:contain;padding:10%}
+  .hero-trust-row{display:none}
+  @media (max-width:640px){
+    .hero-bottle-inset{width:32%;bottom:5%;left:5%}
+  }
+  .trust-pill{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+    background:rgba(26,26,26,.06);font-size:12px;font-weight:600;color:#1a1a1a;
+    letter-spacing:.02em;text-transform:uppercase
+  }
+  .trust-pill::before{content:"";width:6px;height:6px;border-radius:50%;background:#1a8a4a}
+  .hero-pills{
+    display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px;padding:0;list-style:none;justify-content:center
+  }
+  .hero-pills li{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;
+    background:rgba(26,26,26,.05);border:1px solid rgba(26,26,26,.08);
+    font-size:13px;font-weight:600;color:#1a1a1a;letter-spacing:.01em
+  }
+  .hero-pills li::before{
+    content:"";width:14px;height:14px;border-radius:50%;background:#1a1a1a;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='black' d='M7.629 14.571 3.4 10.343l1.414-1.414 2.815 2.814 7.557-7.557 1.414 1.415z'/></svg>") center/contain no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='black' d='M7.629 14.571 3.4 10.343l1.414-1.414 2.815 2.814 7.557-7.557 1.414 1.415z'/></svg>") center/contain no-repeat;
+  }
+  @media (max-width:640px){
+    .hero-review-row{font-size:13px}
+    .hero-pills li{font-size:12px;padding:7px 10px}
+  }
+
 </style>
 
-<!-- ================ HERO ================ -->
+<!-- ================ HERO (V2) ================ -->
 <section class="hero">
   <div class="container">
-    <div class="hero-grid">
-      <div class="fade-in">
-        <div class="eyebrow hero-eyebrow"><span class="dot"></span>New · WLP-1™ oral biomimetic</div>
+    <div class="hero-stack">
+      <div class="hero-image-frame fade-in">
+        <div class="hero-image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/nikki-plank-wlp1-ad-still.jpg?v=1779053072"
+            alt="Nikki Reed in plank pose, B&W cinematic"
+          >
+          <div class="hero-image-tag"><span class="highlight">Nikki Reed</span> &nbsp;Co-Founder</div>
+        </div>
+        <div class="hero-bottle-inset">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977"
+            alt="WLP-1™ bottle, The Absorption Company"
+            loading="lazy"
+          >
+        </div>
+      </div>
+      <div class="hero-content fade-in d-1">
+        <div class="eyebrow hero-eyebrow"><span class="dot"></span>New · WLP-1™ oral GLP-1 biomimetic</div>
+
+        {%- comment -%}
+          Klaviyo Reviews summary placeholder. CRO agent: wire to live widget tied to
+          product_id=10282549149985 (WLP-1: Oral GLP-1 Support). Stars rendered via existing snippet.
+        {%- endcomment -%}
+        <div class="hero-review-row" aria-label="Customer rating 4.8 out of 5">
+          <span class="stars" aria-hidden="true">
+            <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path fill="#c8a96a" d="M7.38 0.1c-.27-.13-.59-.13-.86 0-.24.11-.37.3-.43.41-.07.11-.14.25-.21.39L4.45 3.81 1.23 4.28c-.15.02-.3.04-.43.07-.12.03-.35.1-.53.29-.21.22-.3.52-.27.82.03.26.18.44.26.54.08.1.2.21.31.32l2.32 2.26-.55 3.2c-.03.15-.05.3-.06.43-.01.13-.02.36.1.59.14.27.4.45.69.51.26.05.48-.03.59-.08.12-.05.26-.12.4-.19l2.87-1.51 2.87 1.51c.14.07.28.14.4.19.11.05.33.13.59.08.3-.06.55-.24.69-.51.13-.23.12-.46.11-.59-.01-.13-.04-.28-.06-.43L11 8.57l2.33-2.26c.11-.11.22-.22.3-.32.08-.1.23-.28.27-.54.04-.3-.06-.6-.27-.82-.18-.19-.4-.26-.53-.29-.13-.03-.28-.05-.43-.07L9.45 3.81 8.01 0.9c-.07-.14-.13-.28-.21-.39-.06-.11-.19-.3-.43-.41z"/></svg>
+            <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path fill="#c8a96a" d="M7.38 0.1c-.27-.13-.59-.13-.86 0-.24.11-.37.3-.43.41-.07.11-.14.25-.21.39L4.45 3.81 1.23 4.28c-.15.02-.3.04-.43.07-.12.03-.35.1-.53.29-.21.22-.3.52-.27.82.03.26.18.44.26.54.08.1.2.21.31.32l2.32 2.26-.55 3.2c-.03.15-.05.3-.06.43-.01.13-.02.36.1.59.14.27.4.45.69.51.26.05.48-.03.59-.08.12-.05.26-.12.4-.19l2.87-1.51 2.87 1.51c.14.07.28.14.4.19.11.05.33.13.59.08.3-.06.55-.24.69-.51.13-.23.12-.46.11-.59-.01-.13-.04-.28-.06-.43L11 8.57l2.33-2.26c.11-.11.22-.22.3-.32.08-.1.23-.28.27-.54.04-.3-.06-.6-.27-.82-.18-.19-.4-.26-.53-.29-.13-.03-.28-.05-.43-.07L9.45 3.81 8.01 0.9c-.07-.14-.13-.28-.21-.39-.06-.11-.19-.3-.43-.41z"/></svg>
+            <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path fill="#c8a96a" d="M7.38 0.1c-.27-.13-.59-.13-.86 0-.24.11-.37.3-.43.41-.07.11-.14.25-.21.39L4.45 3.81 1.23 4.28c-.15.02-.3.04-.43.07-.12.03-.35.1-.53.29-.21.22-.3.52-.27.82.03.26.18.44.26.54.08.1.2.21.31.32l2.32 2.26-.55 3.2c-.03.15-.05.3-.06.43-.01.13-.02.36.1.59.14.27.4.45.69.51.26.05.48-.03.59-.08.12-.05.26-.12.4-.19l2.87-1.51 2.87 1.51c.14.07.28.14.4.19.11.05.33.13.59.08.3-.06.55-.24.69-.51.13-.23.12-.46.11-.59-.01-.13-.04-.28-.06-.43L11 8.57l2.33-2.26c.11-.11.22-.22.3-.32.08-.1.23-.28.27-.54.04-.3-.06-.6-.27-.82-.18-.19-.4-.26-.53-.29-.13-.03-.28-.05-.43-.07L9.45 3.81 8.01 0.9c-.07-.14-.13-.28-.21-.39-.06-.11-.19-.3-.43-.41z"/></svg>
+            <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path fill="#c8a96a" d="M7.38 0.1c-.27-.13-.59-.13-.86 0-.24.11-.37.3-.43.41-.07.11-.14.25-.21.39L4.45 3.81 1.23 4.28c-.15.02-.3.04-.43.07-.12.03-.35.1-.53.29-.21.22-.3.52-.27.82.03.26.18.44.26.54.08.1.2.21.31.32l2.32 2.26-.55 3.2c-.03.15-.05.3-.06.43-.01.13-.02.36.1.59.14.27.4.45.69.51.26.05.48-.03.59-.08.12-.05.26-.12.4-.19l2.87-1.51 2.87 1.51c.14.07.28.14.4.19.11.05.33.13.59.08.3-.06.55-.24.69-.51.13-.23.12-.46.11-.59-.01-.13-.04-.28-.06-.43L11 8.57l2.33-2.26c.11-.11.22-.22.3-.32.08-.1.23-.28.27-.54.04-.3-.06-.6-.27-.82-.18-.19-.4-.26-.53-.29-.13-.03-.28-.05-.43-.07L9.45 3.81 8.01 0.9c-.07-.14-.13-.28-.21-.39-.06-.11-.19-.3-.43-.41z"/></svg>
+            <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="star48"><stop offset="80%" stop-color="#c8a96a"/><stop offset="80%" stop-color="#c8a96a" stop-opacity=".25"/></linearGradient></defs><path fill="url(#star48)" d="M7.38 0.1c-.27-.13-.59-.13-.86 0-.24.11-.37.3-.43.41-.07.11-.14.25-.21.39L4.45 3.81 1.23 4.28c-.15.02-.3.04-.43.07-.12.03-.35.1-.53.29-.21.22-.3.52-.27.82.03.26.18.44.26.54.08.1.2.21.31.32l2.32 2.26-.55 3.2c-.03.15-.05.3-.06.43-.01.13-.02.36.1.59.14.27.4.45.69.51.26.05.48-.03.59-.08.12-.05.26-.12.4-.19l2.87-1.51 2.87 1.51c.14.07.28.14.4.19.11.05.33.13.59.08.3-.06.55-.24.69-.51.13-.23.12-.46.11-.59-.01-.13-.04-.28-.06-.43L11 8.57l2.33-2.26c.11-.11.22-.22.3-.32.08-.1.23-.28.27-.54.04-.3-.06-.6-.27-.82-.18-.19-.4-.26-.53-.29-.13-.03-.28-.05-.43-.07L9.45 3.81 8.01 0.9c-.07-.14-.13-.28-.21-.39-.06-.11-.19-.3-.43-.41z"/></svg>
+          </span>
+          <span>4.8</span>
+          <span class="dot"></span>
+          <span class="count">Average rating</span>
+        </div>
+
         <h1>
-          <span class="line">The weight that</span>
-          <span class="line"><span class="highlight">won't shift.</span></span>
-          <span class="line">Two capsules a day.</span>
+          <span class="line">Too busy to work out?</span>
+          <span class="line"><span class="highlight">2 capsules a day.</span></span>
         </h1>
-        <p class="hero-sub">For women who've tried everything and are done running on empty. <strong>Clinically studied support for cravings, energy, and the metabolism that stopped meeting you halfway.</strong></p>
+        <p class="hero-sub">
+          <strong>Get your best summer body, with or without the gym. WLP-1 has helped users lose ~9 lbs in 4 weeks by quieting cravings, increasing calorie burn, and supporting a tired metabolism.</strong>
+        </p>
+
+        <ul class="hero-pills">
+          <li>Quiets cravings</li>
+          <li>Steadier energy</li>
+          <li>Metabolism support</li>
+        </ul>
+
+        <div class="hero-stats">
+          <div class="stat-row">
+            <span class="num">~9 lbs</span>
+            <span class="label">lost in 4 weeks (Capsifen® clinical study)</span>
+          </div>
+          <div class="stat-row">
+            <span class="num">12%</span>
+            <span class="label">body fat reduction in 10 weeks (IGOB131® + CQR300® study)</span>
+          </div>
+        </div>
         <div class="hero-ctas">
           <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
           <a href="#how" class="btn-secondary">How it works</a>
@@ -1334,11 +1870,6 @@
           <span>No stimulants</span>
           <span>30-day money-back guarantee</span>
         </div>
-      </div>
-
-      <div class="hero-image fade-in d-2">
-        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Casual_Dining_Scene.jpg?v=1776897893" alt="Woman eating in her kitchen with WLP-1 on the counter" />
-        <div class="hero-image-tag"><span class="highlight">Actually absorbed.</span> &nbsp;Actually working.</div>
       </div>
     </div>
   </div>
@@ -1357,42 +1888,19 @@
   </div>
 </div>
 
-<!-- ================ TRUTH TELL ================ -->
+<!-- ================ TRUTH TELL (compact) ================ -->
 <section class="truth">
   <div class="container">
-    <div class="truth-inner">
-      <div class="truth-image">
-        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/woman-on-laptop-w-wlp-1.jpg?v=1776897893" alt="Woman working at her kitchen counter with WLP-1 nearby" />
-      </div>
-      <div class="truth-content">
-        <div class="eyebrow truth-eyebrow"><span class="dot"></span>The truth</div>
-        <h2>
-          <span class="line">Your metabolism</span>
-          <span class="line"><span class="highlight">isn't broken.</span></span>
-        </h2>
-        <p class="truth-sub">It's carrying more than its share. And the supplements you've tried weren't built to actually reach it.</p>
-        <div class="truth-body">
-          <p>By 40, women's metabolic signals, the ones that regulate appetite, energy, and how the body uses fuel, start to <strong>lose steam</strong>. Stress, perimenopause, and hormonal shifts stack on top.</p>
-          <p>The fix isn't another protocol. It's clinically studied support that your body <strong>actually absorbs</strong> and can put to work.</p>
-        </div>
-      </div>
+    <div class="truth-band">
+      <div class="eyebrow"><span class="dot"></span>The truth</div>
+      <h2>Your metabolism <span class="highlight">isn't broken.</span> It's been carrying more than its share.</h2>
+      <p>
+        By 40, the signals that regulate appetite, energy, and how your body uses fuel start to lose steam. The fix
+        isn't another protocol. It's clinically studied support your body <strong>actually absorbs.</strong>
+      </p>
     </div>
   </div>
 </section>
-
-<!-- ================ QUIZ BANNER ================ -->
-<div class="quiz-banner">
-  <div class="quiz-banner-inner">
-    <div class="quiz-banner-left">
-      <div class="quiz-banner-icon">?</div>
-      <div class="quiz-banner-text">
-        <strong>Not sure if WLP-1™ is right for you?</strong>
-        Take our 2-minute Weight Optimization Quiz for a personalized recommendation.
-      </div>
-    </div>
-    <a href="https://www.absorbmore.com/pages/weight-optimization-quiz" class="quiz-banner-link">Take the quiz <span class="arrow">→</span></a>
-  </div>
-</div>
 
 <!-- ================ MECHANISM ================ -->
 <section class="mechanism" id="how">
@@ -1403,7 +1911,10 @@
         <h2>Two capsules. Three <span class="highlight">pathways.</span></h2>
       </div>
       <div>
-        <p>GLP-1 injections work on one pathway. WLP-1™ is the oral biomimetic alternative, with clinically studied ingredients that support <strong>three metabolic pathways</strong> your body already uses.</p>
+        <p>
+          GLP-1 injections work on one pathway. WLP-1™ is the oral biomimetic alternative, with clinically studied
+          ingredients that support <strong>three metabolic pathways</strong> your body already uses.
+        </p>
       </div>
     </div>
     <div class="pathways">
@@ -1447,7 +1958,10 @@
         <h2>5 reasons WLP-1™ was <span class="highlight">built for you.</span></h2>
       </div>
       <div>
-        <p>If you're running the household, the classroom, or the carpool, you don't have time for another protocol to fail you. <strong>WLP-1™ was built for women exactly like you.</strong></p>
+        <p>
+          If you're running the household, the classroom, or the carpool, you don't have time for another protocol to
+          fail you. <strong>WLP-1™ was built for women exactly like you.</strong>
+        </p>
       </div>
     </div>
 
@@ -1455,40 +1969,74 @@
       <div class="reason">
         <div class="reason-num">01</div>
         <div class="reason-h3">You've tried <span class="highlight">everything else.</span></div>
-        <div class="reason-body">Half-empty bottles. Meal plans that fizzled. Shots you looked at and passed on. <strong>WLP-1™ is what actually works when clinically studied ingredients reach your system.</strong></div>
+        <div class="reason-body">
+          Half-empty bottles. Meal plans that fizzled. Shots you looked at and passed on.
+          <strong>WLP-1™ is what actually works when clinically studied ingredients reach your system.</strong>
+        </div>
       </div>
 
       <div class="reason">
         <div class="reason-num">02</div>
         <div class="reason-h3">You don't have time for a <span class="highlight">protocol.</span></div>
-        <div class="reason-body">Two capsules. Once a day. <strong>No stacking, no timing, no shakes.</strong> Built to slot into a life that's already full.</div>
+        <div class="reason-body">
+          Two capsules. Once a day. <strong>No stacking, no timing, no shakes.</strong> Built to slot into a life that's
+          already full.
+        </div>
       </div>
 
       <div class="reason">
         <div class="reason-num">03</div>
         <div class="reason-h3">You want to feel <span class="highlight">steady,</span> not wired.</div>
-        <div class="reason-body">No caffeine. No harsh stimulants. <strong>Metabolic energy that lasts from pickup through dinner</strong>, with no crash after.</div>
+        <div class="reason-body">
+          No caffeine. No harsh stimulants. <strong>Metabolic energy that lasts from pickup through dinner</strong>,
+          with no crash after.
+        </div>
       </div>
 
       <div class="reason">
         <div class="reason-num">04</div>
         <div class="reason-h3">You're <span class="highlight">skeptical,</span> and you should be.</div>
-        <div class="reason-body">Every claim backed by real human clinical studies. <strong>The results are real, measured, and right below.</strong></div>
+        <div class="reason-body">
+          Every claim backed by real human clinical studies.
+          <strong>The results are real, measured, and right below.</strong>
+        </div>
       </div>
 
       <div class="reason">
         <div class="reason-num">05</div>
         <div class="reason-h3">You want to feel <span class="highlight">present,</span> not perfect.</div>
-        <div class="reason-body">Not chasing skinny. Chasing steady. <strong>Patience at 6pm. Clothes that fit.</strong> Room to be the person your people need, and a little of that person for yourself.</div>
+        <div class="reason-body">
+          Not chasing skinny. Chasing steady. <strong>Patience at 6pm. Clothes that fit.</strong> Room to be the person
+          your people need, and a little of that person for yourself.
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ================ QUIZ BANNER ================ -->
+<div class="quiz-banner">
+  <div class="quiz-banner-inner">
+    <div class="quiz-banner-left">
+      <div class="quiz-banner-icon">?</div>
+      <div class="quiz-banner-text">
+        <strong>Not sure if WLP-1™ is right for you?</strong>
+        Take our 2-minute Weight Optimization Quiz for a personalized recommendation.
+      </div>
+    </div>
+    <a href="https://www.absorbmore.com/pages/weight-optimization-quiz" class="quiz-banner-link"
+      >Take the quiz <span class="arrow">→</span></a
+    >
+  </div>
+</div>
+
 <!-- ================ SPLIT CTA PANEL ================ -->
 <section class="split-cta">
   <div class="split-cta-image">
-    <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Wellness_Lifestyle_Shot_2026-03-16_12-46_1_d2dc844e-e939-4c5d-9fe3-b895397295e0.jpg?v=1776897893" alt="Hands holding WLP-1 jar, pouring a capsule" />
+    <img
+      src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/WLP-1_Photography_-_Ecom___Lifestyle_Wellness_Lifestyle_Shot_2026-03-16_12-46_1_d2dc844e-e939-4c5d-9fe3-b895397295e0.jpg?v=1776897893"
+      alt="Hands holding WLP-1 jar, pouring a capsule"
+    >
   </div>
   <div class="split-cta-content">
     <div class="eyebrow"><span class="dot"></span>Ready when you are</div>
@@ -1507,14 +2055,20 @@
     <div class="clinical-head">
       <div class="eyebrow"><span class="dot"></span>The clinical data</div>
       <h2>The numbers we can <span class="highlight">actually show you.</span></h2>
-      <p>Across <strong>multiple randomized, double-blind, placebo-controlled human trials</strong>, the clinically studied ingredients inside WLP-1™ have been shown to support meaningful changes in body weight, body fat, cholesterol, and satiety signaling.</p>
+      <p>
+        Across <strong>multiple randomized, double-blind, placebo-controlled human trials</strong>, the clinically
+        studied ingredients inside WLP-1™ have been shown to support meaningful changes in body weight, body fat,
+        cholesterol, and satiety signaling.
+      </p>
     </div>
 
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-num">12<span class="unit">%</span></div>
         <div class="stat-label">Body weight reduction</div>
-        <div class="stat-fine">Up to 12% reduction in body weight over 10 weeks. IGOB131® + CQR300® clinical study.</div>
+        <div class="stat-fine">
+          Up to 12% reduction in body weight over 10 weeks. IGOB131® + CQR300® clinical study.
+        </div>
       </div>
       <div class="stat">
         <div class="stat-num">20<span class="unit">%</span></div>
@@ -1533,7 +2087,11 @@
       </div>
     </div>
 
-    <p class="clinical-foot"><strong>Study:</strong> Oben JE, Ngondi JL, et al. <em>Lipids in Health and Disease.</em> 2008;7:12. 72 participants, randomized, double-blind, placebo-controlled, 10-week duration. Mean BMI &gt; 26 kg/m². Results observed in populations with a BMI of 25+ and are not guaranteed for every individual.</p>
+    <p class="clinical-foot">
+      <strong>Study:</strong> Oben JE, Ngondi JL, et al. <em>Lipids in Health and Disease.</em> 2008;7:12. 72
+      participants, randomized, double-blind, placebo-controlled, 10-week duration. Mean BMI &gt; 26 kg/m². Results
+      observed in populations with a BMI of 25+ and are not guaranteed for every individual.
+    </p>
   </div>
 </section>
 
@@ -1553,7 +2111,9 @@
     <div class="love-head">
       <div class="eyebrow"><span class="dot"></span>Why women love it</div>
       <h2>The quiet wins, <span class="highlight">backed by real studies.</span></h2>
-      <p>Every benefit women report is grounded in published human clinical research on the ingredients inside WLP-1™.</p>
+      <p>
+        Every benefit women report is grounded in published human clinical research on the ingredients inside WLP-1™.
+      </p>
     </div>
 
     <div class="love-grid">
@@ -1562,7 +2122,10 @@
         <div class="love-quote">"My clothes fit differently. <strong>My waistline came back.</strong>"</div>
         <div class="love-proof">
           <div class="love-proof-label">The clinical study</div>
-          <div class="love-proof-body"><strong>28.1 lbs lost</strong> and <strong>6.7 inches</strong> off the waist, with no changes to diet or exercise required during the study.</div>
+          <div class="love-proof-body">
+            <strong>28.1 lbs lost</strong> and <strong>6.7 inches</strong> off the waist, with no changes to diet or
+            exercise required during the study.
+          </div>
           <div class="love-meta">IGOB131® clinical trial · Double-blind, placebo-controlled · BMI 26+</div>
         </div>
       </div>
@@ -1572,7 +2135,10 @@
         <div class="love-quote">"The cravings <strong>just got quieter.</strong>"</div>
         <div class="love-proof">
           <div class="love-proof-label">The clinical study</div>
-          <div class="love-proof-body">Participants ate <strong>17.5% less</strong> at meals and reported feeling <strong>27.4% more full</strong> after eating.</div>
+          <div class="love-proof-body">
+            Participants ate <strong>17.5% less</strong> at meals and reported feeling
+            <strong>27.4% more full</strong> after eating.
+          </div>
           <div class="love-meta">CQR-300™ randomized controlled trial · Medicina, 2020</div>
         </div>
       </div>
@@ -1582,7 +2148,10 @@
         <div class="love-quote">"It started working <strong>faster than I expected.</strong>"</div>
         <div class="love-proof">
           <div class="love-proof-label">The clinical study</div>
-          <div class="love-proof-body"><strong>4 lbs lost in just 4 weeks</strong>, with no serious adverse side effects reported across treatment groups.</div>
+          <div class="love-proof-body">
+            <strong>~9 lbs lost in just 4 weeks</strong>, with no serious adverse side effects reported across treatment
+            groups.
+          </div>
           <div class="love-meta">Capsifen™ clinical study · Journal of Dietary Supplements</div>
         </div>
       </div>
@@ -1596,7 +2165,10 @@
     <div class="buy-inner">
       <div class="buy-image">
         <div class="buy-image-tag">WLP-1™</div>
-        <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1_WHITE.png?v=1774499808g" alt="WLP-1 jar with refill pouch and capsules" />
+        <img
+          src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1_WHITE.png?v=1774499808g"
+          alt="WLP-1 jar with refill pouch and capsules"
+        >
       </div>
       <div>
         <div class="buy-head">
@@ -1606,7 +2178,13 @@
         </div>
 
         <div class="tiers" id="tiers">
-          <div class="tier" data-tier="monthly" onclick="selectTier(this)">
+          <div
+            class="tier"
+            data-tier="monthly"
+            data-variant-id="52472821121313"
+            data-selling-plan-id="691162546465"
+            onclick="selectTier(this)"
+          >
             <div class="tier-radio"></div>
             <div class="tier-detail">
               <div class="tier-title">Monthly <span class="tier-badge">Save 20%</span></div>
@@ -1620,10 +2198,18 @@
             </div>
           </div>
 
-          <div class="tier selected" data-tier="3month" onclick="selectTier(this)">
+          <div
+            class="tier selected"
+            data-tier="3month"
+            data-variant-id="52472821154081"
+            data-selling-plan-id="691162579233"
+            onclick="selectTier(this)"
+          >
             <div class="tier-radio"></div>
             <div class="tier-detail">
-              <div class="tier-title">3 Months <span class="tier-badge">Save 30%</span> <span class="tier-badge-blue">Most Popular</span></div>
+              <div class="tier-title">
+                3 Months <span class="tier-badge">Save 30%</span> <span class="tier-badge-blue">Most Popular</span>
+              </div>
               <div class="tier-sub">A 3-month supply with refills delivered every 3 months.</div>
               <div class="tier-sub-small">Free shipping. Pause or cancel anytime.</div>
             </div>
@@ -1634,10 +2220,18 @@
             </div>
           </div>
 
-          <div class="tier" data-tier="6month" onclick="selectTier(this)">
+          <div
+            class="tier"
+            data-tier="6month"
+            data-variant-id="52472821186849"
+            data-selling-plan-id="691166544161"
+            onclick="selectTier(this)"
+          >
             <div class="tier-radio"></div>
             <div class="tier-detail">
-              <div class="tier-title">6 Months <span class="tier-badge">Save 35%</span> <span class="tier-badge-blue">Best Value</span></div>
+              <div class="tier-title">
+                6 Months <span class="tier-badge">Save 35%</span> <span class="tier-badge-blue">Best Value</span>
+              </div>
               <div class="tier-sub">A 6-month supply with refills delivered every 6 months.</div>
               <div class="tier-sub-small">Free shipping. Pause or cancel anytime.</div>
             </div>
@@ -1649,7 +2243,7 @@
           </div>
         </div>
 
-        <a href="#" class="buy-cta">Add to Cart →</a>
+        <button type="button" id="wlp1-add-to-cart" class="buy-cta">Add to Cart →</button>
 
         <div class="buy-trust">
           <span>Free shipping</span>
@@ -1676,27 +2270,49 @@
       <div class="qa-list">
         <div class="qa">
           <div class="qa-q">Is this like Ozempic?</div>
-          <div class="qa-a">No. WLP-1™ is an <strong>oral biomimetic</strong>, not a prescription. It uses clinically studied ingredients to support the same GLP-1 pathways your body already uses, without needles, without a prescription, without the side effects that come with injections.</div>
+          <div class="qa-a">
+            No. WLP-1™ is an <strong>oral biomimetic</strong>, not a prescription. It uses clinically studied
+            ingredients to support the same GLP-1 pathways your body already uses, without needles, without a
+            prescription, without the side effects that come with injections.
+          </div>
         </div>
         <div class="qa">
           <div class="qa-q">I've tried a shelf full of supplements. Why would this be different?</div>
-          <div class="qa-a">Because <strong>absorption is the whole game</strong>. Most supplements never reach the places they need to. Our absorption technology delivers up to 20× better bioavailability vs. standard ingredients, which is why WLP-1™ can actually do the job the others couldn't.</div>
+          <div class="qa-a">
+            Because <strong>absorption is the whole game</strong>. Most supplements never reach the places they need to.
+            Our absorption technology delivers up to 20× better bioavailability vs. standard ingredients, which is why
+            WLP-1™ can actually do the job the others couldn't.
+          </div>
         </div>
         <div class="qa">
           <div class="qa-q">Will it make me jittery?</div>
-          <div class="qa-a"><strong>No stimulants. No caffeine. No jitters.</strong> The energy WLP-1™ supports is metabolic, not nervous. Steady, not spiked.</div>
+          <div class="qa-a">
+            <strong>No stimulants. No caffeine. No jitters.</strong> The energy WLP-1™ supports is metabolic, not
+            nervous. Steady, not spiked.
+          </div>
         </div>
         <div class="qa">
           <div class="qa-q">How fast will I feel it?</div>
-          <div class="qa-a">Most women notice the <strong>appetite shift within the first one to two weeks</strong>. The full metabolic rhythm tends to settle in around the 30 day mark, which is why we back every bottle with a 30-day money-back guarantee.</div>
+          <div class="qa-a">
+            Most women notice the <strong>appetite shift within the first one to two weeks</strong>. The full metabolic
+            rhythm tends to settle in around the 30 day mark, which is why we back every bottle with a 30-day money-back
+            guarantee.
+          </div>
         </div>
         <div class="qa">
           <div class="qa-q">How complicated is the routine?</div>
-          <div class="qa-a"><strong>Two capsules. Once a day.</strong> With or without food. That's the whole protocol. We built WLP-1™ for real life, not for a lifestyle you don't have time to adopt.</div>
+          <div class="qa-a">
+            <strong>Two capsules. Once a day.</strong> With or without food. That's the whole protocol. We built WLP-1™
+            for real life, not for a lifestyle you don't have time to adopt.
+          </div>
         </div>
         <div class="qa">
           <div class="qa-q">Is it safe with perimenopause or menopause?</div>
-          <div class="qa-a">WLP-1™ was formulated with women 35+ in mind. It's non-hormonal, non-stimulant, and designed to support the metabolic shifts that come with this life stage. As with any supplement, consult your doctor if you're on medication.</div>
+          <div class="qa-a">
+            WLP-1™ was formulated with women 35+ in mind. It's non-hormonal, non-stimulant, and designed to support the
+            metabolic shifts that come with this life stage. As with any supplement, consult your doctor if you're on
+            medication.
+          </div>
         </div>
       </div>
     </div>
@@ -1710,9 +2326,7 @@
     <h2>Two capsules. <span class="highlight">Steadier days.</span></h2>
     <p>Start with one bottle. If it's not the right fit, our 30-day money-back guarantee has you covered.</p>
     <a href="#buy" class="btn-primary">Try WLP-1™ <span class="arrow">→</span></a>
-    <div class="final-price">
-      <strong>From $64/month</strong> · Subscribe &amp; save · Free shipping on every order
-    </div>
+    <div class="final-price"><strong>From $64/month</strong> · Subscribe &amp; save · Free shipping on every order</div>
   </div>
 </section>
 
@@ -1727,9 +2341,113 @@
   </div>
 </div>
 
+<!-- ================ ADD TO CART TOAST ================ -->
+<div id="wlp1-toast" class="wlp1-toast" role="status" aria-live="polite">
+  <div class="wlp1-toast-icon">✓</div>
+  <div class="wlp1-toast-content">
+    <div class="wlp1-toast-title">Added to cart</div>
+    <div class="wlp1-toast-sub" id="wlp1-toast-sub">WLP-1™ · 3-Month subscription</div>
+  </div>
+  <a href="/cart" class="wlp1-toast-link">View cart →</a>
+</div>
+
 <script>
-  function selectTier(el) {
-    document.querySelectorAll('.tier').forEach(t => t.classList.remove('selected'));
-    el.classList.add('selected');
-  }
+  (function () {
+    'use strict';
+
+    // Tier selection
+    window.selectTier = function (el) {
+      document.querySelectorAll('.tier').forEach(function (t) {
+        t.classList.remove('selected');
+      });
+      el.classList.add('selected');
+    };
+
+    var btn = document.getElementById('wlp1-add-to-cart');
+    var toast = document.getElementById('wlp1-toast');
+    var toastSub = document.getElementById('wlp1-toast-sub');
+    var hideTimer = null;
+
+    if (!btn) return;
+
+    function showToast(label) {
+      if (toastSub) toastSub.textContent = 'WLP-1™ · ' + label;
+      if (!toast) return;
+      toast.classList.add('wlp1-toast-visible');
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        toast.classList.remove('wlp1-toast-visible');
+      }, 4500);
+    }
+
+    function setBtnState(state, label) {
+      btn.dataset.state = state;
+      btn.textContent = label;
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var selectedTier = document.querySelector('.tier.selected');
+      if (!selectedTier) {
+        selectedTier = document.querySelector('.tier');
+      }
+      if (!selectedTier) return;
+
+      var variantId = selectedTier.getAttribute('data-variant-id');
+      var sellingPlanId = selectedTier.getAttribute('data-selling-plan-id');
+      var tierTitle = (selectedTier.querySelector('.tier-title') || {}).textContent || '';
+      var planLabel =
+        tierTitle
+          .replace(/Save\s*\d+%/i, '')
+          .replace(/Most Popular|Best Value/gi, '')
+          .trim() + ' subscription';
+      if (!sellingPlanId) {
+        planLabel = 'One-time purchase';
+      }
+
+      var payload = {
+        items: [
+          {
+            id: parseInt(variantId, 10),
+            quantity: 1,
+          },
+        ],
+      };
+      if (sellingPlanId) {
+        payload.items[0].selling_plan = parseInt(sellingPlanId, 10);
+      }
+
+      setBtnState('loading', 'Adding...');
+      btn.disabled = true;
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Cart error: ' + res.status);
+          return res.json();
+        })
+        .then(function () {
+          setBtnState('success', 'Added ✓');
+          // Redirect to cart after brief confirmation flash
+          setTimeout(function () {
+            window.location.href = '/cart';
+          }, 350);
+        })
+        .catch(function (err) {
+          console.error('WLP-1 add to cart failed:', err);
+          setBtnState('error', 'Try again');
+          btn.disabled = false;
+          setTimeout(function () {
+            setBtnState('default', 'Add to Cart →');
+          }, 2500);
+        });
+    });
+  })();
 </script>

@@ -1,0 +1,30 @@
+{%- comment -%}
+  Frontrow quant widget embed (shared by purchase box, hero, etc.)
+
+  Accepts:
+  - product_id: {String} Frontrow product ID (required)
+  - wrapper_class: {String} Optional wrapper class. Default: ctr-ppb__frontrow
+  - iframe_id: {String} Optional unique iframe id. Default: iframe-frontrow-quant
+{%- endcomment -%}
+
+{%- liquid
+  assign wrapper_class = wrapper_class | default: 'ctr-ppb__frontrow'
+  assign iframe_id = iframe_id | default: 'iframe-frontrow-quant'
+-%}
+
+{%- if product_id != blank -%}
+  <div class="{{ wrapper_class }}">
+    <script
+      async
+      type="text/javascript"
+      src="https://app.thefrontrowhealth.com/api/widgets/script?presentation_type=quant&product_id={{ product_id }}"
+    ></script>
+    <iframe
+      class="iframe-frontrow"
+      id="{{ iframe_id }}"
+      frameborder="0"
+      src="https://app.thefrontrowhealth.com/api/widgets?presentation_type=quant&product_id={{ product_id }}"
+      title="FrontrowMD clinician endorsements"
+    ></iframe>
+  </div>
+{%- endif -%}

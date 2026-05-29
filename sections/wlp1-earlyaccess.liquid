@@ -1,249 +1,1249 @@
 {% comment %} WLP-1 Early Access Landing Page, VIP subscribers only {% endcomment %}
 
 <style>
+  /* Body */
+  body {
+    margin: 0;
+    padding: 0;
+  }
 
-    /* Body */
-body {
-  margin: 0;
-  padding: 0;
-}
+  /* Hide header and footer */
+  header,
+  footer {
+    display: none;
+  }
 
-/* Hide header and footer */
-header,
-footer {
-  display: none;
-}
-
-  #wea-root{--cream:#EAE6DC;--page:#F8F5F2;--ink:#1A1A18;--ink-60:rgba(26,26,24,.62);--ink-40:rgba(26,26,24,.4);--ink-10:rgba(26,26,24,.1);--blue:#5e91d5;--blue-dk:#4a7dbe;--blue-tint:#e8f0fb;--maroon:#8a2f3f;--maroon-dk:#6f2433;--maroon-tint:#f5e9ec;--card:#ffffff;--radius:14px;--shadow:0 1px 2px rgba(26,26,24,.04),0 8px 24px rgba(26,26,24,.06);color:var(--ink);background:var(--page);line-height:1.55;-webkit-font-smoothing:antialiased}
-  #wea-root *{box-sizing:border-box}
-  #wea-root .serif{font-weight:500;letter-spacing:-.01em}
-  #wea-root .eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-  #wea-root .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  #wea-root {
+    --cream: #eae6dc;
+    --page: #f8f5f2;
+    --ink: #1a1a18;
+    --ink-60: rgba(26, 26, 24, 0.62);
+    --ink-40: rgba(26, 26, 24, 0.4);
+    --ink-10: rgba(26, 26, 24, 0.1);
+    --blue: #5e91d5;
+    --blue-dk: #4a7dbe;
+    --blue-tint: #e8f0fb;
+    --maroon: #8a2f3f;
+    --maroon-dk: #6f2433;
+    --maroon-tint: #f5e9ec;
+    --card: #ffffff;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(26, 26, 24, 0.04), 0 8px 24px rgba(26, 26, 24, 0.06);
+    color: var(--ink);
+    background: var(--page);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wea-root * {
+    box-sizing: border-box;
+  }
+  #wea-root .serif {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  #wea-root .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  #wea-root .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
   /* VIP strip */
-  #wea-root .vip-strip{background:var(--ink);color:#fff;padding:10px 24px;text-align:center;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
-  #wea-root .vip-strip b{color:var(--blue);font-weight:700}
+  #wea-root .vip-strip {
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 24px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  #wea-root .vip-strip b {
+    color: var(--blue);
+    font-weight: 700;
+  }
 
   /* Countdown */
-  #wea-root .countdown{background:var(--cream);border-bottom:1px solid var(--ink-10);padding:18px 24px}
-  #wea-root .cd-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
-  #wea-root .cd-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .cd-units{display:flex;gap:10px}
-  #wea-root .cd-unit{background:#fff;border:1px solid var(--ink-10);border-radius:10px;padding:8px 14px;min-width:62px;text-align:center}
-  #wea-root .cd-num{font-size:28px;font-weight:600;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
-  #wea-root .cd-sub{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-60);margin-top:4px}
-  #wea-root .cd-tag{font-size:12px;color:var(--maroon);font-weight:600}
+  #wea-root .countdown {
+    background: var(--cream);
+    border-bottom: 1px solid var(--ink-10);
+    padding: 18px 24px;
+  }
+  #wea-root .cd-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  #wea-root .cd-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .cd-units {
+    display: flex;
+    gap: 10px;
+  }
+  #wea-root .cd-unit {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 10px;
+    padding: 8px 14px;
+    min-width: 62px;
+    text-align: center;
+  }
+  #wea-root .cd-num {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .cd-sub {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-top: 4px;
+  }
+  #wea-root .cd-tag {
+    font-size: 12px;
+    color: var(--maroon);
+    font-weight: 600;
+  }
 
   /* Hero */
-  #wea-root .hero{padding:72px 0 56px;background:var(--page)}
-  #wea-root .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
-  #wea-root .hero h1{font-weight:500;font-size:58px;line-height:1.05;letter-spacing:-.02em;margin:14px 0 22px}
-  #wea-root .hero h1 em{font-style:italic;color:var(--blue)}
-  #wea-root .hero p{font-size:17px;color:var(--ink-60);max-width:520px;margin:0}
-  #wea-root .hero-cta{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;text-decoration:none;padding:20px 40px;border-radius:100px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,transform .2s;margin-top:32px}
-  #wea-root .hero-cta:hover{background:var(--blue);transform:translateY(-2px)}
-  #wea-root .hero-cta svg{transition:transform .2s}
-  #wea-root .hero-cta:hover svg{transform:translateX(3px)}
-  #wea-root .new-badge{position:absolute;top:22px;right:22px;width:78px;height:78px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 24px rgba(94,145,213,.45);border:4px solid #fff;animation:newBadge 2.4s ease-in-out infinite;z-index:2}
-  @keyframes newBadge{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(-10deg) scale(1.06)}}
-  #wea-root .hero-img{position:relative;aspect-ratio:4/5;background:var(--cream);border-radius:18px;overflow:hidden}
-  #wea-root .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
-  #wea-root .hero-badge{position:absolute;top:18px;left:18px;background:#fff;border-radius:100px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);box-shadow:var(--shadow)}
-  #wea-root .hero-badge::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);margin-right:8px;vertical-align:middle}
-  #wea-root .scroll-cue{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-40);margin-top:28px;font-weight:500;letter-spacing:.04em}
-  #wea-root .scroll-cue svg{animation:bob 1.6s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  #wea-root .hero {
+    padding: 72px 0 56px;
+    background: var(--page);
+  }
+  #wea-root .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #wea-root .hero h1 {
+    font-weight: 500;
+    font-size: 58px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 14px 0 22px;
+  }
+  #wea-root .hero h1 em {
+    font-style: italic;
+    color: var(--blue);
+  }
+  #wea-root .hero p {
+    font-size: 17px;
+    color: var(--ink-60);
+    max-width: 520px;
+    margin: 0;
+  }
+  #wea-root .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 20px 40px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+    margin-top: 32px;
+  }
+  #wea-root .hero-cta:hover {
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
+  #wea-root .hero-cta svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .hero-cta:hover svg {
+    transform: translateX(3px);
+  }
+  #wea-root .new-badge {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(94, 145, 213, 0.45);
+    border: 4px solid #fff;
+    animation: newBadge 2.4s ease-in-out infinite;
+    z-index: 2;
+  }
+  @keyframes newBadge {
+    0%,
+    100% {
+      transform: rotate(-10deg) scale(1);
+    }
+    50% {
+      transform: rotate(-10deg) scale(1.06);
+    }
+  }
+  #wea-root .hero-img {
+    position: relative;
+    aspect-ratio: 4/5;
+    background: var(--cream);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  #wea-root .hero-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #wea-root .hero-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: #fff;
+    border-radius: 100px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  #wea-root .hero-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  #wea-root .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-40);
+    margin-top: 28px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  #wea-root .scroll-cue svg {
+    animation: bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+  }
 
   /* Claims strip */
-  #wea-root .claims{background:var(--ink);color:#fff;padding:44px 0}
-  #wea-root .claims-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
-  #wea-root .claim{text-align:center}
-  #wea-root .claim-num{font-size:42px;font-weight:500;color:var(--blue);line-height:1;letter-spacing:-.01em}
-  #wea-root .claim-txt{font-size:12px;color:rgba(255,255,255,.72);margin-top:8px;line-height:1.45}
+  #wea-root .claims {
+    background: var(--ink);
+    color: #fff;
+    padding: 44px 0;
+  }
+  #wea-root .claims-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  #wea-root .claim {
+    text-align: center;
+  }
+  #wea-root .claim-num {
+    font-size: 42px;
+    font-weight: 500;
+    color: var(--blue);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  #wea-root .claim-txt {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+    margin-top: 8px;
+    line-height: 1.45;
+  }
 
   /* Section base */
-  #wea-root section.sec{padding:84px 0}
-  #wea-root .sec h2{font-weight:500;font-size:42px;line-height:1.1;letter-spacing:-.015em;margin:10px 0 14px;max-width:720px}
-  #wea-root .sec .lede{font-size:16px;color:var(--ink-60);max-width:620px;margin-bottom:44px}
+  #wea-root section.sec {
+    padding: 84px 0;
+  }
+  #wea-root .sec h2 {
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 10px 0 14px;
+    max-width: 720px;
+  }
+  #wea-root .sec .lede {
+    font-size: 16px;
+    color: var(--ink-60);
+    max-width: 620px;
+    margin-bottom: 44px;
+  }
 
   /* Clinical proof cards (new format) */
-  #wea-root .proof{background:var(--cream)}
-  #wea-root .proof-stack{display:flex;flex-direction:column;gap:16px}
-  #wea-root .proof-card{background:#fff;border-radius:var(--radius);padding:36px 42px;box-shadow:var(--shadow)}
-  #wea-root .proof-quote{font-style:italic;font-size:22px;line-height:1.42;color:var(--ink);margin:0 0 20px}
-  #wea-root .proof-quote b{font-weight:700;font-style:italic}
-  #wea-root .proof-source{font-size:14px;color:var(--ink-60)}
-  #wea-root .proof-source b{color:var(--ink);font-weight:600}
+  #wea-root .proof {
+    background: var(--cream);
+  }
+  #wea-root .proof-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #wea-root .proof-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 36px 42px;
+    box-shadow: var(--shadow);
+  }
+  #wea-root .proof-quote {
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.42;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+  #wea-root .proof-quote b {
+    font-weight: 700;
+    font-style: italic;
+  }
+  #wea-root .proof-source {
+    font-size: 14px;
+    color: var(--ink-60);
+  }
+  #wea-root .proof-source b {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
   /* Product overview */
-  #wea-root .overview{background:var(--page)}
-  #wea-root .overview-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:center}
-  #wea-root .overview-img{aspect-ratio:1/1;background:var(--cream);border-radius:18px;overflow:hidden}
-  #wea-root .overview-img img{width:100%;height:100%;object-fit:cover}
-  #wea-root .pathways{margin-top:28px;display:flex;flex-direction:column;gap:14px}
-  #wea-root .pathway{display:flex;gap:18px;align-items:flex-start;padding:18px 20px;background:#fff;border:1px solid var(--ink-10);border-radius:12px}
-  #wea-root .pathway-n{font-size:22px;font-weight:600;color:var(--blue);line-height:1;min-width:28px}
-  #wea-root .pathway-t{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
-  #wea-root .pathway-d{font-size:13px;color:var(--ink-60);line-height:1.5}
-  #wea-root .pathway-stat{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--blue);background:var(--blue-tint);padding:5px 10px;border-radius:100px}
+  #wea-root .overview {
+    background: var(--page);
+  }
+  #wea-root .overview-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 72px;
+    align-items: center;
+  }
+  #wea-root .overview-img {
+    aspect-ratio: 1/1;
+    background: var(--cream);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  #wea-root .overview-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #wea-root .pathways {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #wea-root .pathway {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 12px;
+  }
+  #wea-root .pathway-n {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--blue);
+    line-height: 1;
+    min-width: 28px;
+  }
+  #wea-root .pathway-t {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  #wea-root .pathway-d {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.5;
+  }
+  #wea-root .pathway-stat {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--blue);
+    background: var(--blue-tint);
+    padding: 5px 10px;
+    border-radius: 100px;
+  }
 
   /* 4th pathway (Berberine) module */
-  #wea-root .fourth{background:linear-gradient(180deg,var(--maroon-tint) 0%,var(--page) 100%);padding:84px 0}
-  #wea-root .fourth-wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-  #wea-root .fourth-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(138,47,63,.06),0 12px 40px rgba(138,47,63,.08);border-top:4px solid var(--maroon)}
-  #wea-root .fourth-inner{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;padding:56px 60px;align-items:center}
-  #wea-root .fourth-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--maroon);background:var(--maroon-tint);padding:7px 14px;border-radius:100px;margin-bottom:16px}
-  #wea-root .fourth-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--maroon)}
-  #wea-root .fourth-h{font-size:40px;font-weight:500;line-height:1.08;letter-spacing:-.015em;margin:0 0 18px}
-  #wea-root .fourth-h em{font-style:italic;color:var(--maroon)}
-  #wea-root .fourth-p{font-size:15px;color:var(--ink-60);line-height:1.65;margin:0 0 24px;max-width:520px}
-  #wea-root .fourth-feats{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
-  #wea-root .fourth-feat{display:flex;gap:14px;align-items:flex-start;font-size:14px;color:var(--ink)}
-  #wea-root .fourth-feat::before{content:'';min-width:22px;height:22px;border-radius:50%;background:var(--maroon-tint);color:var(--maroon);display:flex;align-items:center;justify-content:center;margin-top:1px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a2f3f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");background-repeat:no-repeat;background-position:center}
-  #wea-root .fourth-cta{display:inline-flex;align-items:center;gap:10px;background:var(--maroon);color:#fff;text-decoration:none;padding:16px 28px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,transform .2s}
-  #wea-root .fourth-cta:hover{background:var(--maroon-dk);transform:translateY(-2px)}
+  #wea-root .fourth {
+    background: linear-gradient(180deg, var(--maroon-tint) 0%, var(--page) 100%);
+    padding: 84px 0;
+  }
+  #wea-root .fourth-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  #wea-root .fourth-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(138, 47, 63, 0.06), 0 12px 40px rgba(138, 47, 63, 0.08);
+    border-top: 4px solid var(--maroon);
+  }
+  #wea-root .fourth-inner {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    padding: 56px 60px;
+    align-items: center;
+  }
+  #wea-root .fourth-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    background: var(--maroon-tint);
+    padding: 7px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  #wea-root .fourth-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--maroon);
+  }
+  #wea-root .fourth-h {
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+  }
+  #wea-root .fourth-h em {
+    font-style: italic;
+    color: var(--maroon);
+  }
+  #wea-root .fourth-p {
+    font-size: 15px;
+    color: var(--ink-60);
+    line-height: 1.65;
+    margin: 0 0 24px;
+    max-width: 520px;
+  }
+  #wea-root .fourth-feats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  #wea-root .fourth-feat {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  #wea-root .fourth-feat::before {
+    content: '';
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--maroon-tint);
+    color: var(--maroon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a2f3f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  #wea-root .fourth-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--maroon);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 28px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+  }
+  #wea-root .fourth-cta:hover {
+    background: var(--maroon-dk);
+    transform: translateY(-2px);
+  }
 
   /* 4-lane visual */
-  #wea-root .lanes{background:var(--page);border-radius:16px;padding:28px 24px;border:1px solid rgba(138,47,63,.12)}
-  #wea-root .lanes-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-60);margin-bottom:18px;text-align:center}
-  #wea-root .lane{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px dashed rgba(26,26,24,.08)}
-  #wea-root .lane:last-child{border-bottom:none}
-  #wea-root .lane-n{font-size:11px;font-weight:700;min-width:24px;color:var(--ink-40);font-variant-numeric:tabular-nums}
-  #wea-root .lane-bar{flex:1;height:8px;border-radius:100px;background:var(--ink-10);position:relative;overflow:hidden}
-  #wea-root .lane-bar::after{content:'';position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--blue);border-radius:100px}
-  #wea-root .lane.four .lane-bar::after{background:var(--maroon);animation:laneFill 1.4s .3s ease-out backwards}
-  #wea-root .lane.four .lane-n{color:var(--maroon)}
-  #wea-root .lane-lab{font-size:12px;font-weight:600;color:var(--ink);min-width:110px;text-align:right}
-  #wea-root .lane.four .lane-lab{color:var(--maroon)}
-  @keyframes laneFill{from{width:0}to{width:100%}}
+  #wea-root .lanes {
+    background: var(--page);
+    border-radius: 16px;
+    padding: 28px 24px;
+    border: 1px solid rgba(138, 47, 63, 0.12);
+  }
+  #wea-root .lanes-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  #wea-root .lane {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(26, 26, 24, 0.08);
+  }
+  #wea-root .lane:last-child {
+    border-bottom: none;
+  }
+  #wea-root .lane-n {
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 24px;
+    color: var(--ink-40);
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .lane-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 100px;
+    background: var(--ink-10);
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .lane-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: var(--blue);
+    border-radius: 100px;
+  }
+  #wea-root .lane.four .lane-bar::after {
+    background: var(--maroon);
+    animation: laneFill 1.4s 0.3s ease-out backwards;
+  }
+  #wea-root .lane.four .lane-n {
+    color: var(--maroon);
+  }
+  #wea-root .lane-lab {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 110px;
+    text-align: right;
+  }
+  #wea-root .lane.four .lane-lab {
+    color: var(--maroon);
+  }
+  @keyframes laneFill {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
 
   /* Best for */
-  #wea-root .bestfor{background:var(--cream)}
-  #wea-root .bestfor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  #wea-root .bf-card{background:#fff;border-radius:12px;padding:24px 26px;display:flex;gap:16px;align-items:flex-start}
-  #wea-root .bf-check{min-width:22px;height:22px;border-radius:50%;background:var(--blue-tint);color:var(--blue);display:flex;align-items:center;justify-content:center;margin-top:2px}
-  #wea-root .bf-t{font-size:15px;font-weight:600;margin-bottom:4px}
-  #wea-root .bf-d{font-size:13px;color:var(--ink-60);line-height:1.5}
+  #wea-root .bestfor {
+    background: var(--cream);
+  }
+  #wea-root .bestfor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  #wea-root .bf-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 26px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  #wea-root .bf-check {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue-tint);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  #wea-root .bf-t {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  #wea-root .bf-d {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.5;
+  }
 
   /* Timeline */
-  #wea-root .timeline{background:var(--page)}
-  #wea-root .tl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  #wea-root .tl-card{background:#fff;border:1px solid var(--ink-10);border-radius:var(--radius);padding:32px 30px;position:relative;overflow:hidden}
-  #wea-root .tl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue)}
-  #wea-root .tl-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
-  #wea-root .tl-h{font-size:30px;font-weight:500;line-height:1.1;margin-bottom:14px}
-  #wea-root .tl-p{font-size:14px;color:var(--ink-60);line-height:1.6}
-  #wea-root .tl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-  #wea-root .tl-list li{font-size:13px;color:var(--ink-60);line-height:1.5;padding-left:18px;position:relative}
-  #wea-root .tl-list li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+  #wea-root .timeline {
+    background: var(--page);
+  }
+  #wea-root .tl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  #wea-root .tl-card {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: var(--radius);
+    padding: 32px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .tl-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--blue);
+  }
+  #wea-root .tl-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  #wea-root .tl-h {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  #wea-root .tl-p {
+    font-size: 14px;
+    color: var(--ink-60);
+    line-height: 1.6;
+  }
+  #wea-root .tl-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #wea-root .tl-list li {
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.5;
+    padding-left: 18px;
+    position: relative;
+  }
+  #wea-root .tl-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
 
   /* Calculator */
-  #wea-root .calc-wrap{background:var(--cream)}
-  #wea-root .calc{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);max-width:920px;margin:0 auto}
-  #wea-root .calc-head{background:var(--ink);color:#fff;padding:22px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-  #wea-root .calc-title{font-size:15px;font-weight:600;letter-spacing:.02em}
-  #wea-root .calc-title span{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
-  #wea-root .unit-tog{background:rgba(255,255,255,.08);border-radius:8px;padding:3px;display:flex}
-  #wea-root .u-btn{background:transparent;border:0;color:rgba(255,255,255,.7);font:inherit;font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  #wea-root .u-btn.on{background:#fff;color:var(--ink)}
-  #wea-root .calc-body{display:grid;grid-template-columns:1fr 1.1fr}
-  #wea-root .calc-inputs{padding:32px;border-right:1px solid var(--ink-10);display:flex;flex-direction:column;gap:24px}
-  #wea-root .slg{display:flex;flex-direction:column;gap:10px}
-  #wea-root .sl-top{display:flex;justify-content:space-between;align-items:baseline}
-  #wea-root .sl-lab{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .sl-val{font-size:28px;font-weight:600;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  #wea-root .sl-val span{font-size:14px;color:var(--ink-60);font-weight:500;margin-left:2px}
-  #wea-root input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--ink-10);border-radius:100px;outline:none;cursor:pointer}
-  #wea-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 2px 6px rgba(94,145,213,.4);cursor:grab}
-  #wea-root input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 2px 6px rgba(94,145,213,.4);cursor:grab}
-  #wea-root .bmi-warn{font-size:11px;padding:10px 12px;background:#FEF7E8;border-radius:8px;line-height:1.5;color:#6B4A0A;display:none;align-items:flex-start;gap:8px}
-  #wea-root .bmi-warn.show{display:flex}
+  #wea-root .calc-wrap {
+    background: var(--cream);
+  }
+  #wea-root .calc {
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  #wea-root .calc-head {
+    background: var(--ink);
+    color: #fff;
+    padding: 22px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  #wea-root .calc-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  #wea-root .calc-title span {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #wea-root .unit-tog {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 3px;
+    display: flex;
+  }
+  #wea-root .u-btn {
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #wea-root .u-btn.on {
+    background: #fff;
+    color: var(--ink);
+  }
+  #wea-root .calc-body {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+  }
+  #wea-root .calc-inputs {
+    padding: 32px;
+    border-right: 1px solid var(--ink-10);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  #wea-root .slg {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #wea-root .sl-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  #wea-root .sl-lab {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .sl-val {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .sl-val span {
+    font-size: 14px;
+    color: var(--ink-60);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+  #wea-root input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--ink-10);
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+  }
+  #wea-root input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(94, 145, 213, 0.4);
+    cursor: grab;
+  }
+  #wea-root input[type='range']::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(94, 145, 213, 0.4);
+    cursor: grab;
+  }
+  #wea-root .bmi-warn {
+    font-size: 11px;
+    padding: 10px 12px;
+    background: #fef7e8;
+    border-radius: 8px;
+    line-height: 1.5;
+    color: #6b4a0a;
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  #wea-root .bmi-warn.show {
+    display: flex;
+  }
 
-  #wea-root .calc-out{padding:32px;background:#FAF9F6;display:flex;flex-direction:column;gap:18px}
-  #wea-root .out-lab{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
-  #wea-root .out-head{font-size:22px;font-weight:500;line-height:1.2;margin-top:4px}
-  #wea-root .out-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
-  #wea-root .out-stat{background:#fff;border:1px solid var(--ink-10);border-radius:10px;padding:14px 16px}
-  #wea-root .os-lab{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .os-val{font-size:24px;font-weight:600;color:var(--ink);margin-top:4px;line-height:1;font-variant-numeric:tabular-nums}
-  #wea-root .os-val span{font-size:13px;color:var(--ink-60);font-weight:500;margin-left:2px}
+  #wea-root .calc-out {
+    padding: 32px;
+    background: #faf9f6;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  #wea-root .out-lab {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  #wea-root .out-head {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+  #wea-root .out-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  #wea-root .out-stat {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  #wea-root .os-lab {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .os-val {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 4px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  #wea-root .os-val span {
+    font-size: 13px;
+    color: var(--ink-60);
+    font-weight: 500;
+    margin-left: 2px;
+  }
 
   /* Chart */
-  #wea-root .chart-wrap{background:#fff;border:1px solid var(--ink-10);border-radius:10px;padding:16px 18px 12px}
-  #wea-root .chart-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-  #wea-root .chart-lab{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60)}
-  #wea-root .chart-month{font-size:10px;color:var(--ink-40)}
-  #wea-root .chart svg{width:100%;height:124px;display:block}
-  #wea-root .chart-x{display:flex;justify-content:space-between;font-size:9px;color:var(--ink-40);margin-top:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  #wea-root .chart-wrap {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 10px;
+    padding: 16px 18px 12px;
+  }
+  #wea-root .chart-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  #wea-root .chart-lab {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+  #wea-root .chart-month {
+    font-size: 10px;
+    color: var(--ink-40);
+  }
+  #wea-root .chart svg {
+    width: 100%;
+    height: 124px;
+    display: block;
+  }
+  #wea-root .chart-x {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--ink-40);
+    margin-top: 4px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 
-  #wea-root .calc-disc{font-size:10px;color:var(--ink-40);line-height:1.5;margin-top:4px}
+  #wea-root .calc-disc {
+    font-size: 10px;
+    color: var(--ink-40);
+    line-height: 1.5;
+    margin-top: 4px;
+  }
 
   /* Product links */
-  #wea-root .products{background:var(--page)}
-  #wea-root .prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  #wea-root .prod-card{background:#fff;border:1px solid var(--ink-10);border-radius:18px;overflow:hidden;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
-  #wea-root .prod-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-  #wea-root .prod-img{aspect-ratio:16/10;background:var(--cream);position:relative;overflow:hidden}
-  #wea-root .prod-img img{width:100%;height:100%;object-fit:cover}
-  #wea-root .prod-tag{position:absolute;top:16px;left:16px;background:#fff;padding:6px 12px;border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-  #wea-root .prod-body{padding:32px;display:flex;flex-direction:column;flex:1}
-  #wea-root .prod-h{font-size:30px;font-weight:500;line-height:1.15;margin:4px 0 10px}
-  #wea-root .prod-d{font-size:14px;color:var(--ink-60);line-height:1.6;margin-bottom:20px;flex:1}
-  #wea-root .prod-feat{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;padding-top:18px;border-top:1px solid var(--ink-10)}
-  #wea-root .prod-f{font-size:13px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
-  #wea-root .prod-f::before{content:'';min-width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:8px}
-  #wea-root .prod-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:#fff;text-decoration:none;padding:16px 24px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.04em;transition:background .2s}
-  #wea-root .prod-cta:hover{background:var(--blue)}
-  #wea-root .prod-cta.stack{background:var(--blue)}
-  #wea-root .prod-cta.stack:hover{background:var(--blue-dk)}
+  #wea-root .products {
+    background: var(--page);
+  }
+  #wea-root .prod-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  #wea-root .prod-card {
+    background: #fff;
+    border: 1px solid var(--ink-10);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  #wea-root .prod-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  #wea-root .prod-img {
+    aspect-ratio: 16/10;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  #wea-root .prod-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #wea-root .prod-tag {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  #wea-root .prod-body {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  #wea-root .prod-h {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 4px 0 10px;
+  }
+  #wea-root .prod-d {
+    font-size: 14px;
+    color: var(--ink-60);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  #wea-root .prod-feat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ink-10);
+  }
+  #wea-root .prod-f {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  #wea-root .prod-f::before {
+    content: '';
+    min-width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    margin-top: 8px;
+  }
+  #wea-root .prod-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 24px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  #wea-root .prod-cta:hover {
+    background: var(--blue);
+  }
+  #wea-root .prod-cta.stack {
+    background: var(--blue);
+  }
+  #wea-root .prod-cta.stack:hover {
+    background: var(--blue-dk);
+  }
 
   /* Inline section CTA */
-  #wea-root .inline-cta{display:flex;justify-content:center;margin-top:44px}
-  #wea-root .inline-cta a{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;text-decoration:none;padding:18px 36px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,transform .2s}
-  #wea-root .inline-cta a:hover{background:var(--blue);transform:translateY(-2px)}
-  #wea-root .inline-cta a svg{transition:transform .2s}
-  #wea-root .inline-cta a:hover svg{transform:translateX(3px)}
-  #wea-root .calc-cta{margin-top:4px}
-  #wea-root .calc-cta a{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--blue);color:#fff;text-decoration:none;padding:16px 22px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:background .2s}
-  #wea-root .calc-cta a:hover{background:var(--blue-dk)}
-  #wea-root .fourth-chip{display:inline-flex;align-items:center;gap:8px;background:var(--blue-tint);color:var(--blue-dk);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px;align-self:flex-start}
+  #wea-root .inline-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 44px;
+  }
+  #wea-root .inline-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    padding: 18px 36px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+  }
+  #wea-root .inline-cta a:hover {
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
+  #wea-root .inline-cta a svg {
+    transition: transform 0.2s;
+  }
+  #wea-root .inline-cta a:hover svg {
+    transform: translateX(3px);
+  }
+  #wea-root .calc-cta {
+    margin-top: 4px;
+  }
+  #wea-root .calc-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--blue);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 22px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  #wea-root .calc-cta a:hover {
+    background: var(--blue-dk);
+  }
+  #wea-root .fourth-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-tint);
+    color: var(--blue-dk);
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    align-self: flex-start;
+  }
 
   /* Footer disclaimer */
-  #wea-root .foot{background:var(--ink);color:rgba(255,255,255,.5);padding:44px 0;font-size:11px;line-height:1.7}
-  #wea-root .foot p{margin:0 0 10px}
-  #wea-root .foot .tm{color:#fff;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;margin-bottom:14px}
+  #wea-root .foot {
+    background: var(--ink);
+    color: rgba(255, 255, 255, 0.5);
+    padding: 44px 0;
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  #wea-root .foot p {
+    margin: 0 0 10px;
+  }
+  #wea-root .foot .tm {
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
 
   /* Mobile */
-  @media (max-width:860px){
-    #wea-root .hero{padding:44px 0 32px}
-    #wea-root .hero-grid{grid-template-columns:1fr;gap:36px}
-    #wea-root .hero h1{font-size:40px}
-    #wea-root .hero-img{aspect-ratio:1/1;order:-1}
-    #wea-root .sec{padding:56px 0}
-    #wea-root .sec h2{font-size:32px}
-    #wea-root .claims-grid{grid-template-columns:1fr 1fr;gap:32px 20px}
-    #wea-root .claim-num{font-size:36px}
-    #wea-root .proof-card{padding:28px 26px}
-    #wea-root .proof-quote{font-size:18px}
-    #wea-root .overview-grid{grid-template-columns:1fr;gap:40px}
-    #wea-root .fourth{padding:56px 0}
-    #wea-root .fourth-inner{grid-template-columns:1fr;gap:36px;padding:36px 28px}
-    #wea-root .fourth-h{font-size:30px}
-    #wea-root .bestfor-grid{grid-template-columns:1fr}
-    #wea-root .tl-grid{grid-template-columns:1fr;gap:14px}
-    #wea-root .calc-body{grid-template-columns:1fr}
-    #wea-root .calc-inputs{border-right:0;border-bottom:1px solid var(--ink-10)}
-    #wea-root .prod-grid{grid-template-columns:1fr}
-    #wea-root .cd-unit{min-width:54px;padding:6px 10px}
-    #wea-root .cd-num{font-size:24px}
+  @media (max-width: 860px) {
+    #wea-root .hero {
+      padding: 44px 0 32px;
+    }
+    #wea-root .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    #wea-root .hero h1 {
+      font-size: 40px;
+    }
+    #wea-root .hero-img {
+      aspect-ratio: 1/1;
+      order: -1;
+    }
+    #wea-root .sec {
+      padding: 56px 0;
+    }
+    #wea-root .sec h2 {
+      font-size: 32px;
+    }
+    #wea-root .claims-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 20px;
+    }
+    #wea-root .claim-num {
+      font-size: 36px;
+    }
+    #wea-root .proof-card {
+      padding: 28px 26px;
+    }
+    #wea-root .proof-quote {
+      font-size: 18px;
+    }
+    #wea-root .overview-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    #wea-root .fourth {
+      padding: 56px 0;
+    }
+    #wea-root .fourth-inner {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding: 36px 28px;
+    }
+    #wea-root .fourth-h {
+      font-size: 30px;
+    }
+    #wea-root .bestfor-grid {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .tl-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    #wea-root .calc-body {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .calc-inputs {
+      border-right: 0;
+      border-bottom: 1px solid var(--ink-10);
+    }
+    #wea-root .prod-grid {
+      grid-template-columns: 1fr;
+    }
+    #wea-root .cd-unit {
+      min-width: 54px;
+      padding: 6px 10px;
+    }
+    #wea-root .cd-num {
+      font-size: 24px;
+    }
   }
 </style>
 
 <div id="wea-root">
-
   <!-- VIP strip -->
   <div class="vip-strip">
-    <b>★ VIP EARLY ACCESS</b> &nbsp;·&nbsp; YOU'RE IN 48 HOURS EARLY &nbsp;·&nbsp; LIMITED LAUNCH QUANTITIES &nbsp;·&nbsp; WE WILL SELL OUT
+    <b>★ VIP EARLY ACCESS</b> &nbsp;·&nbsp; YOU'RE IN 48 HOURS EARLY &nbsp;·&nbsp; LIMITED LAUNCH QUANTITIES
+    &nbsp;·&nbsp; WE WILL SELL OUT
   </div>
 
   <!-- Countdown -->
@@ -251,10 +1251,22 @@ footer {
     <div class="cd-inner">
       <div class="cd-label">VIP early access ends in</div>
       <div class="cd-units">
-        <div class="cd-unit"><div class="cd-num" id="cdD">00</div><div class="cd-sub">Days</div></div>
-        <div class="cd-unit"><div class="cd-num" id="cdH">00</div><div class="cd-sub">Hours</div></div>
-        <div class="cd-unit"><div class="cd-num" id="cdM">00</div><div class="cd-sub">Min</div></div>
-        <div class="cd-unit"><div class="cd-num" id="cdS">00</div><div class="cd-sub">Sec</div></div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cdD">00</div>
+          <div class="cd-sub">Days</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cdH">00</div>
+          <div class="cd-sub">Hours</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cdM">00</div>
+          <div class="cd-sub">Min</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cdS">00</div>
+          <div class="cd-sub">Sec</div>
+        </div>
       </div>
       <div class="cd-tag">Your VIP window closes when the clock hits zero</div>
     </div>
@@ -266,10 +1278,25 @@ footer {
       <div>
         <div class="eyebrow">Introducing WLP-1™</div>
         <h1>The GLP-1 support you've been waiting for, <em>in a capsule.</em></h1>
-        <p>{{ section.settings.hero_sub | default: "An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants." }}</p>
+        <p>
+          {{
+            section.settings.hero_sub
+            | default: 'An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants.'
+          }}
+        </p>
         <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}" class="hero-cta">
           Shop WLP-1™
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </a>
       </div>
       <div class="hero-img">
@@ -287,10 +1314,22 @@ footer {
   <!-- Claims strip -->
   <section class="claims">
     <div class="wrap claims-grid">
-      <div class="claim"><div class="claim-num">20x</div><div class="claim-txt">Better absorption through our advanced delivery science</div></div>
-      <div class="claim"><div class="claim-num">3</div><div class="claim-txt">Metabolic pathways: cravings, fullness, calories burned</div></div>
-      <div class="claim"><div class="claim-num">0</div><div class="claim-txt">Needles, prescriptions, or harsh stimulants required</div></div>
-      <div class="claim"><div class="claim-num">100%</div><div class="claim-txt">Third-party tested and formulated to the highest quality standards</div></div>
+      <div class="claim">
+        <div class="claim-num">20x</div>
+        <div class="claim-txt">Better absorption through our advanced delivery science</div>
+      </div>
+      <div class="claim">
+        <div class="claim-num">3</div>
+        <div class="claim-txt">Metabolic pathways: cravings, fullness, calories burned</div>
+      </div>
+      <div class="claim">
+        <div class="claim-num">0</div>
+        <div class="claim-txt">Needles, prescriptions, or harsh stimulants required</div>
+      </div>
+      <div class="claim">
+        <div class="claim-num">100%</div>
+        <div class="claim-txt">Third-party tested and formulated to the highest quality standards</div>
+      </div>
     </div>
   </section>
 
@@ -299,22 +1338,48 @@ footer {
     <div class="wrap">
       <div class="eyebrow">The Results</div>
       <h2 class="serif">What the ingredient trials found</h2>
-      <p class="lede">The ingredients used in WLP-1™ have been studied in peer-reviewed human clinical trials. Here's what the research reported on those individual ingredients.</p>
+      <p class="lede">
+        The ingredients used in WLP-1™ have been studied in peer-reviewed human clinical trials. Here's what the
+        research reported on those individual ingredients.
+      </p>
       <div class="proof-stack">
         <div class="proof-card">
-          <p class="proof-quote">"<b>28.1 lbs lost</b> and <b>6.7 inches</b> off the waist. No changes to diet or exercise were required during the study."</p>
+          <p class="proof-quote">
+            "<b>28.1 lbs lost</b> and <b>6.7 inches</b> off the waist. No changes to diet or exercise were required
+            during the study."
+          </p>
           <div class="proof-source"><b>IGOB131® clinical trial</b> · Double-blind, placebo-controlled. BMI 26+.</div>
         </div>
         <div class="proof-card">
-          <p class="proof-quote">"Participants ate <b>17.5% less</b> and reported feeling <b>27.4% more full</b> after meals. Results were comparable to oral prescription GLP-1."</p>
+          <p class="proof-quote">
+            "Participants ate <b>17.5% less</b> and reported feeling <b>27.4% more full</b> after meals. Results were
+            comparable to oral prescription GLP-1."
+          </p>
           <div class="proof-source"><b>CQR-300™ randomized controlled trial</b> · Medicina, 2020.</div>
         </div>
         <div class="proof-card">
-          <p class="proof-quote">"<b>4 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups."</p>
+          <p class="proof-quote">
+            "<b>~9 lbs lost in just 4 weeks.</b> No serious adverse side effects reported across treatment groups."
+          </p>
           <div class="proof-source"><b>Capsifen™ clinical study</b> · Journal of Dietary Supplements.</div>
         </div>
       </div>
-      <div class="inline-cta"><a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}">Shop WLP-1™ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+      <div class="inline-cta">
+        <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}"
+          >Shop WLP-1™
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -329,13 +1394,18 @@ footer {
       <div>
         <div class="eyebrow">How It Works</div>
         <h2 class="serif">Three metabolic pathways. One daily capsule.</h2>
-        <p class="lede">Most weight management products hit one lever. WLP-1™ supports three: the same biological systems targeted by injectable GLP-1 approaches, delivered orally through our proprietary absorption technology.</p>
+        <p class="lede">
+          Most weight management products hit one lever. WLP-1™ supports three: the same biological systems targeted by
+          injectable GLP-1 approaches, delivered orally through our proprietary absorption technology.
+        </p>
         <div class="pathways">
           <div class="pathway">
             <div class="pathway-n">01</div>
             <div>
               <div class="pathway-t">Supports natural GLP-1 activity</div>
-              <div class="pathway-d">Helps support the body's own fullness hormone. The same signal injectables target, engaged from within.</div>
+              <div class="pathway-d">
+                Helps support the body's own fullness hormone. The same signal injectables target, engaged from within.
+              </div>
               <div class="pathway-stat">Up to 321% increase in GLP-1 levels in clinical research</div>
             </div>
           </div>
@@ -343,7 +1413,9 @@ footer {
             <div class="pathway-n">02</div>
             <div>
               <div class="pathway-t">Helps quiet appetite signaling</div>
-              <div class="pathway-d">Supports appetite regulation and helps curb cravings, so food decisions feel easier, not forced.</div>
+              <div class="pathway-d">
+                Supports appetite regulation and helps curb cravings, so food decisions feel easier, not forced.
+              </div>
               <div class="pathway-stat">22.3% improvement in eating control in studies</div>
             </div>
           </div>
@@ -351,12 +1423,30 @@ footer {
             <div class="pathway-n">03</div>
             <div>
               <div class="pathway-t">Supports thermogenesis</div>
-              <div class="pathway-d">Helps the body burn more calories at rest by supporting natural thermogenic pathways, without harsh stimulants.</div>
+              <div class="pathway-d">
+                Helps the body burn more calories at rest by supporting natural thermogenic pathways, without harsh
+                stimulants.
+              </div>
               <div class="pathway-stat">Up to 20% reduction in body fat in studies</div>
             </div>
           </div>
         </div>
-        <div class="inline-cta"><a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}">Shop WLP-1™ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+        <div class="inline-cta">
+          <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}"
+            >Shop WLP-1™
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -369,25 +1459,63 @@ footer {
           <div>
             <div class="fourth-eyebrow">Add a 4th pathway</div>
             <h2 class="fourth-h serif">Meet Berberine. <em>The 4th lane.</em></h2>
-            <p class="fourth-p">WLP-1™ supports three metabolic pathways. Berberine adds a fourth: AMPK activation. Think of it like a four-lane highway instead of a three-lane one. More support, more momentum, more sustainable results.</p>
+            <p class="fourth-p">
+              WLP-1™ supports three metabolic pathways. Berberine adds a fourth: AMPK activation. Think of it like a
+              four-lane highway instead of a three-lane one. More support, more momentum, more sustainable results.
+            </p>
             <div class="fourth-feats">
-              <div class="fourth-feat">Supports insulin sensitivity so your body needs less insulin to clear sugar from the bloodstream</div>
-              <div class="fourth-feat">Helps regulate blood sugar for steadier energy and fewer cravings between meals</div>
-              <div class="fourth-feat">Supports a long-term metabolic reset that pairs naturally with WLP-1™'s daily support</div>
+              <div class="fourth-feat">
+                Supports insulin sensitivity so your body needs less insulin to clear sugar from the bloodstream
+              </div>
+              <div class="fourth-feat">
+                Helps regulate blood sugar for steadier energy and fewer cravings between meals
+              </div>
+              <div class="fourth-feat">
+                Supports a long-term metabolic reset that pairs naturally with WLP-1™'s daily support
+              </div>
               <div class="fourth-feat">6.2x better absorbed than standard berberine formulations</div>
             </div>
-            <a href="{{ section.settings.prod2_url | default: '/products/ultimate-weight-management-stack' }}" class="fourth-cta">
+            <a
+              href="{{ section.settings.prod2_url | default: '/products/ultimate-weight-management-stack' }}"
+              class="fourth-cta"
+            >
               Shop The Ultimate Stack
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
           <div>
             <div class="lanes">
               <div class="lanes-title">The 4-lane highway</div>
-              <div class="lane"><div class="lane-n">01</div><div class="lane-bar"></div><div class="lane-lab">GLP-1 activity</div></div>
-              <div class="lane"><div class="lane-n">02</div><div class="lane-bar"></div><div class="lane-lab">Appetite control</div></div>
-              <div class="lane"><div class="lane-n">03</div><div class="lane-bar"></div><div class="lane-lab">Thermogenesis</div></div>
-              <div class="lane four"><div class="lane-n">04</div><div class="lane-bar"></div><div class="lane-lab">AMPK activation</div></div>
+              <div class="lane">
+                <div class="lane-n">01</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">GLP-1 activity</div>
+              </div>
+              <div class="lane">
+                <div class="lane-n">02</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">Appetite control</div>
+              </div>
+              <div class="lane">
+                <div class="lane-n">03</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">Thermogenesis</div>
+              </div>
+              <div class="lane four">
+                <div class="lane-n">04</div>
+                <div class="lane-bar"></div>
+                <div class="lane-lab">AMPK activation</div>
+              </div>
             </div>
           </div>
         </div>
@@ -403,31 +1531,159 @@ footer {
       <p class="lede">If any of these sound familiar, you're exactly who we built this for.</p>
       <div class="bestfor-grid">
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Want the benefits without the needles</div><div class="bf-d">You're curious about GLP-1 support but don't want injections, prescriptions, or weekly side effects.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Want the benefits without the needles</div>
+            <div class="bf-d">
+              You're curious about GLP-1 support but don't want injections, prescriptions, or weekly side effects.
+            </div>
+          </div>
         </div>
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Are tired of supplements that don't work</div><div class="bf-d">You're done with caffeine-loaded pills, fad blends, and products that promise everything and deliver nothing.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Are tired of supplements that don't work</div>
+            <div class="bf-d">
+              You're done with caffeine-loaded pills, fad blends, and products that promise everything and deliver
+              nothing.
+            </div>
+          </div>
         </div>
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Struggle with cravings and hunger cues</div><div class="bf-d">You know discipline isn't the issue. Your body keeps pushing you toward food even when you're trying to be mindful.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Struggle with cravings and hunger cues</div>
+            <div class="bf-d">
+              You know discipline isn't the issue. Your body keeps pushing you toward food even when you're trying to be
+              mindful.
+            </div>
+          </div>
         </div>
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Care about what's in your supplements</div><div class="bf-d">You want clinically backed ingredients, third-party testing, and real transparency, not proprietary blends.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Care about what's in your supplements</div>
+            <div class="bf-d">
+              You want clinically backed ingredients, third-party testing, and real transparency, not proprietary
+              blends.
+            </div>
+          </div>
         </div>
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Have plateaued and need a reset</div><div class="bf-d">You've done the work, seen progress, then hit a wall. WLP-1™ supports the metabolic pathways that often stall out.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Have plateaued and need a reset</div>
+            <div class="bf-d">
+              You've done the work, seen progress, then hit a wall. WLP-1™ supports the metabolic pathways that often
+              stall out.
+            </div>
+          </div>
         </div>
         <div class="bf-card">
-          <div class="bf-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="bf-t">Want something sustainable, not extreme</div><div class="bf-d">You want an approach that works with your body, not one that overrides it and leaves you rebounding when you stop.</div></div>
+          <div class="bf-check">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="bf-t">Want something sustainable, not extreme</div>
+            <div class="bf-d">
+              You want an approach that works with your body, not one that overrides it and leaves you rebounding when
+              you stop.
+            </div>
+          </div>
         </div>
       </div>
-      <div class="inline-cta"><a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}">Shop WLP-1™ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+      <div class="inline-cta">
+        <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}"
+          >Shop WLP-1™
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -436,7 +1692,10 @@ footer {
     <div class="wrap">
       <div class="eyebrow">What To Expect</div>
       <h2 class="serif">Your first 90 days on WLP-1™</h2>
-      <p class="lede">Consistency is everything. Here's what research suggests you may notice as the ingredients build up in your system.</p>
+      <p class="lede">
+        Consistency is everything. Here's what research suggests you may notice as the ingredients build up in your
+        system.
+      </p>
       <div class="tl-grid">
         <div class="tl-card">
           <div class="tl-tag">Days 1 to 30</div>
@@ -469,7 +1728,22 @@ footer {
           </ul>
         </div>
       </div>
-      <div class="inline-cta"><a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}">Shop WLP-1™ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+      <div class="inline-cta">
+        <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}"
+          >Shop WLP-1™
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -478,7 +1752,9 @@ footer {
     <div class="wrap">
       <div class="eyebrow" style="text-align:center;display:block">Personalized Estimate</div>
       <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">Your potential results</h2>
-      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Based on your height, weight, and goal, see what your 3-month trajectory could look like with WLP-1™.</p>
+      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">
+        Based on your height, weight, and goal, see what your 3-month trajectory could look like with WLP-1™.
+      </p>
 
       <div class="calc">
         <div class="calc-head">
@@ -491,37 +1767,73 @@ footer {
         <div class="calc-body">
           <div class="calc-inputs">
             <div class="slg">
-              <div class="sl-top"><div class="sl-lab">Current Weight</div><div class="sl-val" id="weaDispW">180 <span>lbs</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Current Weight</div>
+                <div class="sl-val" id="weaDispW">180 <span>lbs</span></div>
+              </div>
               <input type="range" id="weaSW" min="120" max="400" value="180" oninput="weaCalc()">
             </div>
             <div class="slg" id="weaHImpRow">
-              <div class="sl-top"><div class="sl-lab">Height</div><div class="sl-val" id="weaDispH">5'8"</div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Height</div>
+                <div class="sl-val" id="weaDispH">5'8"</div>
+              </div>
               <input type="range" id="weaSH" min="54" max="84" value="68" oninput="weaCalc()">
             </div>
             <div class="slg" id="weaHMetRow" style="display:none">
-              <div class="sl-top"><div class="sl-lab">Height</div><div class="sl-val" id="weaDispHC">173 <span>cm</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Height</div>
+                <div class="sl-val" id="weaDispHC">173 <span>cm</span></div>
+              </div>
               <input type="range" id="weaSHC" min="140" max="215" value="173" oninput="weaCalc()">
             </div>
             <div class="slg">
-              <div class="sl-top"><div class="sl-lab">Goal (total to lose)</div><div class="sl-val" id="weaDispG">18 <span>lbs</span></div></div>
+              <div class="sl-top">
+                <div class="sl-lab">Goal (total to lose)</div>
+                <div class="sl-val" id="weaDispG">18 <span>lbs</span></div>
+              </div>
               <input type="range" id="weaSG" min="5" max="100" value="18" step="1" oninput="weaCalc()">
             </div>
             <div class="bmi-warn" id="weaBmiWarn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span>Clinical studies were conducted on adults with a BMI of 26 or higher. Results may vary outside this range.</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                style="flex-shrink:0;margin-top:1px"
+              >
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span
+                >Clinical studies were conducted on adults with a BMI of 26 or higher. Results may vary outside this
+                range.</span
+              >
             </div>
           </div>
           <div class="calc-out">
             <div>
               <div class="out-lab">Your 3-Month Projection</div>
-              <div class="out-head serif" id="weaOutHead">Potential to support a <em style="color:var(--blue);font-style:normal">~18 lb</em> change</div>
+              <div class="out-head serif" id="weaOutHead">
+                Potential to support a <em style="color:var(--blue);font-style:normal">~18 lb</em> change
+              </div>
             </div>
             <div class="out-stats">
-              <div class="out-stat"><div class="os-lab">Starting</div><div class="os-val" id="weaOsStart">180<span>lbs</span></div></div>
-              <div class="out-stat"><div class="os-lab">Goal</div><div class="os-val" id="weaOsGoal">162<span>lbs</span></div></div>
+              <div class="out-stat">
+                <div class="os-lab">Starting</div>
+                <div class="os-val" id="weaOsStart">180<span>lbs</span></div>
+              </div>
+              <div class="out-stat">
+                <div class="os-lab">Goal</div>
+                <div class="os-val" id="weaOsGoal">162<span>lbs</span></div>
+              </div>
             </div>
             <div class="chart-wrap">
-              <div class="chart-top"><div class="chart-lab">3-Month Trajectory</div><div class="chart-month" id="weaChartMax">180 → 162 lbs</div></div>
+              <div class="chart-top">
+                <div class="chart-lab">3-Month Trajectory</div>
+                <div class="chart-month" id="weaChartMax">180 → 162 lbs</div>
+              </div>
               <div class="chart">
                 <svg viewBox="0 0 300 120" preserveAspectRatio="none">
                   <defs>
@@ -543,8 +1855,27 @@ footer {
               </div>
               <div class="chart-x"><span>Today</span><span>Month 1</span><span>Month 2</span><span>Month 3</span></div>
             </div>
-            <div class="calc-cta"><a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}">Shop WLP-1™ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
-            <div class="calc-disc">Estimates based on clinical study populations with BMI 26+. Individual results vary. Not medical advice. These statements have not been evaluated by the FDA. WLP-1™ is not intended to diagnose, treat, cure, or prevent any disease.</div>
+            <div class="calc-cta">
+              <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}"
+                >Shop WLP-1™
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+            <div class="calc-disc">
+              Estimates based on clinical study populations with BMI 26+. Individual results vary. Not medical advice.
+              These statements have not been evaluated by the FDA. WLP-1™ is not intended to diagnose, treat, cure, or
+              prevent any disease.
+            </div>
           </div>
         </div>
       </div>
@@ -556,18 +1887,25 @@ footer {
     <div class="wrap">
       <div class="eyebrow" style="text-align:center;display:block">Your VIP Options</div>
       <h2 class="serif" style="text-align:center;margin-left:auto;margin-right:auto">Two ways to get started</h2>
-      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Start with WLP-1™ on its own, or unlock the 4th metabolic pathway with the full stack.</p>
+      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">
+        Start with WLP-1™ on its own, or unlock the 4th metabolic pathway with the full stack.
+      </p>
 
       <div class="prod-grid">
         <!-- WLP-1 -->
         <div class="prod-card">
           <div class="prod-img">
             <div class="prod-tag">The Core Formula</div>
-            {% if section.settings.prod1_image %}<img src="{{ section.settings.prod1_image | image_url: width: 800 }}" alt="WLP-1">{% endif %}
+            {% if section.settings.prod1_image -%}
+              <img src="{{ section.settings.prod1_image | image_url: width: 800 }}" alt="WLP-1">
+            {%- endif %}
           </div>
           <div class="prod-body">
             <div class="prod-h serif">WLP-1™</div>
-            <div class="prod-d">Our oral GLP-1 biomimetic. One daily capsule supports three metabolic pathways: GLP-1 activity, appetite signaling, and thermogenesis. Engineered with 20x absorption science.</div>
+            <div class="prod-d">
+              Our oral GLP-1 biomimetic. One daily capsule supports three metabolic pathways: GLP-1 activity, appetite
+              signaling, and thermogenesis. Engineered with 20x absorption science.
+            </div>
             <div class="prod-feat">
               <div class="prod-f">Supports GLP-1 activity, appetite regulation, and thermogenesis</div>
               <div class="prod-f">Clinically backed ingredients with peer-reviewed human research</div>
@@ -575,7 +1913,17 @@ footer {
             </div>
             <a href="{{ section.settings.prod1_url | default: '/products/wlp-1' }}" class="prod-cta">
               Shop WLP-1™
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
         </div>
@@ -584,21 +1932,40 @@ footer {
         <div class="prod-card">
           <div class="prod-img">
             <div class="prod-tag" style="background:var(--blue);color:#fff">★ Best Value</div>
-            {% if section.settings.prod2_image %}<img src="{{ section.settings.prod2_image | image_url: width: 800 }}" alt="Stack">{% endif %}
+            {% if section.settings.prod2_image -%}
+              <img src="{{ section.settings.prod2_image | image_url: width: 800 }}" alt="Stack">
+            {%- endif %}
           </div>
           <div class="prod-body">
             <div class="fourth-chip">Unlocks the 4th pathway</div>
             <div class="prod-h serif">The Ultimate Weight Management Stack</div>
-            <div class="prod-d">WLP-1™ works on three metabolic pathways. Berberine adds a fourth: AMPK activation. It supports insulin sensitivity and blood sugar regulation. Think of it like a four-lane highway instead of three: more support, more momentum, more sustainable results.</div>
+            <div class="prod-d">
+              WLP-1™ works on three metabolic pathways. Berberine adds a fourth: AMPK activation. It supports insulin
+              sensitivity and blood sugar regulation. Think of it like a four-lane highway instead of three: more
+              support, more momentum, more sustainable results.
+            </div>
             <div class="prod-feat">
               <div class="prod-f"><b>All three pathways of WLP-1™</b>, plus AMPK activation from Berberine</div>
               <div class="prod-f">Supports insulin sensitivity and steadier blood sugar for reduced cravings</div>
               <div class="prod-f">Berberine is 6.2x better absorbed than standard formulations</div>
               <div class="prod-f">Best choice for long-term metabolic recalibration</div>
             </div>
-            <a href="{{ section.settings.prod2_url | default: '/products/ultimate-weight-management-stack' }}" class="prod-cta stack">
+            <a
+              href="{{ section.settings.prod2_url | default: '/products/ultimate-weight-management-stack' }}"
+              class="prod-cta stack"
+            >
               Shop The Stack
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </div>
         </div>
@@ -610,96 +1977,120 @@ footer {
   <div class="foot">
     <div class="wrap">
       <div class="tm">The Absorption Company</div>
-      <p>*WLP-1™ is not a pharmaceutical product and is not intended as a substitute for prescription treatments. These statements have not been evaluated by the Food and Drug Administration.</p>
-      <p>Clinical studies referenced were conducted on adults with a BMI of 26 or higher. Individual results vary. WLP-1™, IGOB131®, CQR-300™, and Capsifen™ are trademarks of their respective owners. Body Ready Tripeptide Complex is a proprietary formulation of The Absorption Company.</p>
+      <p>
+        *WLP-1™ is not a pharmaceutical product and is not intended as a substitute for prescription treatments. These
+        statements have not been evaluated by the Food and Drug Administration.
+      </p>
+      <p>
+        Clinical studies referenced were conducted on adults with a BMI of 26 or higher. Individual results vary.
+        WLP-1™, IGOB131®, CQR-300™, and Capsifen™ are trademarks of their respective owners. Body Ready Tripeptide
+        Complex is a proprietary formulation of The Absorption Company.
+      </p>
       <p>VIP early access pricing and availability are limited. Supply is capped at launch and will sell out.</p>
     </div>
   </div>
-
 </div>
 
 <script>
-(function(){
-  // Countdown
-  var target = new Date("{{ section.settings.launch_datetime | default: '' }}").getTime();
-  if(!target || isNaN(target)){
-    // fallback: 48h from now
-    target = Date.now() + (48*60*60*1000);
-  }
-  function tick(){
-    var diff = target - Date.now();
-    if(diff < 0) diff = 0;
-    var d = Math.floor(diff/(1000*60*60*24));
-    var h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-    var m = Math.floor((diff%(1000*60*60))/(1000*60));
-    var s = Math.floor((diff%(1000*60))/1000);
-    var pad = function(n){return (n<10?'0':'')+n};
-    var el;
-    if(el=document.getElementById('cdD')) el.textContent=pad(d);
-    if(el=document.getElementById('cdH')) el.textContent=pad(h);
-    if(el=document.getElementById('cdM')) el.textContent=pad(m);
-    if(el=document.getElementById('cdS')) el.textContent=pad(s);
-  }
-  tick(); setInterval(tick, 1000);
-
-  // Calculator
-  var unit='imperial';
-  window.weaSetUnit = function(u){
-    unit = u;
-    document.getElementById('uImp').classList.toggle('on', u==='imperial');
-    document.getElementById('uMet').classList.toggle('on', u==='metric');
-    document.getElementById('weaHImpRow').style.display = u==='imperial'?'':'none';
-    document.getElementById('weaHMetRow').style.display = u==='metric'?'':'none';
-    var ws = document.getElementById('weaSW');
-    var gs = document.getElementById('weaSG');
-    if(u==='metric'){
-      var lbs=parseInt(ws.value); ws.min=45; ws.max=180; ws.value=Math.round(lbs/2.20462);
-      var glbs=parseInt(gs.value); gs.min=2; gs.max=45; gs.value=Math.max(2,Math.round(glbs/2.20462));
-    } else {
-      var kg=parseInt(ws.value); ws.min=120; ws.max=400; ws.value=Math.round(kg*2.20462);
-      var gkg=parseInt(gs.value); gs.min=5; gs.max=100; gs.value=Math.max(5,Math.round(gkg*2.20462));
+  (function () {
+    // Countdown
+    var target = new Date("{{ section.settings.launch_datetime | default: '' }}").getTime();
+    if (!target || isNaN(target)) {
+      // fallback: 48h from now
+      target = Date.now() + 48 * 60 * 60 * 1000;
     }
+    function tick() {
+      var diff = target - Date.now();
+      if (diff < 0) diff = 0;
+      var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      var s = Math.floor((diff % (1000 * 60)) / 1000);
+      var pad = function (n) {
+        return (n < 10 ? '0' : '') + n;
+      };
+      var el;
+      if ((el = document.getElementById('cdD'))) el.textContent = pad(d);
+      if ((el = document.getElementById('cdH'))) el.textContent = pad(h);
+      if ((el = document.getElementById('cdM'))) el.textContent = pad(m);
+      if ((el = document.getElementById('cdS'))) el.textContent = pad(s);
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // Calculator
+    var unit = 'imperial';
+    window.weaSetUnit = function (u) {
+      unit = u;
+      document.getElementById('uImp').classList.toggle('on', u === 'imperial');
+      document.getElementById('uMet').classList.toggle('on', u === 'metric');
+      document.getElementById('weaHImpRow').style.display = u === 'imperial' ? '' : 'none';
+      document.getElementById('weaHMetRow').style.display = u === 'metric' ? '' : 'none';
+      var ws = document.getElementById('weaSW');
+      var gs = document.getElementById('weaSG');
+      if (u === 'metric') {
+        var lbs = parseInt(ws.value);
+        ws.min = 45;
+        ws.max = 180;
+        ws.value = Math.round(lbs / 2.20462);
+        var glbs = parseInt(gs.value);
+        gs.min = 2;
+        gs.max = 45;
+        gs.value = Math.max(2, Math.round(glbs / 2.20462));
+      } else {
+        var kg = parseInt(ws.value);
+        ws.min = 120;
+        ws.max = 400;
+        ws.value = Math.round(kg * 2.20462);
+        var gkg = parseInt(gs.value);
+        gs.min = 5;
+        gs.max = 100;
+        gs.value = Math.max(5, Math.round(gkg * 2.20462));
+      }
+      weaCalc();
+    };
+
+    window.weaCalc = function () {
+      var wRaw = parseInt(document.getElementById('weaSW').value);
+      var wLbs = unit === 'imperial' ? wRaw : wRaw * 2.20462;
+      var uL = unit === 'imperial' ? 'lbs' : 'kg';
+      document.getElementById('weaDispW').innerHTML = wRaw + ' <span>' + uL + '</span>';
+
+      var hm;
+      if (unit === 'imperial') {
+        var ti = parseInt(document.getElementById('weaSH').value);
+        document.getElementById('weaDispH').textContent = Math.floor(ti / 12) + "'" + (ti % 12) + '"';
+        hm = ti * 0.0254;
+      } else {
+        var cm = parseInt(document.getElementById('weaSHC').value);
+        document.getElementById('weaDispHC').innerHTML = cm + ' <span>cm</span>';
+        hm = cm / 100;
+      }
+
+      var wkg = wLbs / 2.20462;
+      var bmi = Math.round(wkg / (hm * hm));
+      document.getElementById('weaBmiWarn').classList.toggle('show', bmi < 26);
+
+      var dl = parseInt(document.getElementById('weaSG').value);
+      document.getElementById('weaDispG').innerHTML = dl + ' <span>' + uL + '</span>';
+
+      // cap goal at current weight minus a minimum
+      if (dl >= wRaw) {
+        dl = Math.max(1, wRaw - 1);
+      }
+      var goalW = wRaw - dl;
+
+      document.getElementById('weaOutHead').innerHTML =
+        'Potential to support a <em style="color:var(--blue);font-style:normal">~' + dl + ' ' + uL + '</em> change';
+      document.getElementById('weaOsStart').innerHTML = wRaw + '<span>' + uL + '</span>';
+      document.getElementById('weaOsGoal').innerHTML = goalW + '<span>' + uL + '</span>';
+      document.getElementById('weaChartMax').textContent = wRaw + ' → ' + goalW + ' ' + uL;
+      document.getElementById('weaTxtStart').textContent = wRaw + ' ' + uL;
+      document.getElementById('weaTxtEnd').textContent = goalW + ' ' + uL;
+    };
+
     weaCalc();
-  };
-
-  window.weaCalc = function(){
-    var wRaw = parseInt(document.getElementById('weaSW').value);
-    var wLbs = unit==='imperial' ? wRaw : wRaw*2.20462;
-    var uL = unit==='imperial'?'lbs':'kg';
-    document.getElementById('weaDispW').innerHTML = wRaw+' <span>'+uL+'</span>';
-
-    var hm;
-    if(unit==='imperial'){
-      var ti = parseInt(document.getElementById('weaSH').value);
-      document.getElementById('weaDispH').textContent = Math.floor(ti/12)+"'"+(ti%12)+'"';
-      hm = ti*0.0254;
-    } else {
-      var cm = parseInt(document.getElementById('weaSHC').value);
-      document.getElementById('weaDispHC').innerHTML = cm+' <span>cm</span>';
-      hm = cm/100;
-    }
-
-    var wkg = wLbs/2.20462;
-    var bmi = Math.round(wkg/(hm*hm));
-    document.getElementById('weaBmiWarn').classList.toggle('show', bmi < 26);
-
-    var dl = parseInt(document.getElementById('weaSG').value);
-    document.getElementById('weaDispG').innerHTML = dl+' <span>'+uL+'</span>';
-
-    // cap goal at current weight minus a minimum
-    if(dl >= wRaw){ dl = Math.max(1, wRaw - 1); }
-    var goalW = wRaw - dl;
-
-    document.getElementById('weaOutHead').innerHTML = 'Potential to support a <em style="color:var(--blue);font-style:normal">~'+dl+' '+uL+'</em> change';
-    document.getElementById('weaOsStart').innerHTML = wRaw+'<span>'+uL+'</span>';
-    document.getElementById('weaOsGoal').innerHTML = goalW+'<span>'+uL+'</span>';
-    document.getElementById('weaChartMax').textContent = wRaw+' → '+goalW+' '+uL;
-    document.getElementById('weaTxtStart').textContent = wRaw+' '+uL;
-    document.getElementById('weaTxtEnd').textContent = goalW+' '+uL;
-  };
-
-  weaCalc();
-})();
+  })();
 </script>
 
 {% schema %}
@@ -707,9 +2098,19 @@ footer {
   "name": "WLP-1 Early Access",
   "settings": [
     { "type": "header", "content": "Countdown" },
-    { "type": "text", "id": "launch_datetime", "label": "Launch date/time (ISO format)", "info": "e.g. 2026-04-10T09:00:00-07:00. Leave blank for rolling 48h." },
+    {
+      "type": "text",
+      "id": "launch_datetime",
+      "label": "Launch date/time (ISO format)",
+      "info": "e.g. 2026-04-10T09:00:00-07:00. Leave blank for rolling 48h."
+    },
     { "type": "header", "content": "Hero" },
-    { "type": "textarea", "id": "hero_sub", "label": "Hero subhead", "default": "An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants." },
+    {
+      "type": "textarea",
+      "id": "hero_sub",
+      "label": "Hero subhead",
+      "default": "An orally bioavailable GLP-1 biomimetic engineered with advanced absorption technology. Clinically backed ingredients. No needles. No prescriptions. No stimulants."
+    },
     { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
     { "type": "header", "content": "Overview section" },
     { "type": "image_picker", "id": "overview_image", "label": "Overview image (3 pathways)" },

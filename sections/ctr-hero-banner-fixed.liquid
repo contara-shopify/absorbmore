@@ -1,0 +1,1358 @@
+{%- liquid
+  assign section_type = 'ctr_hero_banner_fixed'
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+
+  assign banner_max_width = section.settings.banner_max_width
+  assign banner_radius = section.settings.banner_radius
+  assign banner_min_height_desktop = section.settings.banner_min_height_desktop
+  assign banner_min_height_mobile = section.settings.banner_min_height_mobile
+  assign banner_bg = section.settings.banner_bg
+  assign outer_bg = section.settings.outer_bg
+  assign outer_padding_top = section.settings.outer_padding_top
+  assign outer_padding_bottom = section.settings.outer_padding_bottom
+  assign container_spacing = section.settings.container_spacing
+
+  assign content_side = section.settings.content_side
+  assign content_width = section.settings.content_width
+  assign media_width = 100 | minus: content_width
+  assign media_width_px = banner_max_width | times: media_width | divided_by: 100
+  assign content_padding_desktop = section.settings.content_padding_desktop
+  assign content_padding_mobile = section.settings.content_padding_mobile
+  assign content_align = section.settings.content_align
+  assign content_vertical = section.settings.content_vertical
+  assign text_color = section.settings.text_color
+
+  assign image_desktop = section.settings.image_desktop
+  assign image_mobile = section.settings.image_mobile
+  assign image_position_desktop = section.settings.image_position_desktop
+  assign image_position_mobile = section.settings.image_position_mobile
+  assign image_alt = section.settings.image_alt
+  assign image_obj = image_desktop | default: image_mobile
+
+  assign rating_text = section.settings.rating_text
+  assign rating_color = section.settings.rating_color
+  assign headline = section.settings.headline
+  assign headline_color = section.settings.headline_color
+  assign description = section.settings.description
+  assign description_color = section.settings.description_color
+  assign cta_label = section.settings.cta_label
+  assign cta_url = section.settings.cta_url
+  assign cta_bg = section.settings.cta_bg
+  assign cta_text_color = section.settings.cta_text_color
+  assign support_text = section.settings.support_text
+
+  assign stamp_text = section.settings.stamp_text 
+  assign stamp_bg = section.settings.stamp_bg
+  assign stamp_text_color = section.settings.stamp_text_color
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ outer_bg }};
+    padding-top: {{ outer_padding_top }}px;
+    padding-bottom: {{ outer_padding_bottom }}px;
+  }
+
+  & .ctr-hero-fixed__shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, {{ content_width }}%) minmax(0, {{ media_width }}%);
+    max-width: {{ banner_max_width }}px;
+    min-height: {{ banner_min_height_desktop }}px;
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: {{ banner_radius }}px;
+    background: {{ banner_bg }};
+    color: {{ text_color }};
+    isolation: isolate;
+  }
+
+  & .ctr-hero-fixed__shell--right {
+    grid-template-columns: minmax(0, {{ media_width }}%) minmax(0, {{ content_width }}%);
+  }
+
+  & .ctr-hero-fixed__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{ content_vertical }};
+    align-items: {% if content_align == 'center' %}center{% elsif content_align == 'right' %}flex-end{% else %}flex-start{% endif %};
+    gap: 22px;
+    padding: {{ content_padding_desktop }}px;
+    text-align: {{ content_align }};
+
+    @media (max-width: 749px) {
+      margin-top: 20px;
+    }
+  }
+
+  & .ctr-hero-fixed__shell--right .ctr-hero-fixed__content {
+    order: 2;
+  }
+
+  & .ctr-hero-fixed__content-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: inherit;
+    width: 100%;
+    max-width: {{ section.settings.content_max_width }}px;
+  }
+
+  & .ctr-hero-fixed__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+    color: {{ rating_color }};
+    font-size: {{ section.settings.rating_size }}px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  & .ctr-hero-fixed__rating svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+
+  & .ctr-hero-fixed__headline {
+    margin: 0;
+    color: {{ headline_color }};
+    font-size: {{ section.settings.headline_size_desktop }}px;
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  & .ctr-hero-fixed__headline p {
+    margin: 0;
+  }
+
+  & .ctr-hero-fixed__description {
+    max-width: {{ section.settings.description_max_width }}px;
+    margin-top: 30px;
+    color: {{ description_color }};
+    font-size: {{ section.settings.description_size_desktop }}px;
+    line-height: 1.35;
+  }
+
+  & .ctr-hero-fixed__description p {
+    margin: 0;
+  }
+
+  & .ctr-hero-fixed__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: min(100%, {{ section.settings.cta_max_width }}px);
+    min-height: 53px;
+    margin-top: 34px;
+    padding: 13px 20px;
+    border-radius: {{ section.settings.cta_radius }}px;
+    background: {{ cta_bg }};
+    color: {{ cta_text_color }};
+    font-size: {{ section.settings.cta_size }}px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  & .ctr-hero-fixed__cta:hover {
+    opacity: 0.9;
+  }
+
+  & .ctr-hero-fixed__cta:active {
+    transform: translateY(1px);
+  }
+
+  & .ctr-hero-fixed__support {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 18px;
+    color: {{ section.settings.support_color }};
+    font-size: {{ section.settings.support_size }}px;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  & .ctr-hero-fixed__support strong {
+    font-weight: 700;
+  }
+
+  & .ctr-hero-fixed__support svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    margin-top: 1px;
+  }
+
+  & .ctr-hero-fixed__support p {
+    margin: 0;
+  }
+
+  & .ctr-hero-fixed__media {
+    position: relative;
+    min-height: inherit;
+    {% comment %} overflow: hidden; {% endcomment %}
+    z-index: 3;
+    border-radius: {{ section.settings.banner_radius }}px;
+
+    @media (max-width: 749px) {
+      border-radius: {{ section.settings.banner_radius_mobile }}px;
+      overflow: hidden; 
+    }
+  }
+
+  & .ctr-hero-fixed__shell--right .ctr-hero-fixed__media {
+    order: 1;
+  }
+
+  & .ctr-hero-fixed__media picture,
+  & .ctr-hero-fixed__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .ctr-hero-fixed__media img {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    object-position: {{ image_position_desktop }};
+  }
+
+  & .ctr-hero-fixed__stamp {
+    position: absolute;
+    z-index: 3;
+    top: {{ section.settings.stamp_top }}%;
+    left: {{ section.settings.stamp_left }}%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ section.settings.stamp_size }}px;
+    height: {{ section.settings.stamp_size }}px;
+    border-radius: 999px;
+    background: {{ stamp_bg }};
+    color: {{ stamp_text_color }};
+    font-size: {{ section.settings.stamp_font_size }}px;
+    font-weight: 800;
+    line-height: 0.95;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+
+  & .ctr-hero-fixed__stamp em {
+    font-size: 14px;
+    font-style: normal;
+    line-height: 1.25;
+
+    @media (max-width: 749px) {
+      font-size: 9px; 
+    }
+  }
+
+  & .ctr-hero-fixed__stamp p,
+  & .ctr-hero-fixed__stamp h1,
+  & .ctr-hero-fixed__stamp h2,
+  & .ctr-hero-fixed__stamp h3,
+  & .ctr-hero-fixed__stamp h4,
+  & .ctr-hero-fixed__stamp h5,
+  & .ctr-hero-fixed__stamp h6 {
+    margin: 0;
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  & .ctr-hero-fixed__stamp strong,
+  & .ctr-hero-fixed__stamp b {
+    font-weight: 800;
+  }
+
+  & .ctr-hero-fixed__stamp::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 2px dashed currentColor;
+    border-radius: inherit;
+    opacity: 0.7;
+
+    @media (max-width: 749px) {
+      inset: 3px;
+    }
+  }
+
+  & .ctr-hero-fixed__clinicians {
+    position: absolute;
+    z-index: 4;
+    left: {{ section.settings.clinicians_left }}px;
+    right: {{ section.settings.clinicians_right }}px;
+    bottom: {{ section.settings.clinicians_bottom }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 78px;
+    padding: 14px 22px;
+    border-radius: {{ section.settings.clinicians_radius }}px;
+    background: {{ section.settings.clinicians_bg }};
+    color: {{ section.settings.clinicians_text_color }};
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+
+  & .ctr-hero-fixed__clinicians--mobile {
+    display: none;
+  }
+
+  & .ctr-hero-fixed__clinicians:hover {
+    opacity: 0.92;
+  }
+
+  & .ctr-hero-fixed__clinicians:active {
+    transform: translateY(1px);
+  }
+
+  & .ctr-hero-fixed__clinicians:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  & .ctr-hero-fixed__clinicians-logo,
+  & .ctr-hero-fixed__clinicians-avatars {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  & .ctr-hero-fixed__clinicians-logo img,
+  & .ctr-hero-fixed__clinicians-avatars img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+  }
+
+  & .ctr-hero-fixed__clinicians-logo {
+    max-width: {{ section.settings.clinicians_logo_width }}px;
+  }
+
+  & .ctr-hero-fixed__clinicians-avatars {
+    max-width: {{ section.settings.clinicians_avatars_width }}px;
+  }
+
+  & .ctr-hero-fixed__clinicians .ctr-ppb__frontrow {
+    flex: 1;
+    min-width: 0;
+    max-width: 420px;
+    font-size: {{ section.settings.clinicians_text_size }}px;
+    line-height: 1.25;
+  }
+
+  & .ctr-hero-fixed__clinicians .ctr-ppb__frontrow iframe {
+    width: 100%;
+    display: block;
+    border: 0;
+  }
+
+  @media (max-width: 1023px) {
+    & .ctr-hero-fixed__shell,
+    & .ctr-hero-fixed__shell--right {
+      grid-template-columns: 1fr;
+      min-height: {{ banner_min_height_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__content,
+    & .ctr-hero-fixed__shell--right .ctr-hero-fixed__content {
+      order: 2;
+      padding: {{ content_padding_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__media,
+    & .ctr-hero-fixed__shell--right .ctr-hero-fixed__media {
+      order: 1;
+      min-height: {{ section.settings.media_height_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__media img {
+      object-position: {{ image_position_mobile }};
+    }
+
+    & .ctr-hero-fixed__rating {
+      margin-bottom: 20px;
+    }
+
+    & .ctr-hero-fixed__headline {
+      font-size: {{ section.settings.headline_size_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__description {
+      margin-top: 20px;
+      font-size: {{ section.settings.description_size_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__cta {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    & .ctr-hero-fixed__stamp {
+      top: {{ section.settings.stamp_top_mobile }}px;
+      left: {{ section.settings.stamp_left_mobile }}px;
+      width: {{ section.settings.stamp_size_mobile }}px;
+      height: {{ section.settings.stamp_size_mobile }}px;
+      font-size: {{ section.settings.stamp_font_size_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__clinicians {
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      min-height: 64px;
+      gap: 10px;
+      padding: 10px 12px;
+    }
+
+    & .ctr-hero-fixed__clinicians--desktop {
+      display: none;
+    }
+
+    & .ctr-hero-fixed__clinicians--mobile {
+      display: flex;
+      position: static;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      width: 100%;
+      margin-top: 18px;
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    & .ctr-hero-fixed__clinicians-logo {
+      max-width: {{ section.settings.clinicians_logo_mobile_width }}px;
+    }
+
+    & .ctr-hero-fixed__clinicians-avatars {
+      max-width: {{ section.settings.clinicians_avatars_mobile_width }}px;
+    }
+
+    & .ctr-hero-fixed__clinicians .ctr-ppb__frontrow {
+      max-width: 100%;
+      font-size: {{ section.settings.clinicians_text_size_mobile }}px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    & {
+      padding-top: {{ section.settings.outer_padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.outer_padding_bottom_mobile }}px;
+    }
+
+    & .ctr-hero-fixed__shell {
+      border-radius: {{ section.settings.banner_radius_mobile }}px;
+      background: {{ section.settings.banner_bg_mobile }};
+    }
+
+    & .ctr-hero-fixed__clinicians {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    & .ctr-hero-fixed__clinicians-logo {
+      flex-basis: auto;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-hero-fixed {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-hero-fixed__shell ctr-hero-fixed__shell--{{ content_side }}">
+    <div class="ctr-hero-fixed__content">
+      <div class="ctr-hero-fixed__content-inner">
+        {% if rating_text != blank %}
+          <div class="ctr-hero-fixed__rating">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <span>{{ rating_text }}</span>
+          </div>
+        {% endif %}
+
+        {% if headline != blank %}
+          <h1 class="ctr-hero-fixed__headline">{{ headline }}</h1>
+        {% endif %}
+
+        {% if description != blank %}
+          <div class="ctr-hero-fixed__description">{{ description }}</div>
+        {% endif %}
+
+        {% if cta_label != blank %}
+          <a class="ctr-hero-fixed__cta" href="{{ cta_url | default: '#' }}">
+            {{ cta_label | escape }}
+          </a>
+        {% endif %}
+
+        {% if support_text != blank %}
+          <div class="ctr-hero-fixed__support">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+              <path d="M13.5 4.5L6.25 11.75 2.5 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>{{ support_text }}</div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.clinicians_show %}
+          <div class="ctr-hero-fixed__clinicians ctr-hero-fixed__clinicians--mobile">
+            {% if section.settings.clinicians_image_1 != blank %}
+              <div class="ctr-hero-fixed__clinicians-logo">
+                <img
+                  src="{{ section.settings.clinicians_image_1 | image_url: width: 420 }}"
+                  alt="{{ section.settings.clinicians_image_1.alt | default: '' | escape }}"
+                  width="{{ section.settings.clinicians_image_1.width }}"
+                  height="{{ section.settings.clinicians_image_1.height }}"
+                  loading="lazy"
+                >
+              </div>
+            {% endif %}
+
+            {% if section.settings.clinicians_image_2 != blank %}
+              <div class="ctr-hero-fixed__clinicians-avatars">
+                <img
+                  src="{{ section.settings.clinicians_image_2 | image_url: width: 320 }}"
+                  alt="{{ section.settings.clinicians_image_2.alt | default: '' | escape }}"
+                  width="{{ section.settings.clinicians_image_2.width }}"
+                  height="{{ section.settings.clinicians_image_2.height }}"
+                  loading="lazy"
+                >
+              </div>
+            {% endif %}
+
+            {% if section.settings.frontrow_product_id != blank %}
+              {% render 'ctr-frontrow-widget',
+                product_id: section.settings.frontrow_product_id,
+                iframe_id: 'iframe-frontrow-hero-mobile-' | append: section.id
+              %}
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ctr-hero-fixed__media">
+      {% if image_obj != blank %}
+        <picture>
+          {% if image_mobile != blank %}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ image_mobile | image_url: width: 750 }} 750w, {{ image_mobile | image_url: width: 1100 }} 1100w, {{ image_mobile | image_url: width: 1500 }} 1500w"
+              sizes="100vw"
+            >
+          {% endif %}
+          {% if image_desktop != blank %}
+            <source
+              media="(min-width: 750px)"
+              srcset="{{ image_desktop | image_url: width: 900 }} 900w, {{ image_desktop | image_url: width: 1400 }} 1400w, {{ image_desktop | image_url: width: 1900 }} 1900w"
+              sizes="(max-width: {{ banner_max_width }}px) {{ media_width }}vw, {{ media_width_px }}px"
+            >
+          {% endif %}
+          <img
+            src="{{ image_obj | image_url: width: 1400 }}"
+            alt="{{ image_alt | default: image_obj.alt | escape }}"
+            width="{{ image_obj.width }}"
+            height="{{ image_obj.height }}"
+            loading="eager"
+            fetchpriority="high"
+          >
+        </picture>
+      {% endif %}
+
+      {% if stamp_text != blank %}
+        <div class="ctr-hero-fixed__stamp">{{ stamp_text }}</div>
+      {% endif %}
+
+      {% if section.settings.clinicians_show %}
+        <div class="ctr-hero-fixed__clinicians ctr-hero-fixed__clinicians--desktop">
+          {% if section.settings.clinicians_image_1 != blank %}
+            <div class="ctr-hero-fixed__clinicians-logo">
+              <img
+                src="{{ section.settings.clinicians_image_1 | image_url: width: 420 }}"
+                alt="{{ section.settings.clinicians_image_1.alt | default: '' | escape }}"
+                width="{{ section.settings.clinicians_image_1.width }}"
+                height="{{ section.settings.clinicians_image_1.height }}"
+                loading="lazy"
+              >
+            </div>
+          {% endif %}
+
+          {% if section.settings.clinicians_image_2 != blank %}
+            <div class="ctr-hero-fixed__clinicians-avatars">
+              <img
+                src="{{ section.settings.clinicians_image_2 | image_url: width: 320 }}"
+                alt="{{ section.settings.clinicians_image_2.alt | default: '' | escape }}"
+                width="{{ section.settings.clinicians_image_2.width }}"
+                height="{{ section.settings.clinicians_image_2.height }}"
+                loading="lazy"
+              >
+            </div>
+          {% endif %}
+
+          {% if section.settings.frontrow_product_id != blank %}
+            {% render 'ctr-frontrow-widget',
+              product_id: section.settings.frontrow_product_id,
+              iframe_id: 'iframe-frontrow-hero-' | append: section.id
+            %}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Hero Banner - Fixed",
+  "tag": "section",
+  "class": "shopify_section__ctr_hero_banner_fixed",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Banner Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "banner_max_width",
+      "label": "Banner max width",
+      "default": 1720,
+      "min": 900,
+      "max": 1920,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_min_height_desktop",
+      "label": "Banner min height - desktop",
+      "default": 680,
+      "min": 420,
+      "max": 920,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_min_height_mobile",
+      "label": "Banner min height - mobile",
+      "default": 760,
+      "min": 520,
+      "max": 980,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_radius",
+      "label": "Banner radius - desktop",
+      "default": 14,
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_radius_mobile",
+      "label": "Banner radius - mobile",
+      "default": 12,
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "outer_bg",
+      "label": "Outer background",
+      "default": "#f0ede7"
+    },
+    {
+      "type": "color",
+      "id": "banner_bg",
+      "label": "Banner background - desktop",
+      "default": "#f8f7f4"
+    },
+    {
+      "type": "color",
+      "id": "banner_bg_mobile",
+      "label": "Banner background - mobile",
+      "default": "#f8f7f4"
+    },
+    {
+      "type": "range",
+      "id": "outer_padding_top",
+      "label": "Top padding - desktop",
+      "default": 28,
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "outer_padding_bottom",
+      "label": "Bottom padding - desktop",
+      "default": 28,
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "outer_padding_top_mobile",
+      "label": "Top padding - mobile",
+      "default": 16,
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "outer_padding_bottom_mobile",
+      "label": "Bottom padding - mobile",
+      "default": 16,
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_side",
+      "label": "Content side",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content column width",
+      "default": 50,
+      "min": 35,
+      "max": 62,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "default": 560,
+      "min": 360,
+      "max": 760,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_desktop",
+      "label": "Content padding - desktop",
+      "default": 96,
+      "min": 32,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_mobile",
+      "label": "Content padding - mobile",
+      "default": 24,
+      "min": 0,
+      "max": 64,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_vertical",
+      "label": "Vertical position",
+      "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#222222"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Image - desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image - mobile"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt override"
+    },
+    {
+      "type": "select",
+      "id": "image_position_desktop",
+      "label": "Image position - desktop",
+      "default": "center center",
+      "options": [
+        { "value": "left center", "label": "Left" },
+        { "value": "center center", "label": "Center" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center top", "label": "Top" },
+        { "value": "center bottom", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_position_mobile",
+      "label": "Image position - mobile",
+      "default": "center center",
+      "options": [
+        { "value": "left center", "label": "Left" },
+        { "value": "center center", "label": "Center" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center top", "label": "Top" },
+        { "value": "center bottom", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "media_height_mobile",
+      "label": "Media height - mobile",
+      "default": 430,
+      "min": 280,
+      "max": 620,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating text",
+      "default": "4.84/5 from 10,000+ verified reviews"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "rating_color",
+      "label": "Rating color",
+      "default": "#202020"
+    },
+    {
+      "type": "range",
+      "id": "rating_size",
+      "label": "Rating size",
+      "default": 19,
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "<p>Balanced, from<br>morning to night.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#202020"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_desktop",
+      "label": "Headline size - desktop",
+      "default": 64,
+      "min": 32,
+      "max": 96,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Headline size - mobile",
+      "default": 40,
+      "min": 28,
+      "max": 64,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Two products. One daily routine. Steadier energy, fewer cravings, and evenings that actually restore you covered.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#202020"
+    },
+    {
+      "type": "range",
+      "id": "description_size_desktop",
+      "label": "Description size - desktop",
+      "default": 22,
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_size_mobile",
+      "label": "Description size - mobile",
+      "default": 17,
+      "min": 13,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Description max width",
+      "default": 560,
+      "min": 320,
+      "max": 720,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Add the Stack to Cart"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#8f2c31"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "cta_max_width",
+      "label": "Button max width",
+      "default": 550,
+      "min": 260,
+      "max": 680,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "Button radius",
+      "default": 7,
+      "min": 0,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_size",
+      "label": "Button text size",
+      "default": 24,
+      "min": 14,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "richtext",
+      "id": "support_text",
+      "label": "Support text",
+      "default": "<p><strong>Subscribe &amp; save 30%.</strong> Update, pause, or cancel anytime.</p>"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "support_color",
+      "label": "Support text color",
+      "default": "#202020"
+    },
+    {
+      "type": "range",
+      "id": "support_size",
+      "label": "Support text size",
+      "default": 16,
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Floating Stamp"
+    },
+    {
+      "type": "richtext",
+      "id": "stamp_text",
+      "label": "Stamp text",
+      "default": "<p>4X<br>Sold Out</p>"
+    },
+    {
+      "type": "color",
+      "id": "stamp_bg",
+      "label": "Stamp background",
+      "default": "#536dff"
+    },
+    {
+      "type": "color",
+      "id": "stamp_text_color",
+      "label": "Stamp text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "stamp_size",
+      "label": "Stamp size - desktop",
+      "default": 138,
+      "min": 72,
+      "max": 190,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stamp_size_mobile",
+      "label": "Stamp size - mobile",
+      "default": 92,
+      "min": 60,
+      "max": 140,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stamp_font_size",
+      "label": "Stamp font size - desktop",
+      "default": 30,
+      "min": 14,
+      "max": 42,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stamp_font_size_mobile",
+      "label": "Stamp font size - mobile",
+      "default": 20,
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stamp_top",
+      "label": "Stamp top - desktop",
+      "default": 10,
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "stamp_left",
+      "label": "Stamp left - desktop",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "stamp_top_mobile",
+      "label": "Stamp top - mobile",
+      "default": 8,
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stamp_left_mobile",
+      "label": "Stamp left - mobile",
+      "default": 72,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Clinicians Widget"
+    },
+    {
+      "type": "checkbox",
+      "id": "clinicians_show",
+      "label": "Show clinicians widget",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "clinicians_image_1",
+      "label": "Logo image"
+    },
+    {
+      "type": "image_picker",
+      "id": "clinicians_image_2",
+      "label": "Avatar image"
+    },
+    {
+      "type": "text",
+      "id": "frontrow_product_id",
+      "label": "Frontrow product ID",
+      "default": "2835",
+      "info": "Replaces the clinicians text block with the Frontrow quant widget (same as purchase box)."
+    },
+    {
+      "type": "color",
+      "id": "clinicians_bg",
+      "label": "Widget background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "clinicians_text_color",
+      "label": "Widget text color",
+      "default": "#202020"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_radius",
+      "label": "Widget radius",
+      "default": 10,
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_left",
+      "label": "Widget left - desktop",
+      "default": 32,
+      "min": 0,
+      "max": 180,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_right",
+      "label": "Widget right - desktop",
+      "default": 32,
+      "min": 0,
+      "max": 180,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_bottom",
+      "label": "Widget bottom - desktop",
+      "default": 34,
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_logo_width",
+      "label": "Logo width - desktop",
+      "default": 190,
+      "min": 80,
+      "max": 300,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_avatars_width",
+      "label": "Avatar width - desktop",
+      "default": 130,
+      "min": 60,
+      "max": 220,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_logo_mobile_width",
+      "label": "Logo width - mobile",
+      "default": 130,
+      "min": 70,
+      "max": 220,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_avatars_mobile_width",
+      "label": "Avatar width - mobile",
+      "default": 90,
+      "min": 50,
+      "max": 160,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_text_size",
+      "label": "Text size - desktop",
+      "default": 17,
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "clinicians_text_size_mobile",
+      "label": "Text size - mobile",
+      "default": 13,
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}\n"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Hero Banner - Fixed",
+      "category": "Banner"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,40 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign block_type = 'value_prop'
+  assign section_type = 'product_value_props'
+  assign text = block.settings.text
+  assign description = block.settings.description
+  assign icon = block.settings.icon
+  assign dot_x_percent = block.settings.dot_x_percent
+  assign dot_y_percent = block.settings.dot_y_percent
+  assign custom_css = block.settings.custom_css
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{% capture selector %}[data-style-id="{{ section.id }}--{{ block.id }}"]{% endcapture %}
+<style>
+  {{ custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<li
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  data-pvp-card
+  data-dot-x="{{ dot_x_percent | default: 50 }}"
+  data-dot-y="{{ dot_y_percent | default: 50 }}"
+  {{ block.shopify_attributes }}
+  class="flex items-center gap-3 rounded-[8px] bg-white p-5 shadow-sm"
+>
+  {% if icon != blank %}
+    <div class="mt-0.5 flex shrink-0 items-center justify-center">
+      {% render '_components.icon', icon: icon, class: 'h-6 text-[#4659FF]' %}
+    </div>
+  {% endif %}
+  <div>
+    {% if text != blank %}
+      <p class="md:text-xl leading-snug">{{ text }}</p>
+    {% endif %}
+    {% if description != blank %}
+      <p class="mt-1 text-[13px] md:text-sm leading-relaxed text-[#6A6A6A]">{{ description }}</p>
+    {% endif %}
+  </div>
+</li>

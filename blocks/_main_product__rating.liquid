@@ -94,10 +94,7 @@
   assign reviews_content = reviews_heading | replace: "[count]", reviews_count_content | replace: "[rating]", reviews_rating_content
 %}
 
-{% if hide_zero_reviews != blank and reviews_count <= hide_zero_reviews %}
-  {% break %}
-{% endif %}
-
+{% unless hide_zero_reviews != blank and reviews_count <= hide_zero_reviews %}
 <label
     data-style-id="{{ section.id }}--{{ block.id }}" {{ block.shopify_attributes }}
     data-quick-view-visibility="{{ quick_view_visibility }}"
@@ -128,6 +125,7 @@
     {% render '_input.inline_richtext', content: reviews_content %}
   </label>
 </label>
+{% endunless %}
 
 {% schema %}
 {

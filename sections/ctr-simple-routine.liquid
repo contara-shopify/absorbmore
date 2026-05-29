@@ -1,0 +1,425 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture sun_svg -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <circle cx="10" cy="10" r="3"/>
+  <line x1="10" y1="2.4" x2="10" y2="4.2"/>
+  <line x1="10" y1="15.8" x2="10" y2="17.6"/>
+  <line x1="2.4" y1="10" x2="4.2" y2="10"/>
+  <line x1="15.8" y1="10" x2="17.6" y2="10"/>
+  <line x1="4.6" y1="4.6" x2="5.9" y2="5.9"/>
+  <line x1="14.1" y1="14.1" x2="15.4" y2="15.4"/>
+  <line x1="4.6" y1="15.4" x2="5.9" y2="14.1"/>
+  <line x1="14.1" y1="5.9" x2="15.4" y2="4.6"/>
+</svg>
+{%- endcapture -%}
+
+{%- capture moon_svg -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M15.6 12.9a6 6 0 0 1-8.5-7.1 6 6 0 1 0 8.5 7.1z"/>
+  <path d="M14.6 3.2v2 M13.6 4.2h2"/>
+</svg>
+{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  & .ctr-routine__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  /* Heading */
+  & .ctr-routine__heading {
+    margin: 0 auto {{ section.settings.heading_gap }}px;
+    text-align: center;
+    font-size: {{ section.settings.heading_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    max-width: 900px;
+  }
+
+  & .ctr-routine__heading p { margin: 0; }
+
+  /* Grid of steps */
+  & .ctr-routine__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: {{ section.settings.column_gap }}px;
+    row-gap: {{ section.settings.row_gap }}px;
+  }
+
+  & .ctr-routine__step {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .ctr-routine__step-media {
+    width: 100%;
+    aspect-ratio: {{ section.settings.image_aspect_desktop }};
+    overflow: hidden;
+    border-radius: {{ section.settings.image_radius }}px;
+    background: rgba(0, 0, 0, 0.04);
+    margin-bottom: {{ section.settings.image_text_gap }}px;
+  }
+
+  & .ctr-routine__step-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  & .ctr-routine__step-timing {
+    font-size: {{ section.settings.timing_size_desktop }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: {{ section.settings.timing_title_gap }}px;
+  }
+
+  & .ctr-routine__step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: {{ section.settings.title_desc_gap }}px;
+  }
+
+  & .ctr-routine__step-title {
+    margin: 0;
+    font-size: {{ section.settings.title_size_desktop }}px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  & .ctr-routine__step-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: {{ section.settings.pill_bg }};
+    color: {{ section.settings.pill_text_color }};
+    font-size: {{ section.settings.pill_size_desktop }}px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  & .ctr-routine__step-pill-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    line-height: 0;
+  }
+
+  & .ctr-routine__step-pill svg,
+  & .ctr-routine__step-pill img {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    object-fit: contain;
+  }
+
+  & .ctr-routine__step-description {
+    font-size: {{ section.settings.description_size_desktop }}px;
+    line-height: 1.45;
+    margin-bottom: {{ section.settings.desc_callout_gap }}px;
+  }
+
+  & .ctr-routine__step-description p { margin: 0; }
+  & .ctr-routine__step-description p + p { margin-top: 0.7em; }
+
+  & .ctr-routine__step-callout {
+    background: {{ section.settings.callout_bg }};
+    border-radius: {{ section.settings.callout_radius }}px;
+    padding: {{ section.settings.callout_padding }}px;
+    font-size: {{ section.settings.callout_size_desktop }}px;
+    line-height: 1.45;
+  }
+
+  & .ctr-routine__step-callout p { margin: 0; }
+  & .ctr-routine__step-callout strong,
+  & .ctr-routine__step-callout b { font-weight: 700; }
+
+  @media (max-width: 1023px) {
+    & {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    & .ctr-routine__heading {
+      margin-bottom: {{ section.settings.heading_gap_mobile }}px;
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+
+    & .ctr-routine__grid {
+      grid-template-columns: 1fr;
+      row-gap: {{ section.settings.row_gap_mobile }}px;
+    }
+
+    & .ctr-routine__step-media {
+      aspect-ratio: {{ section.settings.image_aspect_mobile }};
+      margin-bottom: {{ section.settings.image_text_gap_mobile }}px;
+    }
+
+    & .ctr-routine__step-timing {
+      font-size: {{ section.settings.timing_size_mobile }}px;
+      margin-bottom: {{ section.settings.timing_title_gap_mobile }}px;
+    }
+
+    & .ctr-routine__step-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: {{ section.settings.title_desc_gap_mobile }}px;
+    }
+
+    & .ctr-routine__step-title {
+      font-size: {{ section.settings.title_size_mobile }}px;
+    }
+
+    & .ctr-routine__step-pill {
+      font-size: {{ section.settings.pill_size_mobile }}px;
+    }
+
+    & .ctr-routine__step-description {
+      font-size: {{ section.settings.description_size_mobile }}px;
+      margin-bottom: {{ section.settings.desc_callout_gap_mobile }}px;
+    }
+
+    & .ctr-routine__step-callout {
+      padding: {{ section.settings.callout_padding_mobile }}px;
+      font-size: {{ section.settings.callout_size_mobile }}px;
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_simple_routine"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-routine {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-routine__inner">
+    {% if section.settings.heading != blank %}
+      <div class="ctr-routine__heading">{{ section.settings.heading }}</div>
+    {% endif %}
+
+    <div class="ctr-routine__grid">
+      {% for block in section.blocks %}
+        <article class="ctr-routine__step" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            <div class="ctr-routine__step-media">
+              {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,600,800,1000,1200,1400', sizes: '(max-width: 1023px) 100vw, 50vw', alt: block.settings.title }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.timing_label != blank %}
+            <div class="ctr-routine__step-timing" style="color: {{ block.settings.timing_color }};">{{ block.settings.timing_label | escape }}</div>
+          {% endif %}
+
+          <div class="ctr-routine__step-header">
+            {% if block.settings.title != blank %}
+              <h3 class="ctr-routine__step-title">{{ block.settings.title | escape }}</h3>
+            {% endif %}
+
+            {% if block.settings.pill_label != blank %}
+              <span class="ctr-routine__step-pill">
+                {% if block.settings.pill_icon != 'none' %}
+                  <span class="ctr-routine__step-pill-icon" style="color: {{ block.settings.pill_icon_color | default: block.settings.timing_color }};">
+                    {% case block.settings.pill_icon %}
+                      {% when 'sun' %}{{ sun_svg }}
+                      {% when 'moon' %}{{ moon_svg }}
+                      {% when 'custom' %}
+                        {% if block.settings.pill_custom_icon != blank %}
+                          {{ block.settings.pill_custom_icon | image_url: width: 64 | image_tag: loading: 'lazy', widths: '36,64,96', alt: '' }}
+                        {% endif %}
+                    {% endcase %}
+                  </span>
+                {% endif %}
+                <span>{{ block.settings.pill_label | escape }}</span>
+              </span>
+            {% endif %}
+          </div>
+
+          {% if block.settings.description != blank %}
+            <div class="ctr-routine__step-description">{{ block.settings.description }}</div>
+          {% endif %}
+
+          {% if block.settings.callout != blank %}
+            <div class="ctr-routine__step-callout">{{ block.settings.callout }}</div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Simple Routine",
+  "tag": "section",
+  "class": "shopify_section__ctr_simple_routine",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1280, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "color", "id": "background_color", "label": "Background (full width)", "default": "#f0ede7" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#202020" },
+    { "type": "range", "id": "padding_top", "label": "Padding top - desktop", "default": 96, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom - desktop", "default": 96, "min": 0, "max": 200, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top - mobile", "default": 56, "min": 0, "max": 140, "step": 4, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom - mobile", "default": 64, "min": 0, "max": 140, "step": 4, "unit": "px" },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>One simple routine.<br>Two steps.</p>" },
+    { "type": "range", "id": "heading_size_desktop", "label": "Heading size - desktop", "default": 64, "min": 28, "max": 96, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size - mobile", "default": 32, "min": 22, "max": 56, "step": 1, "unit": "px" },
+    { "type": "range", "id": "heading_gap", "label": "Gap below heading - desktop", "default": 72, "min": 12, "max": 160, "step": 2, "unit": "px" },
+    { "type": "range", "id": "heading_gap_mobile", "label": "Gap below heading - mobile", "default": 36, "min": 12, "max": 100, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Grid spacing" },
+    { "type": "range", "id": "column_gap", "label": "Column gap - desktop", "default": 60, "min": 0, "max": 160, "step": 4, "unit": "px" },
+    { "type": "range", "id": "row_gap", "label": "Row gap - desktop (when >2 cards)", "default": 60, "min": 0, "max": 160, "step": 4, "unit": "px" },
+    { "type": "range", "id": "row_gap_mobile", "label": "Row gap - mobile (between cards)", "default": 48, "min": 12, "max": 120, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Image" },
+    { "type": "text", "id": "image_aspect_desktop", "label": "Image aspect ratio - desktop", "default": "5 / 4", "info": "CSS aspect-ratio, e.g. 5 / 4, 1 / 1, 16 / 9" },
+    { "type": "text", "id": "image_aspect_mobile", "label": "Image aspect ratio - mobile", "default": "4 / 3", "info": "CSS aspect-ratio, e.g. 4 / 3, 1 / 1" },
+    { "type": "range", "id": "image_radius", "label": "Image radius", "default": 16, "min": 0, "max": 40, "step": 1, "unit": "px" },
+    { "type": "range", "id": "image_text_gap", "label": "Gap below image - desktop", "default": 28, "min": 8, "max": 80, "step": 2, "unit": "px" },
+    { "type": "range", "id": "image_text_gap_mobile", "label": "Gap below image - mobile", "default": 20, "min": 8, "max": 60, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Text spacing" },
+    { "type": "range", "id": "timing_title_gap", "label": "Gap between timing and title - desktop", "default": 14, "min": 0, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "timing_title_gap_mobile", "label": "Gap between timing and title - mobile", "default": 10, "min": 0, "max": 30, "step": 2, "unit": "px" },
+    { "type": "range", "id": "title_desc_gap", "label": "Gap between title row and description - desktop", "default": 18, "min": 0, "max": 50, "step": 2, "unit": "px" },
+    { "type": "range", "id": "title_desc_gap_mobile", "label": "Gap between title row and description - mobile", "default": 14, "min": 0, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "desc_callout_gap", "label": "Gap between description and callout - desktop", "default": 24, "min": 0, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "desc_callout_gap_mobile", "label": "Gap between description and callout - mobile", "default": 20, "min": 0, "max": 50, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Font sizes" },
+    { "type": "range", "id": "timing_size_desktop", "label": "Timing label size - desktop", "default": 16, "min": 11, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "timing_size_mobile", "label": "Timing label size - mobile", "default": 14, "min": 11, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "title_size_desktop", "label": "Title size - desktop", "default": 34, "min": 18, "max": 60, "step": 1, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile", "label": "Title size - mobile", "default": 26, "min": 16, "max": 44, "step": 1, "unit": "px" },
+    { "type": "range", "id": "description_size_desktop", "label": "Description size - desktop", "default": 17, "min": 13, "max": 24, "step": 1, "unit": "px" },
+    { "type": "range", "id": "description_size_mobile", "label": "Description size - mobile", "default": 15, "min": 13, "max": 22, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Pill" },
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#ece8df" },
+    { "type": "color", "id": "pill_text_color", "label": "Pill text color", "default": "#202020" },
+    { "type": "range", "id": "pill_size_desktop", "label": "Pill text size - desktop", "default": 15, "min": 11, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "pill_size_mobile", "label": "Pill text size - mobile", "default": 14, "min": 11, "max": 20, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Callout" },
+    { "type": "color", "id": "callout_bg", "label": "Callout background", "default": "#e6e2d9" },
+    { "type": "range", "id": "callout_radius", "label": "Callout radius", "default": 10, "min": 0, "max": 30, "step": 1, "unit": "px" },
+    { "type": "range", "id": "callout_padding", "label": "Callout padding - desktop", "default": 20, "min": 10, "max": 48, "step": 2, "unit": "px" },
+    { "type": "range", "id": "callout_padding_mobile", "label": "Callout padding - mobile", "default": 16, "min": 8, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "callout_size_desktop", "label": "Callout text size - desktop", "default": 15, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "callout_size_mobile", "label": "Callout text size - mobile", "default": 14, "min": 12, "max": 20, "step": 1, "unit": "px" },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "timing_label", "label": "Timing label", "default": "1 capsule with breakfast" },
+        { "type": "color", "id": "timing_color", "label": "Timing label color", "default": "#7d2b2d" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Berberine" },
+        { "type": "text", "id": "pill_label", "label": "Pill label", "default": "Morning" },
+        { "type": "color", "id": "pill_icon_color", "label": "Pill icon color (falls back to timing color)" },
+        {
+          "type": "select",
+          "id": "pill_icon",
+          "label": "Pill icon",
+          "default": "sun",
+          "options": [
+            { "value": "sun", "label": "Sun (morning)" },
+            { "value": "moon", "label": "Moon (evening)" },
+            { "value": "custom", "label": "Custom image" },
+            { "value": "none", "label": "None" }
+          ]
+        },
+        { "type": "image_picker", "id": "pill_custom_icon", "label": "Custom pill icon (shown when icon = Custom)" },
+        { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Take with or just before your first meal. Berberine works best timed with food it supports your blood sugar response right when it matters most, helping your body process what you eat without the energy spike and crash that follows.</p>" },
+        { "type": "richtext", "id": "callout", "label": "Callout", "default": "<p><strong>Quick note:</strong> Tie it to breakfast and it becomes automatic within a week. No complicated schedule, no extra steps.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Simple Routine",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "timing_label": "1 capsule with breakfast",
+            "timing_color": "#7d2b2d",
+            "title": "Berberine",
+            "pill_label": "Morning",
+            "pill_icon": "sun",
+            "description": "<p>Take with or just before your first meal. Berberine works best timed with food it supports your blood sugar response right when it matters most, helping your body process what you eat without the energy spike and crash that follows.</p>",
+            "callout": "<p><strong>Quick note:</strong> Tie it to breakfast and it becomes automatic within a week. No complicated schedule, no extra steps.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "timing_label": "2 capsules with dinner or before bed",
+            "timing_color": "#2c4ed0",
+            "title": "Magnesium Glycinate",
+            "pill_label": "Evening",
+            "pill_icon": "moon",
+            "description": "<p>Take in the evening as your body winds down. Magnesium works with your natural circadian rhythm easing muscle tension, calming the nervous system, and preparing you for the deep, restorative sleep that sets up tomorrow.</p>",
+            "callout": "<p><strong>Post-workout works great too.</strong> Magnesium supports muscle recovery regardless of what time you train.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

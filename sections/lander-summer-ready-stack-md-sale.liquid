@@ -1,0 +1,891 @@
+{%- comment -%} Summer Ready Stack — Memorial Day Sale Lander. 35% off + free gifts (up to $102 value). Includes the Summer Ready Stack pitch, benefit trio (WLP-1 / Berberine / Restore), and the full sale grid below for shoppers who want other discounted SKUs. Palette + grid pattern reused from sections/lander-shop-all-sale.liquid. {%- endcomment -%}
+
+{%- liquid
+  assign discount_pct = section.settings.discount_pct | default: 35
+  assign end_iso = section.settings.end_iso | default: '2026-05-26T23:59:59-04:00'
+  assign discount_code = section.settings.discount_code | default: 'MEMORIALDAY35'
+  assign srs_url = '/products/summer-ready-stack'
+  assign srs_url_3mo = srs_url | append: '?variant=52671161499937'
+  assign srs_url_1mo = srs_url | append: '?variant=52671161467169'
+  assign srs_product = all_products['summer-ready-stack']
+  assign excluded_plan_names = '|Subscribe and save 10%, Auto-Refilling|' | append: '|Subscribe and save 10%|'
+
+  comment
+    Grid metadata — mirrored from lander-shop-all-sale so the second-half grid behaves identically.
+    Summer Ready Stack itself sits at top of the order so a shopper that scrolls back here sees it first.
+  endcomment
+  assign meta_handles = 'summer-ready-stack,wlp-1,berberine,restore,the-best-sellers-stack,starter-pack,calm,coq10,curcumin,daily-basics,energy,hormone-metabolism,inflammation-immunity,longevity,magnesium-glycinate,sleep,vitamin-d-k,advanced-sleep-recovery-set,best-sellers-bundle,calm-energy-bundle,glp-1-nutrient-support-stack,magnesium-calm-bundle,magnesium-restore-bundle,magnesium-sleep-bundle,metabolic-balance-stack,rest-recovery-stack,spring-essentials-stack,weight-management-stack' | split: ','
+
+  assign pills = 'Summer Stack|Weight Management|Metabolism & Hormones|Hydrate & Recovery|Bestseller|Daily Foundations|Manage Stress & Cortisol|Energy & Recovery|Immunity & Antioxidant|Daily Foundations|Energy & Focus|Metabolism & Hormones|Immunity & Inflammation|Longevity|Hydrate & Detox|Restorative Sleep|Immunity & Mood|Sleep + Recovery|Bestseller Bundle|Mood & Energy|GLP-1 Support|Calm & Magnesium|Hydrate & Recover|Sleep & Magnesium|Metabolic Stack|Rest + Recovery|Spring Essentials|Weight Management' | split: '|'
+
+  assign badges = 'Limited Run|Best Seller|||||||||||||||||||||||||' | split: '|'
+
+  assign ratings = '4.93|4.78|4.84|4.94|4.92|4.89|4.94|4.82|4.81|4.83|4.86|4.85|4.87|4.83|4.97|4.88|4.87|4.91|4.92|4.86|4.84|4.88|4.89|4.87|4.85|4.90|4.86|4.90' | split: '|'
+
+  assign reviews = '46|154|85|246|412|109|300|64|71|88|192|121|142|88|368|246|142|96|184|72|58|66|74|62|94|82|68|78' | split: '|'
+
+  assign goal_summer = 'summer-ready-stack,wlp-1,berberine,restore,hormone-metabolism,weight-management-stack,glp-1-nutrient-support-stack,metabolic-balance-stack' | split: ','
+  assign goal_longevity = 'the-best-sellers-stack,longevity,coq10,energy,curcumin,daily-basics,starter-pack,spring-essentials-stack,vitamin-d-k' | split: ','
+  assign goal_metab = 'summer-ready-stack,berberine,hormone-metabolism,wlp-1,weight-management-stack,glp-1-nutrient-support-stack,metabolic-balance-stack' | split: ','
+  assign goal_sleep = 'sleep,calm,magnesium-glycinate,advanced-sleep-recovery-set,magnesium-sleep-bundle,magnesium-calm-bundle,rest-recovery-stack,calm-energy-bundle,best-sellers-bundle' | split: ','
+  assign goal_immunity = 'restore,curcumin,inflammation-immunity,vitamin-d-k,magnesium-restore-bundle' | split: ','
+
+  assign products_list = section.settings.sale_products
+
+  assign display_handles = 'summer-ready-stack,wlp-1,berberine,restore,magnesium-glycinate,daily-basics,weight-management-stack,hormone-metabolism,best-sellers-bundle,metabolic-balance-stack,sleep,calm,coq10,vitamin-d-k,advanced-sleep-recovery-set,curcumin,spring-essentials-stack,magnesium-calm-bundle,rest-recovery-stack,the-best-sellers-stack' | split: ','
+
+  assign override_handles = 'restore,sleep,calm,energy,magnesium-sleep-bundle' | split: ','
+  assign override_urls = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Energy_3de78348-83c6-475b-aa3f-9df089873398.png?v=1768256691&width=960|https://www.absorbmore.com/cdn/shop/files/sleep-bag-mag-bundle.png?v=1768005885&width=960' | split: '|'
+-%}
+
+<style>
+  .lnd-srs { font-family: inherit; color: #0D273E; --sale-navy: #0D273E; --sale-red: #DB3519; --sale-navy-2: #143452; --sale-cream: #efe9dd; --sale-bg: #f6f6f4; --sale-gold: #d4a23a; }
+  .lnd-srs * { box-sizing: border-box; }
+
+  /* Sticky promo bar */
+  .lnd-srs__bar { position: sticky; top: 0; z-index: 50; background: var(--sale-red); color: #fff; text-align: center; padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 14px; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .lnd-srs__bar-count { display: inline-flex; gap: 4px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .lnd-srs__bar-count b { font-size: 14px; }
+  .lnd-srs__bar-count span { font-size: 10px; opacity: 0.8; }
+
+  /* Hero — Summer Ready specific: cream/peach gradient, packshot-led */
+  .lnd-srs__hero { position: relative; background: linear-gradient(180deg, #FFE9D1 0%, #FAD8B0 60%, #F5C68A 100%); color: var(--sale-navy); overflow: hidden; }
+  .lnd-srs__hero-inner { padding: 28px 20px 32px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  .lnd-srs__hero-top { display: flex; flex-direction: column; gap: 6px; }
+  .lnd-srs__hero-text { text-align: left; }
+  .lnd-srs__hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 18px; border-radius: 999px; background: var(--sale-red); color: #fff; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(219,53,25,0.32), 0 0 0 3px rgba(219,53,25,0.18); animation: lndsrsPulse 2.4s ease-in-out infinite; }
+  .lnd-srs__hero-eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,0.35); animation: lndsrsDot 1.2s ease-in-out infinite; }
+  @keyframes lndsrsPulse { 0%, 100% { box-shadow: 0 8px 20px rgba(219,53,25,0.32), 0 0 0 3px rgba(219,53,25,0.18); } 50% { box-shadow: 0 10px 26px rgba(219,53,25,0.45), 0 0 0 6px rgba(219,53,25,0.22); } }
+  @keyframes lndsrsDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .lnd-srs .lnd-srs__hero .lnd-srs__hero-text h1 { font-size: 62px !important; line-height: 0.92 !important; margin: 0 0 16px !important; font-weight: 900 !important; letter-spacing: -0.045em !important; color: var(--sale-navy) !important; text-transform: none !important; }
+  .lnd-srs .lnd-srs__hero .lnd-srs__hero-text h1 em { color: var(--sale-red) !important; font-style: normal !important; font-size: inherit !important; font-weight: inherit !important; }
+  .lnd-srs__hero p { font-size: 15px; color: #2c3e50; margin: 0 0 14px; line-height: 1.5; max-width: 480px; }
+  .lnd-srs__hero-sub { font-size: 17px; line-height: 1.35; color: var(--sale-navy); font-weight: 600; margin: 0 0 20px; opacity: 0.86; }
+  .lnd-srs__hero-bullets { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-direction: column; gap: 10px; }
+  .lnd-srs__hero-bullets li { position: relative; padding: 0 0 0 30px; font-size: 14px; line-height: 1.45; color: var(--sale-navy); font-weight: 500; }
+  .lnd-srs__hero-bullets li b { font-weight: 800; }
+  .lnd-srs__hero-bullets li::before { content: ""; position: absolute; left: 0; top: 2px; width: 20px; height: 20px; background: var(--sale-red); border-radius: 999px; }
+  .lnd-srs__hero-bullets li::after { content: ""; position: absolute; left: 5px; top: 7px; width: 10px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); }
+  .lnd-srs__hero-stage { position: relative; padding: 6px 0 16px; }
+  .lnd-srs__hero-stage-card { position: relative; background: #fff; border-radius: 18px; aspect-ratio: 1/1; max-width: 460px; margin: 0 auto; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 36px rgba(13,39,62,0.10); }
+  .lnd-srs__hero-packshot { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 18px; }
+  .lnd-srs__hero-badge { position: absolute; top: 14px; right: 14px; width: 84px; height: 84px; background: var(--sale-red); color: #fff; border-radius: 999px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; line-height: 1; transform: rotate(-8deg); box-shadow: 0 8px 22px rgba(219,53,25,0.32); z-index: 2; }
+  .lnd-srs__hero-badge b { font-size: 28px; letter-spacing: -0.04em; }
+  .lnd-srs__hero-badge span { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; opacity: 0.95; }
+  .lnd-srs__countdown { display: flex; gap: 6px; margin: 0 0 16px; flex-wrap: wrap; }
+  .lnd-srs__countdown div { background: rgba(13,39,62,0.94); min-width: 62px; padding: 10px 6px; border-radius: 10px; text-align: center; flex: 1; color: #fff; }
+  .lnd-srs__countdown b { display: block; font-size: 22px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .lnd-srs__countdown span { font-size: 9px; text-transform: uppercase; opacity: 0.7; letter-spacing: 0.08em; margin-top: 4px; display: block; }
+  .lnd-srs__cta-row { display: flex; flex-direction: column; gap: 10px; }
+  .lnd-srs__cta { display: inline-block; text-align: center; padding: 15px 24px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; min-height: 44px; }
+  .lnd-srs__cta--primary { background: var(--sale-red); color: #fff; box-shadow: 0 8px 20px rgba(219,53,25,0.28); }
+  .lnd-srs__cta--ghost { background: rgba(13,39,62,0.04); color: var(--sale-navy); border: 2px solid rgba(13,39,62,0.18); }
+  .lnd-srs__hero-disclaimer { font-size: 11px; color: var(--sale-navy); opacity: 0.6; margin: 10px 0 0; font-weight: 500; }
+
+  /* Value strip */
+  .lnd-srs__values { background: #fff; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 18px 16px; }
+  .lnd-srs__values-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; }
+  .lnd-srs__value { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--sale-navy); line-height: 1.3; }
+  .lnd-srs__value svg { flex-shrink: 0; color: var(--sale-red); }
+
+  /* Buy box v2 — per-month price lead, inline gifts inside each plan */
+  .lnd-srs__buybox { background: var(--sale-bg); padding: 36px 16px 44px; }
+  .lnd-srs__buybox-inner { position: relative; max-width: 780px; margin: 0 auto; background: #fff; border-radius: 22px; padding: 22px 18px 24px; box-shadow: 0 20px 50px rgba(13,39,62,0.10); border: 1px solid #ececec; overflow: hidden; }
+  .lnd-srs__bb-sale-badge { position: absolute; top: 18px; right: 18px; background: var(--sale-red); color: #fff; padding: 12px 16px; border-radius: 14px; text-align: center; line-height: 1; box-shadow: 0 10px 26px rgba(219,53,25,0.32); transform: rotate(6deg); z-index: 3; }
+  .lnd-srs__bb-sale-badge b { display: block; font-size: 28px; font-weight: 900; letter-spacing: -0.03em; }
+  .lnd-srs__bb-sale-badge span { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; opacity: 0.95; }
+  .lnd-srs__bb-limited { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(90deg, #0D273E 0%, #1a3854 100%); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 14px; border-radius: 12px; margin: 0 0 18px; text-align: center; line-height: 1.3; }
+  .lnd-srs__bb-limited::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--sale-red); box-shadow: 0 0 0 4px rgba(219,53,25,0.28); animation: lndsrsDot 1.2s ease-in-out infinite; flex: 0 0 auto; }
+  .lnd-srs__bb-limited b { font-weight: 900; color: #ffd16e; letter-spacing: 0.16em; }
+  .lnd-srs__bb-vit-feature { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #FFF7E0 0%, #FFE9A8 100%); border: 2px solid #ffd16e; border-radius: 14px; padding: 12px 14px; margin: 0 0 12px; }
+  .lnd-srs__bb-vit-feature-img { width: 48px; height: 48px; background: #fff; border-radius: 10px; padding: 4px; flex: 0 0 auto; box-shadow: 0 4px 10px rgba(13,39,62,0.08); }
+  .lnd-srs__bb-vit-feature-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-srs__bb-vit-feature-text { flex: 1 1 auto; min-width: 0; }
+  .lnd-srs__bb-vit-feature-eyebrow { font-size: 9px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sale-red); margin-bottom: 2px; line-height: 1; }
+  .lnd-srs__bb-vit-feature-name { font-size: 14px; font-weight: 800; color: var(--sale-navy); line-height: 1.2; }
+  .lnd-srs__bb-vit-feature-sub { font-size: 11px; color: #6b5a2a; font-weight: 600; line-height: 1.35; margin-top: 2px; }
+  .lnd-srs__bb-vit-feature-val { background: var(--sale-red); color: #fff; font-size: 11px; font-weight: 900; padding: 6px 10px; border-radius: 999px; flex: 0 0 auto; letter-spacing: 0.04em; }
+  .lnd-srs__hero-bonus { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,209,110,0.35); border: 1.5px solid #ffd16e; color: var(--sale-navy); font-size: 12px; font-weight: 800; letter-spacing: 0.04em; padding: 8px 12px; border-radius: 999px; margin: 0 0 14px; line-height: 1.2; }
+  .lnd-srs__hero-bonus svg { flex: 0 0 auto; }
+  .lnd-srs__hero-bonus b { color: var(--sale-red); font-weight: 900; }
+  .lnd-srs__hero-limited { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 50%); background: #0D273E; color: #fff; font-size: 10px; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; padding: 9px 16px; border-radius: 999px; white-space: nowrap; z-index: 4; box-shadow: 0 10px 26px rgba(13,39,62,0.28); line-height: 1; }
+  .lnd-srs__hero-limited b { color: #ffd16e; font-weight: 900; }
+  .lnd-srs__bb-gift-row.is-feature { background: linear-gradient(135deg, #FFF7E0 0%, #FFE9A8 100%); border-radius: 10px; padding: 8px 10px; margin: 4px -4px; border: 1.5px solid #ffd16e; }
+  .lnd-srs__bb-gift-row.is-feature .val { color: #6b5a2a; }
+
+  /* Header */
+  .lnd-srs__bb-head { padding-bottom: 16px; border-bottom: 1px solid #f0f0ec; margin-bottom: 18px; }
+  .lnd-srs__bb-thumbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .lnd-srs__bb-thumb { background: var(--sale-cream); border-radius: 14px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; padding: 14px; max-height: 116px; position: relative; }
+  .lnd-srs__bb-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-srs__bb-thumb-flag { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--sale-red); color: #fff; font-size: 8px; font-weight: 900; letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px; text-transform: uppercase; line-height: 1; white-space: nowrap; box-shadow: 0 4px 10px rgba(219,53,25,0.32); }
+  .lnd-srs__bb-thumb-cap { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sale-navy); opacity: 0.7; }
+  .lnd-srs__bb-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sale-red); margin-bottom: 6px; display: inline-flex; align-items: center; gap: 8px; }
+  .lnd-srs__bb-eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sale-red); display: inline-block; }
+  .lnd-srs__bb-h2 { font-size: 24px; font-weight: 900; margin: 0 0 4px; letter-spacing: -0.01em; line-height: 1.1; color: var(--sale-navy); }
+  .lnd-srs__bb-stack-line { font-size: 13px; font-weight: 700; color: var(--sale-red); margin: 0 0 8px; letter-spacing: 0.01em; }
+  .lnd-srs__bb-sub { font-size: 13px; color: #4a4a4a; margin: 0; line-height: 1.45; }
+  .lnd-srs__bb-stars { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px; color: var(--sale-navy); font-weight: 600; }
+  .lnd-srs__bb-stars-glyphs { color: #d4a23a; letter-spacing: 1px; line-height: 1; }
+
+  /* Plan section */
+  .lnd-srs__bb-plan-label { font-size: 10px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sale-navy); margin: 0 0 10px; opacity: 0.65; }
+  .lnd-srs__bb-plans { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 18px; }
+  .lnd-srs__bb-plan { position: relative; border: 2px solid #e5e5e5; border-radius: 16px; padding: 16px 14px 14px 44px; cursor: pointer; display: block; transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease; background: #fff; }
+  .lnd-srs__bb-plan input { position: absolute; opacity: 0; pointer-events: none; }
+  .lnd-srs__bb-plan::before { content: ""; position: absolute; left: 14px; top: 20px; width: 20px; height: 20px; border-radius: 999px; border: 2px solid #c5c5c5; background: #fff; box-sizing: border-box; }
+  .lnd-srs__bb-plan.is-selected { border-color: var(--sale-red); background: linear-gradient(180deg, #fff 0%, rgba(219,53,25,0.035) 100%); box-shadow: 0 8px 22px rgba(219,53,25,0.10); }
+  .lnd-srs__bb-plan.is-selected::before { border-color: var(--sale-red); background: var(--sale-red); }
+  .lnd-srs__bb-plan-badge { position: absolute; top: -10px; right: 14px; background: var(--sale-red); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 5px 10px; border-radius: 999px; text-transform: uppercase; line-height: 1; }
+  .lnd-srs__bb-plan-badge--save { font-size: 12px; font-weight: 900; letter-spacing: 0.04em; padding: 7px 14px; top: -14px; box-shadow: 0 8px 18px rgba(219,53,25,0.32); }
+  .lnd-srs__bb-plan.is-best { border-color: var(--sale-red); box-shadow: 0 12px 28px rgba(219,53,25,0.16); }
+  .lnd-srs__bb-plan-save-xl { font-size: 15px; font-weight: 900; color: var(--sale-red); letter-spacing: -0.01em; }
+  .lnd-srs__bb-plan-strike { color: #888; text-decoration: line-through; font-weight: 700; }
+
+  .lnd-srs__bb-plan-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .lnd-srs__bb-plan-name { white-space: nowrap; }
+  .lnd-srs__bb-plan-name { font-size: 16px; font-weight: 800; color: var(--sale-navy); line-height: 1.1; }
+  .lnd-srs__bb-plan-cadence { font-size: 11px; color: #888; font-weight: 600; margin-top: 3px; line-height: 1.3; }
+  .lnd-srs__bb-plan-priceblock { text-align: right; flex: 0 0 auto; }
+  .lnd-srs__bb-plan-pmo { display: flex; align-items: baseline; gap: 2px; justify-content: flex-end; line-height: 1; }
+  .lnd-srs__bb-plan-pmo-amt { font-size: 26px; font-weight: 800; color: var(--sale-navy); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .lnd-srs__bb-plan-pmo-unit { font-size: 12px; color: #777; font-weight: 700; }
+  .lnd-srs__bb-plan-total { font-size: 11px; color: #888; margin-top: 5px; line-height: 1.3; font-weight: 600; }
+  .lnd-srs__bb-plan-total b { color: var(--sale-red); font-weight: 800; }
+
+  .lnd-srs__bb-gifts-inline { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; margin-top: 12px; border-top: 1px dashed #ececec; }
+  .lnd-srs__bb-plan:not(.is-selected) .lnd-srs__bb-gifts-inline { display: none; }
+  .lnd-srs__bb-plan:not(.is-selected) .lnd-srs__bb-gifts-summary { display: flex; align-items: center; gap: 6px; padding-top: 10px; margin-top: 10px; border-top: 1px dashed #ececec; font-size: 11px; font-weight: 700; color: var(--sale-navy); }
+  .lnd-srs__bb-plan.is-selected .lnd-srs__bb-gifts-summary { display: none; }
+  .lnd-srs__bb-gifts-summary { display: none; }
+  .lnd-srs__bb-gifts-summary .pill { background: var(--sale-gold); color: var(--sale-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 999px; text-transform: uppercase; line-height: 1; }
+  .lnd-srs__bb-gift-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--sale-navy); font-weight: 600; line-height: 1.3; }
+  .lnd-srs__bb-gift-mini { width: 36px; height: 36px; background: var(--sale-cream); border-radius: 8px; padding: 4px; flex: 0 0 auto; }
+  .lnd-srs__bb-gift-mini img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-srs__bb-gift-row .val { color: #999; font-weight: 600; font-size: 11px; }
+  .lnd-srs__bb-gift-row .today { color: var(--sale-red); font-weight: 800; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lnd-srs__bb-gift-row .free { background: var(--sale-gold); color: var(--sale-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px; text-transform: uppercase; margin-left: auto; flex: 0 0 auto; line-height: 1; }
+
+  /* CTA */
+  .lnd-srs__bb-cta { display: flex; justify-content: center; align-items: baseline; gap: 10px; background: var(--sale-red); color: #fff; padding: 18px 24px; border-radius: 999px; font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; min-height: 48px; box-shadow: 0 10px 26px rgba(219,53,25,0.32); margin-bottom: 12px; flex-wrap: wrap; width: 100%; border: 0; cursor: pointer; font-family: inherit; }
+  .lnd-srs__bb-cta:hover { background: #c42d12; }
+  .lnd-srs__bb-cta:disabled, .lnd-srs__bb-cta.is-loading { opacity: 0.8; cursor: wait; }
+  .lnd-srs__bb-cta-price { font-size: 12px; font-weight: 700; opacity: 0.88; letter-spacing: 0.02em; text-transform: none; }
+  .lnd-srs__bb-cta-note { text-align: center; font-size: 11px; color: #777; margin: 0 0 16px; line-height: 1.4; }
+  .lnd-srs__bb-cta-note b { color: var(--sale-navy); font-weight: 700; }
+
+  /* Trust */
+  .lnd-srs__bb-trust { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; padding: 14px 0; border-top: 1px solid #f0f0ec; list-style: none; margin: 0; }
+  .lnd-srs__bb-trust li { padding-left: 22px; position: relative; font-size: 11px; color: #555; line-height: 1.4; font-weight: 600; }
+  .lnd-srs__bb-trust li::before { content: ""; position: absolute; left: 0; top: 2px; width: 14px; height: 14px; border-radius: 999px; background: var(--sale-cream); }
+  .lnd-srs__bb-trust li::after { content: ""; position: absolute; left: 3px; top: 6px; width: 8px; height: 4px; border-left: 2px solid var(--sale-red); border-bottom: 2px solid var(--sale-red); transform: rotate(-45deg); }
+
+  /* Why */
+  .lnd-srs__bb-why { border-top: 1px solid #f0f0ec; margin: 0; }
+  .lnd-srs__bb-why summary { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sale-navy); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 14px 0 12px; }
+  .lnd-srs__bb-why summary::-webkit-details-marker { display: none; }
+  .lnd-srs__bb-why summary::after { content: "+"; font-size: 18px; color: var(--sale-red); font-weight: 400; line-height: 1; }
+  .lnd-srs__bb-why[open] summary::after { content: "−"; }
+  .lnd-srs__bb-why-body { font-size: 13px; color: #444; line-height: 1.55; padding: 0 0 14px; }
+  .lnd-srs__bb-why-body p { margin: 0 0 8px; }
+  .lnd-srs__bb-why-body p:last-child { margin-bottom: 0; }
+  .lnd-srs__bb-why-body b { color: var(--sale-navy); font-weight: 800; }
+
+  /* Pivot strip — for shoppers who want different products */
+  .lnd-srs__pivot { background: var(--sale-cream); padding: 28px 16px; text-align: center; }
+  .lnd-srs__pivot-inner { max-width: 720px; margin: 0 auto; }
+  .lnd-srs__pivot h2 { font-size: 20px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lnd-srs__pivot p { font-size: 13px; color: #555; margin: 0 0 14px; line-height: 1.5; }
+  .lnd-srs__pivot a { display: inline-block; background: var(--sale-navy); color: #fff; padding: 12px 22px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+
+  /* Bubble filter (reused) */
+  .lnd-srs__bubbles-wrap { background: #fff; padding: 22px 0 6px; }
+  .lnd-srs__bubbles-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .lnd-srs__bubbles-head { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sale-navy); margin: 0 0 12px; opacity: 0.7; }
+  .lnd-srs__bubbles { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .lnd-srs__bubbles::-webkit-scrollbar { display: none; }
+  .lnd-srs__bubble { flex: 0 0 auto; background: var(--sale-cream); color: var(--sale-navy); border: 2px solid transparent; padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; font: inherit; min-height: 44px; line-height: 1; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; white-space: nowrap; }
+  .lnd-srs__bubble:hover { border-color: var(--sale-navy); }
+  .lnd-srs__bubble.is-active { background: var(--sale-navy); color: #fff; border-color: var(--sale-navy); }
+  .lnd-srs__bubble-count { font-size: 11px; font-weight: 600; opacity: 0.6; }
+  .lnd-srs__bubble.is-active .lnd-srs__bubble-count { opacity: 0.7; color: #fff; }
+
+  /* Grid */
+  .lnd-srs__grid-wrap { background: var(--sale-bg); padding: 20px 16px 36px; }
+  .lnd-srs__grid-head { max-width: 1200px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  .lnd-srs__grid-head h2 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  .lnd-srs__grid-count { font-size: 13px; color: #666; }
+  .lnd-srs__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 1200px; margin: 0 auto; }
+
+  /* Tile */
+  .lnd-srs__tile { background: var(--sale-cream); border-radius: 14px; padding: 14px 14px 0; position: relative; display: flex; flex-direction: column; text-align: left; font: inherit; color: inherit; border: none; transition: transform 0.15s ease, box-shadow 0.15s ease; text-decoration: none; }
+  .lnd-srs__tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(13,39,62,0.08); }
+  .lnd-srs__tile-tags { position: absolute; top: 14px; left: 14px; right: 14px; z-index: 2; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .lnd-srs__tile-pill { background: #fff; color: var(--sale-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; line-height: 1; }
+  .lnd-srs__tile-badge { background: var(--sale-red); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; line-height: 1; }
+  .lnd-srs__tile-lowstock { background: #b91d1d; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; line-height: 1; box-shadow: 0 4px 12px rgba(185,29,29,0.32); display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+  .lnd-srs__tile-lowstock::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.32); }
+  .lnd-srs__tile-gift { background: linear-gradient(135deg, #FFF7E0 0%, #FFE2A0 100%); border: 1.5px solid #ffd16e; color: var(--sale-navy); font-size: 9px; font-weight: 900; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 999px; text-transform: uppercase; box-shadow: 0 4px 12px rgba(13,39,62,0.08); display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; line-height: 1; }
+  .lnd-srs__tile-gift::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sale-red); flex: 0 0 auto; }
+  .lnd-srs__tile-img { aspect-ratio: 1/1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .lnd-srs__tile-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-srs__tile-info { padding: 12px 4px 14px; }
+  .lnd-srs__tile-title { font-size: 17px; font-weight: 700; line-height: 1.2; margin: 0 0 4px; color: var(--sale-navy); }
+  .lnd-srs__tile-sub { font-size: 13px; color: #6b6b6b; line-height: 1.3; margin: 0 0 8px; min-height: 34px; }
+  .lnd-srs__tile-stars { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .lnd-srs__tile-stars-glyphs { color: var(--sale-navy); font-size: 13px; letter-spacing: 1px; line-height: 1; }
+  .lnd-srs__tile-stars-meta { font-size: 12px; color: var(--sale-navy); font-weight: 600; }
+  .lnd-srs__tile-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .lnd-srs__tile-price .now { font-size: 16px; font-weight: 800; color: var(--sale-navy); font-variant-numeric: tabular-nums; }
+  .lnd-srs__tile-price .was { font-size: 13px; color: #9a9a9a; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  .lnd-srs__tile-price .off { font-size: 13px; font-weight: 700; color: var(--sale-red); }
+  .lnd-srs__tile-price .off::before { content: "·"; margin-right: 4px; color: #9a9a9a; }
+
+  /* Trust strip */
+  .lnd-srs__trust { background: #fff; padding: 36px 20px; text-align: center; }
+  .lnd-srs__trust-inner { max-width: 760px; margin: 0 auto; }
+  .lnd-srs__trust-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sale-red); margin-bottom: 10px; }
+  .lnd-srs__trust h2 { font-size: 22px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .lnd-srs__trust p { font-size: 14px; color: #555; margin: 0; line-height: 1.6; }
+
+  /* FAQ */
+  .lnd-srs__faq { background: var(--sale-bg); padding: 36px 16px; }
+  .lnd-srs__faq-inner { max-width: 760px; margin: 0 auto; }
+  .lnd-srs__faq h2 { font-size: 24px; font-weight: 800; margin: 0 0 18px; text-align: center; letter-spacing: -0.01em; }
+  .lnd-srs__faq details { background: #fff; border: 1px solid #ececec; border-radius: 12px; margin-bottom: 10px; }
+  .lnd-srs__faq summary { padding: 14px 16px; font-size: 14px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .lnd-srs__faq summary::-webkit-details-marker { display: none; }
+  .lnd-srs__faq summary::after { content: "+"; font-size: 20px; font-weight: 300; color: var(--sale-red); }
+  .lnd-srs__faq details[open] summary::after { content: "−"; }
+  .lnd-srs__faq-body { padding: 0 16px 16px; font-size: 13px; color: #555; line-height: 1.55; }
+
+  /* Final CTA */
+  .lnd-srs__final { background: var(--sale-navy); color: #fff; padding: 44px 20px; text-align: center; }
+  .lnd-srs__final h2 { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .lnd-srs__final h2 em { color: var(--sale-red); font-style: normal; }
+  .lnd-srs__final p { font-size: 14px; opacity: 0.82; margin: 0 0 22px; }
+  .lnd-srs__final .lnd-srs__countdown { margin: 0 auto 22px; max-width: 360px; }
+  .lnd-srs__final-cta { display: inline-block; background: var(--sale-red); color: #fff; padding: 14px 30px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+
+  /* Sticky mobile CTA */
+  .lnd-srs__mobile-cta { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 60; display: none; }
+  .lnd-srs__mobile-cta a { display: block; background: var(--sale-red); color: #fff; text-align: center; padding: 14px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .lnd-srs__mobile-cta.is-show { display: block; }
+
+  /* Desktop */
+  @media (min-width: 720px) {
+    .lnd-srs__hero { min-height: 560px; background: linear-gradient(135deg, #FFE9D1 0%, #FAD8B0 55%, #F5C68A 100%); }
+    .lnd-srs__hero-inner { padding: 56px 40px; min-height: 560px; align-items: center; }
+    .lnd-srs__hero-top { flex-direction: row; align-items: center; gap: 48px; width: 100%; }
+    .lnd-srs__hero-text { flex: 1 1 0; max-width: 600px; }
+    .lnd-srs__hero-stage { flex: 0 0 440px; padding: 0; }
+    .lnd-srs__hero-stage-card { max-width: 440px; padding: 0; }
+    .lnd-srs__hero-badge { width: 108px; height: 108px; top: 18px; right: 18px; }
+    .lnd-srs__hero-badge b { font-size: 36px; }
+    .lnd-srs__hero-badge span { font-size: 10px; margin-top: 5px; }
+    .lnd-srs .lnd-srs__hero .lnd-srs__hero-text h1.lnd-srs__hero-h1 { font-size: 96px !important; line-height: 0.9 !important; margin-bottom: 22px !important; letter-spacing: -0.05em !important; }
+    .lnd-srs__hero-eyebrow { font-size: 16px; padding: 13px 22px; gap: 10px; margin-bottom: 20px; }
+    .lnd-srs__hero-eyebrow::before { width: 10px; height: 10px; }
+    .lnd-srs__hero-sub { font-size: 20px; margin-bottom: 26px; }
+    .lnd-srs__hero-bullets li { font-size: 15px; }
+    .lnd-srs__countdown { max-width: 420px; }
+    .lnd-srs__countdown div { min-width: 80px; padding: 14px 10px; }
+    .lnd-srs__countdown b { font-size: 30px; }
+    .lnd-srs__cta-row { flex-direction: row; }
+    .lnd-srs__values-inner { grid-template-columns: repeat(4, 1fr); }
+    .lnd-srs__buybox-inner { padding: 32px 32px 28px; max-width: 820px; }
+    .lnd-srs__bb-sale-badge { top: 24px; right: 24px; padding: 16px 20px; }
+    .lnd-srs__bb-sale-badge b { font-size: 36px; }
+    .lnd-srs__bb-sale-badge span { font-size: 10px; margin-top: 6px; }
+    .lnd-srs__bb-limited { font-size: 12px; padding: 13px 16px; }
+    .lnd-srs__bb-head { padding-bottom: 22px; margin-bottom: 22px; }
+    .lnd-srs__bb-thumbs { grid-template-columns: repeat(4, 1fr); max-width: 480px; margin: 0 auto 18px; }
+    .lnd-srs__bb-thumb { max-height: 140px; }
+    .lnd-srs__bb-h2 { font-size: 30px; }
+    .lnd-srs__bb-stack-line { font-size: 14px; }
+    .lnd-srs__bb-sub { font-size: 14px; }
+    .lnd-srs__bb-plans { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .lnd-srs__bb-plan-pmo-amt { font-size: 30px; }
+    .lnd-srs__bb-trust { grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
+    .lnd-srs__bubbles { flex-wrap: wrap; overflow-x: visible; }
+    .lnd-srs__grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lnd-srs__grid-head h2 { font-size: 28px; }
+    .lnd-srs__final h2 { font-size: 36px; }
+    .lnd-srs__mobile-cta { display: none; }
+    .lnd-srs__mobile-cta.is-show { display: none; }
+  }
+  @media (min-width: 1024px) {
+    .lnd-srs__grid { grid-template-columns: repeat(4, 1fr); }
+    .lnd-srs__tile-title { font-size: 19px; }
+    .lnd-srs__tile-sub { font-size: 14px; }
+  }
+</style>
+
+<section class="lnd-srs" data-pct="{{ discount_pct }}" data-end="{{ end_iso }}" data-discount-code="{{ discount_code }}">
+
+  {%- comment -%} Sticky promo bar {%- endcomment -%}
+  <div class="lnd-srs__bar">
+    <span>Memorial Day Sale · {{ discount_pct }}% Off + Free Gifts</span>
+    <span class="lnd-srs__bar-count" data-countdown-bar>
+      <span>Ends in</span>
+      <b data-d>00</b><span>d</span>
+      <b data-h>00</b><span>h</span>
+      <b data-m>00</b><span>m</span>
+    </span>
+  </div>
+
+  {%- comment -%} Hero — single packshot in square PDP card on a cream/peach gradient. No lifestyle image. {%- endcomment -%}
+  {%- if section.settings.hero_packshot -%}
+    {%- assign hero_packshot = section.settings.hero_packshot | image_url: width: 920 -%}
+  {%- else -%}
+    {%- assign hero_packshot = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/lander-srs-md-hero.jpg?v=1778823216' -%}
+  {%- endif -%}
+  <div class="lnd-srs__hero">
+    <div class="lnd-srs__hero-inner">
+      <div class="lnd-srs__hero-top">
+        <div class="lnd-srs__hero-text">
+          <div class="lnd-srs__hero-eyebrow">{{ section.settings.eyebrow | default: '35% Off + Free Shipping*' }}</div>
+          {%- assign headline_raw = section.settings.headline | default: 'Drop <em>~9 lbs</em> by July 1st.' -%}
+          {%- assign headline_clean = headline_raw | replace: '<p>', '' | replace: '</p>', '' | replace: '<P>', '' | replace: '</P>', '' -%}
+          <h1 class="lnd-srs__hero-h1" style="font-size:62px;line-height:0.92;margin:0 0 16px;font-weight:900;letter-spacing:-0.045em;color:#0D273E;text-transform:none;font-family:inherit;display:block;width:100%;white-space:normal;word-spacing:normal;overflow:visible;text-wrap:wrap;">{{ headline_clean }}</h1>
+          <div class="lnd-srs__hero-sub">Lose ~9 lbs in 4 weeks and 12% body weight in 10 weeks with The Summer Ready Stack.</div>
+          <ul class="lnd-srs__hero-bullets">
+            <li><b>22% craving reduction.</b> WLP-1 boosts natural GLP-1 by 321% helping you feel fuller longer.</li>
+            <li><b>Cleaner burn, steadier energy.</b> Berberine activates AMPK to stabilize blood sugar and improve insulin sensitivity.</li>
+            <li><b>Lose the weight, not the nutrients.</b> Restore replenishes the electrolytes, vitamins, and minerals depleted as you cut.</li>
+          </ul>
+          <div class="lnd-srs__hero-bonus">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
+            <span>+ <b>FREE Vitamin D3+K2</b> ($32) with 3-Month order</span>
+          </div>
+          <div class="lnd-srs__cta-row">
+            <a class="lnd-srs__cta lnd-srs__cta--primary" href="#offer">Get the stack</a>
+            <a class="lnd-srs__cta lnd-srs__cta--ghost" href="#sale-grid">Shop the rest of the sale</a>
+          </div>
+          <p class="lnd-srs__hero-disclaimer">*Free shipping on US orders $50+</p>
+        </div>
+        <div class="lnd-srs__hero-stage">
+          <div class="lnd-srs__hero-stage-card">
+            <img class="lnd-srs__hero-packshot" src="{{ hero_packshot }}" alt="Restore, WLP-1, and Berberine. The Summer Ready Stack." loading="eager" width="920" height="920">
+            <div class="lnd-srs__hero-badge"><b>{{ discount_pct }}%</b><span>Off</span></div>
+            <div class="lnd-srs__hero-limited"><b>Limited Edition</b> · Memorial Day Sale only</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Value strip {%- endcomment -%}
+  <div class="lnd-srs__values">
+    <div class="lnd-srs__values-inner">
+      <div class="lnd-srs__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg>Up to 149x more absorption</div>
+      <div class="lnd-srs__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Free gifts up to $102 value</div>
+      <div class="lnd-srs__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7h13l3 4h2v6h-3a2 2 0 1 1-4 0H10a2 2 0 1 1-4 0H3z"/></svg>Free shipping on $50+</div>
+      <div class="lnd-srs__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>30-day money-back guarantee</div>
+    </div>
+  </div>
+
+  {%- comment -%} Consolidated buy box — stack contents, free gifts, plan selector, and the absorption story in one PDP-style component {%- endcomment -%}
+  <div class="lnd-srs__buybox" id="offer">
+    <div class="lnd-srs__buybox-inner">
+      <div class="lnd-srs__bb-sale-badge"><b>{{ discount_pct }}%</b><span>Off</span></div>
+      <div class="lnd-srs__bb-limited"><b>Limited Edition</b> · Only available during Memorial Day Sale</div>
+      <div class="lnd-srs__bb-head">
+        <div class="lnd-srs__bb-thumbs">
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977" alt="WLP-1" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">WLP-1</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png" alt="Berberine" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Berberine</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=600" alt="Restore" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Restore</span>
+          </div>
+          <div class="lnd-srs__bb-thumb">
+            <span class="lnd-srs__bb-thumb-flag">Free w/ 3-month</span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416&width=960" alt="Vitamin D3+K2" loading="lazy" width="80" height="80">
+            <span class="lnd-srs__bb-thumb-cap">Vitamin D3+K2</span>
+          </div>
+        </div>
+        <div class="lnd-srs__bb-title">
+          <div class="lnd-srs__bb-eyebrow">Featured Stack · 35% off</div>
+          <h2 class="lnd-srs__bb-h2">The Summer Ready Stack</h2>
+          <div class="lnd-srs__bb-stack-line">WLP-1 + Berberine + Restore</div>
+          <p class="lnd-srs__bb-sub">Cravings, blood sugar, and hydration. The three levers that decide what your body looks like by July. Engineered for up to 149x absorption.</p>
+        </div>
+      </div>
+
+      <div class="lnd-srs__bb-plan-label">Pick your plan</div>
+      <div class="lnd-srs__bb-plans" data-plans>
+        <label class="lnd-srs__bb-plan" data-plan="monthly" data-variant="52671161467169" data-url="{{ srs_url_1mo }}" data-price="$139.75 total">
+          <input type="radio" name="srs-plan" value="monthly">
+          <div class="lnd-srs__bb-plan-top">
+            <div>
+              <div class="lnd-srs__bb-plan-name">1-Month</div>
+              <div class="lnd-srs__bb-plan-cadence">Ships every 30 days</div>
+            </div>
+            <div class="lnd-srs__bb-plan-priceblock">
+              <div class="lnd-srs__bb-plan-pmo">
+                <span class="lnd-srs__bb-plan-pmo-amt">$139.75</span>
+                <span class="lnd-srs__bb-plan-pmo-unit">/mo</span>
+              </div>
+              <div class="lnd-srs__bb-plan-total">$139.75 total · <b>35% off $215</b></div>
+            </div>
+          </div>
+          <div class="lnd-srs__bb-gifts-summary"><span class="pill">3 Free Gifts</span><span>Frother + Bottle + Tote</span></div>
+          <div class="lnd-srs__bb-gifts-inline">
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/frother_f4fa120c-fdb7-42d8-a882-40ee3cf2e953.jpg?v=1776218337" alt="Frother" loading="lazy" width="36" height="36"></span>
+              <span>3 Speed Frother <span class="val">($15 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bottle.jpg?v=1761661705" alt="Stainless steel water bottle" loading="lazy" width="36" height="36"></span>
+              <span>Stainless Steel Water Bottle <span class="val">(order 2)</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bag.jpg?v=1761662490" alt="Tote bag" loading="lazy" width="36" height="36"></span>
+              <span>Summer Tote Bag <span class="val">(order 3)</span></span>
+              <span class="free">Free</span>
+            </div>
+          </div>
+        </label>
+        <label class="lnd-srs__bb-plan is-selected is-best" data-plan="3mo" data-variant="52671161499937" data-url="{{ srs_url_3mo }}" data-price="$419.25 total">
+          <span class="lnd-srs__bb-plan-badge lnd-srs__bb-plan-badge--save">Save $327.75</span>
+          <input type="radio" name="srs-plan" value="3mo" checked>
+          <div class="lnd-srs__bb-plan-top">
+            <div>
+              <div class="lnd-srs__bb-plan-name">3-Month</div>
+              <div class="lnd-srs__bb-plan-cadence">Ships every 90 days</div>
+            </div>
+            <div class="lnd-srs__bb-plan-priceblock">
+              <div class="lnd-srs__bb-plan-pmo">
+                <span class="lnd-srs__bb-plan-pmo-amt">$139.75</span>
+                <span class="lnd-srs__bb-plan-pmo-unit">/mo</span>
+              </div>
+              <div class="lnd-srs__bb-plan-total">$419.25 total · <s class="lnd-srs__bb-plan-strike">$747</s> · <b class="lnd-srs__bb-plan-save-xl">Save $327.75</b></div>
+            </div>
+          </div>
+          <div class="lnd-srs__bb-gifts-summary"><span class="pill">4 Free Gifts</span><span>D3+K2 + Frother + Bottle + Tote ($102 value)</span></div>
+          <div class="lnd-srs__bb-gifts-inline">
+            <div class="lnd-srs__bb-gift-row is-feature">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416&width=960" alt="Vitamin D3+K2" loading="lazy" width="36" height="36"></span>
+              <span><b>Vitamin D3+K2</b> <span class="val">($32 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/frother_f4fa120c-fdb7-42d8-a882-40ee3cf2e953.jpg?v=1776218337" alt="Frother" loading="lazy" width="36" height="36"></span>
+              <span>3 Speed Frother <span class="val">($15 value)</span> · <span class="today">Ships today</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bottle.jpg?v=1761661705" alt="Stainless steel water bottle" loading="lazy" width="36" height="36"></span>
+              <span>Stainless Steel Water Bottle <span class="val">(order 2)</span></span>
+              <span class="free">Free</span>
+            </div>
+            <div class="lnd-srs__bb-gift-row">
+              <span class="lnd-srs__bb-gift-mini"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/bag.jpg?v=1761662490" alt="Tote bag" loading="lazy" width="36" height="36"></span>
+              <span>Summer Tote Bag <span class="val">(order 3)</span></span>
+              <span class="free">Free</span>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <button type="button" class="lnd-srs__bb-cta" id="lnd-srs-bb-cta" data-handle="summer-ready-stack" data-variant="52671161499937">Add to cart <span class="lnd-srs__bb-cta-price" id="lnd-srs-bb-cta-price">$419.25 total</span></button>
+      <p class="lnd-srs__bb-cta-note"><b>Free gifts</b> auto-added at checkout. Cancel anytime.</p>
+
+      <ul class="lnd-srs__bb-trust">
+        <li>Free shipping</li>
+        <li>30-day guarantee</li>
+        <li>Cancel anytime</li>
+        <li>Up to 20x more absorption</li>
+      </ul>
+
+      <details class="lnd-srs__bb-why">
+        <summary>Why this stack works</summary>
+        <div class="lnd-srs__bb-why-body">
+          <p><b>WLP-1.</b> Boosts natural GLP-1 by 321%. 22.3% fewer cravings. ~9 lbs in 4 weeks on average.</p>
+          <p><b>Berberine.</b> Extra-strength liposomal. AMPK activation, steadier glucose, cleaner energy.</p>
+          <p><b>Restore.</b> Replaces the electrolytes, vitamins, and minerals depleted as you cut. Lose the weight, keep the nutrients.</p>
+          <p>Only 16% of standard supplements absorb. The Summer Ready Stack uses liposomes, nanoparticles, and chelated minerals to deliver up to 149x the dose your body actually gets.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  {%- comment -%} Pivot to grid {%- endcomment -%}
+  <div class="lnd-srs__pivot">
+    <div class="lnd-srs__pivot-inner">
+      <h2>Not your fit. Still 35% off everything else.</h2>
+      <p>Every supplement and bundle is discounted through Memorial Day. Shop the full sale below.</p>
+      <a href="#sale-grid">Shop the sale</a>
+    </div>
+  </div>
+
+  {%- comment -%} Bubble filter {%- endcomment -%}
+  <div class="lnd-srs__bubbles-wrap">
+    <div class="lnd-srs__bubbles-inner">
+      <h2 class="lnd-srs__bubbles-head">Shop by goal</h2>
+      <div class="lnd-srs__bubbles" role="tablist" aria-label="Filter by goal">
+        <button class="lnd-srs__bubble is-active" type="button" data-goal="all" aria-pressed="true">All <span class="lnd-srs__bubble-count">{{ meta_handles.size }}</span></button>
+        <button class="lnd-srs__bubble" type="button" data-goal="summer" aria-pressed="false">Summer Ready <span class="lnd-srs__bubble-count">{{ goal_summer.size }}</span></button>
+        <button class="lnd-srs__bubble" type="button" data-goal="metab" aria-pressed="false">Metabolism &amp; Hormones <span class="lnd-srs__bubble-count">{{ goal_metab.size }}</span></button>
+        <button class="lnd-srs__bubble" type="button" data-goal="longevity" aria-pressed="false">Longevity &amp; Performance <span class="lnd-srs__bubble-count">{{ goal_longevity.size }}</span></button>
+        <button class="lnd-srs__bubble" type="button" data-goal="sleep" aria-pressed="false">Sleep &amp; Mood <span class="lnd-srs__bubble-count">{{ goal_sleep.size }}</span></button>
+        <button class="lnd-srs__bubble" type="button" data-goal="immunity" aria-pressed="false">Immunity &amp; Inflammation <span class="lnd-srs__bubble-count">{{ goal_immunity.size }}</span></button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Grid {%- endcomment -%}
+  <div class="lnd-srs__grid-wrap" id="sale-grid">
+    <div class="lnd-srs__grid-head">
+      <h2>The full 35% off sale</h2>
+      <span class="lnd-srs__grid-count" data-grid-count>{{ meta_handles.size }} products</span>
+    </div>
+    <div class="lnd-srs__grid" data-grid>
+      {%- if products_list != blank and products_list.size > 0 -%}
+        {%- assign iter_source = products_list -%}
+      {%- else -%}
+        {%- assign iter_source = display_handles -%}
+      {%- endif -%}
+
+      {%- for entry in iter_source -%}
+        {%- if products_list != blank and products_list.size > 0 -%}
+          {%- assign p = entry -%}
+        {%- else -%}
+          {%- assign p = all_products[entry] -%}
+        {%- endif -%}
+
+        {%- if p != blank and p.handle != blank -%}
+          {%- assign meta_idx = -1 -%}
+          {%- for mh in meta_handles -%}
+            {%- if mh == p.handle -%}{%- assign meta_idx = forloop.index0 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+
+          {%- assign pill_text = '' -%}
+          {%- assign badge_text = '' -%}
+          {%- assign rating_val = '' -%}
+          {%- assign reviews_val = '' -%}
+          {%- if meta_idx >= 0 -%}
+            {%- assign pill_text = pills[meta_idx] -%}
+            {%- assign badge_text = badges[meta_idx] -%}
+            {%- assign rating_val = ratings[meta_idx] -%}
+            {%- assign reviews_val = reviews[meta_idx] -%}
+          {%- endif -%}
+
+          {%- assign tile_chips = 'all' -%}
+          {%- if goal_summer contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' summer' -%}{%- endif -%}
+          {%- if goal_longevity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' longevity' -%}{%- endif -%}
+          {%- if goal_metab contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' metab' -%}{%- endif -%}
+          {%- if goal_sleep contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' sleep' -%}{%- endif -%}
+          {%- if goal_immunity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' immunity' -%}{%- endif -%}
+
+          {%- assign was_price = p.compare_at_price -%}
+          {%- assign now_price = p.price -%}
+          {%- if was_price == nil or was_price <= now_price -%}
+            {%- assign keep_pct = 100 | minus: discount_pct -%}
+            {%- assign now_price = p.price | times: keep_pct | divided_by: 100 -%}
+            {%- assign was_price = p.price -%}
+          {%- endif -%}
+
+          {%- assign tile_img_url = '' -%}
+          {%- for oh in override_handles -%}
+            {%- if oh == p.handle -%}{%- assign tile_img_url = override_urls[forloop.index0] -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign tile_img = p.featured_image -%}
+
+          {%- assign tile_sub = p.metafields.smart.short_description -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.metafields.smart.tagline -%}{%- endif -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.description | strip_html | truncate: 80 -%}{%- endif -%}
+
+          {%- assign is_low_stock = false -%}
+          {%- if p.handle == 'wlp-1' or p.handle == 'weight-management-stack' -%}{%- assign is_low_stock = true -%}{%- endif -%}
+          <a class="lnd-srs__tile" href="/products/{{ p.handle }}" data-chips="{{ tile_chips }}" data-handle="{{ p.handle }}">
+            {%- if pill_text != blank or badge_text != blank or p.handle == 'summer-ready-stack' or is_low_stock -%}
+            <div class="lnd-srs__tile-tags">
+              {%- if pill_text != blank -%}<span class="lnd-srs__tile-pill">{{ pill_text }}</span>{%- endif -%}
+              {%- if badge_text != blank -%}<span class="lnd-srs__tile-badge">{{ badge_text }}</span>{%- endif -%}
+              {%- if is_low_stock -%}<span class="lnd-srs__tile-lowstock">Low Stock</span>{%- endif -%}
+              {%- if p.handle == 'summer-ready-stack' -%}<span class="lnd-srs__tile-gift">+ Free D3+K2</span>{%- endif -%}
+            </div>
+            {%- endif -%}
+            <div class="lnd-srs__tile-img">
+              {%- if tile_img_url != blank -%}
+                <img src="{{ tile_img_url }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- elsif tile_img -%}
+                <img src="{{ tile_img | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- endif -%}
+            </div>
+            <div class="lnd-srs__tile-info">
+              <h3 class="lnd-srs__tile-title">{{ p.title }}</h3>
+              {%- if tile_sub != blank -%}<p class="lnd-srs__tile-sub">{{ tile_sub }}</p>{%- endif -%}
+              {%- if rating_val != blank -%}
+                <div class="lnd-srs__tile-stars">
+                  <span class="lnd-srs__tile-stars-glyphs">★★★★★</span>
+                  <span class="lnd-srs__tile-stars-meta">{{ rating_val }} ({{ reviews_val }})</span>
+                </div>
+              {%- endif -%}
+              <div class="lnd-srs__tile-price">
+                <span class="now">{{ now_price | money }}</span>
+                <span class="was">{{ was_price | money }}</span>
+                <span class="off">{{ discount_pct }}% off</span>
+              </div>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Trust strip {%- endcomment -%}
+  <div class="lnd-srs__trust">
+    <div class="lnd-srs__trust-inner">
+      <div class="lnd-srs__trust-eyebrow">Pharmaceutical-grade absorption</div>
+      <h2>The sale doesn't change the science.</h2>
+      <p>Liposomes, nanoparticles, and chelated nutrients deliver up to 149x what standard supplements deliver. Same formulas the brand has built its reputation on. Marked down. Not watered down.</p>
+    </div>
+  </div>
+
+  {%- comment -%} FAQ {%- endcomment -%}
+  <div class="lnd-srs__faq">
+    <div class="lnd-srs__faq-inner">
+      <h2>Summer Ready Stack questions</h2>
+      <details>
+        <summary>How do the free gifts work?</summary>
+        <div class="lnd-srs__faq-body">Your 3 Speed Frother ships today with order 1 (the 3-Month plan also adds Vitamin D3+K2 in order 1). The stainless steel water bottle ships with order 2, and the summer tote bag ships with order 3. All gifts are added automatically. Total value up to $102.</div>
+      </details>
+      <details>
+        <summary>What's in the stack?</summary>
+        <div class="lnd-srs__faq-body">One bottle each of WLP-1 (GLP-1, appetite, thermogenesis), Berberine 1000mg (AMPK, blood sugar), and Restore (vitamins, minerals, electrolytes for hydration).</div>
+      </details>
+      <details>
+        <summary>Can I cancel the subscription?</summary>
+        <div class="lnd-srs__faq-body">Yes. Cancel or skip anytime in your account. You keep the free gifts shipped with order one.</div>
+      </details>
+      <details>
+        <summary>Money-back guarantee?</summary>
+        <div class="lnd-srs__faq-body">30 days. If the stack isn't working for you, we refund it.</div>
+      </details>
+      <details>
+        <summary>Not sure if this is for me?</summary>
+        <div class="lnd-srs__faq-body">Take the <a href="/pages/absorption-quiz">2-minute absorption quiz</a> and we'll match you to the stack that fits.</div>
+      </details>
+    </div>
+  </div>
+
+  {%- comment -%} Final CTA {%- endcomment -%}
+  <div class="lnd-srs__final">
+    <div class="lnd-srs__countdown" data-countdown>
+      <div><b data-d>00</b><span>Days</span></div>
+      <div><b data-h>00</b><span>Hours</span></div>
+      <div><b data-m>00</b><span>Min</span></div>
+      <div><b data-s>00</b><span>Sec</span></div>
+    </div>
+    <h2>The stack ships. <em>The clock doesn't.</em></h2>
+    <p>{{ discount_pct }}% off plus up to $102 in free gifts. Memorial Day only.</p>
+    <a class="lnd-srs__final-cta" href="#offer">Get the stack</a>
+  </div>
+
+  {%- comment -%} Sticky mobile CTA {%- endcomment -%}
+  <div class="lnd-srs__mobile-cta" data-mobile-cta>
+    <a href="#offer">Get the stack · {{ discount_pct }}% off</a>
+  </div>
+
+</section>
+
+{%- capture srs_products_json -%}
+{
+  {%- if srs_product != blank and srs_product.handle != blank -%}
+  "{{ srs_product.handle }}": {
+    "title": {{ srs_product.title | json }},
+    "handle": {{ srs_product.handle | json }},
+    "price": {{ srs_product.price }},
+    "variants": [{%- for v in srs_product.variants -%}{"id": {{ v.id }}, "title": {{ v.title | json }}, "price": {{ v.price }}, "available": {{ v.available }}, "selling_plans": [
+      {%- assign first_plan = true -%}
+      {%- for spa in v.selling_plan_allocations -%}
+        {%- assign plan_lookup = '|' | append: spa.selling_plan.name | append: '|' -%}
+        {%- unless excluded_plan_names contains plan_lookup -%}
+          {%- unless first_plan -%},{%- endunless -%}
+          {"id": {{ spa.selling_plan.id }}, "name": {{ spa.selling_plan.name | json }}, "price": {{ spa.price }}}
+          {%- assign first_plan = false -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    ]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+  }
+  {%- endif -%}
+}
+{%- endcapture -%}
+<script id="lnd-srs-data" type="application/json">{{ srs_products_json | strip_newlines }}</script>
+
+<script>
+(function(){
+  var root = document.querySelector('.lnd-srs');
+  if (!root) return;
+
+  var END = new Date(root.dataset.end).getTime();
+
+  function tick() {
+    var now = Date.now();
+    var diff = Math.max(0, END - now);
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+    root.querySelectorAll('[data-d]').forEach(function(el){ el.textContent = pad(d); });
+    root.querySelectorAll('[data-h]').forEach(function(el){ el.textContent = pad(h); });
+    root.querySelectorAll('[data-m]').forEach(function(el){ el.textContent = pad(m); });
+    root.querySelectorAll('[data-s]').forEach(function(el){ el.textContent = pad(s); });
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  var bubbles = root.querySelectorAll('.lnd-srs__bubble');
+  var tiles = root.querySelectorAll('.lnd-srs__tile');
+  var gridCount = root.querySelector('[data-grid-count]');
+  function applyFilter(filter) {
+    var visible = 0;
+    tiles.forEach(function(t){
+      var has = (' ' + t.dataset.chips + ' ').indexOf(' ' + filter + ' ') !== -1;
+      t.style.display = has ? '' : 'none';
+      if (has) visible++;
+    });
+    if (gridCount) gridCount.textContent = visible + ' product' + (visible === 1 ? '' : 's');
+  }
+  bubbles.forEach(function(b){
+    b.addEventListener('click', function(){
+      var goal = b.dataset.goal;
+      bubbles.forEach(function(x){ x.classList.remove('is-active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('is-active');
+      b.setAttribute('aria-pressed','true');
+      applyFilter(goal);
+    });
+  });
+
+  var DISCOUNT = root.dataset.discountCode;
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('lnd-srs-data').textContent); } catch(e) { DATA = {}; }
+
+  function applyDiscount() {
+    if (!DISCOUNT) return Promise.resolve(null);
+    return fetch('/discount/' + DISCOUNT + '?redirect=/cart.js', { credentials: 'same-origin' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+  function refreshThemeCart() {
+    if (window._cart && typeof window._cart.get === 'function') {
+      try { window._cart.get(true); } catch(e){}
+    }
+  }
+  function openCartDrawer() {
+    var cartLink = document.querySelector('a[href$="#modal--cart-drawer"]');
+    if (cartLink) { try { cartLink.click(); return; } catch(e){} }
+    try {
+      var store = window.Alpine && window.Alpine.store && window.Alpine.store('modal');
+      if (store && typeof store.setId === 'function' && window.modalsLoaded) {
+        store.setId('cart-drawer');
+      }
+    } catch(e){}
+  }
+  applyDiscount().then(refreshThemeCart);
+
+  var planLabels = root.querySelectorAll('.lnd-srs__bb-plan');
+  var bbCta = root.querySelector('#lnd-srs-bb-cta');
+  var bbCtaPrice = root.querySelector('#lnd-srs-bb-cta-price');
+  planLabels.forEach(function(p){
+    p.addEventListener('click', function(){
+      planLabels.forEach(function(x){
+        x.classList.remove('is-selected');
+        var i = x.querySelector('input'); if (i) i.checked = false;
+      });
+      p.classList.add('is-selected');
+      var i = p.querySelector('input'); if (i) i.checked = true;
+      var price = p.getAttribute('data-price');
+      var variant = p.getAttribute('data-variant');
+      if (bbCta && variant) bbCta.setAttribute('data-variant', variant);
+      if (bbCtaPrice && price) bbCtaPrice.textContent = price;
+    });
+  });
+
+  if (bbCta) {
+    bbCta.addEventListener('click', function(e){
+      e.preventDefault();
+      var handle = bbCta.getAttribute('data-handle') || 'summer-ready-stack';
+      var variantId = parseInt(bbCta.getAttribute('data-variant'), 10);
+      var prod = DATA[handle];
+      var selected = root.querySelector('.lnd-srs__bb-plan.is-selected');
+      var fallbackUrl = selected ? selected.getAttribute('data-url') : null;
+      if (!prod || !prod.variants || !prod.variants.length || !variantId) {
+        if (fallbackUrl) window.location.href = fallbackUrl;
+        return;
+      }
+      var v = null;
+      for (var k = 0; k < prod.variants.length; k++) { if (prod.variants[k].id === variantId) { v = prod.variants[k]; break; } }
+      if (!v) {
+        if (fallbackUrl) window.location.href = fallbackUrl;
+        return;
+      }
+      var item = { id: v.id, quantity: 1 };
+      if (v.selling_plans && v.selling_plans.length) item.selling_plan = v.selling_plans[0].id;
+      var origLabel = bbCta.innerHTML;
+      bbCta.classList.add('is-loading'); bbCta.disabled = true; bbCta.textContent = 'Adding...';
+      var payload = { items: [item] };
+      var themeAdd = (window._cart && typeof window._cart.add === 'function') ? window._cart.add(payload) : null;
+      var pr = themeAdd && typeof themeAdd.then === 'function'
+        ? themeAdd
+        : fetch('/cart/add.js?smart_theme=true', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Accept':'application/json','smart-theme':'true'},
+            body: JSON.stringify(payload)
+          }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw j; return j; }); });
+      pr.then(function(){
+        bbCta.classList.remove('is-loading'); bbCta.disabled = false; bbCta.innerHTML = origLabel;
+        refreshThemeCart();
+        setTimeout(openCartDrawer, 100);
+        applyDiscount().then(refreshThemeCart).catch(function(){});
+      }).catch(function(){
+        bbCta.classList.remove('is-loading'); bbCta.disabled = false; bbCta.innerHTML = origLabel;
+        if (fallbackUrl) window.location.href = fallbackUrl;
+      });
+    });
+  }
+
+  var mobile = root.querySelector('[data-mobile-cta]');
+  var hero = root.querySelector('.lnd-srs__hero');
+  function onScroll(){
+    if (!hero || !mobile) return;
+    var heroBottom = hero.getBoundingClientRect().bottom;
+    if (heroBottom < 0) { mobile.classList.add('is-show'); }
+    else { mobile.classList.remove('is-show'); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Lander · Summer Ready MD",
+  "settings": [
+    { "type": "header", "content": "Offer" },
+    { "type": "number", "id": "discount_pct", "label": "Discount %", "default": 35 },
+    { "type": "text", "id": "end_iso", "label": "End date (ISO, e.g. 2026-05-26T23:59:59-04:00)", "default": "2026-05-26T23:59:59-04:00" },
+    { "type": "text", "id": "discount_code", "label": "Discount code (auto-applied)", "default": "MEMORIALDAY35" },
+    { "type": "header", "content": "Hero copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Summer Ready Stack" },
+    { "type": "richtext", "id": "headline", "label": "Headline (use <em> for red accent)", "default": "<p>Drop <em>~9 lbs</em> by July 1st.</p>" },
+    { "type": "image_picker", "id": "hero_packshot", "label": "Hero packshot (3 products, transparent PNG preferred)" },
+    { "type": "header", "content": "Sale grid products" },
+    { "type": "product_list", "id": "sale_products", "label": "Products in the sale grid", "limit": 50 }
+  ],
+  "presets": [
+    { "name": "Lander · Summer Ready MD" }
+  ]
+}
+{% endschema %}

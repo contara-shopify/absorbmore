@@ -142,7 +142,7 @@
            aria-label="{{ value }}">
       <input type="radio"
              class="sr-only"
-             @change="$data.setSellingPlan(pdp.selected_selling_plan?.id ?? pdp.last_selected_selling_plan?.id ?? pdp.selling_plan_allocations?.[0]?.selling_plan?.id ?? +$el.value)"
+             @change="$data.setSellingPlan(pdp.selected_selling_plan?.id ?? (pdp.selling_plan_allocations?.some((p) => p.selling_plan?.id === pdp.last_selected_selling_plan?.id) ? pdp.last_selected_selling_plan?.id : pdp.selling_plan_allocations?.[0]?.selling_plan?.id) ?? +$el.value)"
              name="{{ block.id }}"
              value="{{ selected_subscription_id }}">
       <span data-content="{{ subscription_content | escape }}"

@@ -44,7 +44,7 @@
 <div data-modal-id="modal--product-{{ modal_handle }}"
      data-product-handle="{{ product.handle }}"
      data-product-id="{{ product.id }}"
-     x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')), show: $modal.id === 'modal--product-{{ modal_handle }}' && $modal.product }"
+     x-data="{ ..._sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription'), $el.hasAttribute('data-show-subscription-price')), show: $modal.id === 'modal--product-{{ modal_handle }}' && $modal.product }"
      x-effect="show = $editor?.select_section_id === '{{ section.id }}' || ($modal.id === 'modal--product-{{ modal_handle }}' && $modal.product)"
     {% if default_select_selling_plan %}
       data-default-subscription="true"

@@ -1,0 +1,475 @@
+{%- liquid
+  assign section_type = 'clinicians-modal'
+  assign accessible_label = section.settings.accessible_label
+  assign trigger_class = section.settings.trigger_class | default: 'clinicians'
+  assign max_width = section.settings.max_width | default: 720
+  assign overlay_opacity = section.settings.overlay_opacity | default: 60
+  assign show_close_button = section.settings.show_close_button
+  assign close_on_overlay_click = section.settings.close_on_overlay_click
+  assign open_on_select = section.settings.open_on_select
+  assign extra_class = section.settings.extra_class
+  assign container_spacing = section.settings.container_spacing
+  assign text_color = section.settings.text_color
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+
+  assign overlay_alpha = overlay_opacity | divided_by: 100.0
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    --clinicians-modal-max-width: {{ max_width }}px;
+    --clinicians-modal-overlay-alpha: {{ overlay_alpha }};
+  }
+  & .clinicians-modal__dialog {
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+  }
+{%- endcapture -%}
+
+<style>
+  {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+</style>
+
+<div
+  class="clinicians-modal {{ extra_class | escape }}"
+  data-style-id="{{ section.id }}"
+  data-clinicians-modal
+  data-section-id="{{ section.id }}"
+  data-trigger-class="{{ trigger_class | escape }}"
+  data-trigger-selector="{{ section.settings.extra_trigger_selector | escape }}"
+  data-close-on-overlay="{{ close_on_overlay_click }}"
+  data-open-on-select="{{ open_on_select }}"
+  id="clinicians-modal-{{ section.id }}"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="clinicians-modal-label-{{ section.id }}"
+  aria-hidden="true"
+  hidden
+>
+  <div class="clinicians-modal__overlay" data-clinicians-modal-overlay></div>
+
+  <div class="clinicians-modal__dialog" role="document">
+    <header class="clinicians-modal__header">
+      <button
+        type="button"
+        class="clinicians-modal__icon-button"
+        aria-label="Go back"
+        data-clinicians-modal-close
+      >
+        <svg aria-hidden="true" focusable="false" width="12" height="20" viewBox="0 0 12 20">
+          <path d="M10 2L2 10l8 8" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="clinicians-modal__brand" id="clinicians-modal-label-{{ section.id }}">
+        <img
+          class="clinicians-modal__logo"
+          src="{{ 'frontrowMD.avif' | asset_url }}"
+          alt="{{ section.settings.brand_text | default: accessible_label | default: 'frontrowMD' | escape }}"
+          width="160"
+          height="32"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+
+      {% if show_close_button %}
+        <button
+          type="button"
+          class="clinicians-modal__icon-button clinicians-modal__icon-button--close"
+          aria-label="Close modal"
+          data-clinicians-modal-close
+        >
+          <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 14 14">
+            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round"/>
+          </svg>
+        </button>
+      {% else %}
+        <span aria-hidden="true"></span>
+      {% endif %}
+    </header>
+
+    <div class="clinicians-modal__body {{ container_spacing }}">
+      {%- assign has_faq = false -%}
+      {%- for i in (1..4) -%}
+        {%- assign q_key = 'faq_q_' | append: i -%}
+        {%- assign q_val = section.settings[q_key] -%}
+        {%- if q_val != blank -%}{%- assign has_faq = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      {% if has_faq %}
+        <div class="clinicians-modal__faq" data-clinicians-modal-faq>
+          {% for i in (1..4) %}
+            {%- assign q_key = 'faq_q_' | append: i -%}
+            {%- assign a_key = 'faq_a_' | append: i -%}
+            {%- assign q_val = section.settings[q_key] -%}
+            {%- assign a_val = section.settings[a_key] -%}
+            {% if q_val != blank %}
+              {%- assign panel_id = 'clinicians-modal-faq-' | append: section.id | append: '-' | append: i -%}
+              <button
+                type="button"
+                class="clinicians-modal__faq-question"
+                data-clinicians-modal-accordion
+                aria-expanded="false"
+                aria-controls="{{ panel_id }}"
+              >
+                <span>{{ q_val | escape }}</span>
+                <span class="clinicians-modal__faq-plus" aria-hidden="true">+</span>
+              </button>
+              <div id="{{ panel_id }}" class="clinicians-modal__faq-answer" hidden>
+                {{ a_val }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.clinicians_title != blank
+        or section.settings.clinicians_text != blank
+        or section.settings.clinician_1_name != blank
+        or section.settings.clinician_2_name != blank
+      %}
+        <section class="clinicians-modal__clinicians">
+          {% if section.settings.clinicians_title != blank %}
+            <h3 class="clinicians-modal__clinicians-title">
+              {{ section.settings.clinicians_title | escape }}
+            </h3>
+          {% endif %}
+
+          {% if section.settings.clinicians_text != blank %}
+            <p class="clinicians-modal__clinicians-text">
+              {{ section.settings.clinicians_text }}
+            </p>
+          {% endif %}
+
+          {% for i in (1..2) %}
+            {%- assign name_key = 'clinician_' | append: i | append: '_name' -%}
+            {%- assign loc_key = 'clinician_' | append: i | append: '_location' -%}
+            {%- assign img_key = 'clinician_' | append: i | append: '_image' -%}
+            {%- assign url_key = 'clinician_' | append: i | append: '_url' -%}
+            {%- assign c_name = section.settings[name_key] -%}
+            {%- assign c_loc = section.settings[loc_key] -%}
+            {%- assign c_img = section.settings[img_key] -%}
+            {%- assign c_url = section.settings[url_key] -%}
+            {% if c_name != blank %}
+              <div class="clinicians-modal__clinician-card">
+                <div class="clinicians-modal__clinician-image">
+                  {% if c_img != blank %}
+                    {{ c_img | image_url: width: 96 | image_tag: loading: 'lazy', alt: c_name, widths: '48,96,144' }}
+                  {% endif %}
+                </div>
+                <div class="clinicians-modal__clinician-content">
+                  {% if c_url != blank %}
+                    <a href="{{ c_url }}" target="_blank" rel="noopener noreferrer">{{ c_name | escape }}</a>
+                  {% else %}
+                    <span>{{ c_name | escape }}</span>
+                  {% endif %}
+                  {% if c_loc != blank %}
+                    <span>{{ c_loc | escape }}</span>
+                  {% endif %}
+                </div>
+                {% if c_url != blank %}
+                  <a
+                    href="{{ c_url }}"
+                    class="clinicians-modal__clinician-button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ section.settings.clinician_button_label | default: 'Preview' | escape }}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      <div class="clinicians-modal__extra">
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Clinicians Modal",
+  "tag": "section",
+  "class": "shopify_section__clinicians_modal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Modal"
+    },
+    {
+      "type": "text",
+      "id": "accessible_label",
+      "label": "Accessible label / heading fallback",
+      "default": "Clinicians",
+      "info": "Used by screen readers to identify the dialog."
+    },
+    {
+      "type": "text",
+      "id": "trigger_class",
+      "label": "Trigger class",
+      "default": "clinicians",
+      "info": "Any element with this class (or whose parent has this class) will open the modal when clicked."
+    },
+    {
+      "type": "textarea",
+      "id": "extra_trigger_selector",
+      "label": "Extra trigger selectors",
+      "default": "[id=\"Clinitian's Choice\"], [id=\"Clinicians' Choice\"]",
+      "info": "Comma-separated CSS selectors. Useful for targeting elements by id or attribute when you can't add a class."
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 360,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 720
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "Show close button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "close_on_overlay_click",
+      "label": "Close on overlay click",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "open_on_select",
+      "label": "Open modal when section is selected in theme editor",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "extra_class",
+      "label": "Custom CSS class"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_text",
+      "label": "Logo alt text",
+      "default": "frontrowMD"
+    },
+    {
+      "type": "header",
+      "content": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_q_1",
+      "label": "Question 1",
+      "default": "Who is FrontrowMD?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_a_1",
+      "label": "Answer 1",
+      "default": "<p>FrontrowMD is a clinician-powered product discovery platform where medical professionals can share products they recommend or use with their patients, communities, or practice audiences.</p>"
+    },
+    {
+      "type": "text",
+      "id": "faq_q_2",
+      "label": "Question 2",
+      "default": "Who / how many clinicians share this?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_a_2",
+      "label": "Answer 2",
+      "default": "<p>Products may be shared by one or more clinicians. When available, FrontrowMD shows the clinicians connected to the product and how many are collaborating on the recommendation page.</p>"
+    },
+    {
+      "type": "text",
+      "id": "faq_q_3",
+      "label": "Question 3",
+      "default": "What's \"Clinicians' Choice\" / \"share\" mean?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_a_3",
+      "label": "Answer 3",
+      "default": "<p>\"Clinicians' Choice\" or \"share\" means a clinician has chosen to include the product on their FrontrowMD page. It is not the same as a medical prescription or personal medical advice.</p>"
+    },
+    {
+      "type": "text",
+      "id": "faq_q_4",
+      "label": "Question 4",
+      "default": "Are clinicians paid to do this?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_a_4",
+      "label": "Answer 4",
+      "default": "<p>Some clinician relationships may involve compensation, affiliate arrangements, or promotional partnerships. Any required disclosures should be handled by FrontrowMD or the participating clinician.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Clinicians List"
+    },
+    {
+      "type": "text",
+      "id": "clinicians_title",
+      "label": "Title",
+      "default": "Clinicians who shared this product"
+    },
+    {
+      "type": "richtext",
+      "id": "clinicians_text",
+      "label": "Intro text",
+      "default": "<p>For the complete list, <a href=\"https://app.thefrontrowhealth.com/\" target=\"_blank\" rel=\"noopener noreferrer\">click here</a>. Numbers below indicate how many clinicians collaborate to share products on a single page at a medical practice.</p>"
+    },
+    {
+      "type": "text",
+      "id": "clinician_button_label",
+      "label": "Card button label",
+      "default": "Preview"
+    },
+    {
+      "type": "header",
+      "content": "Clinician 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "clinician_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "clinician_1_name",
+      "label": "Name",
+      "default": "Dr. Aurora Yllana-Sheppard, MD"
+    },
+    {
+      "type": "text",
+      "id": "clinician_1_location",
+      "label": "Location",
+      "default": "Kingwood, TX"
+    },
+    {
+      "type": "url",
+      "id": "clinician_1_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Clinician 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "clinician_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "clinician_2_name",
+      "label": "Name",
+      "default": "Dr. Topkis Family Medicine"
+    },
+    {
+      "type": "text",
+      "id": "clinician_2_location",
+      "label": "Location",
+      "default": "Washington, PA"
+    },
+    {
+      "type": "url",
+      "id": "clinician_2_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Globals"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container Spacing",
+      "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "default": "& {\n}"
+    }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "button" },
+    { "type": "richtext" },
+    { "type": "image" },
+    { "type": "image_with_caption" },
+    { "type": "@theme" }
+  ],
+  "presets": [
+    {
+      "name": "Clinicians Modal",
+      "settings": {
+        "accessible_label": "FrontrowMD",
+        "trigger_class": "clinicians",
+        "max_width": 760,
+        "overlay_opacity": 45,
+        "show_close_button": true,
+        "close_on_overlay_click": true,
+        "open_on_select": true,
+        "container_spacing": "px-container-md",
+        "background_color": "#ffffff",
+        "brand_text": "frontrowMD"
+      },
+      "blocks": []
+    }
+  ],
+  "enabled_on": {
+    "groups": ["custom.modal", "footer", "header"]
+  }
+}
+{% endschema %}

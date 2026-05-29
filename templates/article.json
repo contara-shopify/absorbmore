@@ -349,8 +349,9 @@
                 "richtext_j9g7Ni": {
                   "type": "richtext",
                   "name": "Richtext",
+                  "disabled": true,
                   "settings": {
-                    "title": "<h5><em>900+ clinicians shared our products on FrontrowMD, with no compensation.</em></h5>",
+                    "title": "<h5><em>780 clinicians share The Absorption Company on FrontrowMD without compensation.</em></h5>",
                     "text_alignment": "inherit",
                     "content_class": "richtext-md",
                     "text_color": "#000000",
@@ -358,11 +359,28 @@
                     "hide_if_empty": "none"
                   },
                   "blocks": {}
+                },
+                "text_custom_pnYYPe": {
+                  "type": "text_custom",
+                  "name": "Text Custom",
+                  "settings": {
+                    "content": "<h5><i><span>780 clinicians\n share The Absorption Company on FrontrowMD without compensation.</span> <br><u class=\"clinicians\">Learn more.</u></i></h5>",
+                    "wrapper_tag": "div",
+                    "inner_tag": "span",
+                    "text_alignment": "inherit",
+                    "content_class": "richtext-md",
+                    "extra_class": "",
+                    "text_color": "",
+                    "custom_css": "& {\n  font-style: italic;\n  @media screen and (min-width: 769px) {\n    h5 {\n     text-align: center;\n    }\n    h5 i span {\n      white-space: nowrap;\n    }\n  }\n}",
+                    "hide_if_empty": "none"
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
                 "container_NwrbAd",
-                "richtext_j9g7Ni"
+                "richtext_j9g7Ni",
+                "text_custom_pnYYPe"
               ]
             },
             "richtext_jBbwwB": {
@@ -587,7 +605,7 @@
               "settings": {
                 "primary_source": "manual",
                 "fallback_source": "manual",
-                "fallback_products": "{{ article.metafields.smart.featured_product.value }}",
+                "fallback_products": "{{ article.metafields.smart.related_products.value }}",
                 "fallback_collection": "",
                 "order_offset": 0,
                 "targeting_type": "product",
@@ -679,12 +697,7 @@
                       "settings": {
                         "primary_source": "manual",
                         "fallback_source": "manual",
-                        "fallback_products": [
-                          "restore",
-                          "starter-pack",
-                          "energy",
-                          "calm"
-                        ],
+                        "fallback_products": "{{ article.metafields.smart.related_products.value }}",
                         "fallback_collection": "",
                         "order_offset": 0,
                         "targeting_type": "product",

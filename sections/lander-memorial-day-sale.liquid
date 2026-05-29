@@ -1,0 +1,646 @@
+{%- comment -%} Memorial Day Sale — paid traffic lander. 35% off sitewide. Ends 2026-05-26 23:59 ET. v3 pdp-direct {%- endcomment -%}
+
+{%- liquid
+  assign discount_pct = section.settings.discount_pct | default: 35
+  assign keep_pct = 100 | minus: discount_pct
+  assign end_iso = section.settings.end_iso | default: '2026-05-26T23:59:59-04:00'
+
+  comment
+    Spotlight handles — best sellers tied to specific benefit hooks.
+    WLP-1, Berberine, Magnesium Glycinate, Vitamin D+K. Keep total under the 20-product all_products cap.
+  endcomment
+  assign spotlight_handles = 'wlp-1,berberine,magnesium-glycinate,daily-basics' | split: ','
+
+  comment
+    Goal buckets for the bubble filter on the shop-all grid.
+  endcomment
+  assign goal_longevity = 'the-best-sellers-stack,longevity,coq10,energy,curcumin,daily-basics,vitamin-d-k-1' | split: ','
+  assign goal_metab = 'berberine,hormone-metabolism,wlp-1,weight-management-stack,glp-1-nutrient-support-stack,metabolic-balance-stack,summer-ready-stack' | split: ','
+  assign goal_sleep = 'sleep,calm,magnesium-glycinate,advanced-sleep-recovery-set,magnesium-sleep-bundle,magnesium-calm-bundle,rest-recovery-stack' | split: ','
+  assign goal_immunity = 'restore,curcumin,inflammation-immunity,vitamin-d-k-1,magnesium-restore-bundle' | split: ','
+
+  comment
+    Iteration source for the shop-all grid. We resolve products from the `memorial-day-savings`
+    collection to bypass the 20-handle cap on `all_products` lookups.
+  endcomment
+  assign sale_collection = collections['memorial-day-savings']
+  assign display_handles = 'wlp-1,berberine,magnesium-glycinate,summer-ready-stack,weight-management-stack,restore,daily-basics,hormone-metabolism,metabolic-balance-stack,vitamin-d-k-1,the-best-sellers-stack,glp-1-nutrient-support-stack,advanced-sleep-recovery-set,rest-recovery-stack,magnesium-sleep-bundle,magnesium-calm-bundle,magnesium-restore-bundle,sleep,calm,curcumin,coq10,energy,longevity,inflammation-immunity' | split: ','
+
+  assign meta_handles = 'wlp-1,berberine,magnesium-glycinate,summer-ready-stack,weight-management-stack,restore,daily-basics,hormone-metabolism,metabolic-balance-stack,vitamin-d-k-1,the-best-sellers-stack,glp-1-nutrient-support-stack,advanced-sleep-recovery-set,rest-recovery-stack,magnesium-sleep-bundle,magnesium-calm-bundle,magnesium-restore-bundle,sleep,calm,curcumin,coq10,energy,longevity,inflammation-immunity' | split: ','
+  assign pills = 'GLP-1 Support|Metabolism|Restorative Sleep|Hydrate & Recovery|Weight Management|Hydrate & Detox|Daily Foundations|Metabolism & Hormones|Metabolic Stack|Daily Foundations|Bestseller Bundle|GLP-1 Support|Sleep & Recovery|Rest + Recovery|Sleep & Magnesium|Calm & Magnesium|Restore & Magnesium|Restorative Sleep|Stress Relief|Inflammation Support|Heart & Energy|Energy & Focus|Longevity|Immunity & Inflammation' | split: '|'
+  assign badges = 'Best Seller|Best Seller|Best Seller||||||||||||||||||||||' | split: '|'
+  assign ratings = '4.78|4.84|4.97|4.88|4.85|4.94|4.83|4.85|4.85|4.87|4.92|4.84|4.91|4.90|4.87|4.88|4.89|4.88|4.94|4.81|4.82|4.86|4.83|4.87' | split: '|'
+  assign reviews = '154|85|368|96|121|246|88|121|94|142|412|58|96|82|62|66|74|246|300|71|64|192|88|142' | split: '|'
+
+  comment
+    Tile image overrides where the featured image isn't the right tile shot.
+  endcomment
+  assign override_handles = 'restore,sleep,calm,energy,magnesium-sleep-bundle' | split: ','
+  assign override_urls = 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Restore-Bag_af4e1a3f-f6ca-4ab7-bebf-7e492e6dac9b.png?v=1768255861&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Sleep-Bag_9a994c43-7d98-40a8-ab98-2f20070e69d3.png?v=1768256290&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Calm-Bag_42e47801-bfd1-4ce0-8f26-de468bc3d559.png?v=1768256004&width=960|https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Energy_3de78348-83c6-475b-aa3f-9df089873398.png?v=1768256691&width=960|https://www.absorbmore.com/cdn/shop/files/sleep-bag-mag-bundle.png?v=1768005885&width=960' | split: '|'
+
+  comment
+    Spotlight pre-canned copy. Parallel arrays indexed by spotlight_handles.
+  endcomment
+  assign spot_bullets = 'Curbs cravings without a prescription~Supports appetite + metabolism~Liposomal delivery for real absorption||1000mg extra-strength formula~6.2x more absorbable than standard~Supports blood sugar + lipid balance||Chelated for full absorption~Calms the nervous system~Deeper sleep, less morning grog||Foundational nutrients in one stack~High-absorption formulas, no fillers~Daily energy, immunity, recovery' | split: '||'
+-%}
+
+<style>
+  .lnd-md { font-family: inherit; color: #0D273E; --md-navy: #0D273E; --md-red: #DB3519; --md-navy-2: #143452; --md-cream: #efe9dd; --md-bg: #f6f6f4; --md-blue: #4659FF; }
+  .lnd-md * { box-sizing: border-box; }
+
+  /* Sticky promo bar with countdown (incl. seconds) */
+  .lnd-md__bar { position: sticky; top: 0; z-index: 50; background: var(--md-red); color: #fff; text-align: center; padding: 8px 14px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; display: flex; gap: 10px 16px; justify-content: center; align-items: center; flex-wrap: wrap; line-height: 1.2; }
+  .lnd-md__bar-headline { display: inline-flex; align-items: center; }
+  .lnd-md__bar-count { display: inline-flex; gap: 4px; align-items: center; font-variant-numeric: tabular-nums; }
+  .lnd-md__bar-count > span:first-child { margin-right: 4px; font-size: 11px; opacity: 0.9; }
+  .lnd-md__bar-count .chip { display: inline-flex; align-items: baseline; gap: 2px; background: rgba(0,0,0,0.22); border: 1px solid rgba(255,255,255,0.22); border-radius: 6px; padding: 4px 6px; min-width: 34px; justify-content: center; }
+  .lnd-md__bar-count .chip b { font-size: 13px; font-weight: 900; line-height: 1; }
+  .lnd-md__bar-count .chip span { font-size: 9px; font-weight: 700; opacity: 0.85; letter-spacing: 0.04em; }
+
+  /* HERO — mobile: image as inline <img> so it fits naturally; text on top. Desktop: full-bleed bg with overlay. */
+  .lnd-md__hero { position: relative; background-color: var(--md-navy); color: #fff; overflow: hidden; }
+  .lnd-md__hero-bg { display: block; width: 100%; height: auto; }
+  /* Mobile dark gradient so text stays readable over busy product image */
+  .lnd-md__hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,39,62,0.92) 0%, rgba(13,39,62,0.78) 45%, rgba(13,39,62,0.55) 75%, rgba(13,39,62,0.35) 100%); z-index: 1; pointer-events: none; }
+  .lnd-md__hero-inner { position: absolute; inset: 0; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; padding: 24px 20px 28px; }
+  .lnd-md__hero-text { text-align: left; max-width: 560px; }
+  .lnd-md__hero-eyebrow { display: inline-block; background: var(--md-red); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 11px; border-radius: 999px; margin: 0 0 12px; line-height: 1.25; box-shadow: 0 4px 14px rgba(0,0,0,0.25); max-width: 100%; }
+  .lnd-md__hero h1 { font-size: 26px; line-height: 1.04; margin: 0 0 10px; font-weight: 900; letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(0,0,0,0.6); }
+  .lnd-md__hero h1 em { color: var(--md-red); font-style: normal; }
+  .lnd-md__hero p.lead { font-size: 14px; opacity: 0.95; margin: 0 0 14px; max-width: 480px; line-height: 1.5; text-shadow: 0 1px 8px rgba(0,0,0,0.6); }
+  .lnd-md__hero p.lead b { color: #fff; font-weight: 800; }
+  .lnd-md__hero-rotator { background: rgba(13,39,62,0.78); border: 1px solid rgba(255,255,255,0.22); border-radius: 14px; padding: 10px 14px; margin: 0 0 14px; max-width: 440px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .lnd-md__hero-rotator-line { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+  .lnd-md__hero-rotator-line .static { opacity: 0.9; }
+  .lnd-md__hero-rotator-line .dynamic { color: var(--md-red); font-weight: 800; font-size: 18px; transition: opacity 0.35s ease, transform 0.35s ease; display: inline-block; min-width: 110px; }
+  .lnd-md__hero-rotator-line .dynamic.is-out { opacity: 0; transform: translateY(8px); }
+  .lnd-md__hero-bullets { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
+  .lnd-md__hero-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 700; line-height: 1.35; text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
+  .lnd-md__hero-bullets li em { color: var(--md-red); font-style: normal; font-weight: 800; }
+  .lnd-md__hero-bullets .check { flex-shrink: 0; width: 22px; height: 22px; background: var(--md-red); color: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; margin-top: 1px; }
+  .lnd-md__hero-cta { display: inline-block; background: var(--md-red); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  .lnd-md__hero-fineprint { font-size: 11px; opacity: 0.7; margin: 10px 0 0; max-width: 460px; line-height: 1.4; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
+
+  /* Value strip */
+  .lnd-md__values { background: #fff; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 18px 16px; }
+  .lnd-md__values-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; }
+  .lnd-md__value { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--md-navy); line-height: 1.3; }
+  .lnd-md__value svg { flex-shrink: 0; color: var(--md-red); }
+
+  /* Absorption brand band */
+  .lnd-md__brand { background: var(--md-bg); padding: 40px 20px; }
+  .lnd-md__brand-inner { max-width: 980px; margin: 0 auto; }
+  .lnd-md__brand-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 10px; }
+  .lnd-md__brand h2 { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; line-height: 1.15; }
+  .lnd-md__brand h2 em { color: var(--md-blue); font-style: normal; }
+  .lnd-md__brand p { font-size: 15px; color: #444; margin: 0 0 16px; line-height: 1.6; }
+  .lnd-md__reasons { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-direction: column; gap: 12px; }
+  .lnd-md__reasons li { display: flex; align-items: flex-start; gap: 14px; background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 14px 16px; }
+  .lnd-md__reasons .num { flex-shrink: 0; width: 28px; height: 28px; background: var(--md-blue); color: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; line-height: 1; }
+  .lnd-md__reasons li > div { font-size: 14px; color: #333; line-height: 1.5; }
+  .lnd-md__reasons b { color: var(--md-navy); font-weight: 800; }
+  .lnd-md__brand-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 22px 0 0; }
+  .lnd-md__brand-stat { background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 18px 14px; text-align: center; }
+  .lnd-md__brand-stat b { display: block; font-size: 32px; font-weight: 900; color: var(--md-blue); line-height: 1; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .lnd-md__brand-stat span { font-size: 12px; color: #555; line-height: 1.35; display: block; }
+
+  /* Testimonials — 3-card row */
+  .lnd-md__testimonial { background: var(--md-navy); color: #fff; padding: 44px 20px; }
+  .lnd-md__testimonial-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+  .lnd-md__testimonial-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 8px; }
+  .lnd-md__testimonial-heading { font-size: 24px; font-weight: 800; margin: 0 0 22px; letter-spacing: -0.01em; }
+  .lnd-md__testimonial-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .lnd-md__testimonial-card { background: var(--md-navy-2); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 22px 20px; text-align: left; }
+  .lnd-md__testimonial-stars { color: #f5b800; font-size: 16px; letter-spacing: 2px; margin: 0 0 10px; line-height: 1; }
+  .lnd-md__testimonial-quote { font-size: 16px; font-weight: 600; line-height: 1.45; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .lnd-md__testimonial-author { font-size: 12px; opacity: 0.7; margin: 0; }
+
+  /* Bestseller tile grid */
+  .lnd-md__spots { padding: 40px 16px; background: #fff; }
+  .lnd-md__spots-head { max-width: 1200px; margin: 0 auto 22px; text-align: center; }
+  .lnd-md__spots-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-red); margin: 0 0 8px; }
+  .lnd-md__spots-head h2 { font-size: 26px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lnd-md__spots-pipe { color: var(--md-red); font-weight: 700; margin: 0 6px; opacity: 0.85; }
+  .lnd-md__spots-head p { font-size: 14px; color: #555; margin: 0; }
+  .lnd-md__spots-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .lnd-md__spot-tile { position: relative; display: flex; flex-direction: column; background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 12px 12px 14px; text-decoration: none; color: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; overflow: hidden; }
+  .lnd-md__spot-tile::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--md-red); border-radius: 16px 16px 0 0; }
+  .lnd-md__spot-tile:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(13,39,62,0.1); border-color: var(--md-navy); }
+  .lnd-md__spot-ribbon { position: absolute; top: 10px; right: 10px; background: var(--md-navy); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; padding: 5px 9px; border-radius: 999px; text-transform: uppercase; z-index: 2; }
+  .lnd-md__spot-tile-img { aspect-ratio: 1/1; background: var(--md-cream); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 8px 0 12px; }
+  .lnd-md__spot-tile-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-md__spot-tile-title { font-size: 16px; font-weight: 800; line-height: 1.2; margin: 0 0 4px; color: var(--md-navy); letter-spacing: -0.01em; }
+  .lnd-md__spot-tile-sub { font-size: 12px; color: #6b6b6b; line-height: 1.35; margin: 0 0 10px; min-height: 32px; }
+  .lnd-md__spot-tile-bullets { list-style: none; padding: 0; margin: 0 0 10px; display: flex; flex-direction: column; gap: 4px; }
+  .lnd-md__spot-tile-bullets li { font-size: 12px; color: #333; line-height: 1.35; padding-left: 16px; position: relative; }
+  .lnd-md__spot-tile-bullets li::before { content: ""; position: absolute; left: 0; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--md-red); }
+  .lnd-md__spot-tile-stars { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; }
+  .lnd-md__spot-tile-stars-glyphs { color: var(--md-navy); font-size: 13px; letter-spacing: 1px; line-height: 1; }
+  .lnd-md__spot-tile-stars-meta { font-size: 11px; color: var(--md-navy); font-weight: 600; }
+  .lnd-md__spot-tile-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+  .lnd-md__spot-tile-price .now { font-size: 17px; font-weight: 800; color: var(--md-navy); font-variant-numeric: tabular-nums; }
+  .lnd-md__spot-tile-price .was { font-size: 13px; color: #9a9a9a; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  .lnd-md__spot-tile-price .off { font-size: 12px; font-weight: 800; color: var(--md-red); }
+
+  /* Bubble filter row */
+  .lnd-md__bubbles-wrap { background: #fff; padding: 26px 0 6px; }
+  .lnd-md__bubbles-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .lnd-md__bubbles-head { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-navy); margin: 0 0 12px; opacity: 0.7; }
+  .lnd-md__bubbles { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .lnd-md__bubbles::-webkit-scrollbar { display: none; }
+  .lnd-md__bubble { flex: 0 0 auto; background: var(--md-cream); color: var(--md-navy); border: 2px solid transparent; padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: -0.005em; cursor: pointer; font: inherit; min-height: 44px; line-height: 1; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; white-space: nowrap; }
+  .lnd-md__bubble[data-goal="all"] { font-weight: 800; }
+  .lnd-md__bubble:hover { border-color: var(--md-navy); }
+  .lnd-md__bubble.is-active { background: var(--md-navy); color: #fff; border-color: var(--md-navy); }
+  .lnd-md__bubble-count { font-size: 11px; font-weight: 600; opacity: 0.6; }
+  .lnd-md__bubble.is-active .lnd-md__bubble-count { opacity: 0.7; color: #fff; }
+
+  /* Grid */
+  .lnd-md__grid-wrap { background: var(--md-bg); padding: 20px 16px 40px; }
+  .lnd-md__grid-head { max-width: 1200px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  .lnd-md__grid-head h2 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  .lnd-md__grid-count { font-size: 13px; color: #666; }
+  .lnd-md__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 1200px; margin: 0 auto; }
+
+  /* Tile */
+  .lnd-md__tile { background: var(--md-cream); border-radius: 14px; padding: 14px 14px 0; position: relative; display: flex; flex-direction: column; cursor: pointer; text-align: left; font: inherit; color: inherit; border: none; transition: transform 0.15s ease, box-shadow 0.15s ease; text-decoration: none; }
+  .lnd-md__tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(13,39,62,0.08); }
+  .lnd-md__tile-tags { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; z-index: 2; }
+  .lnd-md__tile-pill { background: #fff; color: var(--md-navy); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .lnd-md__tile-badge { background: var(--md-red); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; }
+  .lnd-md__tile-lowstock, .lnd-md__spot-lowstock { background: #b91d1d; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 6px 11px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 12px rgba(185,29,29,0.32); display: inline-flex; align-items: center; gap: 6px; }
+  .lnd-md__tile-lowstock::before, .lnd-md__spot-lowstock::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.32); }
+  .lnd-md__spot-lowstock { position: absolute; top: 10px; left: 10px; z-index: 3; }
+  .lnd-md__tile-img { aspect-ratio: 1/1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .lnd-md__tile-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lnd-md__tile-info { padding: 12px 4px 14px; }
+  .lnd-md__tile-title { font-size: 17px; font-weight: 700; line-height: 1.2; margin: 0 0 4px; color: var(--md-navy); }
+  .lnd-md__tile-sub { font-size: 13px; color: #6b6b6b; line-height: 1.3; margin: 0 0 8px; min-height: 34px; }
+  .lnd-md__tile-stars { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .lnd-md__tile-stars-glyphs { color: var(--md-navy); font-size: 13px; letter-spacing: 1px; line-height: 1; }
+  .lnd-md__tile-stars-meta { font-size: 12px; color: var(--md-navy); font-weight: 600; }
+  .lnd-md__tile-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .lnd-md__tile-price .now { font-size: 16px; font-weight: 800; color: var(--md-navy); font-variant-numeric: tabular-nums; }
+  .lnd-md__tile-price .was { font-size: 13px; color: #9a9a9a; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  .lnd-md__tile-price .off { font-size: 13px; font-weight: 700; color: var(--md-red); }
+  .lnd-md__tile-price .off::before { content: "·"; margin-right: 4px; color: #9a9a9a; }
+
+  /* Countdown (used in final CTA) */
+  .lnd-md__countdown { display: flex; gap: 8px; margin: 0 0 18px; font-variant-numeric: tabular-nums; }
+  .lnd-md__countdown div { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 10px 8px; text-align: center; min-width: 64px; }
+  .lnd-md__countdown b { display: block; font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+  .lnd-md__countdown span { display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-top: 4px; }
+
+  /* Final CTA */
+  .lnd-md__final { background: var(--md-navy); color: #fff; padding: 44px 20px; text-align: center; }
+  .lnd-md__final h2 { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .lnd-md__final h2 em { color: var(--md-red); font-style: normal; }
+  .lnd-md__final p { font-size: 14px; opacity: 0.85; margin: 0 0 22px; }
+  .lnd-md__final .lnd-md__countdown { justify-content: center; margin-bottom: 22px; }
+  .lnd-md__final-cta { display: inline-block; background: var(--md-red); color: #fff; padding: 14px 30px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+  .lnd-md__disclaimer { background: #0a1e2e; color: rgba(255,255,255,0.55); padding: 22px 20px; }
+  .lnd-md__disclaimer-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .lnd-md__disclaimer p { font-size: 11px; line-height: 1.5; margin: 0; letter-spacing: 0.01em; }
+
+  /* Sticky mobile CTA */
+  .lnd-md__mobile-cta { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 60; display: none; }
+  .lnd-md__mobile-cta a { display: block; background: var(--md-red); color: #fff; text-align: center; padding: 14px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .lnd-md__mobile-cta.is-show { display: block; }
+
+  /* Desktop */
+  @media (min-width: 720px) {
+    .lnd-md__hero { background-image: var(--md-hero-bg, none); background-position: center; background-size: cover; background-repeat: no-repeat; min-height: 460px; display: flex; align-items: center; }
+    .lnd-md__hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,39,62,0.78) 0%, rgba(13,39,62,0.5) 55%, rgba(13,39,62,0.15) 100%); z-index: 1; }
+    .lnd-md__hero::after { display: none; }
+    .lnd-md__hero-bg { display: none; }
+    .lnd-md__hero-inner { position: relative; padding: 56px 40px; }
+    .lnd-md__hero-eyebrow { font-size: 11px; letter-spacing: 0.1em; padding: 7px 12px; }
+    .lnd-md__hero h1 { font-size: 48px; line-height: 1.02; }
+    .lnd-md__hero p.lead { font-size: 16px; }
+    .lnd-md__hero-rotator-line { font-size: 18px; }
+    .lnd-md__hero-rotator-line .dynamic { font-size: 22px; min-width: 140px; }
+    .lnd-md__final .lnd-md__countdown div { min-width: 84px; padding: 14px 12px; }
+    .lnd-md__final .lnd-md__countdown b { font-size: 34px; }
+    .lnd-md__values-inner { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__brand h2 { font-size: 36px; }
+    .lnd-md__brand-stats { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__testimonial { padding: 64px 24px; }
+    .lnd-md__testimonial-heading { font-size: 32px; margin: 0 0 28px; }
+    .lnd-md__testimonial-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lnd-md__testimonial-card { padding: 26px 24px; }
+    .lnd-md__testimonial-quote { font-size: 17px; }
+    .lnd-md__spots-head h2 { font-size: 34px; }
+    .lnd-md__spots-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .lnd-md__spot-tile { padding: 14px 14px 16px; }
+    .lnd-md__spot-tile-title { font-size: 18px; }
+    .lnd-md__spot-tile-sub { font-size: 13px; min-height: 36px; }
+    .lnd-md__spot-tile-bullets li { font-size: 13px; }
+    .lnd-md__spot-tile-price .now { font-size: 19px; }
+    .lnd-md__bubbles { flex-wrap: wrap; overflow-x: visible; }
+    .lnd-md__grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lnd-md__grid-head h2 { font-size: 28px; }
+    .lnd-md__tile-pill { font-size: 10px; padding: 7px 13px; }
+    .lnd-md__final h2 { font-size: 34px; }
+    .lnd-md__mobile-cta, .lnd-md__mobile-cta.is-show { display: none; }
+  }
+  @media (min-width: 1024px) {
+    .lnd-md__grid { grid-template-columns: repeat(4, 1fr); }
+    .lnd-md__tile-title { font-size: 19px; }
+    .lnd-md__tile-sub { font-size: 14px; }
+  }
+</style>
+
+<section class="lnd-md" data-pct="{{ discount_pct }}" data-end="{{ end_iso }}">
+
+  {%- comment -%} Sticky promo bar {%- endcomment -%}
+  <div class="lnd-md__bar">
+    <span class="lnd-md__bar-headline">Memorial Day · {{ discount_pct }}% Off Site-Wide · Free Shipping*</span>
+    <span class="lnd-md__bar-count" data-countdown-bar>
+      <span>Ends in</span>
+      <span class="chip"><b data-d>00</b><span>d</span></span>
+      <span class="chip"><b data-h>00</b><span>h</span></span>
+      <span class="chip"><b data-m>00</b><span>m</span></span>
+      <span class="chip"><b data-s>00</b><span>s</span></span>
+    </span>
+  </div>
+
+  {%- comment -%} HERO — same treatment as /pages/sale: mobile <img> fits naturally, desktop is full-bleed bg. {%- endcomment -%}
+  {%- if section.settings.hero_image -%}
+    {%- assign hero_bg_desktop = section.settings.hero_image | image_url: width: 2400 -%}
+  {%- else -%}
+    {%- assign hero_bg_desktop = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/memorial-day-plp-blue-bg.jpg?v=1778730415' -%}
+  {%- endif -%}
+  {%- if section.settings.hero_image_mobile -%}
+    {%- assign hero_bg_mobile = section.settings.hero_image_mobile | image_url: width: 1200 -%}
+  {%- else -%}
+    {%- assign hero_bg_mobile = 'https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/lander-sale-hero-mobile.jpg?v=1778738879' -%}
+  {%- endif -%}
+  <div class="lnd-md__hero" style="--md-hero-bg: url('{{ hero_bg_desktop }}');">
+    <img class="lnd-md__hero-bg" src="{{ hero_bg_mobile }}" alt="" loading="eager" width="1398" height="2000">
+    <div class="lnd-md__hero-inner">
+      <div class="lnd-md__hero-text">
+        <div class="lnd-md__hero-eyebrow">{{ section.settings.eyebrow | default: 'Memorial Day Sale: 35% Sitewide + Free Shipping*' }}</div>
+        <h1>{{ section.settings.headline | default: '<p>Save <em>35%</em> on supplements that actually absorb.</p>' }}</h1>
+        <p class="lead">{{ section.settings.subhead | default: "Most supplements don't reach your bloodstream. Ours do. Up to 149x better absorption you can actually feel." }}</p>
+
+        <ul class="lnd-md__hero-bullets">
+          <li><span class="check">✓</span><div>Up to <em>149x absorption</em> · clinically formulated</div></li>
+          <li><span class="check">✓</span><div>Built for <em>real results you feel</em> · energy, focus, recovery</div></li>
+          <li><span class="check">✓</span><div>30-day <em>money-back guarantee</em> · cancel anytime</div></li>
+        </ul>
+
+        <div class="lnd-md__hero-rotator" aria-live="polite">
+          <div class="lnd-md__hero-rotator-line">
+            <span class="static">More absorption =</span>
+            <span class="dynamic" data-rotator>more energy</span>
+          </div>
+        </div>
+
+        <a class="lnd-md__hero-cta" href="#md-grid">Shop the sale</a>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Value strip {%- endcomment -%}
+  <div class="lnd-md__values">
+    <div class="lnd-md__values-inner">
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg>Up to 149x more absorption</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>30-day money-back guarantee</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7h13l3 4h2v6h-3a2 2 0 1 1-4 0H10a2 2 0 1 1-4 0H3z"/></svg>Free shipping over $50</div>
+      <div class="lnd-md__value"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Third-party tested</div>
+    </div>
+  </div>
+
+  {%- comment -%} Absorption brand band {%- endcomment -%}
+  <div class="lnd-md__brand">
+    <div class="lnd-md__brand-inner">
+      <div class="lnd-md__brand-eyebrow">Built to actually absorb</div>
+      <h2>5 reasons <em>you</em> need high-absorbing supplements.</h2>
+      <ol class="lnd-md__reasons">
+        <li><span class="num">1</span><div><b>You want to actually feel your supplements working.</b> Real energy. Real sleep. Real focus.</div></li>
+        <li><span class="num">2</span><div><b>You're tired of wasting money on pills that don't absorb.</b> A bottle that doesn't work is a bottle in the trash.</div></li>
+        <li><span class="num">3</span><div><b>You're done with mega-doses that do nothing.</b> 1000mg on the label is meaningless if it never reaches your bloodstream.</div></li>
+        <li><span class="num">4</span><div><b>You're serious about your health.</b> 90% of us are still nutrient deficient. Absorption is the gap.</div></li>
+        <li><span class="num">5</span><div><b>You want every dollar to deliver.</b> Up to 149x better absorption. Every capsule goes to work.</div></li>
+      </ol>
+    </div>
+  </div>
+
+  {%- comment -%} Best-seller spotlights — WLP-1, Berberine, Magnesium, Daily Basics {%- endcomment -%}
+  <div class="lnd-md__spots">
+    <div class="lnd-md__spots-head">
+      <div class="lnd-md__spots-eyebrow">The Most-Loved Four</div>
+      <h2>Bestsellers <span class="lnd-md__spots-pipe">|</span> 35% Off</h2>
+      <p>The four our customers reorder most. Designed to be felt, not just taken.</p>
+    </div>
+    <div class="lnd-md__spots-grid">
+      {%- for h in spotlight_handles -%}
+        {%- assign sp = nil -%}
+        {%- assign sp = all_products[h] -%}
+        {%- if sp != blank and sp.handle != blank -%}
+          {%- assign idx = forloop.index0 -%}
+          {%- assign sale_price = sp.price | times: keep_pct | divided_by: 100 -%}
+          {%- assign img_url = '' -%}
+          {%- for oh in override_handles -%}
+            {%- if oh == sp.handle -%}{%- assign img_url = override_urls[forloop.index0] -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign sp_meta_idx = -1 -%}
+          {%- for mh in meta_handles -%}
+            {%- if mh == sp.handle -%}{%- assign sp_meta_idx = forloop.index0 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign sp_rating = '' -%}
+          {%- assign sp_reviews = '' -%}
+          {%- if sp_meta_idx >= 0 -%}
+            {%- assign sp_rating = ratings[sp_meta_idx] -%}
+            {%- assign sp_reviews = reviews[sp_meta_idx] -%}
+          {%- endif -%}
+          {%- assign sp_sub = sp.metafields.smart.short_description -%}
+          {%- if sp_sub == blank -%}{%- assign sp_sub = sp.metafields.smart.tagline -%}{%- endif -%}
+          {%- if sp_sub == blank -%}{%- assign sp_sub = sp.description | strip_html | truncate: 80 -%}{%- endif -%}
+          {%- assign sp_bullets = spot_bullets[idx] | split: '~' -%}
+          <a class="lnd-md__spot-tile" href="/products/{{ sp.handle }}">
+            <span class="lnd-md__spot-ribbon">Bestseller</span>
+            {%- if sp.handle == 'wlp-1' or sp.handle == 'weight-management-stack' -%}<span class="lnd-md__spot-lowstock">Low Stock</span>{%- endif -%}
+            <div class="lnd-md__spot-tile-img">
+              {%- if img_url != blank -%}
+                <img src="{{ img_url }}" alt="{{ sp.title | escape }}" loading="lazy" width="600" height="600">
+              {%- elsif sp.featured_image -%}
+                <img src="{{ sp.featured_image | image_url: width: 600 }}" alt="{{ sp.title | escape }}" loading="lazy" width="600" height="600">
+              {%- endif -%}
+            </div>
+            <h3 class="lnd-md__spot-tile-title">{{ sp.title }}</h3>
+            {%- if sp_sub != blank -%}<p class="lnd-md__spot-tile-sub">{{ sp_sub }}</p>{%- endif -%}
+            <ul class="lnd-md__spot-tile-bullets">
+              {%- for b in sp_bullets -%}<li>{{ b }}</li>{%- endfor -%}
+            </ul>
+            {%- if sp_rating != blank -%}
+              <div class="lnd-md__spot-tile-stars">
+                <span class="lnd-md__spot-tile-stars-glyphs">★★★★★</span>
+                <span class="lnd-md__spot-tile-stars-meta">{{ sp_rating }} ({{ sp_reviews }})</span>
+              </div>
+            {%- endif -%}
+            <div class="lnd-md__spot-tile-price">
+              <span class="now">{{ sale_price | money }}</span>
+              <span class="was">{{ sp.price | money }}</span>
+              <span class="off">{{ discount_pct }}% off</span>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Testimonials — 3 fixed quotes, direct + outcome-focused {%- endcomment -%}
+  <div class="lnd-md__testimonial">
+    <div class="lnd-md__testimonial-inner">
+      <div class="lnd-md__testimonial-eyebrow">Real Customers · Real Results</div>
+      <h2 class="lnd-md__testimonial-heading">Absorption you can feel.</h2>
+      <div class="lnd-md__testimonial-grid">
+        <div class="lnd-md__testimonial-card">
+          <div class="lnd-md__testimonial-stars">★★★★★</div>
+          <p class="lnd-md__testimonial-quote">"Took magnesium for years and never felt it. With theirs I'm sleeping through the night within a week."</p>
+          <p class="lnd-md__testimonial-author">Lauren M. · Verified Magnesium Glycinate buyer</p>
+        </div>
+        <div class="lnd-md__testimonial-card">
+          <div class="lnd-md__testimonial-stars">★★★★★</div>
+          <p class="lnd-md__testimonial-quote">"Lost ~9 lbs in two months. No jitters, no crash. The 3pm cravings just stopped."</p>
+          <p class="lnd-md__testimonial-author">Marcus T. · Verified WLP-1 buyer</p>
+        </div>
+        <div class="lnd-md__testimonial-card">
+          <div class="lnd-md__testimonial-stars">★★★★★</div>
+          <p class="lnd-md__testimonial-quote">"A1C dropped a full point in 90 days. My doctor asked what changed."</p>
+          <p class="lnd-md__testimonial-author">Renee K. · Verified Berberine buyer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Bubble filter row {%- endcomment -%}
+  <div class="lnd-md__bubbles-wrap" id="md-bubbles">
+    <div class="lnd-md__bubbles-inner">
+      <h2 class="lnd-md__bubbles-head">Shop by goal</h2>
+      <div class="lnd-md__bubbles" role="tablist" aria-label="Filter by goal">
+        <button class="lnd-md__bubble is-active" type="button" data-goal="all" aria-pressed="true">All <span class="lnd-md__bubble-count">{{ meta_handles.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="longevity" aria-pressed="false">Longevity &amp; Performance <span class="lnd-md__bubble-count">{{ goal_longevity.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="metab" aria-pressed="false">Metabolism &amp; Hormones <span class="lnd-md__bubble-count">{{ goal_metab.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="sleep" aria-pressed="false">Sleep &amp; Mood <span class="lnd-md__bubble-count">{{ goal_sleep.size }}</span></button>
+        <button class="lnd-md__bubble" type="button" data-goal="immunity" aria-pressed="false">Immunity &amp; Inflammation <span class="lnd-md__bubble-count">{{ goal_immunity.size }}</span></button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Shop-all product grid {%- endcomment -%}
+  <div class="lnd-md__grid-wrap" id="md-grid">
+    <div class="lnd-md__grid-head">
+      <h2>Shop the sale</h2>
+      <span class="lnd-md__grid-count" data-grid-count>{{ meta_handles.size }} products</span>
+    </div>
+    <div class="lnd-md__grid" data-grid>
+      {%- for entry in display_handles -%}
+        {%- assign p = blank -%}
+        {%- for sp in sale_collection.products -%}
+          {%- if sp.handle == entry -%}{%- assign p = sp -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+
+        {%- if p != blank and p.handle != blank -%}
+          {%- assign meta_idx = -1 -%}
+          {%- for mh in meta_handles -%}
+            {%- if mh == p.handle -%}{%- assign meta_idx = forloop.index0 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+
+          {%- assign pill_text = '' -%}
+          {%- assign badge_text = '' -%}
+          {%- assign rating_val = '' -%}
+          {%- assign reviews_val = '' -%}
+          {%- if meta_idx >= 0 -%}
+            {%- assign pill_text = pills[meta_idx] -%}
+            {%- assign badge_text = badges[meta_idx] -%}
+            {%- assign rating_val = ratings[meta_idx] -%}
+            {%- assign reviews_val = reviews[meta_idx] -%}
+          {%- endif -%}
+
+          {%- assign tile_chips = 'all' -%}
+          {%- if goal_longevity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' longevity' -%}{%- endif -%}
+          {%- if goal_metab contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' metab' -%}{%- endif -%}
+          {%- if goal_sleep contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' sleep' -%}{%- endif -%}
+          {%- if goal_immunity contains p.handle -%}{%- assign tile_chips = tile_chips | append: ' immunity' -%}{%- endif -%}
+
+          {%- assign was_price = p.compare_at_price -%}
+          {%- assign now_price = p.price -%}
+          {%- if was_price == nil or was_price <= now_price -%}
+            {%- assign now_price = p.price | times: keep_pct | divided_by: 100 -%}
+            {%- assign was_price = p.price -%}
+          {%- endif -%}
+
+          {%- assign tile_img_url = '' -%}
+          {%- for oh in override_handles -%}
+            {%- if oh == p.handle -%}{%- assign tile_img_url = override_urls[forloop.index0] -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign tile_img = p.featured_image -%}
+
+          {%- assign tile_sub = p.metafields.smart.short_description -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.metafields.smart.tagline -%}{%- endif -%}
+          {%- if tile_sub == blank -%}{%- assign tile_sub = p.description | strip_html | truncate: 80 -%}{%- endif -%}
+
+          {%- assign is_low_stock = false -%}
+          {%- if p.handle == 'wlp-1' or p.handle == 'weight-management-stack' -%}{%- assign is_low_stock = true -%}{%- endif -%}
+          <a class="lnd-md__tile" href="/products/{{ p.handle }}" data-chips="{{ tile_chips }}" data-handle="{{ p.handle }}">
+            {%- if pill_text != blank or badge_text != blank or is_low_stock -%}
+              <div class="lnd-md__tile-tags">
+                {%- if pill_text != blank -%}<span class="lnd-md__tile-pill">{{ pill_text }}</span>{%- endif -%}
+                {%- if badge_text != blank -%}<span class="lnd-md__tile-badge">{{ badge_text }}</span>{%- endif -%}
+                {%- if is_low_stock -%}<span class="lnd-md__tile-lowstock">Low Stock</span>{%- endif -%}
+              </div>
+            {%- endif -%}
+            <div class="lnd-md__tile-img">
+              {%- if tile_img_url != blank -%}
+                <img src="{{ tile_img_url }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- elsif tile_img -%}
+                <img src="{{ tile_img | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="600">
+              {%- endif -%}
+            </div>
+            <div class="lnd-md__tile-info">
+              <h3 class="lnd-md__tile-title">{{ p.title }}</h3>
+              {%- if tile_sub != blank -%}<p class="lnd-md__tile-sub">{{ tile_sub }}</p>{%- endif -%}
+              {%- if rating_val != blank -%}
+                <div class="lnd-md__tile-stars">
+                  <span class="lnd-md__tile-stars-glyphs">★★★★★</span>
+                  <span class="lnd-md__tile-stars-meta">{{ rating_val }} ({{ reviews_val }})</span>
+                </div>
+              {%- endif -%}
+              <div class="lnd-md__tile-price">
+                <span class="now">{{ now_price | money }}</span>
+                <span class="was">{{ was_price | money }}</span>
+                <span class="off">{{ discount_pct }}% off</span>
+              </div>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Final CTA band {%- endcomment -%}
+  <div class="lnd-md__final">
+    <div class="lnd-md__countdown" data-countdown>
+      <div><b data-d>00</b><span>Days</span></div>
+      <div><b data-h>00</b><span>Hours</span></div>
+      <div><b data-m>00</b><span>Minutes</span></div>
+      <div><b data-s>00</b><span>Seconds</span></div>
+    </div>
+    <h2>{{ discount_pct }}% off ends soon. <em>The absorption stays.</em></h2>
+    <p>One sale a year on the whole catalog. Take the bestsellers home for 35% less.</p>
+    <a class="lnd-md__final-cta" href="#md-grid">Shop the sale</a>
+  </div>
+
+  {%- comment -%} Footer disclaimer {%- endcomment -%}
+  <div class="lnd-md__disclaimer">
+    <div class="lnd-md__disclaimer-inner">
+      <p>35% off applies to new subscriptions only. Free shipping on orders $50+. For powder solutions, valid on 28+ serving sizes only. Cannot be combined with other offers. Exclusions apply. Ends May 25th at 11:59 PM PST.</p>
+    </div>
+  </div>
+
+  {%- comment -%} Sticky mobile CTA {%- endcomment -%}
+  <div class="lnd-md__mobile-cta" data-mobile-cta>
+    <a href="#md-grid">Shop {{ discount_pct }}% off</a>
+  </div>
+
+</section>
+
+<script>
+(function(){
+  var root = document.querySelector('.lnd-md');
+  if (!root) return;
+
+  var END = new Date(root.dataset.end).getTime();
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+  function tick() {
+    var diff = Math.max(0, END - Date.now());
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    root.querySelectorAll('[data-d]').forEach(function(el){ el.textContent = pad(d); });
+    root.querySelectorAll('[data-h]').forEach(function(el){ el.textContent = pad(h); });
+    root.querySelectorAll('[data-m]').forEach(function(el){ el.textContent = pad(m); });
+    root.querySelectorAll('[data-s]').forEach(function(el){ el.textContent = pad(s); });
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Cycling benefits rotator
+  var rotator = root.querySelector('[data-rotator]');
+  var words = ['more energy', 'more vitality', 'better sleep', 'sharper focus', 'faster recovery', 'stronger immunity', 'deeper rest', 'more benefits'];
+  var wi = 0;
+  if (rotator) {
+    setInterval(function(){
+      rotator.classList.add('is-out');
+      setTimeout(function(){
+        wi = (wi + 1) % words.length;
+        rotator.textContent = words[wi];
+        rotator.classList.remove('is-out');
+      }, 350);
+    }, 2200);
+  }
+
+  // Bubble filter
+  var bubbles = root.querySelectorAll('.lnd-md__bubble');
+  var gridCount = root.querySelector('[data-grid-count]');
+  function getTiles(){ return root.querySelectorAll('.lnd-md__grid .lnd-md__tile'); }
+  function applyFilter(filter) {
+    var visible = 0;
+    getTiles().forEach(function(t){
+      var has = (' ' + (t.dataset.chips || '') + ' ').indexOf(' ' + filter + ' ') !== -1;
+      t.style.display = has ? '' : 'none';
+      if (has) visible++;
+    });
+    if (gridCount) gridCount.textContent = visible + ' product' + (visible === 1 ? '' : 's');
+  }
+  bubbles.forEach(function(b){
+    b.addEventListener('click', function(){
+      var goal = b.dataset.goal;
+      bubbles.forEach(function(x){ x.classList.remove('is-active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('is-active');
+      b.setAttribute('aria-pressed','true');
+      applyFilter(goal);
+    });
+  });
+
+  // Sticky mobile CTA on scroll
+  var mobile = root.querySelector('[data-mobile-cta]');
+  var hero = root.querySelector('.lnd-md__hero');
+  function onScroll(){
+    if (!hero || !mobile) return;
+    var heroBottom = hero.getBoundingClientRect().bottom;
+    if (heroBottom < 0) { mobile.classList.add('is-show'); }
+    else { mobile.classList.remove('is-show'); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Lander · MD Sale Paid",
+  "settings": [
+    { "type": "header", "content": "Offer" },
+    { "type": "number", "id": "discount_pct", "label": "Discount %", "default": 35 },
+    { "type": "text", "id": "end_iso", "label": "End date (ISO 8601)", "default": "2026-05-26T23:59:59-04:00" },
+    { "type": "header", "content": "Hero copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Memorial Day Sale: 35% Sitewide + Free Shipping*" },
+    { "type": "richtext", "id": "headline", "label": "Headline (use <em> for red accent)", "default": "<p>Save 35% on supplements that <em>actually absorb.</em></p>" },
+    { "type": "textarea", "id": "subhead", "label": "Subhead", "default": "Most supplements don't reach your bloodstream. Ours do. Up to 149x better absorption you can actually feel." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero background — desktop (>=720px)" },
+    { "type": "image_picker", "id": "hero_image_mobile", "label": "Hero background — mobile (<720px)" },
+    { "type": "header", "content": "Products on sale" },
+    { "type": "product_list", "id": "sale_products", "label": "Products in the shop-all grid", "limit": 50 }
+  ],
+  "presets": [
+    { "name": "Lander · MD Sale Paid" }
+  ]
+}
+{% endschema %}

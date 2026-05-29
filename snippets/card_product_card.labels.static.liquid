@@ -58,7 +58,7 @@
      x-ignore
      x-show="$editor.select_block_id === `{{ block_id }}` || ($data.showConditionally('{{ show_conditionally }}', $data?.bundle) &&
      (false {% if content_source != blank %}|| getContentLabels('{{ content_source }}')?.length {% endif %}
-     {% if label_type__discounts != '' %}|| !!getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }}){% endif %}
+     {% if label_type__discounts != '' %}|| true{% endif %}
      {% if label_type__low_inventory == 'show' %}|| p_card?.available_quantity < +`{{ low_inventory_threshold | default: 5 }}`{% endif %}
      {% if label_type__preorder == "show" %}|| (p_card?.selected_variant?.preorder && p_card?.selected_variant?.inventory_quantity < +`{{ inventory_threshold__preorder | default: 1 }}`){% endif %}
      {% if label_type__out_of_stock == "show" %}|| !p_card?.product?.available{% endif %}))">
@@ -86,16 +86,21 @@
           x-cloak
           x-show="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})"
         {% endif %}
-        class="{{ label_class__discount }}"
-        x-html="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }}) || $el.innerHTML">
+        class="{{ label_class__discount }}"{% unless label_class__discount contains 'label-secondary' %} style="color:#4659FF;"{% endunless %}
+        x-html="getDiscountLabel('{{ label_type__discounts }}',{{ show_subscription_price | default: false }})">
       {% case label_type__discounts %}
         {% when 'sale' %}
           Sale
         {% when 'percentage' %}
           {% liquid
             if show_subscription_price
-              assign compare_at_price = price
-              assign price = variant.selling_plan_allocations[0].price | default: variant.price
+              assign compare_at_price = price | at_least: compare_at_price
+              assign skio_label_price = variant.metafields.custom.choose_supply_variant_price.value | default: 0
+              if skio_label_price > 0 and skio_label_price < compare_at_price
+                assign price = skio_label_price
+              else
+                assign price = variant.selling_plan_allocations[0].price | default: variant.price
+              endif
             endif
           %}
           {% assign discount = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round %}
@@ -181,3 +186,5 @@
     </label>
   {% endif %}
 </div>
+
+

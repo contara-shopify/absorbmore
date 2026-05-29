@@ -1,0 +1,281 @@
+{%- liquid
+  assign section_id = section.settings.section_id
+  assign custom_css = section.settings.custom_css
+  assign container_spacing = section.settings.container_spacing
+  assign scroll_target = section.settings.cta_scroll_target | strip
+  if scroll_target == blank
+    assign scroll_target = 'purchase'
+  endif
+  unless scroll_target contains '#'
+    assign cta_href = '#' | append: scroll_target
+  else
+    assign cta_href = scroll_target
+  endunless
+-%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}"]{%- endcapture -%}
+
+{%- capture css -%}
+  & {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    {% if section.settings.enable_sticky %}
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    {% endif %}
+    {% if section.settings.show_bottom_border %}
+      border-bottom: 1px solid {{ section.settings.border_color }};
+    {% endif %}
+  }
+
+  & .ctr-lp-header__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    min-height: {{ section.settings.bar_height }}px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: {{ section.settings.inner_gap }}px;
+    padding-top: {{ section.settings.padding_y }}px;
+    padding-bottom: {{ section.settings.padding_y }}px;
+  }
+
+  & .ctr-lp-header__logo {
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  & .ctr-lp-header__logo img {
+    display: block;
+    width: {{ section.settings.logo_width }}px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  & .ctr-lp-header__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-height: {{ section.settings.cta_min_height }}px;
+    padding: {{ section.settings.cta_padding_y }}px {{ section.settings.cta_padding_x }}px;
+    border-radius: {{ section.settings.cta_radius }}px;
+    background: {{ section.settings.cta_bg }};
+    color: {{ section.settings.cta_text_color }};
+    font-size: {{ section.settings.cta_size_mobile }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+
+  & .ctr-lp-header__cta:hover {
+    opacity: 0.92;
+  }
+
+  {% if section.settings.cta_full_width_mobile %}
+    @media (max-width: 1023px) {
+      & .ctr-lp-header__inner {
+        flex-wrap: wrap;
+      }
+
+      & .ctr-lp-header__logo {
+        flex: 1 1 auto;
+      }
+
+      & .ctr-lp-header__cta {
+        width: 100%;
+        white-space: normal;
+      }
+    }
+  {% endif %}
+
+  @media (min-width: 1024px) {
+    & .ctr-lp-header__cta {
+      font-size: {{ section.settings.cta_size_desktop }}px;
+    }
+
+    {% if section.settings.cta_full_width_desktop %}
+      & .ctr-lp-header__cta {
+        min-width: {{ section.settings.cta_min_width_desktop }}px;
+      }
+    {% endif %}
+  }
+
+  @media (max-width: 1023px) {
+    & .ctr-lp-header__inner {
+      min-height: {{ section.settings.bar_height_mobile }}px;
+      padding-top: {{ section.settings.padding_y_mobile }}px;
+      padding-bottom: {{ section.settings.padding_y_mobile }}px;
+      gap: {{ section.settings.inner_gap_mobile }}px;
+    }
+
+    & .ctr-lp-header__logo img {
+      width: {{ section.settings.logo_width_mobile }}px;
+    }
+  }
+
+  {% if section.settings.hide_theme_header %}
+    .header-sections-container {
+      display: none !important;
+    }
+  {% endif %}
+{%- endcapture -%}
+
+<section
+  data-section-type="ctr_landing_sticky_header"
+  data-style-id="{{ section.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-lp-header {{ container_spacing }}"
+>
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <div class="ctr-lp-header__inner">
+    {% if section.settings.logo != blank %}
+      <a
+        class="ctr-lp-header__logo"
+        href="{{ section.settings.logo_url | default: routes.root_url }}"
+        {% if section.settings.logo_url != blank and section.settings.logo_open_new_tab %}
+          target="_blank"
+          rel="noopener noreferrer"
+        {% endif %}
+        aria-label="{{ section.settings.logo_aria_label | default: 'The Absorption Company' | escape }}"
+      >
+        {{
+          section.settings.logo
+          | image_url: width: 400
+          | image_tag:
+            loading: 'eager',
+            widths: '120,160,200,240,320,400',
+            sizes: '(max-width: 1023px) 120px, 180px',
+            alt: section.settings.logo.alt | default: section.settings.logo_aria_label
+        }}
+      </a>
+    {% endif %}
+
+    {% if section.settings.cta_label != blank %}
+      <a
+        class="ctr-lp-header__cta"
+        href="{{ cta_href }}"
+        data-lp-header-scroll-cta
+      >
+        {{ section.settings.cta_label | escape }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-style-id="{{ section.id }}"]');
+    if (!root) return;
+
+    var cta = root.querySelector('[data-lp-header-scroll-cta]');
+    if (!cta) return;
+
+    cta.addEventListener('click', function (event) {
+      var href = cta.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+
+      var id = href.slice(1);
+      var target =
+        document.getElementById(id) ||
+        document.getElementById('shopify-section-' + id) ||
+        document.querySelector(href);
+
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "CTR Landing Sticky Header",
+  "tag": "section",
+  "class": "shopify_section__ctr_landing_sticky_header",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-gutter",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "range", "id": "max_width", "label": "Max width", "default": 1440, "min": 760, "max": 1720, "step": 20, "unit": "px" },
+    { "type": "checkbox", "id": "enable_sticky", "label": "Sticky on scroll", "default": true },
+    { "type": "checkbox", "id": "hide_theme_header", "label": "Hide main theme header", "default": false, "info": "Hides the global .header-sections-container while this section is active." },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#202020" },
+    { "type": "checkbox", "id": "show_bottom_border", "label": "Show bottom border", "default": false },
+    { "type": "color", "id": "border_color", "label": "Border color", "default": "#e8e4da" },
+    { "type": "range", "id": "bar_height", "label": "Min height - desktop", "default": 72, "min": 48, "max": 120, "step": 2, "unit": "px" },
+    { "type": "range", "id": "bar_height_mobile", "label": "Min height - mobile", "default": 64, "min": 48, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_y", "label": "Vertical padding - desktop", "default": 12, "min": 0, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_y_mobile", "label": "Vertical padding - mobile", "default": 10, "min": 0, "max": 32, "step": 2, "unit": "px" },
+    { "type": "range", "id": "inner_gap", "label": "Gap logo / CTA - desktop", "default": 24, "min": 8, "max": 80, "step": 2, "unit": "px" },
+    { "type": "range", "id": "inner_gap_mobile", "label": "Gap logo / CTA - mobile", "default": 16, "min": 8, "max": 48, "step": 2, "unit": "px" },
+
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image" },
+    { "type": "url", "id": "logo_url", "label": "Logo link", "info": "Defaults to homepage if empty." },
+    { "type": "checkbox", "id": "logo_open_new_tab", "label": "Open logo link in new tab", "default": false },
+    { "type": "text", "id": "logo_aria_label", "label": "Logo aria label", "default": "The Absorption Company" },
+    { "type": "range", "id": "logo_width", "label": "Logo width - desktop", "default": 120, "min": 60, "max": 220, "step": 4, "unit": "px" },
+    { "type": "range", "id": "logo_width_mobile", "label": "Logo width - mobile", "default": 96, "min": 48, "max": 160, "step": 4, "unit": "px" },
+
+    { "type": "header", "content": "CTA" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Add the Stack to Cart" },
+    {
+      "type": "text",
+      "id": "cta_scroll_target",
+      "label": "Scroll target ID",
+      "default": "purchase",
+      "info": "Element ID to scroll to (without #). Set the same Section ID on your purchase box."
+    },
+    { "type": "color", "id": "cta_bg", "label": "Button background", "default": "#8f2c31" },
+    { "type": "color", "id": "cta_text_color", "label": "Button text color", "default": "#ffffff" },
+    { "type": "range", "id": "cta_size_desktop", "label": "Button text size - desktop", "default": 16, "min": 12, "max": 22, "step": 1, "unit": "px" },
+    { "type": "range", "id": "cta_size_mobile", "label": "Button text size - mobile", "default": 14, "min": 12, "max": 20, "step": 1, "unit": "px" },
+    { "type": "range", "id": "cta_min_height", "label": "Button min height", "default": 44, "min": 36, "max": 60, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_padding_x", "label": "Button padding horizontal", "default": 20, "min": 12, "max": 40, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_padding_y", "label": "Button padding vertical", "default": 12, "min": 8, "max": 24, "step": 2, "unit": "px" },
+    { "type": "range", "id": "cta_radius", "label": "Button radius", "default": 8, "min": 0, "max": 20, "step": 1, "unit": "px" },
+    { "type": "checkbox", "id": "cta_full_width_desktop", "label": "Set minimum button width on desktop", "default": true },
+    { "type": "range", "id": "cta_min_width_desktop", "label": "Button min width - desktop", "default": 200, "min": 120, "max": 320, "step": 10, "unit": "px" },
+    { "type": "checkbox", "id": "cta_full_width_mobile", "label": "Full width button on mobile", "default": false },
+
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "default": "& {\n}\n" },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Landing Sticky Header",
+      "category": "Custom"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

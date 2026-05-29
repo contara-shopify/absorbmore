@@ -1,0 +1,594 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_gentler_path"
+
+  assign chart_position = section.settings.chart_position
+  assign content_alignment_desktop = section.settings.content_alignment_desktop
+  assign content_alignment_mobile = section.settings.content_alignment_mobile
+  assign column_gap_desktop = section.settings.column_gap_desktop
+  assign column_gap_mobile = section.settings.column_gap_mobile
+
+  assign header_text = section.settings.header_text
+  assign subtitle_text = section.settings.subtitle_text
+  assign cta_label = section.settings.cta_label
+  assign cta_url = section.settings.cta_url
+  assign cta_badge = section.settings.cta_badge
+  assign trust_item_1 = section.settings.trust_item_1
+  assign trust_item_2 = section.settings.trust_item_2
+  assign trust_item_3 = section.settings.trust_item_3
+  assign trust_item_4 = section.settings.trust_item_4
+  assign trust_item_5 = section.settings.trust_item_5
+
+  assign chart_col_brand = section.settings.chart_col_brand
+  assign chart_col_others = section.settings.chart_col_others
+  assign chart_row_1 = section.settings.chart_row_1
+  assign chart_row_2 = section.settings.chart_row_2
+  assign chart_row_3 = section.settings.chart_row_3
+  assign chart_row_4 = section.settings.chart_row_4
+  assign chart_row_5 = section.settings.chart_row_5
+  assign chart_row_6 = section.settings.chart_row_6
+  assign chart_row_7 = section.settings.chart_row_7
+
+  assign brand_col_width_desktop = section.settings.brand_col_width_desktop
+  assign others_col_width_desktop = section.settings.others_col_width_desktop
+  assign brand_col_width_mobile = section.settings.brand_col_width_mobile
+  assign others_col_width_mobile = section.settings.others_col_width_mobile
+
+  assign brand_col_bg = section.settings.brand_col_bg
+  assign brand_col_text = section.settings.brand_col_text
+  assign brand_logo_url = section.settings.brand_logo_url
+  assign brand_logo_width = section.settings.brand_logo_width
+
+  assign content_text_color = section.settings.content_text_color
+  assign subtitle_color = section.settings.subtitle_color
+  assign trust_color = section.settings.trust_color
+  assign trust_separator_color = section.settings.trust_separator_color
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text_color = section.settings.badge_text_color
+  assign cta_bg = section.settings.cta_bg
+  assign cta_text = section.settings.cta_text
+  assign card_bg = section.settings.card_bg
+  assign others_col_text = section.settings.others_col_text
+  assign chart_border = section.settings.chart_border
+
+  assign header_size_desktop = section.settings.header_size_desktop
+  assign header_size_mobile = section.settings.header_size_mobile
+  assign header_line_height = section.settings.header_line_height
+  assign subtitle_size_desktop = section.settings.subtitle_size_desktop
+  assign subtitle_size_mobile = section.settings.subtitle_size_mobile
+  assign cta_size_desktop = section.settings.cta_size_desktop
+  assign cta_size_mobile = section.settings.cta_size_mobile
+  assign badge_size_desktop = section.settings.badge_size_desktop
+  assign badge_size_mobile = section.settings.badge_size_mobile
+  assign trust_size = section.settings.trust_size
+  assign chart_head_size = section.settings.chart_head_size
+  assign chart_row_size = section.settings.chart_row_size
+  assign chart_mark_size = section.settings.chart_mark_size
+
+  assign container_spacing = section.settings.container_spacing
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+
+  assign rows_sep = '||PIPESEP||'
+  assign rows_combined = chart_row_1 | append: rows_sep | append: chart_row_2 | append: rows_sep | append: chart_row_3 | append: rows_sep | append: chart_row_4 | append: rows_sep | append: chart_row_5 | append: rows_sep | append: chart_row_6 | append: rows_sep | append: chart_row_7
+  assign row_labels = rows_combined | split: rows_sep
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --gp-text: {{ content_text_color }};
+    --gp-subtitle: {{ subtitle_color }};
+    --gp-trust-color: {{ trust_color }};
+    --gp-trust-sep: {{ trust_separator_color }};
+    --gp-badge-bg: {{ badge_bg }};
+    --gp-badge-text: {{ badge_text_color }};
+    --gp-cta-bg: {{ cta_bg }};
+    --gp-cta-text: {{ cta_text }};
+    --gp-card-bg: {{ card_bg }};
+    --gp-brand-bg: {{ brand_col_bg }};
+    --gp-brand-text: {{ brand_col_text }};
+    --gp-brand-logo-w: {{ brand_logo_width }}px;
+    --gp-others-text: {{ others_col_text }};
+    --gp-border: {{ chart_border }};
+
+    --gp-brand-w-d: {{ brand_col_width_desktop }}px;
+    --gp-others-w-d: {{ others_col_width_desktop }}px;
+    --gp-brand-w-m: {{ brand_col_width_mobile }}px;
+    --gp-others-w-m: {{ others_col_width_mobile }}px;
+
+    --gp-header-d: {{ header_size_desktop }}px;
+    --gp-header-m: {{ header_size_mobile }}px;
+    --gp-header-lh: {{ header_line_height | divided_by: 100.0 }};
+    --gp-subtitle-d: {{ subtitle_size_desktop }}px;
+    --gp-subtitle-m: {{ subtitle_size_mobile }}px;
+    --gp-cta-d: {{ cta_size_desktop }}px;
+    --gp-cta-m: {{ cta_size_mobile }}px;
+    --gp-badge-d: {{ badge_size_desktop }}px;
+    --gp-badge-m: {{ badge_size_mobile }}px;
+    --gp-trust-size: {{ trust_size }}px;
+
+    --gp-chart-head: {{ chart_head_size }}px;
+    --gp-chart-row-size: {{ chart_row_size }}px;
+    --gp-chart-mark: {{ chart_mark_size }}px;
+    --gp-chart-head-m: calc(var(--gp-chart-head) * 0.85);
+    --gp-chart-row-m: calc(var(--gp-chart-row-size) * 0.85);
+    --gp-chart-mark-m: calc(var(--gp-chart-mark) * 0.82);
+
+    --gp-col-gap-d: {{ column_gap_desktop }}px;
+    --gp-col-gap-m: {{ column_gap_mobile }}px;
+    --gp-content-order: {% if chart_position == 'left' %}2{% else %}1{% endif %};
+    --gp-chart-order: {% if chart_position == 'left' %}1{% else %}2{% endif %};
+    --gp-align-d: {{ content_alignment_desktop }};
+    --gp-align-m: {{ content_alignment_mobile }};
+    --gp-justify-d: {{ content_alignment_desktop }};
+    --gp-justify-m: {{ content_alignment_mobile }};
+    --gp-text-align-d: {% if content_alignment_desktop == 'flex-start' %}left{% elsif content_alignment_desktop == 'flex-end' %}right{% else %}center{% endif %};
+    --gp-text-align-m: {% if content_alignment_mobile == 'flex-start' %}left{% elsif content_alignment_mobile == 'flex-end' %}right{% else %}center{% endif %};
+  }
+
+  /* Layout */
+  & .ctr-gp__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gp-col-gap-m);
+  }
+  & .ctr-gp__content {
+    order: var(--gp-content-order);
+    display: flex;
+    flex-direction: column;
+    align-items: var(--gp-align-m);
+    text-align: var(--gp-text-align-m);
+    color: var(--gp-text);
+  }
+  & .ctr-gp__chart-wrap {
+    order: var(--gp-chart-order);
+    position: relative;
+  }
+
+  /* Content elements */
+  & .ctr-gp__header {
+    font-size: var(--gp-header-m);
+    line-height: var(--gp-header-lh);
+    margin: 0 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: inherit;
+  }
+  & .ctr-gp__subtitle {
+    font-size: var(--gp-subtitle-m);
+    line-height: 1.55;
+    margin: 0 0 28px;
+    color: var(--gp-subtitle);
+    max-width: 540px;
+  }
+  & .ctr-gp__cta-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 360px;
+    width: 100%;
+    margin-bottom: 20px;
+    isolation: isolate;
+  }
+  & .ctr-gp__cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 18px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: var(--gp-cta-m);
+    background-color: var(--gp-cta-bg);
+    color: var(--gp-cta-text);
+    transition: opacity 0.2s ease, transform 0.15s ease;
+  }
+  & .ctr-gp__cta:hover { opacity: 0.92; }
+  & .ctr-gp__cta:active { transform: translateY(1px); }
+  & .ctr-gp__cta-badge {
+    position: absolute;
+    top: -10px;
+    right: -6px;
+    transform: rotate(10deg);
+    transform-origin: center;
+    background-color: var(--gp-badge-bg);
+    color: var(--gp-badge-text);
+    padding: 5px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    font-size: var(--gp-badge-m);
+    font-weight: 700;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  & .ctr-gp__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    margin: 0;
+    padding: 0;
+    justify-content: var(--gp-justify-m);
+    width: 100%;
+  }
+  & .ctr-gp__trust-item {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--gp-trust-size);
+    line-height: 1.5;
+    color: var(--gp-trust-color);
+  }
+  & .ctr-gp__trust-item + .ctr-gp__trust-item::before {
+    content: '\00B7';
+    display: inline-block;
+    margin: 0 10px;
+    color: var(--gp-trust-sep);
+    font-weight: 700;
+  }
+
+  /* Chart scroll container — 22px vertical padding makes room for the brand extension on all viewports */
+  & .ctr-gp__chart-scroll {
+    padding: 22px 0;
+  }
+  @media (max-width: 1023px) {
+    & .ctr-gp__chart-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gp-others-text) transparent;
+    }
+    & .ctr-gp__chart-scroll::-webkit-scrollbar {
+      height: 5px;
+    }
+    & .ctr-gp__chart-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    & .ctr-gp__chart-scroll::-webkit-scrollbar-thumb {
+      background-color: var(--gp-others-text);
+      border-radius: 999px;
+    }
+  }
+  @media (min-width: 1024px) {
+    & .ctr-gp__chart-scroll {
+      overflow: visible;
+    }
+  }
+
+  /* Chart card */
+  & .ctr-gp__chart {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--gp-brand-w-m) var(--gp-others-w-m);
+    width: 100%;
+    position: relative;
+    background: var(--gp-card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--gp-border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  & .ctr-gp__row { display: contents; }
+
+  /* Cells — mobile-first compact sizes */
+  & .ctr-gp__cell {
+    padding: 14px 14px;
+    display: flex;
+    align-items: center;
+    font-size: var(--gp-chart-row-m);
+    line-height: 1.4;
+  }
+  & .ctr-gp__row:not(:last-child) .ctr-gp__cell:not(.ctr-gp__cell--brand) {
+    border-bottom: 1px solid var(--gp-border);
+  }
+  & .ctr-gp__cell--label { font-weight: 600; }
+  & .ctr-gp__cell--brand {
+    background: var(--gp-brand-bg);
+    color: var(--gp-brand-text);
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: relative;
+  }
+  & .ctr-gp__cell--others {
+    color: var(--gp-others-text);
+    justify-content: center;
+    text-align: center;
+  }
+  & .ctr-gp__cell--mark {
+    font-size: var(--gp-chart-mark-m);
+    font-weight: 700;
+  }
+  /* Header row */
+  & .ctr-gp__row--head .ctr-gp__cell {
+    padding: 16px 14px;
+    font-size: var(--gp-chart-head-m);
+    font-weight: 700;
+  }
+  & .ctr-gp__cell--brand-head,
+  & .ctr-gp__cell--others-head {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    line-height: 1.15;
+  }
+  & .ctr-gp__cell--brand-head { letter-spacing: -0.01em; }
+  & .ctr-gp__cell--others-head { font-weight: 600; }
+
+  /* Brand logo */
+  & .ctr-gp__brand-logo {
+    width: 100%;
+    max-width: var(--gp-brand-logo-w);
+    height: auto;
+    display: block;
+    margin: 0;
+  }
+
+  /* Brand column extension — applies on ALL viewports */
+  & .ctr-gp__cell--brand-head::before {
+    content: '';
+    position: absolute;
+    top: -22px;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background: var(--gp-brand-bg);
+    border-radius: 14px 14px 0 0;
+  }
+  & .ctr-gp__row:last-child .ctr-gp__cell--brand::after {
+    content: '';
+    position: absolute;
+    bottom: -22px;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background: var(--gp-brand-bg);
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* Desktop layout + larger sizes */
+  @media (min-width: 1024px) {
+    & .ctr-gp__chart {
+      grid-template-columns: minmax(0, 1fr) var(--gp-brand-w-d) var(--gp-others-w-d);
+    }
+    & .ctr-gp__layout {
+      display: grid;
+      grid-template-columns: 6fr 5fr;
+      gap: var(--gp-col-gap-d);
+      align-items: center;
+    }
+    & .ctr-gp__content {
+      align-items: var(--gp-align-d);
+      text-align: var(--gp-text-align-d);
+    }
+    & .ctr-gp__header { font-size: var(--gp-header-d); }
+    & .ctr-gp__subtitle { font-size: var(--gp-subtitle-d); }
+    & .ctr-gp__cta { font-size: var(--gp-cta-d); }
+    & .ctr-gp__cta-badge { font-size: var(--gp-badge-d); top: -12px; right: -14px; padding: 6px 14px; }
+    & .ctr-gp__trust { justify-content: var(--gp-justify-d); }
+    & .ctr-gp__cell {
+      padding: 18px 18px;
+      font-size: var(--gp-chart-row-size);
+    }
+    & .ctr-gp__cell--mark {
+      font-size: var(--gp-chart-mark);
+    }
+    & .ctr-gp__row--head .ctr-gp__cell {
+      padding: 22px 18px;
+      font-size: var(--gp-chart-head);
+    }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-gentler-path {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div class="ctr-gp__layout">
+    <div class="ctr-gp__content">
+      {%- if header_text != blank -%}
+        <h2 class="ctr-gp__header">{{ header_text | escape | newline_to_br }}</h2>
+      {%- endif -%}
+
+      {%- if subtitle_text != blank -%}
+        <p class="ctr-gp__subtitle">{{ subtitle_text | escape | newline_to_br }}</p>
+      {%- endif -%}
+
+      {%- if cta_label != blank -%}
+        <div class="ctr-gp__cta-wrap">
+          <a href="{{ cta_url | default: '#' }}" class="ctr-gp__cta">{{ cta_label | escape }}</a>
+          {%- if cta_badge != blank -%}
+            <span class="ctr-gp__cta-badge">{{ cta_badge | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- assign trust_count = 0 -%}
+      {%- if trust_item_1 != blank -%}{%- assign trust_count = trust_count | plus: 1 -%}{%- endif -%}
+      {%- if trust_item_2 != blank -%}{%- assign trust_count = trust_count | plus: 1 -%}{%- endif -%}
+      {%- if trust_item_3 != blank -%}{%- assign trust_count = trust_count | plus: 1 -%}{%- endif -%}
+      {%- if trust_item_4 != blank -%}{%- assign trust_count = trust_count | plus: 1 -%}{%- endif -%}
+      {%- if trust_item_5 != blank -%}{%- assign trust_count = trust_count | plus: 1 -%}{%- endif -%}
+
+      {%- if trust_count > 0 -%}
+        <div class="ctr-gp__trust">
+          {%- if trust_item_1 != blank -%}<span class="ctr-gp__trust-item">{{ trust_item_1 | escape }}</span>{%- endif -%}
+          {%- if trust_item_2 != blank -%}<span class="ctr-gp__trust-item">{{ trust_item_2 | escape }}</span>{%- endif -%}
+          {%- if trust_item_3 != blank -%}<span class="ctr-gp__trust-item">{{ trust_item_3 | escape }}</span>{%- endif -%}
+          {%- if trust_item_4 != blank -%}<span class="ctr-gp__trust-item">{{ trust_item_4 | escape }}</span>{%- endif -%}
+          {%- if trust_item_5 != blank -%}<span class="ctr-gp__trust-item">{{ trust_item_5 | escape }}</span>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="ctr-gp__chart-wrap">
+      <div class="ctr-gp__chart-scroll" role="region" aria-label="Product comparison" tabindex="0">
+        <div class="ctr-gp__chart">
+          <div class="ctr-gp__row ctr-gp__row--head">
+            <div class="ctr-gp__cell ctr-gp__cell--label ctr-gp__cell--label-head"></div>
+            <div class="ctr-gp__cell ctr-gp__cell--brand ctr-gp__cell--brand-head">
+              {%- if brand_logo_url != blank -%}
+                <img src="{{ brand_logo_url }}" alt="{{ chart_col_brand | escape }}" class="ctr-gp__brand-logo" loading="lazy" />
+              {%- else -%}
+                {{ chart_col_brand | escape | newline_to_br }}
+              {%- endif -%}
+            </div>
+            <div class="ctr-gp__cell ctr-gp__cell--others ctr-gp__cell--others-head">{{ chart_col_others | escape }}</div>
+          </div>
+
+          {%- for label in row_labels -%}
+            {%- if label != blank -%}
+              <div class="ctr-gp__row">
+                <div class="ctr-gp__cell ctr-gp__cell--label">{{ label | escape }}</div>
+                <div class="ctr-gp__cell ctr-gp__cell--brand ctr-gp__cell--mark">✓</div>
+                <div class="ctr-gp__cell ctr-gp__cell--others ctr-gp__cell--mark">✕</div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Gentler Path",
+  "tag": "section",
+  "class": "shopify_section__ctr_gentler_path",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select", "id": "chart_position", "label": "Chart position (desktop)", "default": "right",
+      "options": [{ "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }]
+    },
+    {
+      "type": "select", "id": "content_alignment_desktop", "label": "Content alignment (desktop)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select", "id": "content_alignment_mobile", "label": "Content alignment (mobile)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+    { "type": "range", "id": "column_gap_desktop", "label": "Column gap (desktop)", "min": 16, "max": 96, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "column_gap_mobile", "label": "Column gap (mobile)", "min": 16, "max": 64, "step": 4, "default": 32, "unit": "px" },
+
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "header_text", "label": "Header", "default": "A Gentler Path to Metabolic Support." },
+    { "type": "textarea", "id": "subtitle_text", "label": "Subtitle", "default": "We're not anti-medication. But for most people, berberine is a smart, natural first step before reaching for an injectable." },
+    { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Claim My Free Bottle" },
+    { "type": "url", "id": "cta_url", "label": "CTA button link" },
+    { "type": "text", "id": "cta_badge", "label": "CTA badge text", "default": "BUY 2 GET 1 FREE", "info": "Leave blank to hide the badge" },
+
+    { "type": "header", "content": "Trust Callouts" },
+    { "type": "paragraph", "content": "Items appear as a single row separated by ·. Leave any field blank to hide it." },
+    { "type": "text", "id": "trust_item_1", "label": "Item 1", "default": "Stock Alert: Running Low" },
+    { "type": "text", "id": "trust_item_2", "label": "Item 2", "default": "Free Shipping" },
+    { "type": "text", "id": "trust_item_3", "label": "Item 3", "default": "30-Day Money-Back Guarantee" },
+    { "type": "text", "id": "trust_item_4", "label": "Item 4 (optional)", "info": "Leave blank to hide" },
+    { "type": "text", "id": "trust_item_5", "label": "Item 5 (optional)", "info": "Leave blank to hide" },
+
+    { "type": "header", "content": "Chart Content" },
+    { "type": "paragraph", "content": "First column (row labels) is editable. ✓ for the brand column and ✕ for the Others column are fixed by design." },
+    { "type": "textarea", "id": "chart_col_brand", "label": "Brand column header (text fallback)", "default": "The Absorption Company.", "info": "Used only if no logo is set under Brand Column." },
+    { "type": "text", "id": "chart_col_others", "label": "Others column header", "default": "Others" },
+    { "type": "text", "id": "chart_row_1", "label": "Row 1 label", "default": "Glucose Support" },
+    { "type": "text", "id": "chart_row_2", "label": "Row 2 label", "default": "Plant-Based and Natural" },
+    { "type": "text", "id": "chart_row_3", "label": "Row 3 label", "default": "No Needles" },
+    { "type": "text", "id": "chart_row_4", "label": "Row 4 label", "default": "Gentle on Digestion" },
+    { "type": "text", "id": "chart_row_5", "label": "Row 5 label", "default": "Available Without Prescription" },
+    { "type": "text", "id": "chart_row_6", "label": "Row 6 label (optional)", "info": "Leave blank to hide this row" },
+    { "type": "text", "id": "chart_row_7", "label": "Row 7 label (optional)", "info": "Leave blank to hide this row" },
+
+    { "type": "header", "content": "Chart Sizing" },
+    { "type": "range", "id": "brand_col_width_desktop", "label": "Brand column width (desktop)", "min": 100, "max": 240, "step": 10, "default": 160, "unit": "px" },
+    { "type": "range", "id": "others_col_width_desktop", "label": "Others column width (desktop)", "min": 80, "max": 200, "step": 10, "default": 120, "unit": "px" },
+    { "type": "range", "id": "brand_col_width_mobile", "label": "Brand column width (mobile)", "min": 70, "max": 200, "step": 5, "default": 110, "unit": "px" },
+    { "type": "range", "id": "others_col_width_mobile", "label": "Others column width (mobile)", "min": 60, "max": 180, "step": 5, "default": 80, "unit": "px" },
+
+    { "type": "header", "content": "Brand Column" },
+    { "type": "color", "id": "brand_col_bg", "label": "Background color", "default": "#7A1F2B", "info": "The dark vertical column highlighting your brand." },
+    { "type": "color", "id": "brand_col_text", "label": "Text & ✓ color", "default": "#FFFFFF" },
+    { "type": "text", "id": "brand_logo_url", "label": "Brand logo URL", "default": "https://cdn.shopify.com/s/files/1/0821/3997/1873/files/logo-white-2.svg?v=1761576529", "info": "Paste an SVG or PNG URL. Leave blank to show the Brand column header text instead." },
+    { "type": "range", "id": "brand_logo_width", "label": "Logo max width", "min": 40, "max": 200, "step": 5, "default": 80, "unit": "px" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "content_text_color", "label": "Header text color", "default": "#161616" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle text color", "default": "#555555" },
+    { "type": "color", "id": "trust_color", "label": "Trust callouts text color", "default": "#444444" },
+    { "type": "color", "id": "trust_separator_color", "label": "Trust callouts separator color", "default": "#999999" },
+    { "type": "color", "id": "badge_bg", "label": "CTA badge background", "default": "#A6192E" },
+    { "type": "color", "id": "badge_text_color", "label": "CTA badge text", "default": "#FFFFFF" },
+    { "type": "color", "id": "cta_bg", "label": "CTA button background", "default": "#3F2021" },
+    { "type": "color", "id": "cta_text", "label": "CTA button text", "default": "#FFFFFF" },
+    { "type": "color", "alpha": true, "id": "card_bg", "label": "Chart card background", "default": "#FFFFFF" },
+    { "type": "color", "id": "others_col_text", "label": "Others column text/× color", "default": "#B5B5B5" },
+    { "type": "color", "id": "chart_border", "label": "Chart border / row dividers", "default": "#EAE4D6" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "paragraph", "content": "Chart sizes scale automatically: mobile renders at ~85% of the desktop values you set below." },
+    { "type": "range", "id": "header_size_desktop", "label": "Header size (desktop)", "min": 22, "max": 64, "step": 1, "default": 38, "unit": "px" },
+    { "type": "range", "id": "header_size_mobile", "label": "Header size (mobile)", "min": 20, "max": 44, "step": 1, "default": 26, "unit": "px" },
+    { "type": "range", "id": "header_line_height", "label": "Header line height", "min": 90, "max": 160, "step": 5, "default": 110, "unit": "%" },
+    { "type": "range", "id": "subtitle_size_desktop", "label": "Subtitle size (desktop)", "min": 12, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "subtitle_size_mobile", "label": "Subtitle size (mobile)", "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "cta_size_desktop", "label": "CTA button size (desktop)", "min": 14, "max": 24, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "cta_size_mobile", "label": "CTA button size (mobile)", "min": 14, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "badge_size_desktop", "label": "CTA badge size (desktop)", "min": 9, "max": 18, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "badge_size_mobile", "label": "CTA badge size (mobile)", "min": 9, "max": 16, "step": 1, "default": 11, "unit": "px" },
+    { "type": "range", "id": "trust_size", "label": "Trust callouts size", "min": 11, "max": 18, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "chart_head_size", "label": "Chart header size (desktop)", "min": 12, "max": 22, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "chart_row_size", "label": "Chart row text size (desktop)", "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "chart_mark_size", "label": "Chart check / × mark size (desktop)", "min": 14, "max": 30, "step": 1, "default": 22, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#EFE9DC" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 96px max(20px, calc((100% - 1200px) / 2));\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 64px 20px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "presets": [
+    {
+      "name": "CTR Gentler Path",
+      "category": "Custom",
+      "settings": {
+        "chart_position": "right",
+        "content_alignment_desktop": "center",
+        "content_alignment_mobile": "center"
+      }
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

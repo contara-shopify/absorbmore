@@ -1,0 +1,368 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_90_days"
+
+  assign cards_per_row = section.settings.cards_per_row
+  assign gap_desktop = section.settings.gap_desktop
+  assign gap_mobile = section.settings.gap_mobile
+  assign content_alignment_desktop = section.settings.content_alignment_desktop
+  assign content_alignment_mobile = section.settings.content_alignment_mobile
+
+  assign header_text = section.settings.header_text
+  assign subtitle_text = section.settings.subtitle_text
+
+  assign card_bg = section.settings.card_bg
+  assign card_radius = section.settings.card_radius
+  assign card_padding_desktop = section.settings.card_padding_desktop
+  assign card_padding_mobile = section.settings.card_padding_mobile
+
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text_color = section.settings.badge_text_color
+  assign badge_size = section.settings.badge_size
+
+  assign header_color = section.settings.header_color
+  assign subtitle_color = section.settings.subtitle_color
+  assign title_color = section.settings.title_color
+  assign bullet_color = section.settings.bullet_color
+  assign check_color = section.settings.check_color
+
+  assign header_size_desktop = section.settings.header_size_desktop
+  assign header_size_mobile = section.settings.header_size_mobile
+  assign header_line_height = section.settings.header_line_height
+  assign subtitle_size_desktop = section.settings.subtitle_size_desktop
+  assign subtitle_size_mobile = section.settings.subtitle_size_mobile
+  assign title_size_desktop = section.settings.title_size_desktop
+  assign title_size_mobile = section.settings.title_size_mobile
+  assign bullet_size_desktop = section.settings.bullet_size_desktop
+  assign bullet_size_mobile = section.settings.bullet_size_mobile
+
+  assign container_spacing = section.settings.container_spacing
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --c90d-card-bg: {{ card_bg }};
+    --c90d-card-radius: {{ card_radius }}px;
+    --c90d-card-padding-d: {{ card_padding_desktop }}px;
+    --c90d-card-padding-m: {{ card_padding_mobile }}px;
+    --c90d-badge-bg: {{ badge_bg }};
+    --c90d-badge-text: {{ badge_text_color }};
+    --c90d-badge-size: {{ badge_size }}px;
+    --c90d-header-color: {{ header_color }};
+    --c90d-subtitle-color: {{ subtitle_color }};
+    --c90d-title-color: {{ title_color }};
+    --c90d-bullet-color: {{ bullet_color }};
+    --c90d-check-color: {{ check_color }};
+    --c90d-header-d: {{ header_size_desktop }}px;
+    --c90d-header-m: {{ header_size_mobile }}px;
+    --c90d-header-lh: {{ header_line_height | divided_by: 100.0 }};
+    --c90d-subtitle-d: {{ subtitle_size_desktop }}px;
+    --c90d-subtitle-m: {{ subtitle_size_mobile }}px;
+    --c90d-title-d: {{ title_size_desktop }}px;
+    --c90d-title-m: {{ title_size_mobile }}px;
+    --c90d-bullet-d: {{ bullet_size_desktop }}px;
+    --c90d-bullet-m: {{ bullet_size_mobile }}px;
+    --c90d-gap-d: {{ gap_desktop }}px;
+    --c90d-gap-m: {{ gap_mobile }}px;
+    --c90d-cards-per-row: {{ cards_per_row }};
+    --c90d-text-align-d: {% if content_alignment_desktop == 'flex-start' %}left{% elsif content_alignment_desktop == 'flex-end' %}right{% else %}center{% endif %};
+    --c90d-text-align-m: {% if content_alignment_mobile == 'flex-start' %}left{% elsif content_alignment_mobile == 'flex-end' %}right{% else %}center{% endif %};
+  }
+
+  /* Header */
+  & .ctr-90d__head {
+    text-align: var(--c90d-text-align-m);
+    margin: 0 auto 32px;
+    max-width: 720px;
+  }
+  & .ctr-90d__header {
+    font-size: var(--c90d-header-m);
+    line-height: var(--c90d-header-lh);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    color: var(--c90d-header-color);
+  }
+  & .ctr-90d__subtitle {
+    font-size: var(--c90d-subtitle-m);
+    line-height: 1.55;
+    margin: 0;
+    color: var(--c90d-subtitle-color);
+  }
+
+  /* Cards grid */
+  & .ctr-90d__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--c90d-gap-m);
+  }
+
+  & .ctr-90d__card {
+    background: var(--c90d-card-bg);
+    border-radius: var(--c90d-card-radius);
+    padding: var(--c90d-card-padding-m);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .ctr-90d__badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: var(--c90d-badge-bg);
+    color: var(--c90d-badge-text);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: var(--c90d-badge-size);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 18px;
+  }
+
+  & .ctr-90d__title {
+    font-size: var(--c90d-title-m);
+    font-weight: 700;
+    margin: 0 0 14px;
+    line-height: 1.25;
+    color: var(--c90d-title-color);
+  }
+
+  & .ctr-90d__bullets {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0;
+  }
+  & .ctr-90d__bullets li {
+    list-style: none !important;
+    position: relative;
+    padding-left: 22px;
+    margin: 6px 0;
+    font-size: var(--c90d-bullet-m);
+    line-height: 1.5;
+    color: var(--c90d-bullet-color);
+  }
+  & .ctr-90d__bullets li::marker {
+    content: '' !important;
+  }
+  & .ctr-90d__bullets li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--c90d-check-color);
+    font-weight: 700;
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    & .ctr-90d__head {
+      text-align: var(--c90d-text-align-d);
+      margin-bottom: 48px;
+    }
+    & .ctr-90d__header { font-size: var(--c90d-header-d); }
+    & .ctr-90d__subtitle { font-size: var(--c90d-subtitle-d); }
+    & .ctr-90d__cards {
+      grid-template-columns: repeat(var(--c90d-cards-per-row), 1fr);
+      gap: var(--c90d-gap-d);
+    }
+    & .ctr-90d__card { padding: var(--c90d-card-padding-d); }
+    & .ctr-90d__title { font-size: var(--c90d-title-d); }
+    & .ctr-90d__bullets li { font-size: var(--c90d-bullet-d); }
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-90-days {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div class="ctr-90d__head">
+    {%- if header_text != blank -%}
+      <h2 class="ctr-90d__header">{{ header_text | escape | newline_to_br }}</h2>
+    {%- endif -%}
+    {%- if subtitle_text != blank -%}
+      <p class="ctr-90d__subtitle">{{ subtitle_text | escape | newline_to_br }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="ctr-90d__cards">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'month_card' -%}
+          {%- assign bullets_combined = block.settings.bullet_1 | append: block.settings.bullet_2 | append: block.settings.bullet_3 | append: block.settings.bullet_4 | append: block.settings.bullet_5 -%}
+
+          <article class="ctr-90d__card" {{ block.shopify_attributes }}>
+            {%- if block.settings.badge_text != blank -%}
+              <span class="ctr-90d__badge">{{ block.settings.badge_text | escape }}</span>
+            {%- endif -%}
+
+            {%- if block.settings.title != blank -%}
+              <h3 class="ctr-90d__title">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+
+            {%- if bullets_combined != blank -%}
+              <ul class="ctr-90d__bullets">
+                {%- if block.settings.bullet_1 != blank -%}<li>{{ block.settings.bullet_1 | escape }}</li>{%- endif -%}
+                {%- if block.settings.bullet_2 != blank -%}<li>{{ block.settings.bullet_2 | escape }}</li>{%- endif -%}
+                {%- if block.settings.bullet_3 != blank -%}<li>{{ block.settings.bullet_3 | escape }}</li>{%- endif -%}
+                {%- if block.settings.bullet_4 != blank -%}<li>{{ block.settings.bullet_4 | escape }}</li>{%- endif -%}
+                {%- if block.settings.bullet_5 != blank -%}<li>{{ block.settings.bullet_5 | escape }}</li>{%- endif -%}
+              </ul>
+            {%- endif -%}
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "CTR 90 Days",
+  "tag": "section",
+  "class": "shopify_section__ctr_90_days",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "cards_per_row", "label": "Cards per row (desktop)", "min": 1, "max": 4, "step": 1, "default": 3, "info": "Cards wrap to a new row beyond this number." },
+    { "type": "range", "id": "gap_desktop", "label": "Card gap (desktop)", "min": 12, "max": 48, "step": 4, "default": 24, "unit": "px" },
+    { "type": "range", "id": "gap_mobile", "label": "Card gap (mobile)", "min": 12, "max": 32, "step": 4, "default": 20, "unit": "px" },
+    {
+      "type": "select", "id": "content_alignment_desktop", "label": "Header alignment (desktop)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select", "id": "content_alignment_mobile", "label": "Header alignment (mobile)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "header_text", "label": "Header", "default": "Your First 90 days" },
+    { "type": "textarea", "id": "subtitle_text", "label": "Subtitle", "default": "Berberine works gradually. Here's how most customers describe their progress." },
+
+    { "type": "header", "content": "Card Appearance" },
+    { "type": "color", "id": "card_bg", "label": "Card background", "default": "#F0EBE0" },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 24, "step": 2, "default": 12, "unit": "px" },
+    { "type": "range", "id": "card_padding_desktop", "label": "Card padding (desktop)", "min": 16, "max": 48, "step": 2, "default": 24, "unit": "px" },
+    { "type": "range", "id": "card_padding_mobile", "label": "Card padding (mobile)", "min": 14, "max": 36, "step": 2, "default": 20, "unit": "px" },
+
+    { "type": "header", "content": "Badge" },
+    { "type": "color", "id": "badge_bg", "label": "Badge background", "default": "#4F46E5" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
+    { "type": "range", "id": "badge_size", "label": "Badge text size", "min": 9, "max": 14, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "header_color", "label": "Header text", "default": "#161616" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle text", "default": "#555555" },
+    { "type": "color", "id": "title_color", "label": "Card title text", "default": "#161616" },
+    { "type": "color", "id": "bullet_color", "label": "Bullet text", "default": "#555555" },
+    { "type": "color", "id": "check_color", "label": "Bullet check (\u2713) color", "default": "#3F8A2E" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "header_size_desktop", "label": "Header size (desktop)", "min": 22, "max": 64, "step": 1, "default": 38, "unit": "px" },
+    { "type": "range", "id": "header_size_mobile", "label": "Header size (mobile)", "min": 20, "max": 44, "step": 1, "default": 26, "unit": "px" },
+    { "type": "range", "id": "header_line_height", "label": "Header line height", "min": 90, "max": 160, "step": 5, "default": 110, "unit": "%" },
+    { "type": "range", "id": "subtitle_size_desktop", "label": "Subtitle size (desktop)", "min": 12, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "subtitle_size_mobile", "label": "Subtitle size (mobile)", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "title_size_desktop", "label": "Card title size (desktop)", "min": 14, "max": 28, "step": 1, "default": 18, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile", "label": "Card title size (mobile)", "min": 14, "max": 24, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "bullet_size_desktop", "label": "Bullet text size (desktop)", "min": 12, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "bullet_size_mobile", "label": "Bullet text size (mobile)", "min": 11, "max": 16, "step": 1, "default": 13, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#EFE9DC" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 80px max(20px, calc((100% - 1200px) / 2));\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 56px 20px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "month_card",
+      "name": "Month card",
+      "settings": [
+        { "type": "text", "id": "badge_text", "label": "Badge text", "default": "MONTH 1", "info": "Short label shown in the colored pill." },
+        { "type": "text", "id": "title", "label": "Title", "default": "Cravings Quiet Down" },
+        { "type": "text", "id": "bullet_1", "label": "Bullet 1", "default": "Fewer sugar urges after meals" },
+        { "type": "text", "id": "bullet_2", "label": "Bullet 2", "default": "Steadier post-meal blood sugar" },
+        { "type": "text", "id": "bullet_3", "label": "Bullet 3", "default": "No GI flare-ups starting out" },
+        { "type": "text", "id": "bullet_4", "label": "Bullet 4 (optional)", "info": "Leave blank to hide." },
+        { "type": "text", "id": "bullet_5", "label": "Bullet 5 (optional)", "info": "Leave blank to hide." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "CTR 90 Days",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "month_card",
+          "settings": {
+            "badge_text": "MONTH 1",
+            "title": "Cravings Quiet Down",
+            "bullet_1": "Fewer sugar urges after meals",
+            "bullet_2": "Steadier post-meal blood sugar",
+            "bullet_3": "No GI flare-ups starting out"
+          }
+        },
+        {
+          "type": "month_card",
+          "settings": {
+            "badge_text": "MONTH 2",
+            "title": "Energy Levels Out",
+            "bullet_1": "Better insulin sensitivity",
+            "bullet_2": "More efficient carb metabolism",
+            "bullet_3": "Consistent energy without crashes"
+          }
+        },
+        {
+          "type": "month_card",
+          "settings": {
+            "badge_text": "MONTH 3",
+            "title": "Metabolic Foundation",
+            "bullet_1": "Sustained metabolic balance",
+            "bullet_2": "Healthier lipid markers",
+            "bullet_3": "Long-term support that compounds"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

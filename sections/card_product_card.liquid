@@ -70,7 +70,8 @@
         data-product-card="{{ _handle }}"
         data-product-handle="{{ _product.handle }}"
         data-product-id="{{ _product.id }}"
-        x-data="{ ...(!!$el.getAttribute('data-product-handle') ? _sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription')) : {}) }"
+        data-ctr-discount-config='{{ _product.metafields.custom.ctr_discount_config.value | json | escape }}'
+        x-data="{ ...(!!$el.getAttribute('data-product-handle') ? _sections.initProductCard($el, $refs, $el.getAttribute('data-product-handle'), +$el.getAttribute('data-product-id'), +$el.getAttribute('data-variant-id'), $el.hasAttribute('data-default-subscription'), $el.hasAttribute('data-show-subscription-price')) : {}) }"
         x-defer="intersect"
         {% if request.design_mode != true or _product.handle == blank %}
           x-ignore

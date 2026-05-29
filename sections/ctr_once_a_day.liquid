@@ -1,0 +1,506 @@
+{%- comment -%} Auto Generated Variables start {%- endcomment -%}
+{%- liquid
+  assign section_type = "ctr_once_a_day"
+
+  assign desktop_image_position = section.settings.desktop_image_position
+  assign desktop_image_size = section.settings.desktop_image_size
+  assign mobile_image_position = section.settings.mobile_image_position
+  assign column_gap_desktop = section.settings.column_gap_desktop
+  assign column_gap_mobile = section.settings.column_gap_mobile
+  assign step_gap = section.settings.step_gap
+  assign content_alignment_desktop = section.settings.content_alignment_desktop
+  assign content_alignment_mobile = section.settings.content_alignment_mobile
+
+  assign header_text = section.settings.header_text
+  assign subtitle_text = section.settings.subtitle_text
+
+  assign image = section.settings.image
+  assign image_url_alt = section.settings.image_url
+  assign image_aspect = section.settings.image_aspect
+  assign image_radius = section.settings.image_radius
+  assign image_bg = section.settings.image_bg
+
+  assign box_bg = section.settings.box_bg
+  assign box_radius = section.settings.box_radius
+  assign box_padding_desktop = section.settings.box_padding_desktop
+  assign box_padding_mobile = section.settings.box_padding_mobile
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text_color = section.settings.badge_text_color
+  assign badge_size = section.settings.badge_size
+  assign badge_text_size = section.settings.badge_text_size
+  assign badge_offset_top = section.settings.badge_offset_top
+  assign badge_offset_left = section.settings.badge_offset_left
+
+  assign header_color = section.settings.header_color
+  assign subtitle_color = section.settings.subtitle_color
+  assign title_color = section.settings.title_color
+  assign description_color = section.settings.description_color
+
+  assign header_size_desktop = section.settings.header_size_desktop
+  assign header_size_mobile = section.settings.header_size_mobile
+  assign header_line_height = section.settings.header_line_height
+  assign subtitle_size_desktop = section.settings.subtitle_size_desktop
+  assign subtitle_size_mobile = section.settings.subtitle_size_mobile
+  assign title_size_desktop = section.settings.title_size_desktop
+  assign title_size_mobile = section.settings.title_size_mobile
+  assign description_size_desktop = section.settings.description_size_desktop
+  assign description_size_mobile = section.settings.description_size_mobile
+
+  assign container_spacing = section.settings.container_spacing
+  assign background_color = section.settings.background_color
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+
+  # Resolve image source
+  assign img_src = ''
+  if image
+    assign img_src = image | image_url: width: 1400
+  elsif image_url_alt != blank
+    assign img_src = image_url_alt
+  endif
+  assign has_image = false
+  if img_src != blank
+    assign has_image = true
+  endif
+
+  # Resolve column ratios + flex order
+  if desktop_image_size == 'larger'
+    if desktop_image_position == 'left'
+      assign image_flex_d = 7
+      assign steps_flex_d = 5
+    else
+      assign image_flex_d = 7
+      assign steps_flex_d = 5
+    endif
+  elsif desktop_image_size == 'smaller'
+    assign image_flex_d = 4
+    assign steps_flex_d = 6
+  else
+    assign image_flex_d = 1
+    assign steps_flex_d = 1
+  endif
+
+  if desktop_image_position == 'left'
+    assign image_order_d = 1
+    assign steps_order_d = 2
+  else
+    assign image_order_d = 2
+    assign steps_order_d = 1
+  endif
+
+  if mobile_image_position == 'above'
+    assign image_order_m = 1
+    assign steps_order_m = 2
+  else
+    assign image_order_m = 2
+    assign steps_order_m = 1
+  endif
+-%}
+{%- comment -%} Auto Generated Variables end {%- endcomment -%}
+
+{%- capture selector -%}[data-style-id="{{ section.id }}--{{ block.id }}"]{%- endcapture -%}
+{%- capture css -%}
+  & {
+    {% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+
+    --od-box-bg: {{ box_bg }};
+    --od-box-radius: {{ box_radius }}px;
+    --od-box-padding-d: {{ box_padding_desktop }}px;
+    --od-box-padding-m: {{ box_padding_mobile }}px;
+    --od-badge-bg: {{ badge_bg }};
+    --od-badge-text: {{ badge_text_color }};
+    --od-badge-size: {{ badge_size }}px;
+    --od-badge-text-size: {{ badge_text_size }}px;
+    --od-badge-offset-top: {{ badge_offset_top }}px;
+    --od-badge-offset-left: {{ badge_offset_left }}px;
+
+    --od-image-aspect: {{ image_aspect }};
+    --od-image-radius: {{ image_radius }}px;
+    --od-image-bg: {{ image_bg }};
+
+    --od-header-color: {{ header_color }};
+    --od-subtitle-color: {{ subtitle_color }};
+    --od-title-color: {{ title_color }};
+    --od-desc-color: {{ description_color }};
+
+    --od-header-d: {{ header_size_desktop }}px;
+    --od-header-m: {{ header_size_mobile }}px;
+    --od-header-lh: {{ header_line_height | divided_by: 100.0 }};
+    --od-subtitle-d: {{ subtitle_size_desktop }}px;
+    --od-subtitle-m: {{ subtitle_size_mobile }}px;
+    --od-title-d: {{ title_size_desktop }}px;
+    --od-title-m: {{ title_size_mobile }}px;
+    --od-desc-d: {{ description_size_desktop }}px;
+    --od-desc-m: {{ description_size_mobile }}px;
+
+    --od-gap-d: {{ column_gap_desktop }}px;
+    --od-gap-m: {{ column_gap_mobile }}px;
+    --od-step-gap: {{ step_gap }}px;
+    --od-image-flex-d: {{ image_flex_d }};
+    --od-steps-flex-d: {{ steps_flex_d }};
+    --od-image-order-d: {{ image_order_d }};
+    --od-steps-order-d: {{ steps_order_d }};
+    --od-image-order-m: {{ image_order_m }};
+    --od-steps-order-m: {{ steps_order_m }};
+    --od-text-align-d: {% if content_alignment_desktop == 'flex-start' %}left{% elsif content_alignment_desktop == 'flex-end' %}right{% else %}center{% endif %};
+    --od-text-align-m: {% if content_alignment_mobile == 'flex-start' %}left{% elsif content_alignment_mobile == 'flex-end' %}right{% else %}center{% endif %};
+  }
+
+  /* Header */
+  & .ctr-od__head {
+    text-align: var(--od-text-align-m);
+    margin: 0 auto 32px;
+    max-width: 720px;
+  }
+  & .ctr-od__header {
+    font-size: var(--od-header-m);
+    line-height: var(--od-header-lh);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--od-header-color);
+  }
+  & .ctr-od__subtitle {
+    font-size: var(--od-subtitle-m);
+    line-height: 1.55;
+    margin: 0;
+    color: var(--od-subtitle-color);
+  }
+
+  /* Layout */
+  & .ctr-od__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--od-gap-m);
+  }
+  & .ctr-od__image-col { order: var(--od-image-order-m); }
+  & .ctr-od__steps-col { order: var(--od-steps-order-m); }
+
+  /* Image */
+  & .ctr-od__image-wrap {
+    aspect-ratio: var(--od-image-aspect);
+    border-radius: var(--od-image-radius);
+    overflow: hidden;
+    background: var(--od-image-bg);
+  }
+  & .ctr-od__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Steps */
+  & .ctr-od__steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--od-step-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none !important;
+  }
+  & .ctr-od__steps > li {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+  }
+  & .ctr-od__steps > li::marker { content: '' !important; }
+
+  & .ctr-od__box {
+    position: relative;
+    background: var(--od-box-bg);
+    border-radius: var(--od-box-radius);
+    padding: var(--od-box-padding-m);
+  }
+  & .ctr-od__badge {
+    position: absolute;
+    top: var(--od-badge-offset-top);
+    left: var(--od-badge-offset-left);
+    min-width: var(--od-badge-size);
+    height: var(--od-badge-size);
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--od-badge-bg);
+    color: var(--od-badge-text);
+    font-size: var(--od-badge-text-size);
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+  & .ctr-od__box-title {
+    font-size: var(--od-title-m);
+    font-weight: 700;
+    margin: 0 0 8px;
+    line-height: 1.3;
+    color: var(--od-title-color);
+  }
+  & .ctr-od__box-description {
+    font-size: var(--od-desc-m);
+    line-height: 1.55;
+    margin: 0;
+    color: var(--od-desc-color);
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    & .ctr-od__head {
+      text-align: var(--od-text-align-d);
+      margin-bottom: 48px;
+    }
+    & .ctr-od__header { font-size: var(--od-header-d); }
+    & .ctr-od__subtitle { font-size: var(--od-subtitle-d); }
+
+    & .ctr-od__layout {
+      flex-direction: row;
+      gap: var(--od-gap-d);
+      align-items: center;
+    }
+    & .ctr-od__image-col {
+      order: var(--od-image-order-d);
+      flex: var(--od-image-flex-d) 1 0;
+      min-width: 0;
+    }
+    & .ctr-od__steps-col {
+      order: var(--od-steps-order-d);
+      flex: var(--od-steps-flex-d) 1 0;
+      min-width: 0;
+    }
+
+    & .ctr-od__box { padding: var(--od-box-padding-d); }
+    & .ctr-od__box-title { font-size: var(--od-title-d); }
+    & .ctr-od__box-description { font-size: var(--od-desc-d); }
+  }
+
+  /* When only one column exists (no image), let steps fill width */
+  & .ctr-od__layout--steps-only .ctr-od__steps-col {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+{%- endcapture -%}
+
+<section
+  data-section-type="{{ section_type }}"
+  data-style-id="{{ section.id }}--{{ block.id }}"
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="ctr-once-a-day {{ container_spacing }}">
+
+  <style>{{ css | append: custom_css | replace: '&', selector | strip_newlines }}</style>
+
+  <div class="ctr-od__head">
+    {%- if header_text != blank -%}
+      <h2 class="ctr-od__header">{{ header_text | escape | newline_to_br }}</h2>
+    {%- endif -%}
+    {%- if subtitle_text != blank -%}
+      <p class="ctr-od__subtitle">{{ subtitle_text | escape | newline_to_br }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="ctr-od__layout{% unless has_image %} ctr-od__layout--steps-only{% endunless %}">
+    {%- if has_image -%}
+      <div class="ctr-od__image-col">
+        <div class="ctr-od__image-wrap">
+          <img src="{{ img_src }}" alt="{{ header_text | strip_html | escape }}" loading="lazy" class="ctr-od__image" />
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="ctr-od__steps-col">
+        <ul class="ctr-od__steps">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'step_card' -%}
+              <li {{ block.shopify_attributes }}>
+                <div class="ctr-od__box">
+                  {%- if block.settings.badge_label != blank -%}
+                    <span class="ctr-od__badge">{{ block.settings.badge_label | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="ctr-od__box-title">{{ block.settings.title | escape }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.description != blank -%}
+                    <p class="ctr-od__box-description">{{ block.settings.description | escape | newline_to_br }}</p>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTR Once a Day",
+  "tag": "section",
+  "class": "shopify_section__ctr_once_a_day",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select", "id": "desktop_image_position", "label": "Image position (desktop)", "default": "right",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select", "id": "desktop_image_size", "label": "Image size (desktop)", "default": "larger",
+      "options": [
+        { "value": "smaller", "label": "Smaller than steps" },
+        { "value": "equal", "label": "Equal to steps" },
+        { "value": "larger", "label": "Larger than steps" }
+      ]
+    },
+    {
+      "type": "select", "id": "mobile_image_position", "label": "Image position (mobile)", "default": "below",
+      "info": "Where the image sits relative to the step boxes on mobile.",
+      "options": [
+        { "value": "above", "label": "Above steps" },
+        { "value": "below", "label": "Below steps" }
+      ]
+    },
+    { "type": "range", "id": "column_gap_desktop", "label": "Gap between image and steps (desktop)", "min": 16, "max": 96, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "column_gap_mobile", "label": "Gap between image and steps (mobile)", "min": 16, "max": 64, "step": 4, "default": 32, "unit": "px" },
+    { "type": "range", "id": "step_gap", "label": "Gap between step boxes", "min": 8, "max": 32, "step": 2, "default": 14, "unit": "px" },
+    {
+      "type": "select", "id": "content_alignment_desktop", "label": "Header alignment (desktop)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select", "id": "content_alignment_mobile", "label": "Header alignment (mobile)", "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ]
+    },
+
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "header_text", "label": "Header", "default": "Simple. Once a Day." },
+    { "type": "textarea", "id": "subtitle_text", "label": "Subtitle", "default": "No complicated stack. No weird timing rules." },
+
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Lifestyle image (upload)" },
+    { "type": "text", "id": "image_url", "label": "Image URL (alternative)", "info": "Use this if your image is already hosted externally. Falls back to the uploaded image above when blank." },
+    {
+      "type": "select", "id": "image_aspect", "label": "Image aspect ratio", "default": "4/3",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/5", "label": "Portrait (4:5)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "3/2", "label": "Photo (3:2)" },
+        { "value": "16/9", "label": "Widescreen (16:9)" }
+      ]
+    },
+    { "type": "range", "id": "image_radius", "label": "Image corner radius", "min": 0, "max": 32, "step": 2, "default": 12, "unit": "px" },
+    { "type": "color", "alpha": true, "id": "image_bg", "label": "Image placeholder color", "default": "#F3E8E8" },
+
+    { "type": "header", "content": "Step Box Appearance" },
+    { "type": "color", "id": "box_bg", "label": "Box background", "default": "#ECE4D2" },
+    { "type": "range", "id": "box_radius", "label": "Box corner radius", "min": 0, "max": 24, "step": 2, "default": 10, "unit": "px" },
+    { "type": "range", "id": "box_padding_desktop", "label": "Box padding (desktop)", "min": 16, "max": 48, "step": 2, "default": 22, "unit": "px" },
+    { "type": "range", "id": "box_padding_mobile", "label": "Box padding (mobile)", "min": 14, "max": 36, "step": 2, "default": 18, "unit": "px" },
+
+    { "type": "header", "content": "Badge" },
+    { "type": "color", "id": "badge_bg", "label": "Badge background", "default": "#4F46E5" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text color", "default": "#FFFFFF" },
+    { "type": "range", "id": "badge_size", "label": "Badge size (diameter)", "min": 20, "max": 44, "step": 2, "default": 28, "unit": "px" },
+    { "type": "range", "id": "badge_text_size", "label": "Badge text size", "min": 10, "max": 20, "step": 1, "default": 13, "unit": "px" },
+    { "type": "range", "id": "badge_offset_top", "label": "Badge offset from top", "min": -24, "max": 16, "step": 1, "default": -14, "unit": "px", "info": "Negative values pull the badge above the box edge." },
+    { "type": "range", "id": "badge_offset_left", "label": "Badge offset from left", "min": 0, "max": 48, "step": 2, "default": 20, "unit": "px" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "header_color", "label": "Header text", "default": "#161616" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle text", "default": "#555555" },
+    { "type": "color", "id": "title_color", "label": "Step title text", "default": "#161616" },
+    { "type": "color", "id": "description_color", "label": "Step description text", "default": "#555555" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "header_size_desktop", "label": "Header size (desktop)", "min": 22, "max": 64, "step": 1, "default": 38, "unit": "px" },
+    { "type": "range", "id": "header_size_mobile", "label": "Header size (mobile)", "min": 20, "max": 44, "step": 1, "default": 28, "unit": "px" },
+    { "type": "range", "id": "header_line_height", "label": "Header line height", "min": 90, "max": 160, "step": 5, "default": 110, "unit": "%" },
+    { "type": "range", "id": "subtitle_size_desktop", "label": "Subtitle size (desktop)", "min": 12, "max": 22, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "subtitle_size_mobile", "label": "Subtitle size (mobile)", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "title_size_desktop", "label": "Step title size (desktop)", "min": 14, "max": 24, "step": 1, "default": 17, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile", "label": "Step title size (mobile)", "min": 13, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "description_size_desktop", "label": "Step description size (desktop)", "min": 12, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "description_size_mobile", "label": "Step description size (mobile)", "min": 12, "max": 16, "step": 1, "default": 13, "unit": "px" },
+
+    { "type": "header", "content": "Section Globals" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container Spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Fullwidth" }
+      ]
+    },
+    { "type": "color", "alpha": true, "id": "background_color", "label": "Background color", "default": "#EFE9DC" },
+    {
+      "type": "textarea", "id": "custom_css", "label": "Custom CSS",
+      "default": "& {\n  padding: 80px max(20px, calc((100% - 1200px) / 2));\n}\n@media (max-width: 1023px) {\n  & {\n    padding: 56px 20px;\n  }\n}"
+    },
+    { "type": "text", "id": "section_id", "label": "Section ID" }
+  ],
+  "blocks": [
+    {
+      "type": "step_card",
+      "name": "Step card",
+      "settings": [
+        { "type": "text", "id": "badge_label", "label": "Badge label", "default": "1", "info": "Short label inside the colored circle. Numbers work best, but text up to ~6 chars also fits." },
+        { "type": "text", "id": "title", "label": "Step title", "default": "Dose" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Take 2 capsules daily with a meal. That's your full 1,500 mg absorbed-equivalent dose." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "CTR Once a Day",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "step_card",
+          "settings": {
+            "badge_label": "1",
+            "title": "Dose",
+            "description": "Take 2 capsules daily with a meal. That's your full 1,500 mg absorbed-equivalent dose."
+          }
+        },
+        {
+          "type": "step_card",
+          "settings": {
+            "badge_label": "2",
+            "title": "Timing",
+            "description": "Best with breakfast or your largest meal. Sustained release works for hours after."
+          }
+        },
+        {
+          "type": "step_card",
+          "settings": {
+            "badge_label": "3",
+            "title": "What to Expect",
+            "description": "Most people feel fewer cravings within 2-3 weeks. Full benefits build over 90 days."
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.global", "custom.header", "custom.modal", "custom.card", "custom.head", "custom.megamenu"]
+  }
+}
+{% endschema %}

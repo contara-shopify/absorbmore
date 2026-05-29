@@ -26,6 +26,14 @@
 
 <style>
   {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  .quick-view [data-style-id*="_main_product_container_"] :is(h1, h2, .h1, .h2) {
+    font-size: 1.5rem !important;
+    line-height: 1.15 !important;
+  }
+  .quick-view [data-style-id*="_main_product_container_"] :is(h5, .h5) {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+  }
 </style>
 
 <div x-data="{ show: $quickView.show }"

@@ -1,0 +1,713 @@
+{% comment %}
+  WLP-1 "Lose ~9 lbs in 4 weeks" landing page section.
+  Drop in: sections/wlp-1-9-lbs.liquid
+  Used by:  templates/page.wlp-1-9-lbs.json (assign template "wlp-1-9-lbs" to a Page with handle "wlp-1-9-lbs")
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'wlp-1-9-lbs'
+  assign wlp = all_products['wlp-1']
+  assign hero_image = wlp.featured_image
+-%}
+
+<style>
+  body:has(#{{ section_id }}) #shopify-section-sections--26521117163809__header_announcement_bar_iCTBFR,
+  body:has(#{{ section_id }}) #shopify-section-sections--26521117163809__navigation-bar{display:none !important}
+  #{{ section_id }}{
+    --ink:#0e1a14;
+    --ink-2:#324036;
+    --bg:#f7f4ee;
+    --card:#ffffff;
+    --accent:#1f6b4a;
+    --accent-2:#2f8f63;
+    --gold:#c89b3c;
+    --gold-soft:#f7d27a;
+    --line:#e6e0d4;
+    --warn:#b04a2a;
+    --muted:#6b7770;
+    --shadow:0 1px 2px rgba(14,26,20,.04),0 8px 24px rgba(14,26,20,.06);
+    --radius:14px;
+    background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.55;
+  }
+  #{{ section_id }} *{box-sizing:border-box}
+  #{{ section_id }} img{max-width:100%;display:block}
+  #{{ section_id }} h1,#{{ section_id }} h2,#{{ section_id }} h3,#{{ section_id }} h4{letter-spacing:-.01em;margin:0 0 .4em;line-height:1.1}
+  #{{ section_id }} h1{font-size:clamp(2.1rem,5.2vw,3.7rem);font-weight:900}
+  #{{ section_id }} h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800}
+  #{{ section_id }} h3{font-size:1.25rem;font-weight:700}
+  #{{ section_id }} p{margin:0 0 1em}
+  #{{ section_id }} .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  #{{ section_id }} .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:#e7f1ea;padding:6px 12px;border-radius:999px}
+  #{{ section_id }} .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;font-weight:700;font-size:1.05rem;padding:16px 26px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;transition:transform .08s ease, background .15s ease;box-shadow:var(--shadow);font-family:inherit}
+  #{{ section_id }} .btn:hover{background:var(--accent-2);transform:translateY(-1px);color:#fff}
+  #{{ section_id }} .btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+  #{{ section_id }} .btn.ghost:hover{background:var(--accent);color:#fff}
+  #{{ section_id }} .btn.full{width:100%}
+  #{{ section_id }} .btn .arrow{transition:transform .15s}
+  #{{ section_id }} .btn:hover .arrow{transform:translateX(3px)}
+
+  #{{ section_id }} .logobar{background:#fff;border-bottom:1px solid var(--line);padding:14px 20px;text-align:center}
+  #{{ section_id }} .logobar a{display:inline-block}
+  #{{ section_id }} .logobar img{display:inline-block;height:36px;width:auto;max-width:200px;object-fit:contain}
+  #{{ section_id }} .logobar .logo-text{font-weight:800;font-size:1.05rem;letter-spacing:.02em;color:var(--ink)}
+  #{{ section_id }} .topbar{background:var(--ink);color:#f5f1e6;text-align:center;font-size:.85rem;padding:9px 12px;font-weight:500}
+  #{{ section_id }} .topbar strong{color:var(--gold-soft)}
+
+  #{{ section_id }} header.hero{padding:36px 0 20px}
+  #{{ section_id }} .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  #{{ section_id }} .hero h1 .hl{background:linear-gradient(180deg, transparent 60%, #fde9a8 60%);padding:0 4px}
+  #{{ section_id }} .hero .stars{display:flex;align-items:center;gap:10px;margin:14px 0 8px;color:var(--ink-2);font-size:.95rem;font-weight:600}
+  #{{ section_id }} .stars svg{width:18px;height:18px;fill:#e8a72a}
+  #{{ section_id }} .hero ul.benefits{list-style:none;padding:0;margin:18px 0 26px;display:grid;gap:10px}
+  #{{ section_id }} .hero ul.benefits li{display:flex;align-items:flex-start;gap:10px;font-size:1.02rem}
+  #{{ section_id }} .hero ul.benefits svg{flex:0 0 22px;width:22px;height:22px;margin-top:1px;fill:var(--accent)}
+  #{{ section_id }} .hero-cta-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  #{{ section_id }} .hero-cta-row .micro{color:var(--muted);font-size:.85rem}
+  #{{ section_id }} .trust-row{display:flex;align-items:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+  #{{ section_id }} .trust-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.82rem;font-weight:600;color:var(--ink-2);box-shadow:var(--shadow)}
+  #{{ section_id }} .trust-pill svg{width:16px;height:16px;fill:var(--accent)}
+  #{{ section_id }} .hero-img-wrap{position:relative}
+  #{{ section_id }} .hero-img-card{background:#fff;border-radius:24px;padding:18px;box-shadow:var(--shadow);position:relative}
+  #{{ section_id }} .hero-img-card img{border-radius:14px}
+  #{{ section_id }} .hero-badge{position:absolute;top:-18px;right:-12px;background:var(--gold);color:#1a1408;font-weight:800;border-radius:999px;padding:10px 16px;font-size:.85rem;box-shadow:var(--shadow);transform:rotate(4deg)}
+  #{{ section_id }} .clinical-flag{position:absolute;left:-14px;bottom:18px;background:#0e1a14;color:#fff;border-radius:12px;padding:12px 16px;font-size:.85rem;line-height:1.2;box-shadow:var(--shadow)}
+  #{{ section_id }} .clinical-flag b{display:block;font-size:1.45rem;color:var(--gold-soft)}
+
+  #{{ section_id }} section{padding:72px 0}
+  #{{ section_id }} section.tight{padding:48px 0}
+  #{{ section_id }} .section-head{max-width:760px;margin:0 auto 40px;text-align:center}
+  #{{ section_id }} .section-head .eyebrow{margin-bottom:14px}
+  #{{ section_id }} .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  #{{ section_id }} .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+
+  #{{ section_id }} .problem{background:#efeae0}
+  #{{ section_id }} .problem .grid-3{margin-top:30px}
+  #{{ section_id }} .problem .card h3{display:flex;align-items:center;gap:10px}
+  #{{ section_id }} .problem .card h3 svg{width:22px;height:22px;fill:var(--warn)}
+
+  #{{ section_id }} .study{background:#0e1a14;color:#f5f1e6}
+  #{{ section_id }} .study .eyebrow{background:#1a2c22;color:var(--gold-soft)}
+  #{{ section_id }} .study h2{color:#fff}
+  #{{ section_id }} .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+  #{{ section_id }} .stat{background:#152a20;border-radius:18px;padding:30px 24px;border:1px solid #1f3a2c;display:flex;flex-direction:column;gap:6px}
+  #{{ section_id }} .stat .source{font-size:.7rem;color:var(--gold-soft);font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  #{{ section_id }} .stat .num{font-weight:900;font-size:3.2rem;color:#fff;line-height:1;margin:8px 0 2px}
+  #{{ section_id }} .stat .lbl{font-size:.95rem;color:#cdd6cf;font-weight:600}
+  #{{ section_id }} .stat .cite{font-size:.78rem;color:#9aa49d;margin-top:auto;padding-top:14px;border-top:1px solid #1f3a2c;line-height:1.4}
+  #{{ section_id }} .study .footnote{font-size:.75rem;color:#9aa49d;margin-top:24px;line-height:1.5;text-align:center;max-width:760px;margin-left:auto;margin-right:auto}
+
+  #{{ section_id }} .how .grid-3{margin-top:30px}
+  #{{ section_id }} .step .num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;margin-bottom:14px}
+
+  #{{ section_id }} .ingredients{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  #{{ section_id }} .ing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
+  #{{ section_id }} .ing{background:#fbf8f1;border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:14px}
+  #{{ section_id }} .ing .icon{width:64px;height:64px;border-radius:14px;background:#e7f1ea;display:flex;align-items:center;justify-content:center}
+  #{{ section_id }} .ing .icon svg{width:34px;height:34px;fill:var(--accent)}
+  #{{ section_id }} .ing .pill{display:inline-block;background:#0e1a14;color:var(--gold-soft);font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;align-self:flex-start}
+  #{{ section_id }} .ing h4{margin:0;font-size:1.25rem;font-weight:800}
+  #{{ section_id }} .ing .sub{color:var(--muted);font-size:.85rem;margin-top:-8px;font-weight:600}
+  #{{ section_id }} .ing p{margin:0;color:var(--ink-2);font-size:.95rem}
+  #{{ section_id }} .ing .stat-line{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-2)}
+  #{{ section_id }} .ing .stat-line b{color:var(--accent);font-weight:800}
+
+  #{{ section_id }} .compare{background:#efeae0}
+  #{{ section_id }} .compare-table{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);margin-top:30px}
+  #{{ section_id }} .compare-table table{width:100%;border-collapse:collapse}
+  #{{ section_id }} .compare-table th,#{{ section_id }} .compare-table td{padding:16px 14px;text-align:center;border-bottom:1px solid var(--line);font-size:.95rem}
+  #{{ section_id }} .compare-table th{background:#fbf8f1;font-weight:700;font-size:1rem}
+  #{{ section_id }} .compare-table th:first-child,#{{ section_id }} .compare-table td:first-child{text-align:left;font-weight:600}
+  #{{ section_id }} .compare-table .us{background:#f4faf6;color:var(--accent);font-weight:700}
+  #{{ section_id }} .check{color:var(--accent);font-weight:800}
+  #{{ section_id }} .x{color:#b34c3a;font-weight:800}
+
+  #{{ section_id }} .reviews{background:var(--bg)}
+  #{{ section_id }} .reviews .meta-row{display:flex;align-items:center;gap:16px;justify-content:center;margin-bottom:8px;color:var(--ink-2);font-size:.95rem}
+  #{{ section_id }} .reviews .meta-row .stars{display:inline-flex;align-items:center;gap:2px}
+  #{{ section_id }} .reviews .meta-row .stars svg{width:20px;height:20px;fill:#e8a72a}
+  #{{ section_id }} .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:30px}
+  #{{ section_id }} .review .stars{display:flex;gap:2px;margin-bottom:10px}
+  #{{ section_id }} .review .stars svg{width:18px;height:18px;fill:#e8a72a}
+  #{{ section_id }} .review h4{margin:0 0 8px;font-size:.95rem;text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+  #{{ section_id }} .review p{font-size:.98rem;color:var(--ink-2);margin:0 0 14px}
+  #{{ section_id }} .review .author{display:flex;align-items:center;justify-content:space-between;font-size:.85rem;color:var(--muted);font-weight:600;margin-top:10px}
+  #{{ section_id }} .review .verified{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:700;font-size:.78rem}
+  #{{ section_id }} .review .verified svg{width:14px;height:14px;fill:var(--accent)}
+
+  #{{ section_id }} .offer{background:#fbf8f1}
+  #{{ section_id }} .billing-toggle{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;margin:0 auto 30px;box-shadow:var(--shadow)}
+  #{{ section_id }} .billing-toggle button{appearance:none;border:0;background:transparent;color:var(--ink-2);font-weight:700;font-size:.9rem;padding:10px 22px;border-radius:999px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+  #{{ section_id }} .billing-toggle button.active{background:var(--accent);color:#fff}
+  #{{ section_id }} .billing-toggle .save-tag{background:var(--gold-soft);color:#7a5b00;font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:999px}
+  #{{ section_id }} .billing-toggle button.active .save-tag{background:#fff;color:var(--accent)}
+  #{{ section_id }} .toggle-wrap{text-align:center}
+  #{{ section_id }} .offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  #{{ section_id }} .price{position:relative;background:#fff;border:2px solid var(--line);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:transform .12s ease, border-color .15s, box-shadow .15s}
+  #{{ section_id }} .price:hover{transform:translateY(-2px);border-color:#cfd4c7}
+  #{{ section_id }} .price.best{border-color:var(--accent);background:linear-gradient(180deg,#f4faf6 0%,#fff 60%)}
+  #{{ section_id }} .price .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;white-space:nowrap}
+  #{{ section_id }} .price h3{font-size:1.5rem;margin:0}
+  #{{ section_id }} .price .lede{color:var(--muted);font-size:.9rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  #{{ section_id }} .price .price-row{display:flex;align-items:baseline;gap:10px;margin-top:4px}
+  #{{ section_id }} .price .per-mo{font-weight:900;font-size:2.7rem;color:var(--ink);line-height:1}
+  #{{ section_id }} .price .per-mo .unit{font-size:.95rem;color:var(--muted);font-weight:500;margin-left:2px}
+  #{{ section_id }} .price .strike{color:var(--muted);text-decoration:line-through;font-size:1rem;font-weight:600}
+  #{{ section_id }} .price .total{color:var(--ink-2);font-size:.9rem;font-weight:600;margin-top:-2px}
+  #{{ section_id }} .price ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px;font-size:.95rem}
+  #{{ section_id }} .price ul li{display:flex;align-items:flex-start;gap:8px;color:var(--ink-2)}
+  #{{ section_id }} .price ul li::before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%;margin-top:9px;flex:0 0 6px}
+  #{{ section_id }} .save-pill{display:inline-block;background:#fde9a8;color:#7a5b00;font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:999px;letter-spacing:.06em}
+
+  #{{ section_id }} .guarantee{background:var(--ink);color:#f5f1e6;text-align:center}
+  #{{ section_id }} .guarantee .seal{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #2f8f63, #0e1a14);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;border:3px solid var(--gold-soft);color:var(--gold-soft);font-weight:900;font-size:1.4rem;line-height:1;flex-direction:column}
+  #{{ section_id }} .guarantee p{max-width:640px;margin:0 auto;color:#cdd6cf}
+
+  #{{ section_id }} .faq{background:#fff}
+  #{{ section_id }} .faq details{border-bottom:1px solid var(--line);padding:18px 0}
+  #{{ section_id }} .faq summary{cursor:pointer;font-weight:700;font-size:1.05rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  #{{ section_id }} .faq summary::-webkit-details-marker{display:none}
+  #{{ section_id }} .faq summary::after{content:"+";font-size:1.5rem;font-weight:400;color:var(--accent);transition:transform .2s}
+  #{{ section_id }} .faq details[open] summary::after{content:"\2013"}
+  #{{ section_id }} .faq details p{margin-top:12px;color:var(--ink-2)}
+
+  #{{ section_id }} .final{background:linear-gradient(180deg,#1f6b4a 0%,#0e1a14 100%);color:#fff;text-align:center}
+  #{{ section_id }} .final h2{color:#fff}
+  #{{ section_id }} .final p{color:#cdd6cf;max-width:600px;margin:0 auto 24px}
+
+  #{{ section_id }} .lp-footer{background:#0e1a14;color:#9aa49d;padding:36px 0;font-size:.85rem;text-align:center;line-height:1.6}
+  #{{ section_id }} .lp-footer a{color:#cdd6cf}
+
+  #{{ section_id }} .sticky-mobile{display:none;position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px env(safe-area-inset-bottom);z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+  #{{ section_id }} .sticky-mobile .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+  #{{ section_id }} .sticky-mobile .price-mini{font-weight:800;font-size:1.05rem}
+  #{{ section_id }} .sticky-mobile .price-mini small{display:block;font-weight:500;font-size:.7rem;color:var(--muted)}
+
+  #{{ section_id }} .lp-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;font-size:.95rem;box-shadow:var(--shadow);transition:transform .25s ease;z-index:60;pointer-events:none;opacity:0}
+  #{{ section_id }} .lp-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  @media (max-width: 880px){
+    #{{ section_id }} .hero-grid{grid-template-columns:1fr;gap:28px}
+    #{{ section_id }} .hero-img-card{order:-1}
+    #{{ section_id }} .grid-3,
+    #{{ section_id }} .reviews-grid,
+    #{{ section_id }} .ing-grid,
+    #{{ section_id }} .offer-grid,
+    #{{ section_id }} .stat-row{grid-template-columns:1fr}
+    #{{ section_id }} .compare-table{font-size:.85rem;overflow-x:auto}
+    #{{ section_id }} section{padding:54px 0}
+    #{{ section_id }} .sticky-mobile{display:block}
+    #{{ section_id }}{padding-bottom:74px}
+  }
+</style>
+
+<div id="{{ section_id }}">
+
+  <div class="logobar">
+    <a href="/" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 360 }}" alt="{{ shop.name }}" width="180" height="40" loading="eager">
+      {%- elsif shop.brand.logo != blank -%}
+        <img src="{{ shop.brand.logo | image_url: width: 360 }}" alt="{{ shop.name }}" width="180" height="40" loading="eager">
+      {%- else -%}
+        <span class="logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+  </div>
+
+  <div class="topbar">{{ section.settings.topbar_html | default: 'Free shipping on 3 &amp; 6-month kits, <strong>30-day money-back guarantee</strong>' }}</div>
+
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Clinically studied · No prescription</span>
+        <h1>Lose <span class="hl">~9 pounds in 4 weeks</span>, without needles or prescriptions.</h1>
+        <div class="stars">
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          Verified 5-star reviews
+        </div>
+        <p style="font-size:1.12rem;color:var(--ink-2);max-width:560px">WLP-1 is the daily oral GLP-1 support formula built on three clinically studied actives shown to <strong>boost natural GLP-1 by up to 321%</strong>, quiet food noise, and help users lose an average of <strong>~9 lbs in 4 weeks</strong>, naturally.</p>
+        <ul class="benefits">
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Average ~9 lbs lost in 4 weeks</strong> in published Capsifen<sup>&reg;</sup> clinical study</span></li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Boosts natural GLP-1 by up to 321%</strong>, the same satiety hormone targeted by Ozempic</span></li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Cuts food noise &amp; cravings</strong>, IGOB131<sup>&reg;</sup> users ate 17.5% less</span></li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>No needles, no Rx</strong>, daily capsule, ships in 2 days</span></li>
+        </ul>
+        <div class="hero-cta-row">
+          <a href="#offer-{{ section_id }}" class="btn">Start losing weight, from $69/mo <span class="arrow">&rarr;</span></a>
+          <span class="micro">30-day money-back guarantee</span>
+        </div>
+        <div class="trust-row">
+          <span class="trust-pill"><svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V5z"/></svg>3 Clinically Studied Actives</span>
+          <span class="trust-pill"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 4 9 8 10 4-1 8-5 8-10V6z"/></svg>3rd-Party Tested</span>
+          <span class="trust-pill"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 6l9 7 9-7"/></svg>Made in USA · cGMP</span>
+          <span class="trust-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v3a4 4 0 0 0 8 0v-2"/><circle cx="18" cy="11" r="2" fill="currentColor" stroke="none"/></svg>Doctor Formulated</span>
+        </div>
+      </div>
+      <div class="hero-img-wrap">
+        <div class="hero-img-card">
+          {%- if hero_image -%}
+            <img src="{{ hero_image | image_url: width: 900 }}" alt="{{ wlp.title | default: 'WLP-1 Oral GLP-1 Support' | escape }}" width="900" height="900" loading="eager" />
+          {%- else -%}
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977" alt="WLP-1 Oral GLP-1 Support" />
+          {%- endif -%}
+          <div class="hero-badge">Save up to 35% on subscribe</div>
+          <div class="clinical-flag"><b>~9 lbs</b>average loss in 4 weeks<sup>1</sup></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="problem">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The weight loss problem</span>
+        <h2>Diets fail. Injections aren't for everyone.</h2>
+        <p style="color:var(--ink-2);font-size:1.08rem">95% of diets fail within a year. Ozempic and Wegovy cost $1,000+/month, require a prescription, and 1 in 4 users quit due to nausea and GI side effects. There's a better way to tap into your body's natural GLP-1 system.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2zM12 9v5m0 2v2"/></svg>Cravings won't quit</h3>
+          <p>Hunger hormones override willpower within 72 hours of any restriction. You're not weak, your biology is fighting you.</p>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2zM12 9v5m0 2v2"/></svg>Injections cost $1,000+/mo</h3>
+          <p>GLP-1 shots aren't covered for weight loss for most people. Add side effects, weekly injections, and supply issues to the bill.</p>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2zM12 9v5m0 2v2"/></svg>Generic supplements miss the target</h3>
+          <p>Most "fat burners" rely on caffeine and shaky stimulants. Almost none target the actual GLP-1 satiety pathway your body uses.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="study">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The clinical evidence</span>
+        <h2>Three published studies. One formula.</h2>
+        <p style="color:#cdd6cf">WLP-1 isn't built on guesswork. Every active ingredient in the formula has its own published, peer-reviewed clinical trial, at the exact dose used in WLP-1.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat">
+          <span class="source">Capsifen<sup>&reg;</sup> · 4-week trial</span>
+          <span class="num">~9 lbs</span>
+          <span class="lbl">average weight lost in 4 weeks</span>
+          <span class="cite">Published, placebo-controlled trial. <em>Journal of Dietary Supplements.</em> No serious adverse events reported across treatment groups.<sup>1</sup></span>
+        </div>
+        <div class="stat">
+          <span class="source">CQR300<sup>&reg;</sup> · 16-week trial</span>
+          <span class="num">321%</span>
+          <span class="lbl">increase in natural GLP-1 levels</span>
+          <span class="cite">CQR300<sup>&reg;</sup> also inhibits lipase &amp; α-amylase to reduce fat and carb absorption, the same satiety pathway Ozempic targets.<sup>2</sup></span>
+        </div>
+        <div class="stat">
+          <span class="source">IGOB131<sup>&reg;</sup> · double-blind, BMI 25+</span>
+          <span class="num">17.5%</span>
+          <span class="lbl">less food eaten by participants</span>
+          <span class="cite">28.1 lbs lost and 6.7 inches off the waist over the trial. No required changes to diet or exercise.<sup>3</sup></span>
+        </div>
+      </div>
+      <p class="footnote">¹ Capsifen clinical study, Journal of Dietary Supplements. ² CQR300 16-week clinical trial showing up to 321% increase in natural GLP-1 levels and reduction in DPP-4 activity. ³ IGOB131 double-blind, placebo-controlled trial in adults BMI ≥25. Individual results vary. These statements have not been evaluated by the FDA. WLP-1 is not intended to diagnose, treat, cure, or prevent any disease.</p>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">How WLP-1 works</span>
+        <h2>The same pathway as Ozempic, activated naturally.</h2>
+        <p style="color:var(--ink-2)">GLP-1 is the hormone that controls hunger and blood sugar. WLP-1 stacks three clinically studied compounds that boost your body's own GLP-1 response, without injecting a synthetic version.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card step">
+          <div class="num">1</div>
+          <h3>Boosts your natural GLP-1</h3>
+          <p>CQR300<sup>&reg;</sup> stimulates the L-cells in your gut to release more endogenous GLP-1, the hormone that signals fullness to your brain, by up to 321%.</p>
+        </div>
+        <div class="card step">
+          <div class="num">2</div>
+          <h3>Quiets food noise &amp; appetite</h3>
+          <p>IGOB131<sup>&reg;</sup> regulates leptin and adiponectin, the hormones that drive cravings and emotional eating. Trial participants ate 17.5% less.</p>
+        </div>
+        <div class="card step">
+          <div class="num">3</div>
+          <h3>Burns more, even at rest</h3>
+          <p>Capsifen<sup>&reg;</sup> triggers thermogenesis, meaning your body burns more calories even when you're sitting still. No stimulants. No jitters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ingredients">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What's inside</span>
+        <h2>Three patented actives. Zero filler.</h2>
+        <p style="color:var(--ink-2)">No caffeine. No bitter orange. No fillers. Just three trademarked, clinically dosed compounds that work on the same pathway as prescription GLP-1 therapies.</p>
+      </div>
+      <div class="ing-grid">
+        <div class="ing">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-3.5 2-6 7-9 5 3 7 5.5 7 9a7 7 0 0 1-7 7z" fill="currentColor" stroke="none"/><path d="M11 20V11" stroke="#fff"/><path d="M11 14l-2-2M11 16l2-2" stroke="#fff"/></svg></div>
+          <span class="pill">Patented · Clinical dose</span>
+          <h4>CQR300<sup>&reg;</sup></h4>
+          <span class="sub">Cissus quadrangularis extract</span>
+          <p>The natural GLP-1 booster. Stimulates L-cells in the gut to release more endogenous GLP-1, while inhibiting lipase and α-amylase to reduce fat and carb absorption.</p>
+          <div class="stat-line"><b>+321%</b> increase in natural GLP-1 at 16 weeks</div>
+        </div>
+        <div class="ing">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a8 8 0 0 0-8 8c0 6 4 10 8 10s8-4 8-10a8 8 0 0 0-8-8z" fill="currentColor" stroke="none"/><path d="M12 8a3 3 0 0 0-3 3v3a3 3 0 0 0 6 0v-3a3 3 0 0 0-3-3z" fill="#fff" stroke="none"/></svg></div>
+          <span class="pill">Patented · Clinical dose</span>
+          <h4>IGOB131<sup>&reg;</sup></h4>
+          <span class="sub">African Mango (Irvingia gabonensis) seed extract</span>
+          <p>The appetite regulator. Targets leptin, adiponectin, and C-reactive protein to reduce hunger, food noise, and emotional eating at the hormonal level.</p>
+          <div class="stat-line"><b>−17.5%</b> food intake in published trial</div>
+        </div>
+        <div class="ing">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2c1.5 1.5 2 3 2 4.5 0 1-.5 1.5-.5 2.5 4 1 7 4.5 7 8.5 0 3.5-3 5.5-7.5 5.5S5 21 5 17.5C5 13 9 9 14 9c0-1 .5-2.5-2-7z" fill="currentColor"/></svg></div>
+          <span class="pill">Patented · Clinical dose</span>
+          <h4>Capsifen<sup>&reg;</sup></h4>
+          <span class="sub">Highly absorbable capsaicinoid blend</span>
+          <p>The metabolic accelerator. Promotes thermogenesis, increased calorie burn, without stimulants. Highly bioavailable, so no spicy aftertaste or stomach irritation.</p>
+          <div class="stat-line"><b>~9 lbs</b> in 4 weeks (Capsifen clinical study)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="compare">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">WLP-1 vs alternatives</span>
+        <h2>Why thousands switched from injections.</h2>
+      </div>
+      <div class="compare-table">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="us">WLP-1</th>
+              <th>Ozempic / Wegovy</th>
+              <th>Generic "fat burner"</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Targets GLP-1 pathway</td><td class="us check">✓</td><td class="check">✓</td><td class="x">✗</td></tr>
+            <tr><td>Clinically studied formula</td><td class="us check">✓</td><td class="check">✓</td><td class="x">✗</td></tr>
+            <tr><td>Prescription required</td><td class="us check">No</td><td class="x">Yes</td><td class="check">No</td></tr>
+            <tr><td>Needles</td><td class="us check">No</td><td class="x">Weekly injection</td><td class="check">No</td></tr>
+            <tr><td>Monthly cost</td><td class="us check">From $69</td><td class="x">$1,000+</td><td class="check">$30–$60</td></tr>
+            <tr><td>Risk of nausea / GI side effects</td><td class="us check">Low</td><td class="x">Up to 44%</td><td class="check">Low</td></tr>
+            <tr><td>Money-back guarantee</td><td class="us check">30 days</td><td class="x">None</td><td class="x">Rarely</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Real customers · Verified reviews</span>
+        <h2>"I actually feel it."</h2>
+        <div class="meta-row">
+          <span class="stars">
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+          </span>
+          <span><strong>5.0</strong> · average rating</span>
+        </div>
+      </div>
+      <div class="reviews-grid">
+        {%- assign reviews = "I actually feel it!!|I love this product! I am entering my 3rd week on this stuff and I ACTUALLY feel it! Before I couldn't control myself, I couldn't stop when I was eating my favorite foods. Now, I actually feel full sooner, and don't feel like forcing myself to eat more.|Kimberly B.||Food noise be gone!|So far it's taking care of the food noise.|Donita W.||Don't sleep on this!|Please don't sleep on this. This has given me more energy speeding up my metabolism, emptying out my gut, getting my blood flowing, losing weight.|Shawneese S.||WLP-1|I have noticed a change in my appetite. I don't get as hungry and I don't eat as much.|Tiffany L.||So far, so good!|It didn't upset my stomach, but I've only been using it a week, so no weight changes but I seem satisfied. So bottom line I'm going to continue using it for 6 months and go from there.|Greta B.||Wow!|About a week in and I can already tell the difference.|TF" | split: "||" -%}
+        {%- for r in reviews -%}
+          {%- assign parts = r | split: '|' -%}
+          <div class="card review">
+            <div class="stars">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6 6.4.5-4.9 4.3 1.5 6.3L10 14.8 4.4 18.1 5.9 11.8 1 7.5l6.4-.5z"/></svg>
+            </div>
+            <h4>{{ parts[0] }}</h4>
+            <p>"{{ parts[1] }}"</p>
+            <div class="author"><span>{{ parts[2] }}</span><span class="verified"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</span></div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="offer" id="offer-{{ section_id }}">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Choose your plan</span>
+        <h2>Start losing weight today.</h2>
+        <p style="color:var(--ink-2)">Most users see results within the first 14 days. Real change shows up between week 3 and week 8, choose the kit that matches your goal.</p>
+      </div>
+
+      <div class="toggle-wrap">
+        <div class="billing-toggle" role="tablist" aria-label="Billing type">
+          <button type="button" class="toggle-btn active" data-mode="subscribe" role="tab" aria-selected="true">Subscribe &amp; Save <span class="save-tag">UP TO 35%</span></button>
+          <button type="button" class="toggle-btn" data-mode="onetime" role="tab" aria-selected="false">One-time</button>
+        </div>
+      </div>
+
+      <div class="offer-grid">
+
+        <div class="price tier" data-tier="monthly"
+             data-variant-id="52472821121313"
+             data-selling-plan-id="691162546465"
+             data-sub-permo="79.20" data-sub-total="79.20" data-sub-strike="99.00" data-sub-save="20%"
+             data-ot-permo="99.00"  data-ot-total="99.00"  data-ot-strike="" data-ot-save="">
+          <h3>Monthly</h3>
+          <span class="lede"><span class="lede-text">Try it for 30 days</span> <span class="save-pill js-save">SAVE 20%</span></span>
+          <div class="price-row">
+            <span class="per-mo">$<span class="js-per">79.20</span><span class="unit">/mo</span></span>
+            <span class="strike js-strike">$99.00</span>
+          </div>
+          <div class="total"><span class="js-total-label">Billed monthly · cancel anytime</span></div>
+          <ul>
+            <li>1-month supply, ships every 30 days</li>
+            <li>Free shipping over $75</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+          <button class="btn ghost full js-add-cart">Choose Monthly</button>
+        </div>
+
+        <div class="price tier best" data-tier="3month"
+             data-variant-id="52472821154081"
+             data-selling-plan-id="691162579233"
+             data-sub-permo="69.30" data-sub-total="207.90" data-sub-strike="297.00" data-sub-save="30%"
+             data-ot-permo="99.00"  data-ot-total="297.00" data-ot-strike="" data-ot-save="">
+          <span class="badge">Most popular · Best results</span>
+          <h3>3-Month Kit</h3>
+          <span class="lede"><span class="lede-text">Best for full results</span> <span class="save-pill js-save">SAVE 30%</span></span>
+          <div class="price-row">
+            <span class="per-mo">$<span class="js-per">69.30</span><span class="unit">/mo</span></span>
+            <span class="strike js-strike">$297.00</span>
+          </div>
+          <div class="total">$<span class="js-total">207.90</span> total · ships every 90 days</div>
+          <ul>
+            <li>3-month supply</li>
+            <li>Free expedited shipping</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+          <button class="btn full js-add-cart">Choose 3-Month Kit</button>
+        </div>
+
+        <div class="price tier" data-tier="6month"
+             data-variant-id="52472821186849"
+             data-selling-plan-id="691166544161"
+             data-sub-permo="63.27" data-sub-total="379.60" data-sub-strike="584.00" data-sub-save="35%"
+             data-ot-permo="97.33" data-ot-total="584.00" data-ot-strike="" data-ot-save="">
+          <h3>6-Month Kit</h3>
+          <span class="lede"><span class="lede-text">Lock in lowest price</span> <span class="save-pill js-save">SAVE 35%</span></span>
+          <div class="price-row">
+            <span class="per-mo">$<span class="js-per">63.27</span><span class="unit">/mo</span></span>
+            <span class="strike js-strike">$584.00</span>
+          </div>
+          <div class="total">$<span class="js-total">379.60</span> total · ships every 180 days</div>
+          <ul>
+            <li>6-month supply</li>
+            <li>Free priority shipping</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+          <button class="btn ghost full js-add-cart">Choose 6-Month Kit</button>
+        </div>
+
+      </div>
+
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:18px">Subscribe &amp; save, pause, skip, or cancel anytime in 1 click. No commitment.</p>
+    </div>
+  </section>
+
+  <section class="guarantee tight">
+    <div class="wrap">
+      <div class="seal"><span style="font-size:1.6rem">30</span><span style="font-size:.8rem;letter-spacing:.1em">DAY</span></div>
+      <h2 style="color:#fff">Lose weight or your money back. Period.</h2>
+      <p>If you don't see real, measurable progress in 30 days, send back what's left, even empty bottles, and we'll refund every penny. No forms, no hassle, no questions. We can only make this offer because the formula works.</p>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="wrap" style="max-width:820px">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2>What people ask before starting WLP-1</h2>
+      </div>
+      <details open>
+        <summary>How quickly will I see results?</summary>
+        <p>Most users notice reduced cravings and food noise within the first 4–7 days. Visible weight changes typically begin in week 2. The Capsifen<sup>&reg;</sup> clinical study measured an average loss of ~9 lbs by day 28. Real change continues to compound between weeks 3 and 8.</p>
+      </details>
+      <details>
+        <summary>Is WLP-1 the same as Ozempic or Wegovy?</summary>
+        <p>No. Ozempic and Wegovy are prescription injections that contain semaglutide, a synthetic GLP-1 analog. WLP-1 is an oral, non-prescription formula that supports your body's natural GLP-1 production using clinically studied botanicals, CQR300<sup>&reg;</sup>, IGOB131<sup>&reg;</sup>, and Capsifen<sup>&reg;</sup>. WLP-1 is not a pharmaceutical product and is not intended as a substitute for prescription treatments.</p>
+      </details>
+      <details>
+        <summary>Are there side effects?</summary>
+        <p>The Capsifen<sup>&reg;</sup> clinical study reported no serious adverse events. The ingredients in WLP-1 are well tolerated at the clinical doses we use. Always consult your physician before starting a new supplement, especially if you're on medication, pregnant, or nursing.</p>
+      </details>
+      <details>
+        <summary>Can I take WLP-1 with other supplements?</summary>
+        <p>Yes. WLP-1 pairs especially well with our Berberine, which activates a 4th metabolic pathway (AMPK) to improve insulin sensitivity, stabilize blood sugar, and amplify your results. Together they make up the Weight Management Stack for the most comprehensive metabolic support.</p>
+      </details>
+      <details>
+        <summary>What if it doesn't work for me?</summary>
+        <p>Send it back within 30 days for a full refund, even if the bottles are empty. We'd rather refund you than have you keep something that didn't deliver.</p>
+      </details>
+      <details>
+        <summary>Can I pause or cancel my subscription?</summary>
+        <p>Yes, pause, skip a shipment, or cancel anytime in your account in one click. No commitment, no calls, no awkward retention forms.</p>
+      </details>
+      <details>
+        <summary>Where is it made?</summary>
+        <p>WLP-1 is manufactured in the USA in a cGMP-certified facility and 3rd-party tested for purity, potency, and heavy metals. Every batch is verified before it ships.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2>The next 4 weeks are happening either way.</h2>
+      <p>You can keep doing what you're doing, or start the same protocol that helped clinical participants lose ~9 pounds in 4 weeks. Same pathway as injections. No needles, no prescription, from $69/mo.</p>
+      <a href="#offer-{{ section_id }}" class="btn" style="background:var(--gold-soft);color:#0e1a14">Start WLP-1, from $69/mo <span class="arrow">&rarr;</span></a>
+      <p style="margin-top:18px;font-size:.85rem;color:#9aa49d">30-day money-back guarantee · Free shipping on 3 &amp; 6-month kits</p>
+    </div>
+  </section>
+
+  <div class="lp-footer">
+    <div class="wrap">
+      <p>© The Absorption Company · absorbmore.com<br>
+      <small>¹ Capsifen clinical study, Journal of Dietary Supplements. ² CQR300<sup>&reg;</sup> 16-week clinical trial. ³ IGOB131<sup>&reg;</sup> double-blind, placebo-controlled trial in adults BMI ≥25. Individual results vary. These statements have not been evaluated by the FDA. WLP-1 is not intended to diagnose, treat, cure, or prevent any disease.</small></p>
+    </div>
+  </div>
+
+  <div class="sticky-mobile">
+    <div class="row">
+      <div class="price-mini">From $69/mo<small>30-day guarantee</small></div>
+      <a href="#offer-{{ section_id }}" class="btn">Choose plan <span class="arrow">&rarr;</span></a>
+    </div>
+  </div>
+
+  <div class="lp-toast" data-toast>Added to cart →</div>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById({{ section_id | json }});
+  if(!root) return;
+  var toggleBtns = root.querySelectorAll('.toggle-btn');
+  var tiers = root.querySelectorAll('.tier');
+  var mode = 'subscribe';
+
+  function applyMode(m){
+    mode = m;
+    toggleBtns.forEach(function(b){
+      var on = b.getAttribute('data-mode') === m;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    tiers.forEach(function(t){
+      var prefix = m === 'subscribe' ? 'sub' : 'ot';
+      var per = t.getAttribute('data-' + prefix + '-permo');
+      var total = t.getAttribute('data-' + prefix + '-total');
+      var strike = t.getAttribute('data-' + prefix + '-strike');
+      var save = t.getAttribute('data-' + prefix + '-save');
+      var perEl = t.querySelector('.js-per');
+      var totalEl = t.querySelector('.js-total');
+      var strikeEl = t.querySelector('.js-strike');
+      var saveEl = t.querySelector('.js-save');
+      if(perEl) perEl.textContent = per;
+      if(totalEl) totalEl.textContent = total;
+      if(strikeEl){ strikeEl.textContent = strike ? '$'+strike : ''; strikeEl.style.display = strike ? '' : 'none'; }
+      if(saveEl){
+        if(save){ saveEl.textContent = 'SAVE '+save; saveEl.style.display=''; }
+        else saveEl.style.display='none';
+      }
+      if(t.getAttribute('data-tier') === 'monthly'){
+        var totalLabel = t.querySelector('.js-total-label');
+        if(totalLabel) totalLabel.textContent = m === 'subscribe' ? 'Billed monthly · cancel anytime' : 'One-time purchase · no recurring';
+      }
+    });
+  }
+  toggleBtns.forEach(function(b){
+    b.addEventListener('click', function(){ applyMode(b.getAttribute('data-mode')); });
+  });
+
+  function showToast(msg, isError){
+    var t = root.querySelector('[data-toast]');
+    if(!t) return;
+    t.textContent = msg;
+    t.style.background = isError ? '#b04a2a' : '#0e1a14';
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  }
+
+  root.querySelectorAll('.js-add-cart').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var tier = btn.closest('.tier');
+      if(!tier) return;
+      var variantId = tier.getAttribute('data-variant-id');
+      var sellingPlanId = tier.getAttribute('data-selling-plan-id');
+      var item = { id: parseInt(variantId, 10), quantity: 1 };
+      if(mode === 'subscribe' && sellingPlanId){ item.selling_plan = parseInt(sellingPlanId, 10); }
+      btn.disabled = true;
+      var orig = btn.textContent;
+      btn.textContent = 'Adding…';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: [item] })
+      })
+      .then(function(res){ if(!res.ok) throw new Error('cart_'+res.status); return res.json(); })
+      .then(function(){ showToast('Added to cart →'); window.location.href = '/cart'; })
+      .catch(function(err){
+        btn.disabled = false;
+        btn.textContent = orig;
+        showToast('Could not add to cart. Please try again.', true);
+        console.error(err);
+      });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 ~9 lbs Lander",
+  "tag": "section",
+  "class": "wlp-1-9-lbs-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo (overrides shop logo)",
+      "info": "Leave blank to use the shop's brand logo from Settings > Brand."
+    },
+    {
+      "type": "richtext",
+      "id": "topbar_html",
+      "label": "Top announcement bar",
+      "default": "<p>Free shipping on 3 &amp; 6-month kits, <strong>30-day money-back guarantee</strong></p>"
+    }
+  ],
+  "presets": [
+    { "name": "WLP-1 ~9 lbs Lander" }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

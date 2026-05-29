@@ -1,5 +1,20 @@
 const initMainProduct = ($el, $refs, productHandle, productId, variantId, default_select_selling_plan = false) => {
   let initialized = false;
+  const isSameId = (a, b) => a != null && b != null && String(a) === String(b);
+  const initialDiscountConfig = window.ctrDiscountDisplay?.parseConfig($el.getAttribute("data-ctr-discount-config"));
+  const excludedPdpSellingPlanNames = (window.theme_settings.data__product__excluded_pdp_selling_plan_names ?? "")
+    .split(/\r?\n/)
+    .map((name) => name.trim().toLowerCase())
+    .filter(Boolean);
+
+  const getPdpSellingPlanAllocations = (variant) => {
+    const allocations = variant?.selling_plan_allocations ?? [];
+    if (!excludedPdpSellingPlanNames.length) return allocations;
+    return allocations.filter(
+      (allocation) => !excludedPdpSellingPlanNames.includes(allocation?.selling_plan?.name?.trim()?.toLowerCase())
+    );
+  };
+
   const random_id = utils.shortUUID();
   const isProductBar = $el.hasAttribute("data-product-bar");
   const preorder_threshold = +(window.theme_settings.data__product__variant__preorder_threshold ?? 1);
@@ -42,36 +57,204 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
 
   const selected_variant = _product.getSelectedVariant(product, variantId);
 
-  const selling_plan_allocations = selected_variant?.selling_plan_allocations;
+  const parseJson = (value) => {
+    if (typeof value !== "string") return value;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  };
+
+  const normalizeSellingPlanId = (id) => {
+    if (id == null || id === "") return null;
+    const match = `${id}`.match(/(\d{10,})/);
+    return match ? match[1] : `${id}`;
+  };
+
+  const walkMetafieldDiscountEntries = (variant, productRef, visitor) => {
+    const queue = [variant?.metafields, productRef?.metafields];
+    const visited = new WeakSet();
+
+    while (queue.length) {
+      const current = parseJson(queue.shift());
+      if (!current || typeof current !== "object") continue;
+
+      if (Array.isArray(current)) {
+        for (const entryRaw of current) {
+          const entry = parseJson(entryRaw);
+          if (!entry || typeof entry !== "object") continue;
+          const planId = entry.selling_plan_id ?? entry.sellingPlanId ?? entry.plan_id ?? entry.id;
+          const displayPercent = Number(entry.display_percent ?? entry.displayPercent ?? entry.percent);
+          if (Number.isFinite(displayPercent) && displayPercent > 0) {
+            visitor({ planId, displayPercent });
+          }
+          if (entry.value !== undefined && entry.value !== null) {
+            queue.push(entry.value);
+          }
+        }
+        continue;
+      }
+
+      if (visited.has(current)) continue;
+      visited.add(current);
+      Object.values(current).forEach((value) => {
+        if (value !== undefined && value !== null) {
+          queue.push(value);
+        }
+      });
+    }
+  };
+
+  const resolvePlanDisplayPercent = (variant, productRef, sellingPlanId) => {
+    const targetPlanId = normalizeSellingPlanId(sellingPlanId);
+    if (!targetPlanId) return null;
+    let matched = null;
+    walkMetafieldDiscountEntries(variant, productRef, ({ planId, displayPercent }) => {
+      if (normalizeSellingPlanId(planId) === targetPlanId) matched = displayPercent;
+    });
+    return matched;
+  };
+
+  const resolveMaxDisplayPercent = (variant, productRef) => {
+    let maxPercent = null;
+    walkMetafieldDiscountEntries(variant, productRef, ({ displayPercent }) => {
+      if (maxPercent == null || displayPercent > maxPercent) maxPercent = displayPercent;
+    });
+    return maxPercent;
+  };
+
+  const getVariantSubscriptionMetafieldPrice = (variant) => {
+    const raw =
+      variant?.metafields?.custom?.choose_supply_variant_price?.value ??
+      variant?.metafields?.custom?.choose_supply_variant_price;
+    const value = Number(raw);
+    return Number.isFinite(value) && value > 0 ? value : null;
+  };
+
+  const getEffectiveSellingPlan = (variant, selectedSellingPlan) => {
+    if (selectedSellingPlan?.id) return selectedSellingPlan;
+    return variant?.selling_plan_allocations?.[0]?.selling_plan ?? null;
+  };
+
+  const getSelectedAllocation = (variant, selling_plan) => {
+    if (!variant?.selling_plan_allocations?.length) return null;
+    if (selling_plan?.id) {
+      return (
+        variant.selling_plan_allocations.find((allocation) => allocation?.selling_plan?.id === selling_plan.id) ??
+        variant.selling_plan_allocations[0]
+      );
+    }
+    return variant.selling_plan_allocations[0];
+  };
+
+  const getAllocationAdjustedPrice = (variant, selling_plan, basePrice) => {
+    let discounted = basePrice ?? variant?.price ?? 0;
+    const selected_allocation = getSelectedAllocation(variant, selling_plan);
+    const adjustment = selling_plan?.price_adjustments?.[0] ?? selected_allocation?.selling_plan?.price_adjustments?.[0];
+
+    if (adjustment?.value_type === "fixed_amount") {
+      discounted = Math.max(discounted - Math.round(+adjustment?.value), 0);
+    }
+    if (adjustment?.value_type === "percentage") {
+      discounted = Math.max(discounted - Math.round((+adjustment?.value / 100) * discounted), 0);
+    }
+    if (adjustment?.value_type === "price") {
+      discounted = Math.min(+adjustment?.value, discounted);
+    }
+    if (selected_allocation?.price > 0) {
+      discounted = Math.min(discounted, selected_allocation.price);
+    }
+    return discounted;
+  };
+
+  const resolvePdpPricing = (variant, productRef, selling_plan, manualDiscount = 0) => {
+    const oneTimePrice = variant?.price ?? 0;
+    const oneTimeCompareAt = Math.max(variant?.compare_at_price ?? 0, oneTimePrice);
+    const hasAllocations = !!variant?.selling_plan_allocations?.length;
+    const hasPlan = !!selling_plan?.id;
+
+    if (!hasAllocations && !hasPlan) {
+      const effectiveDiscountPercent =
+        oneTimeCompareAt > oneTimePrice ? Math.round(((oneTimeCompareAt - oneTimePrice) * 100) / oneTimeCompareAt) : 0;
+      let price = oneTimePrice;
+      if (manualDiscount) price = Math.max(price - Math.round((manualDiscount / 100) * price), 0);
+      return {
+        effectivePrice: price,
+        effectiveCompareAt: oneTimeCompareAt,
+        effectiveDiscountPercent,
+        isSubscription: false,
+      };
+    }
+
+    const effectivePlan = getEffectiveSellingPlan(variant, selling_plan);
+    const selected_allocation = getSelectedAllocation(variant, effectivePlan);
+    const planId = selected_allocation?.selling_plan?.id ?? effectivePlan?.id;
+    const effectiveCompareAt = Math.max(
+      selected_allocation?.compare_at_price ?? 0,
+      variant?.compare_at_price ?? 0,
+      variant?.price ?? 0
+    );
+    const metafieldPrice = getVariantSubscriptionMetafieldPrice(variant);
+    const displayPercent = hasPlan
+      ? resolvePlanDisplayPercent(variant, productRef, planId) ?? resolveMaxDisplayPercent(variant, productRef)
+      : null;
+
+    let effectivePrice = oneTimePrice;
+    let effectiveDiscountPercent = 0;
+
+    if (hasPlan && displayPercent && effectiveCompareAt > 0) {
+      effectivePrice = Math.max(effectiveCompareAt - Math.round((displayPercent / 100) * effectiveCompareAt), 0);
+      effectiveDiscountPercent = displayPercent;
+    } else if (hasPlan) {
+      effectivePrice = getAllocationAdjustedPrice(variant, effectivePlan, oneTimePrice);
+      if (effectiveCompareAt > effectivePrice) {
+        effectiveDiscountPercent = Math.round(((effectiveCompareAt - effectivePrice) * 100) / effectiveCompareAt);
+      }
+    } else {
+      effectivePrice = oneTimePrice;
+      if (effectiveCompareAt > effectivePrice) {
+        effectiveDiscountPercent = Math.round(((effectiveCompareAt - effectivePrice) * 100) / effectiveCompareAt);
+      }
+    }
+
+    if (hasPlan && metafieldPrice && metafieldPrice < effectivePrice) {
+      effectivePrice = metafieldPrice;
+      if (effectiveCompareAt > metafieldPrice) {
+        effectiveDiscountPercent = Math.round(((effectiveCompareAt - metafieldPrice) * 100) / effectiveCompareAt);
+      }
+    }
+
+    if (manualDiscount) {
+      effectivePrice = Math.max(effectivePrice - Math.round((manualDiscount / 100) * effectivePrice), 0);
+      if (effectiveCompareAt > effectivePrice) {
+        effectiveDiscountPercent = Math.round(((effectiveCompareAt - effectivePrice) * 100) / effectiveCompareAt);
+      }
+    }
+
+    return {
+      effectivePrice,
+      effectiveCompareAt,
+      effectiveDiscountPercent,
+      isSubscription: hasPlan,
+    };
+  };
+
+  const selling_plan_allocations = getPdpSellingPlanAllocations(selected_variant);
   const selected_selling_plan =
     default_select_selling_plan || product?.requires_selling_plan ? selling_plan_allocations?.[0]?.selling_plan : null;
 
   const selected_or_last_used_or_first_selling_plan = selected_selling_plan ?? selling_plan_allocations?.[0]?.selling_plan;
 
-  const selected_selling_plan_discount_wording = getSellingPlanDiscountWording(selected_selling_plan, selected_variant);
+  const selected_selling_plan_discount_wording = getSellingPlanDiscountWording(selected_selling_plan, selected_variant, product);
   const selling_plan_discount_wording = getSellingPlanDiscountWording(
     selected_or_last_used_or_first_selling_plan,
     selected_variant,
+    product,
   );
 
-  let discounted_price = selected_variant?.price;
-  const price_adjustment =
-    selected_selling_plan?.price_adjustments?.[0] ?? selected_or_last_used_or_first_selling_plan?.price_adjustments?.[0];
-
-  if (price_adjustment?.value_type === "fixed_amount") {
-    discounted_price = Math.min(discounted_price - Math.round(+price_adjustment?.value), selected_variant?.price);
-  }
-
-  if (price_adjustment?.value_type === "percentage") {
-    discounted_price = Math.min(
-      discounted_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-      selected_variant?.price
-    );
-  }
-
-  if (price_adjustment?.value_type === "price") {
-    discounted_price = Math.min(+price_adjustment?.value, selected_variant?.price);
-  }
+  const initialPricing = resolvePdpPricing(selected_variant, product, selected_selling_plan, 0);
+  let discounted_price = initialPricing.effectivePrice;
 
   const available_quantity =
     selected_variant?.inventory_management === "shopify" && selected_variant?.inventory_policy === "deny"
@@ -127,8 +310,11 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
         preorder_threshold,
     gallery_media: product?.media ?? [],
     thumbnail_media: product?.media ?? [],
-    selected_price: discounted_price,
-    selected_compare_at_price: Math.max(selected_variant?.compare_at_price, selected_variant?.price),
+    selected_price: initialPricing.effectivePrice,
+    selected_compare_at_price: initialPricing.effectiveCompareAt,
+    effective_discount_percent: initialPricing.effectiveDiscountPercent,
+    ctr_discount_config:
+      initialDiscountConfig ?? window.ctrDiscountDisplay?.parseConfig(product?.metafields?.custom?.ctr_discount_config),
     show_complementary_products: true,
     upsell_total: 0,
     upsell_compare_at_total: 0,
@@ -305,7 +491,8 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
           id: state.selected_variant.id,
           quantity: state.quantity,
           selling_plan: cart.global_subscriptions
-            ? state.selling_plan_allocations?.find((plan) => plan.selling_plan?.id === cart.cart_selling_plan_id)?.selling_plan
+            ? state.selling_plan_allocations?.find((plan) => isSameId(plan?.selling_plan?.id, cart.cart_selling_plan_id))
+                ?.selling_plan
                 ?.id
             : state.selected_selling_plan?.id,
           properties: {
@@ -316,7 +503,8 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
         ...[...state.upsell_items.values()].map((entry) => ({
           id: entry.id,
           selling_plan: cart.global_subscriptions
-            ? state.selling_plan_allocations?.find((plan) => plan.selling_plan?.id === cart.cart_selling_plan_id)?.selling_plan
+            ? state.selling_plan_allocations?.find((plan) => isSameId(plan?.selling_plan?.id, cart.cart_selling_plan_id))
+                ?.selling_plan
                 ?.id
             : entry.variant?.selling_plan_allocations?.find((plan) => plan.selling_plan?.id === state.selected_selling_plan?.id)
                 ?.selling_plan?.id,
@@ -366,13 +554,16 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.selected_variant = state.product.variants?.find((variant) => variant.id === id);
     state.selected_options = state.selected_variant?.options;
     state.variant_changed = true;
-    state.selling_plan_allocations = state.selected_variant.selling_plan_allocations;
+    state.selling_plan_allocations = getPdpSellingPlanAllocations(state.selected_variant);
 
     if (
       state.selected_selling_plan &&
-      !state.selling_plan_allocations?.some((plan) => plan?.selling_plan?.id === state.selected_selling_plan?.id)
+      !state.selling_plan_allocations?.some((plan) => isSameId(plan?.selling_plan?.id, state.selected_selling_plan?.id))
     ) {
       state.selected_selling_plan =
+        state.selling_plan_allocations?.find((plan) =>
+          isSameId(plan?.selling_plan?.id, state.last_selected_selling_plan?.id)
+        )?.selling_plan ??
         state.selling_plan_allocations?.find((plan) => plan.selling_plan.name === state.last_selected_selling_plan?.name)
           ?.selling_plan ??
         state.selling_plan_allocations?.[0]?.selling_plan ??
@@ -380,7 +571,11 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       state.last_selected_selling_plan = state.selected_selling_plan;
     }
 
-    if (!state.selling_plan_allocations?.some((plan) => plan?.selling_plan?.id === state.last_selected_selling_plan?.id)) {
+    if (
+      !state.selling_plan_allocations?.some((plan) =>
+        isSameId(plan?.selling_plan?.id, state.last_selected_selling_plan?.id)
+      )
+    ) {
       state.last_selected_selling_plan = undefined;
     }
 
@@ -395,10 +590,12 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.selected_selling_plan_discount_wording = getSellingPlanDiscountWording(
       state.selected_selling_plan,
       state.selected_variant,
+      state.product,
     );
     state.selling_plan_discount_wording = getSellingPlanDiscountWording(
       selected_or_last_used_or_first_selling_plan,
       state.selected_variant,
+      state.product,
     );
 
     if (gallerySettings?.scroll_to_selected_variant_image && state.selected_variant?.featured_media?.id && scroll_to_variant) {
@@ -431,7 +628,7 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
 
   const setSellingPlan = (selling_plan_id) => {
     state.selected_selling_plan = state.selling_plan_allocations.find(
-      (allocation) => allocation.selling_plan.id === selling_plan_id
+      (allocation) => isSameId(allocation?.selling_plan?.id, selling_plan_id)
     )?.selling_plan;
 
     if (state.selected_selling_plan) {
@@ -444,10 +641,12 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.selected_selling_plan_discount_wording = getSellingPlanDiscountWording(
       state.selected_selling_plan,
       state.selected_variant,
+      state.product,
     );
     state.selling_plan_discount_wording = getSellingPlanDiscountWording(
       selected_or_last_used_or_first_selling_plan,
       state.selected_variant,
+      state.product,
     );
   };
 
@@ -542,10 +741,10 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   const updateProductState = (product, selectedVariantId, selectedSellingPlanId) => {
     const selected_variant = _product.getSelectedVariant(product, selectedVariantId);
 
-    const selling_plan_allocations = selected_variant?.selling_plan_allocations;
+    const selling_plan_allocations = getPdpSellingPlanAllocations(selected_variant);
 
     const selected_selling_plan = selectedSellingPlanId
-      ? selling_plan_allocations?.find((plan) => plan.selling_plan.id === selectedSellingPlanId)?.selling_plan
+      ? selling_plan_allocations?.find((plan) => isSameId(plan?.selling_plan?.id, selectedSellingPlanId))?.selling_plan
       : default_select_selling_plan
       ? selling_plan_allocations?.[0]?.selling_plan
       : null;
@@ -554,7 +753,7 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       state.last_selected_selling_plan = selected_selling_plan;
     }
     if (
-      !selected_variant?.selling_plan_allocations?.some((plan) => plan?.selling_plan?.id === state.last_selected_selling_plan?.id)
+      !selling_plan_allocations?.some((plan) => isSameId(plan?.selling_plan?.id, state.last_selected_selling_plan?.id))
     ) {
       state.last_selected_selling_plan = undefined;
     }
@@ -562,14 +761,21 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     const selected_or_last_used_or_first_selling_plan =
       state.last_selected_selling_plan ?? selling_plan_allocations?.[0]?.selling_plan;
 
-    const selected_selling_plan_discount_wording = getSellingPlanDiscountWording(selected_selling_plan, selected_variant);
+    const selected_selling_plan_discount_wording = getSellingPlanDiscountWording(
+      selected_selling_plan,
+      selected_variant,
+      product,
+    );
     const selling_plan_discount_wording = getSellingPlanDiscountWording(
       selected_or_last_used_or_first_selling_plan,
       selected_variant,
+      product,
     );
 
     state.product_handle = product?.handle ?? state.product_handle ?? productHandle;
     state.product = product;
+    state.ctr_discount_config =
+      window.ctrDiscountDisplay?.parseConfig(product?.metafields?.custom?.ctr_discount_config) ?? state.ctr_discount_config;
 
     const initialMediaId = +(
       (thumbnails ?? gallery)?.querySelector("[data-media-id]")?.getAttribute("data-media-id") ?? product?.media?.[0]?.id
@@ -698,57 +904,16 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     selected_variant = state.selected_variant,
     selling_plan = state.selected_selling_plan,
   }) => {
-    let discounted_price = selected_variant?.price;
-    const price_adjustment = selling_plan?.price_adjustments?.[0];
-
-    if (price_adjustment?.value_type === "fixed_amount") {
-      discounted_price = Math.min(discounted_price - Math.round(+price_adjustment?.value), selected_variant?.price);
-    }
-
-    if (price_adjustment?.value_type === "percentage") {
-      discounted_price = Math.min(
-        discounted_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-        selected_variant?.price
-      );
-    }
-
-    if (price_adjustment?.value_type === "price") {
-      discounted_price = Math.min(+price_adjustment?.value, selected_variant?.price);
-    }
-
-    if (discount) {
-      discounted_price = Math.min(discounted_price - Math.round((discount / 100) * discounted_price), selected_variant?.price);
-    }
+    const pricing = resolvePdpPricing(selected_variant, state.product, selling_plan, discount);
+    let discounted_price = pricing.effectivePrice;
 
     let upsell_price_total = 0;
     let upsell_compare_at_price_total = 0;
     let upsell_triggered_quantity_limit = 9999999;
 
     state.upsell_items.forEach((value) => {
-      let upsell_d_price = value?.variant?.price;
-      if (state.selected_selling_plan) {
-        const upsell_price_adjustment = value?.variant?.selling_plan_allocations?.find(
-          (plan) => plan.selling_plan.id === state.selected_selling_plan.id
-        )?.selling_plan?.price_adjustments?.[0];
-
-        if (upsell_price_adjustment?.value_type === "fixed_amount") {
-          upsell_d_price = Math.min(upsell_d_price - Math.round(+price_adjustment?.value), value?.variant?.price);
-        }
-
-        if (upsell_price_adjustment?.value_type === "percentage") {
-          upsell_d_price = Math.min(
-            upsell_d_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-            value?.variant?.price
-          );
-        }
-
-        if (upsell_price_adjustment?.value_type === "price") {
-          upsell_d_price = Math.min(
-            upsell_d_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-            value?.variant?.price
-          );
-        }
-      }
+      const upsell_pricing = resolvePdpPricing(value?.variant, state.product, selling_plan, 0);
+      const upsell_d_price = upsell_pricing.effectivePrice;
 
       const upsell_available_quantity =
         value?.variant?.inventory_management === "shopify" && value?.variant?.inventory_policy === "deny"
@@ -771,12 +936,15 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.upsell_compare_at_total = upsell_compare_at_price_total * state.quantity;
 
     state.selected_price = discounted_price;
-    state.selected_compare_at_price = Math.max(selected_variant?.compare_at_price, selected_variant?.price);
+    state.selected_compare_at_price = pricing.effectiveCompareAt;
+    state.effective_discount_percent = pricing.effectiveDiscountPercent;
+
+    window.ctrDiscountDisplay?.applySelectedPrices(state, discounted_price);
 
     if (discount !== state.manual_discount) {
       state.manual_discount = discount;
     }
-    if (selling_plan?.id !== state?.selected_selling_plan?.id) {
+    if (!isSameId(selling_plan?.id, state?.selected_selling_plan?.id)) {
       setSellingPlan(selling_plan?.id);
     }
     if (selected_variant?.id !== state?.selected_variant?.id) {
@@ -829,9 +997,9 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       state.selected_options = state.selected_variant?.options;
     }
 
-    if (selling_plan_id !== state.selected_selling_plan?.id) {
+    if (!isSameId(selling_plan_id, state.selected_selling_plan?.id)) {
       state.selected_selling_plan =
-        state.selling_plan_allocations?.find((plan) => plan.selling_plan.id === selling_plan_id)?.selling_plan ??
+        state.selling_plan_allocations?.find((plan) => isSameId(plan?.selling_plan?.id, selling_plan_id))?.selling_plan ??
         state.selected_selling_plan;
     }
   };
@@ -847,7 +1015,21 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     previewButton.remove();
   };
 
-  function getSellingPlanDiscountWording(sellingPlan, selectedVariant) {
+  function getSellingPlanDiscountWording(sellingPlan, selectedVariant, productRef, configOverride) {
+    const _product = productRef ?? product;
+    const config = configOverride ?? window.ctrDiscountDisplay?.parseConfig(_product?.metafields?.custom?.ctr_discount_config);
+
+    if (sellingPlan?.id && config?.[String(sellingPlan.id)] != null) {
+      return `${config[String(sellingPlan.id)]}%`;
+    }
+
+    const metafieldPercent =
+      resolvePlanDisplayPercent(selectedVariant, _product, sellingPlan?.id) ??
+      resolveMaxDisplayPercent(selectedVariant, _product);
+    if (metafieldPercent && metafieldPercent > 0) {
+      return `${metafieldPercent}%`;
+    }
+
     const priceAdjustment = sellingPlan?.price_adjustments?.[0];
 
     if (!priceAdjustment?.value || !+priceAdjustment.value) {
@@ -974,57 +1156,20 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
           state.properties = {};
           state.selling_plan_allocations = selling_plan_allocations;
 
-          let discounted_price = state.selected_variant?.price;
-          const price_adjustment = state.selected_selling_plan?.price_adjustments?.[0];
-
-          if (price_adjustment?.value_type === "fixed_amount") {
-            discounted_price = Math.min(discounted_price - Math.round(+price_adjustment?.value), state.selected_variant?.price);
-          }
-
-          if (price_adjustment?.value_type === "percentage") {
-            discounted_price = Math.min(
-              discounted_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-              state.selected_variant?.price
-            );
-          }
-
-          if (price_adjustment?.value_type === "price") {
-            discounted_price = Math.min(+price_adjustment?.value, state.selected_variant?.price);
-          }
-
-          if (state.manual_discount) {
-            discounted_price = Math.min(
-              discounted_price - Math.round((state.manual_discount / 100) * discounted_price),
-              state.selected_variant?.price
-            );
-          }
+          const pricing_redirect = resolvePdpPricing(
+            state.selected_variant,
+            state.product,
+            state.selected_selling_plan,
+            state.manual_discount
+          );
 
           let upsell_price_total = 0;
           let upsell_compare_at_price_total = 0;
           let upsell_triggered_quantity_limit = 9999999;
 
           state.upsell_items.forEach((value) => {
-            let upsell_d_price = value?.variant?.price;
-            if (state.selected_selling_plan) {
-              const upsell_price_adjustment = value?.variant?.selling_plan_allocations?.find(
-                (plan) => plan.selling_plan.id === state.selected_selling_plan.id
-              )?.selling_plan?.price_adjustments?.[0];
-
-              if (upsell_price_adjustment?.value_type === "fixed_amount") {
-                upsell_d_price = Math.min(upsell_d_price - Math.round(+price_adjustment?.value), value?.variant?.price);
-              }
-
-              if (upsell_price_adjustment?.value_type === "percentage") {
-                upsell_d_price = Math.min(
-                  upsell_d_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-                  value?.variant?.price
-                );
-              }
-
-              if (upsell_price_adjustment?.value_type === "price") {
-                upsell_d_price = Math.min(+price_adjustment?.value, value?.variant?.price);
-              }
-            }
+            const upsell_pricing = resolvePdpPricing(value?.variant, state.product, state.selected_selling_plan, 0);
+            const upsell_d_price = upsell_pricing.effectivePrice;
 
             const upsell_available_quantity =
               value?.variant?.inventory_management === "shopify" && value?.variant?.inventory_policy === "deny"
@@ -1049,21 +1194,25 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
           state.upsell_total = upsell_price_total * state.quantity;
           state.upsell_compare_at_total = upsell_compare_at_price_total * state.quantity;
 
-          state.selected_price = discounted_price;
-          state.selected_compare_at_price = Math.max(state.selected_variant?.compare_at_price, state.selected_variant?.price);
+          state.selected_price = pricing_redirect.effectivePrice;
+          state.selected_compare_at_price = pricing_redirect.effectiveCompareAt;
+          state.effective_discount_percent = pricing_redirect.effectiveDiscountPercent;
+
+          window.ctrDiscountDisplay?.applySelectedPrices(state, pricing_redirect.effectivePrice);
           state.dynamic_buy_button = null;
           state.selected_options = state.selected_variant?.options;
         }
 
-        if (selling_plan_id !== state.selected_selling_plan?.id) {
-          state.selected_selling_plan = state.selling_plan_allocations?.find((plan) => plan.selling_plan_id === selling_plan_id)
-            ?.selling_plan;
+        if (!isSameId(selling_plan_id, state.selected_selling_plan?.id)) {
+          state.selected_selling_plan = state.selling_plan_allocations?.find((plan) =>
+            isSameId(plan?.selling_plan?.id, selling_plan_id)
+          )?.selling_plan;
         }
 
         return;
       }
 
-      if (selling_plan_id !== state.selected_selling_plan?.id || variant_id !== state.selected_variant?.id) {
+      if (!isSameId(selling_plan_id, state.selected_selling_plan?.id) || variant_id !== state.selected_variant?.id) {
         url.searchParams.set("selling_plan", `${state.selected_selling_plan?.id}`);
         url.searchParams.set("variant", `${state.selected_variant?.id}`);
         remove.forEach((key) => {
@@ -1093,11 +1242,10 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   });
 
   Alpine.effect(() => {
-    let discounted_price = state.selected_variant?.price;
-    const price_adjustment = state.selected_selling_plan?.price_adjustments?.[0];
-
     const product = state.product;
     const selected_variant = state.selected_variant;
+    const pricing = resolvePdpPricing(selected_variant, product, state.selected_selling_plan, state.manual_discount);
+    let discounted_price = pricing.effectivePrice;
 
     state.hasVariants = product?.variants?.length > 1 || product?.variants?.[0]?.title !== "Default Title";
     state.hasSubscription = !!selected_variant?.options?.length;
@@ -1132,54 +1280,13 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.gallery_media = handleImageSelection(gallerySettings?.filter_images, selected_variant);
     state.thumbnail_media = handleImageSelection(thumbnailSettings?.thumbnail_filter_images, selected_variant);
 
-    if (price_adjustment?.value_type === "fixed_amount") {
-      discounted_price = Math.min(discounted_price - Math.round(+price_adjustment?.value), state.selected_variant?.price);
-    }
-
-    if (price_adjustment?.value_type === "percentage") {
-      discounted_price = Math.min(
-        discounted_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-        state.selected_variant?.price
-      );
-    }
-
-    if (price_adjustment?.value_type === "price") {
-      discounted_price = Math.min(+price_adjustment?.value, state.selected_variant?.price);
-    }
-
-    if (state.manual_discount) {
-      discounted_price = Math.min(
-        discounted_price - Math.round((state.manual_discount / 100) * discounted_price),
-        state.selected_variant?.price
-      );
-    }
-
     let upsell_price_total = 0;
     let upsell_compare_at_price_total = 0;
     let upsell_triggered_quantity_limit = 9999999;
 
     state.upsell_items.forEach((value) => {
-      let upsell_d_price = value?.variant?.price;
-      if (state.selected_selling_plan) {
-        const upsell_price_adjustment = value?.variant?.selling_plan_allocations?.find(
-          (plan) => plan.selling_plan.id === state.selected_selling_plan.id
-        )?.selling_plan?.price_adjustments?.[0];
-
-        if (upsell_price_adjustment?.value_type === "fixed_amount") {
-          upsell_d_price = Math.min(upsell_d_price - Math.round(+price_adjustment?.value), value?.variant?.price);
-        }
-
-        if (upsell_price_adjustment?.value_type === "percentage") {
-          upsell_d_price = Math.min(
-            upsell_d_price - Math.round((+price_adjustment?.value / 100) * discounted_price),
-            value?.variant?.price
-          );
-        }
-
-        if (upsell_price_adjustment?.value_type === "price") {
-          upsell_d_price = Math.min(+price_adjustment?.value, value?.variant?.price);
-        }
-      }
+      const upsell_pricing = resolvePdpPricing(value?.variant, product, state.selected_selling_plan, 0);
+      const upsell_d_price = upsell_pricing.effectivePrice;
 
       const upsell_available_quantity =
         value?.variant?.inventory_management === "shopify" && value?.variant?.inventory_policy === "deny"
@@ -1206,7 +1313,10 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.upsell_compare_at_total = upsell_compare_at_price_total * state.quantity;
 
     state.selected_price = discounted_price;
-    state.selected_compare_at_price = Math.max(state.selected_variant?.compare_at_price, state.selected_variant?.price);
+    state.selected_compare_at_price = pricing.effectiveCompareAt;
+    state.effective_discount_percent = pricing.effectiveDiscountPercent;
+
+    window.ctrDiscountDisplay?.applySelectedPrices(state, discounted_price);
   });
 
   initialized = true;

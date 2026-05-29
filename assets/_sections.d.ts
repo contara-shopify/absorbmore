@@ -2171,6 +2171,66 @@ export type GenericSectionBlocks =
   | Extract<ThemeBlocks, { type: "image_with_caption" }>
   | GlobalThemeBlocks;
 
+export type ProductValuePropsSection = {
+  blocks: ProductValuePropsBlocks[];
+  id: string;
+  disabled?: boolean;
+  settings: {
+    /** Input type: select */
+    container_spacing: "px-container-xs" | "px-container-sm" | "px-container-md" | "px-container-lg" | "px-container-gutter" | "px-container-fullwidth";
+    /** Input type: select */
+    generate_presets: "never" | "always" | "manual_override";
+    /** Input type: color */
+    background_color?: _Color_liquid | string;
+    /** Input type: text */
+    callout_link_label?: string;
+    /** Input type: url */
+    callout_link_url?: string;
+    /** Input type: richtext */
+    callout_text?: `<${_BlockTag}${string}</${_BlockTag}>`;
+    /** Input type: text */
+    category_name?: string;
+    /** Input type: textarea */
+    custom_css?: string;
+    /** Input type: richtext */
+    headline?: `<${_BlockTag}${string}</${_BlockTag}>`;
+    /** Input type: text */
+    hidden_name_backup?: string;
+    /** Input type: text */
+    highlight_text?: string;
+    /** Input type: image_picker */
+    image?: _Image_liquid | string;
+    /** Input type: text */
+    section_id?: string;
+    /** Input type: richtext */
+    supporting_text?: `<${_BlockTag}${string}</${_BlockTag}>`;
+    /** Input type: color */
+    text_color?: _Color_liquid | string;
+  };
+  type: "_product_value_props";
+};
+
+export type ProductValuePropsBlocksValueProp = {
+  id: string;
+  settings: {
+    /** Input type: range */
+    dot_x_percent: number;
+    /** Input type: range */
+    dot_y_percent: number;
+    /** Input type: textarea */
+    custom_css?: string;
+    /** Input type: textarea */
+    description?: string;
+    /** Input type: text */
+    icon?: string;
+    /** Input type: text */
+    text?: string;
+  };
+  type: "value_prop";
+};
+
+export type ProductValuePropsBlocks = ProductValuePropsBlocksValueProp;
+
 export type FeaturedBenefitsSection = {
   blocks: FeaturedBenefitsBlocks[];
   id: string;

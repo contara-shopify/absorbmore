@@ -1,0 +1,340 @@
+{%- comment -%} CTR Trust Scroll Bar {%- endcomment -%}
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign divider_color = section.settings.divider_color
+  assign text_size = section.settings.text_size
+  assign icon_size = section.settings.icon_size
+  assign bar_height = section.settings.bar_height
+  assign item_gap = section.settings.item_gap
+  assign item_padding_x = section.settings.item_padding_x
+  assign custom_css = section.settings.custom_css
+  assign section_id = section.settings.section_id
+-%}
+
+{% capture selector %}[data-style-id="{{ section.id }}"]{% endcapture %}
+
+{% capture css %}
+  & {
+    width: 100%;
+    {% if bg_color != blank and bg_color.alpha != 0 %}background-color: {{ bg_color }};{% endif %}
+    {% if text_color != blank and text_color.alpha != 0 %}color: {{ text_color }};{% endif %}
+    overflow: hidden;
+  }
+
+  & .ctr-trust-scroll__viewport {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  & .ctr-trust-scroll__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  & .ctr-trust-scroll__track {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: max-content;
+    min-height: {{ bar_height }}px;
+    padding: 0 {{ item_padding_x }}px;
+  }
+
+  & .ctr-trust-scroll__item {
+    position: relative;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{ item_gap }}px;
+    min-height: {{ bar_height }}px;
+    padding: 0 {{ item_padding_x }}px;
+    font-size: {{ text_size }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  & .ctr-trust-scroll__item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 1px;
+    height: 24px;
+    transform: translateY(-50%);
+    {% if divider_color != blank and divider_color.alpha != 0 %}background-color: {{ divider_color }};{% else %}background-color: currentColor; opacity: 0.16;{% endif %}
+  }
+
+  & .ctr-trust-scroll__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ icon_size }}px;
+    height: {{ icon_size }}px;
+    flex: 0 0 {{ icon_size }}px;
+  }
+
+  & .ctr-trust-scroll__icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .ctr-trust-scroll__text {
+    display: inline-block;
+  }
+
+  @media (min-width: 768px) {
+    & .ctr-trust-scroll__track {
+      justify-content: center;
+      min-width: 100%;
+    }
+  }
+{% endcapture %}
+
+{% capture section_content %}
+  <style>
+    {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
+  </style>
+
+  <section
+    data-style-id="{{ section.id }}"
+    {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  >
+    <div class="ctr-trust-scroll__viewport">
+      <div class="ctr-trust-scroll__track">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign icon = block.settings.icon
+            assign text = block.settings.text
+          -%}
+
+          {%- if text != blank -%}
+            <div class="ctr-trust-scroll__item" {{ block.shopify_attributes }}>
+              <span class="ctr-trust-scroll__icon" aria-hidden="true">
+                {%- case icon -%}
+                  {%- when 'test' -%}
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M14.5 4.5L19.5 9.5M7.5 18.5L5.5 20.5M6.75 17.75L17.5 7M14.75 4.25L19.75 9.25L10 19H5V14L14.75 4.25Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  {%- when 'clinicians' -%}
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M8 4V9C8 11.21 9.79 13 12 13C14.21 13 16 11.21 16 9V4M6 4H10M14 4H18M12 13V16C12 18.21 13.79 20 16 20C18.21 20 20 18.21 20 16V14M20 14C20.83 14 21.5 13.33 21.5 12.5C21.5 11.67 20.83 11 20 11C19.17 11 18.5 11.67 18.5 12.5C18.5 13.33 19.17 14 20 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  {%- when 'shield' -%}
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3L19 6V11C19 15.55 16.09 19.5 12 21C7.91 19.5 5 15.55 5 11V6L12 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M9.5 12L11.25 13.75L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  {%- when 'truck' -%}
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M3 6H15V16H3V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M15 10H19L21 13V16H15V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M7 19C8.1 19 9 18.1 9 17C9 15.9 8.1 15 7 15C5.9 15 5 15.9 5 17C5 18.1 5.9 19 7 19Z" stroke="currentColor" stroke-width="2"/>
+                      <path d="M18 19C19.1 19 20 18.1 20 17C20 15.9 19.1 15 18 15C16.9 15 16 15.9 16 17C16 18.1 16.9 19 18 19Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2.75L14.86 8.55L21.25 9.48L16.63 13.98L17.72 20.35L12 17.34L6.28 20.35L7.37 13.98L2.75 9.48L9.14 8.55L12 2.75Z"/>
+                    </svg>
+                {%- endcase -%}
+              </span>
+              <span class="ctr-trust-scroll__text">{{ text | escape }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{% endcapture %}
+
+{{ section_content }}
+
+{% schema %}
+{
+  "name": "CTR Trust Scroll Bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "alpha": true,
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "default": 13,
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "default": 16,
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar height",
+      "default": 40,
+      "min": 28,
+      "max": 72,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Icon/text gap",
+      "default": 8,
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_padding_x",
+      "label": "Item horizontal padding",
+      "default": 32,
+      "min": 12,
+      "max": 80,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:all.empty_char"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section Id"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "star",
+          "options": [
+            {
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "value": "test",
+              "label": "Third-party tested"
+            },
+            {
+              "value": "clinicians",
+              "label": "Clinicians"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "truck",
+              "label": "Truck"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Trust item"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Trust Scroll Bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "icon": "star",
+            "text": "4.8 avg. across all products"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "test",
+            "text": "Third-party tested"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "clinicians",
+            "text": "Shared by 900+ clinicians"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "text": "HSA/FSA Eligible"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping on $50+"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
