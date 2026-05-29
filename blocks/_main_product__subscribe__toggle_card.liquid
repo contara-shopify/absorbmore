@@ -217,7 +217,7 @@
     {% render '_components.select',
         dynamic: true,
         values: "pdp.selling_plan_allocations?.map((p,i)=> pdp.selected_selling_plan || (pdp.last_selected_selling_plan?.id ? pdp.last_selected_selling_plan?.id !== p.selling_plan?.id : i) ? p.selling_plan?.id : undefined) ?? []",
-        titles: "pdp.selling_plan_allocations?.map((p)=> window.ctrDiscountDisplay?.formatFrequencyTitle(p?.selling_plan?.name, p?.selling_plan?.id, pdp?.ctr_discount_config, p, pdp?.selected_variant) ?? p?.selling_plan?.name) ?? []",
+        titles: "pdp.selling_plan_allocations?.map((p)=> (p?.selling_plan?.name?.split(' - ')?.[0] ?? p?.selling_plan?.name)) ?? []",
         select_class: select_class,
         label: subscription_dropdown_label,
         setState: "$data.setSellingPlan(+value ? +value : pdp.selling_plan_allocations[i ?? focusIndex]?.selling_plan?.id);",
