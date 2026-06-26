@@ -1,0 +1,35 @@
+{%- comment -%}
+  Inventory pill badges for main_product option / variant selectors.
+  @param option_index {number} optional — option position (0-based)
+  @param value {string} optional — option value label
+  @param variant_id {number} optional — variant id for variant-level selectors
+{%- endcomment -%}
+{%- if section.settings.low_stock_enable or section.settings.sold_out_badge_enable -%}
+  {%- if variant_id != blank -%}
+    <span
+      class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+      x-show="pdp.showVariantSoldOutBadge({{ variant_id }})"
+      x-text="pdp.inventorySettings.soldOutPillText"
+      x-cloak
+    ></span>
+    <span
+      class="ctr-pbv2__flavor-badge"
+      x-show="pdp.isVariantLowStock({{ variant_id }})"
+      x-text="pdp.inventorySettings.pillBadgeText"
+      x-cloak
+    ></span>
+  {%- elsif option_index != blank and value != blank -%}
+    <span
+      class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+      x-show="pdp.showOptionSoldOutBadge({{ option_index }}, {{ value | json }})"
+      x-text="pdp.inventorySettings.soldOutPillText"
+      x-cloak
+    ></span>
+    <span
+      class="ctr-pbv2__flavor-badge"
+      x-show="pdp.isOptionValueLowStock({{ option_index }}, {{ value | json }})"
+      x-text="pdp.inventorySettings.pillBadgeText"
+      x-cloak
+    ></span>
+  {%- endif -%}
+{%- endif -%}

@@ -199,7 +199,7 @@
             endcase
           %}
           <label
-              class="shrink-0 flex cursor-pointer border-gray-300 relative !outline-none border-none ac:border-solid {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+              class="shrink-0 flex cursor-pointer border-gray-300 relative !outline-none border-none ac:border-solid ctr-inventory-option-label {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
               x-effect="$el.classList.toggle('active', pdp.selected_options?.[index] === $el.getAttribute('aria-label'))"
               x-show="offset >= +`{{ forloop.index0 }}`"
               {% if select_on_hover and show_tooltip %}
@@ -215,6 +215,7 @@
               @pointerleave="hoverValue = ''"
               aria-label="{{ value }}"
               style="{{ primary_swatch }};{{ fallback_swatch }}; background: var(--primary-swatch, var(--fallback-swatch, {{ _value }}));">
+            {% render 'ctr-main-product-inventory-badges', option_index: _optionIndex, value: value %}
             <input
                 type="radio"
                 class="sr-only"

@@ -18,16 +18,46 @@
     var VARIANT_MAP    = DATA.variantMap || {};
     var TIERS          = DATA.tiers || [];       // [{id,bagCount,label,badge,price,comparePrice,sellingPlanId,perks}]
     var SWATCH_COLORS  = DATA.swatchColors || {};
+    var INVENTORY_SETTINGS = DATA.inventorySettings || {};
 
     /* Build tier lookup by id */
     var TIER_BY_ID = {};
     TIERS.forEach(function(t) { TIER_BY_ID[t.id] = t; });
 
-    return {
+    var inventoryMethods = (window.ctrFlavorInventory && window.ctrFlavorInventory.createInventoryMethods)
+      ? window.ctrFlavorInventory.createInventoryMethods({
+          variantMap: VARIANT_MAP,
+          inventorySettings: INVENTORY_SETTINGS,
+          getFormat: function() { return this.selectedFormat; },
+          getSelectedFlavor: function() { return this.bagFlavors[0] || FLAVOR_OPTIONS[0] || ''; }
+        })
+      : {};
+
+    function firstInStockFlavor(format) {
+      return FLAVOR_OPTIONS.find(function(f) {
+        var v = VARIANT_MAP[format + '|' + f];
+        if (!v) return false;
+        if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
+          return window.ctrFlavorInventory.getFlavorInventoryState({
+            variantMap: VARIANT_MAP,
+            flavor: f,
+            format: format,
+            cartItems: [],
+            threshold: INVENTORY_SETTINGS.threshold
+          }).available;
+        }
+        return v.available;
+      }) || FLAVOR_OPTIONS[0] || '';
+    }
+
+    var initialFormat = FORMAT_OPTIONS[0] || '';
+    var initialFlavor = firstInStockFlavor(initialFormat);
+
+    return Object.assign(inventoryMethods, {
       /* ---- state ---- */
       selectedTier:   TIERS[0] ? TIERS[0].id : 'tier1',
-      selectedFormat: FORMAT_OPTIONS[0] || '',
-      bagFlavors:     [FLAVOR_OPTIONS[0] || '', FLAVOR_OPTIONS[0] || '', FLAVOR_OPTIONS[0] || ''],
+      selectedFormat: initialFormat,
+      bagFlavors:     [initialFlavor, initialFlavor, initialFlavor],
       buyOnceQty:     1,
       isAdding:       false,
       isAddingUpsell: false,
@@ -175,9 +205,11 @@
       },
 
       get currentAvailable() {
-        /* Check if the first bag's selected variant is available */
-        var key = this.selectedFormat + '|' + (this.bagFlavors[0] || FLAVOR_OPTIONS[0]);
-        var v = VARIANT_MAP[key];
+        var flavor = this.bagFlavors[0] || FLAVOR_OPTIONS[0];
+        if (typeof this.isFlavorSoldOut === 'function') {
+          return !this.isFlavorSoldOut(flavor, this.selectedFormat);
+        }
+        var v = this.getVariant(this.selectedFormat, flavor);
         return v ? v.available : false;
       },
 
@@ -187,6 +219,9 @@
       },
 
       isVariantAvailable(format, flavor) {
+        if (typeof this.isFlavorSoldOut === 'function') {
+          return !this.isFlavorSoldOut(flavor, format);
+        }
         var v = this.getVariant(format, flavor);
         return v ? v.available : false;
       },
@@ -213,19 +248,26 @@
         if (format !== 'Sticks' && this.selectedTier === 'tier0') {
           this.selectedTier = TIERS[0] ? TIERS[0].id : 'tier1';
         }
-        // Find first available flavor for the new format
-        var firstAvailable = FLAVOR_OPTIONS.find(function(f) {
-          var v = VARIANT_MAP[format + '|' + f];
-          return v && v.available;
-        }) || FLAVOR_OPTIONS[0] || '';
+        var firstAvailable = firstInStockFlavor(format);
         // Keep current flavor if available for this format, else use first available
         this.bagFlavors = this.bagFlavors.map(function(f) {
           var v = VARIANT_MAP[format + '|' + f];
+          if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
+            var state = window.ctrFlavorInventory.getFlavorInventoryState({
+              variantMap: VARIANT_MAP,
+              flavor: f,
+              format: format,
+              cartItems: [],
+              threshold: INVENTORY_SETTINGS.threshold
+            });
+            return state.available ? f : firstAvailable;
+          }
           return (v && v.available) ? f : firstAvailable;
         });
       },
 
       setBagFlavor(bagIndex, flavor) {
+        if (this.isFlavorSoldOut && this.isFlavorSoldOut(flavor, this.selectedFormat)) return;
         var next = this.bagFlavors.slice();
         next[bagIndex] = flavor;
         this.bagFlavors = next;
@@ -376,6 +418,11 @@
 
       /* ---- Mobile sticky observer ---- */
       init() {
+        if (typeof this._bindCartRefresh === 'function') {
+          this._bindCartRefresh();
+        }
+        this._ensureInStockFlavors();
+
         if (
           !window.matchMedia('(max-width: 767px)').matches ||
           !('IntersectionObserver' in window) ||
@@ -387,8 +434,26 @@
           { threshold: 0.2 }
         );
         observer.observe(this.$refs.primaryCta);
+      },
+
+      _ensureInStockFlavors() {
+        var firstAvailable = firstInStockFlavor(this.selectedFormat);
+        this.bagFlavors = this.bagFlavors.map(function(f) {
+          if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
+            var state = window.ctrFlavorInventory.getFlavorInventoryState({
+              variantMap: VARIANT_MAP,
+              flavor: f,
+              format: this.selectedFormat,
+              cartItems: this.getCartItems ? this.getCartItems() : [],
+              threshold: INVENTORY_SETTINGS.threshold
+            });
+            return state.available ? f : firstAvailable;
+          }
+          var v = VARIANT_MAP[this.selectedFormat + '|' + f];
+          return (v && v.available) ? f : firstAvailable;
+        }.bind(this));
       }
-    };
+    });
   }
 
   window.ctrPbv2Factory = ctrPbv2Factory;

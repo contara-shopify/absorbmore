@@ -1,0 +1,124 @@
+<lightlabs-widget company-id="399"></lightlabs-widget>
+
+<style>
+  /* Reset choose-plan reorder for GLP Daily Essentials template */
+  [data-component-choose-plan] ul.product-choose-supply-variants > li:first-child,
+  [data-component-choose-plan] ul.product-choose-supply-variants > li:nth-child(2),
+  [data-component-choose-plan] ul.product-choose-supply-variants > li:last-child {
+    order: 0 !important;
+  }
+</style>
+
+<style>
+  /* Recolor save-amount text on GLP Daily Essentials template */
+  [data-component-choose-plan] .product-choose-plan__total-saved span:nth-child(1),
+  [data-component-choose-plan] .product-choose-plan__total-saved span:nth-child(2) {
+    color: #000 !important;
+  }
+  [data-component-choose-plan] .product-choose-plan__total-savings-value .block,
+  [data-component-choose-plan] .product-choose-plan__total-saved span:nth-child(3) {
+    color: #C63847 !important;
+  }
+</style>
+
+<style>
+  /* Flavor pill picker (GLP Daily Essentials template only) */
+  [data-component-choose-plan] ul.product-choose-supply-variants > li[data-glp-dupe="1"] {
+    display: none !important;
+  }
+
+  [data-component-choose-plan] .glp-flavor-picker {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #d5d1c8;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+  }
+
+  [data-component-choose-plan] ul.product-choose-supply-variants > li.glp-active {
+    background-color: #f0ede6;
+  }
+  [data-component-choose-plan] li.glp-active .product-choose-plan__radio {
+    border-color: #111111;
+  }
+  [data-component-choose-plan] li.glp-active .product-choose-plan__radio-inner {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    opacity: 1;
+  }
+  [data-component-choose-plan] li.glp-active .glp-flavor-picker {
+    display: flex;
+  }
+
+  [data-component-choose-plan] .glp-flavor-picker__label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: left;
+  }
+
+  [data-component-choose-plan] .glp-flavor-picker__pills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #d5d1c8;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    line-height: 1;
+    white-space: nowrap;
+    font-family: Inter, system-ui, sans-serif;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill[aria-pressed="true"] {
+    border: 2px solid #111;
+    color: #111;
+    padding: 7px 11px;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill.is-sold-out {
+    opacity: 0.55;
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill__dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill .ctr-pbv2__flavor-badge {
+    top: -14px;
+  }
+
+  [data-component-choose-plan] .glp-flavor-pill__dot--mango { background: #f5c842; }
+  [data-component-choose-plan] .glp-flavor-pill__dot--raspberry { background: #c63847; }
+  [data-component-choose-plan] .glp-flavor-pill__dot--default { background: #888; }
+</style>
+
+<script src="{{ 'ctr-glp-flavor-picker.js' | asset_url }}" defer></script>

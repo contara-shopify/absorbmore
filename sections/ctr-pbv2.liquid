@@ -103,6 +103,9 @@
           "price":          {{ variant.price }},
           "compareAtPrice": {{ variant.compare_at_price | default: variant.price }},
           "available":      {{ variant.available }},
+          "inventory_quantity": {{ variant.inventory_quantity }},
+          "inventory_management": {{ variant.inventory_management | json }},
+          "inventory_policy": {{ variant.inventory_policy | json }},
           "sellingPlans": {
             {% for alloc in variant.selling_plan_allocations %}
               {{ alloc.selling_plan.id | append: '' | json }}: {
@@ -151,6 +154,17 @@
   "swatchColors": {
     "mango":     "{{ section.settings.swatch_mango | default: '#F5A623' }}",
     "raspberry": "{{ section.settings.swatch_raspberry | default: '#C0392B' }}"
+  },
+  "inventorySettings": {
+    "enableLowStock": {{ section.settings.low_stock_enable | default: false }},
+    "enableSoldOutBadges": {{ section.settings.sold_out_badge_enable | default: false }},
+    "threshold": {{ section.settings.low_stock_threshold | default: 10 }},
+    "pillBadgeText": {{ section.settings.low_stock_pill_text | default: 'Low Stock' | json }},
+    "galleryBadgeText": {{ section.settings.low_stock_gallery_text | default: 'Low Stock - Few Left' | json }},
+    "soldOutPillText": {{ section.settings.sold_out_pill_text | default: 'Sold Out' | json }},
+    "enableGalleryBadge": {{ section.settings.low_stock_show_gallery_badge | default: false }},
+    "testForceLowStock": {{ section.settings.badge_test_force_low_stock | default: false }},
+    "testForceSoldOut": {{ section.settings.badge_test_force_sold_out | default: false }}
   }
 }
 </script>
@@ -182,6 +196,7 @@
   {% endif %}
 {% endfor %}
 
+<script src="{{ 'ctr-flavor-inventory.js' | asset_url }}"></script>
 <script src="{{ 'section-ctr-pbv2.js' | asset_url }}"></script>
 <script src="{{ 'ctr-restore-retier.js' | asset_url }}"></script>
 
@@ -275,6 +290,12 @@
         {%- endif -%}
       </div>
       <div class="ctr-pbv2__hero-image">
+        <span
+          class="ctr-pbv2__gallery-low-stock"
+          x-show="inventorySettings.enableGalleryBadge && isSelectedFlavorLowStock()"
+          x-text="inventorySettings.galleryBadgeText"
+          x-cloak
+        ></span>
         {%- for media in gallery_images -%}
           {%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- else -%}{%- assign img_loading = 'lazy' -%}{%- endif -%}
           <div{% unless forloop.first %} x-cloak{% endunless %} x-show="typeof galleryIndex !== 'number' ? {% if forloop.first %}true{% else %}false{% endif %} : galleryIndex === {{ forloop.index0 }}">{{ media.preview_image | image_url: width: 1200 | image_tag: loading: img_loading, widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}</div>
@@ -365,6 +386,12 @@
 
     {%- comment -%} ==== Mobile gallery ==== {%- endcomment -%}
     <div class="ctr-pbv2__gallery-mobile" @scroll.passive="onMobileGalleryScroll($event.target)" x-ref="mobileGallery">
+      <span
+        class="ctr-pbv2__gallery-low-stock ctr-pbv2__gallery-low-stock--mobile"
+        x-show="inventorySettings.enableGalleryBadge && isSelectedFlavorLowStock()"
+        x-text="inventorySettings.galleryBadgeText"
+        x-cloak
+      ></span>
       {%- for media in gallery_images -%}
         {%- assign mob_loading = forloop.first | iif: 'eager', 'lazy' -%}
         <div class="ctr-pbv2__gallery-mobile-slide">{{ media.preview_image | image_url: width: 900 | image_tag: loading: mob_loading, widths: '480,720,900', sizes: '90vw', alt: title }}</div>
@@ -615,10 +642,24 @@
                             {%- assign swatch_lc = flavor_val | downcase -%}
                             {%- assign initial_swatch = section.settings.swatch_colors | default: '' -%}
                             <button type="button" class="ctr-pbv2__pill{% if flavor_val == default_flavor %} is-selected{% endif %}"
-                              x-show="typeof isVariantAvailable !== 'function' || isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
-                              :class="{ 'is-selected': bagFlavors[{{ bag_idx }}] === '{{ flavor_val }}' }"
+                              :class="{
+                                'is-selected': bagFlavors[{{ bag_idx }}] === '{{ flavor_val }}',
+                                'is-unavailable': !isVariantAvailable(selectedFormat, '{{ flavor_val }}'),
+                                'is-low-stock': isFlavorLowStock('{{ flavor_val }}')
+                              }"
+                              :disabled="!isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
                               @click.stop="setBagFlavor({{ bag_idx }}, '{{ flavor_val }}')"
                             >
+                              <span
+                                class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+                                x-show="showSoldOutBadge('{{ flavor_val }}')"
+                                x-text="inventorySettings.soldOutPillText"
+                              ></span>
+                              <span
+                                class="ctr-pbv2__flavor-badge"
+                                x-show="isFlavorLowStock('{{ flavor_val }}')"
+                                x-text="inventorySettings.pillBadgeText"
+                              ></span>
                               <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
                                 <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
                               </template>
@@ -682,10 +723,24 @@
                     <div class="ctr-pbv2__pills">
                       {% for flavor_val in flavor_option.values %}
                         <button type="button" class="ctr-pbv2__pill{% if flavor_val == default_flavor %} is-selected{% endif %}"
-                          x-show="typeof isVariantAvailable !== 'function' || isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
-                          :class="{ 'is-selected': bagFlavors[0] === '{{ flavor_val }}' }"
+                          :class="{
+                            'is-selected': bagFlavors[0] === '{{ flavor_val }}',
+                            'is-unavailable': !isVariantAvailable(selectedFormat, '{{ flavor_val }}'),
+                            'is-low-stock': isFlavorLowStock('{{ flavor_val }}')
+                          }"
+                          :disabled="!isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
                           @click.stop="setBagFlavor(0, '{{ flavor_val }}')"
                         >
+                          <span
+                            class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+                            x-show="showSoldOutBadge('{{ flavor_val }}')"
+                            x-text="inventorySettings.soldOutPillText"
+                          ></span>
+                          <span
+                            class="ctr-pbv2__flavor-badge"
+                            x-show="isFlavorLowStock('{{ flavor_val }}')"
+                            x-text="inventorySettings.pillBadgeText"
+                          ></span>
                           <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
                             <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
                           </template>
@@ -1001,6 +1056,18 @@
     { "type": "text", "id": "flavor_label", "label": "Flavor selector label", "default": "Flavor" },
     { "type": "text", "id": "swatch_mango", "label": "Mango swatch color", "default": "#F5A623" },
     { "type": "text", "id": "swatch_raspberry", "label": "Raspberry swatch color", "default": "#C0392B" },
+    { "type": "header", "content": "Inventory badges" },
+    { "type": "checkbox", "id": "low_stock_enable", "label": "Enable low quantity badges", "default": false },
+    { "type": "range", "id": "low_stock_threshold", "label": "Low stock threshold", "min": 1, "max": 50, "step": 1, "default": 10 },
+    { "type": "text", "id": "low_stock_pill_text", "label": "Low quantity pill text", "default": "Low Stock" },
+    { "type": "text", "id": "low_stock_gallery_text", "label": "Gallery badge text", "default": "Low Stock - Few Left" },
+    { "type": "checkbox", "id": "low_stock_show_gallery_badge", "label": "Show gallery badge", "default": false },
+    { "type": "checkbox", "id": "sold_out_badge_enable", "label": "Enable sold out badge", "default": false },
+    { "type": "text", "id": "sold_out_pill_text", "label": "Sold out pill text", "default": "Sold Out" },
+    { "type": "header", "content": "Temporary badge testing" },
+    { "type": "paragraph", "content": "Remove before launch. Forces badge display without changing inventory or sold-out disabled state." },
+    { "type": "checkbox", "id": "badge_test_force_low_stock", "label": "Force low quantity badges", "default": false },
+    { "type": "checkbox", "id": "badge_test_force_sold_out", "label": "Force sold out badges", "default": false },
     { "type": "header", "content": "Tier 1 — 1 Month Supply" },
     { "type": "text", "id": "tier1_label", "label": "Label", "default": "1 Month Supply" },
     { "type": "text", "id": "tier1_selling_plan_id", "label": "Selling Plan ID", "info": "Numeric ID from Shopify Admin" },

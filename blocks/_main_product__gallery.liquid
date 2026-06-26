@@ -88,6 +88,12 @@
       x-init="$watch('pdp.selected_variant', () => scrollToMediaById(pdp.selected_variant?.featured_media?.id, $el.firstElementChild))"
     {% endif %}
     data-settings="{{ block.settings | json | escape }}">
+  <span
+    class="ctr-pbv2__gallery-low-stock"
+    x-show="pdp.inventorySettings?.enableGalleryBadge && pdp.isSelectedVariantLowStock()"
+    x-text="pdp.inventorySettings.galleryBadgeText"
+    x-cloak
+  ></span>
   <div class="grid-container relative flex snap-mandatory overflow-x-auto scrollbar-none max-lg:order-first {{ slider_scroll_snap }} {{ slider_overflow }}"
        data-main-product-images
        x-ignore

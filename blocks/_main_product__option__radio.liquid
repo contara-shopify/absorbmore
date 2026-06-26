@@ -16,6 +16,7 @@
   assign match_option_titles = block.settings.match_option_titles
   assign match_option_index = block.settings.match_option_index
   assign match_exact_word = block.settings.match_exact_word
+  assign show_inventory_badges = block.settings.show_inventory_badges
   assign custom_css = block.settings.custom_css
 -%}
 {%- comment -%} Auto Generated Variables end {%- endcomment -%}
@@ -159,13 +160,16 @@
             endif
           %}
           <label
-              class="shink-0 !outline-none {{ radio_button_class }} {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+              class="shink-0 !outline-none{% if show_inventory_badges %} ctr-inventory-option-label{% endif %} {{ radio_button_class }} {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
               x-effect="$el.classList.toggle('active', pdp.selected_options[index] === $el.getAttribute('aria-label'))"
               x-show="offset >= +`{{ forloop.index0 }}`"
               {% if select_on_hover %}
                 @mouseenter="$data.setProductOption({ index, value: `{{ value }}` })"
               {% endif %}
               aria-label="{{ value }}">
+            {% if show_inventory_badges %}
+              {% render 'ctr-main-product-inventory-badges', option_index: _optionIndex, value: value %}
+            {% endif %}
             <input
                 type="radio"
                 class="sr-only"
@@ -416,6 +420,13 @@
       "default": false,
       "info": "Enable this if you want to match the exact titles and make the 'Match option titles' case sensitive.",
       "visible_if": "{{ block.settings.option_type == 'by_name' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_badges",
+      "label": "Show inventory badges",
+      "default": false,
+      "info": "Enable for flavor selectors only. Type and size selectors should leave this off."
     },
     {
       "type": "paragraph",

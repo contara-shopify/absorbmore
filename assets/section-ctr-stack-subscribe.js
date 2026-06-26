@@ -2,27 +2,51 @@
   'use strict';
 
   function ctrStackSubscribeFactory(sectionId) {
-    console.log('[ctr-ss] factory called, sectionId:', sectionId);
     var dataTag = document.getElementById('ctr-ss-data-' + sectionId);
-    if (!dataTag) { console.warn('[ctr-ss] data tag not found!'); return {}; }
+    if (!dataTag) return {};
 
     var DATA = JSON.parse(dataTag.textContent);
     var FLAVOR_OPTIONS = DATA.flavorOptions || [];
     var VARIANT_MAP    = DATA.variantMap    || {};
     var PLANS          = DATA.plans         || [];
     var SWATCH_COLORS  = DATA.swatchColors  || {};
+    var INVENTORY_SETTINGS = DATA.inventorySettings || {};
 
     var PLAN_BY_ID = {};
     PLANS.forEach(function(p) { PLAN_BY_ID[p.id] = p; });
 
+    var inventoryMethods = (window.ctrFlavorInventory && window.ctrFlavorInventory.createInventoryMethods)
+      ? window.ctrFlavorInventory.createInventoryMethods({
+          variantMap: VARIANT_MAP,
+          inventorySettings: INVENTORY_SETTINGS,
+          getFormat: function() { return null; },
+          getSelectedFlavor: function() { return this.selectedFlavor; }
+        })
+      : {};
+
+    function firstInStockFlavor() {
+      return FLAVOR_OPTIONS.find(function(f) {
+        if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
+          return window.ctrFlavorInventory.getFlavorInventoryState({
+            variantMap: VARIANT_MAP,
+            flavor: f,
+            cartItems: [],
+            threshold: INVENTORY_SETTINGS.threshold
+          }).available;
+        }
+        var v = VARIANT_MAP[f];
+        return v && v.available;
+      }) || FLAVOR_OPTIONS[0] || '';
+    }
+
     /* Find first plan actually available for the initial variant */
-    var _initFlavor  = FLAVOR_OPTIONS[0] || '';
+    var _initFlavor  = firstInStockFlavor();
     var _initVariant = VARIANT_MAP[_initFlavor];
     var _initPlan    = PLANS.find(function(p) {
       return _initVariant && _initVariant.sellingPlans && _initVariant.sellingPlans[String(p.id)] !== undefined;
     }) || PLANS[0] || null;
 
-    return {
+    return Object.assign(inventoryMethods, {
       subscribeMode:  true,
       selectedFlavor: _initFlavor,
       selectedPlanId: _initPlan ? _initPlan.id : '',
@@ -68,6 +92,9 @@
       },
 
       get currentAvailable() {
+        if (typeof this.isFlavorSoldOut === 'function') {
+          return !this.isFlavorSoldOut(this.selectedFlavor);
+        }
         var v = this.currentVariant;
         return v ? v.available : false;
       },
@@ -104,6 +131,9 @@
       },
 
       isFlavorAvailable(flavor) {
+        if (typeof this.isFlavorSoldOut === 'function') {
+          return !this.isFlavorSoldOut(flavor);
+        }
         var v = VARIANT_MAP[flavor];
         return v ? v.available : false;
       },
@@ -120,6 +150,7 @@
       },
 
       selectFlavor(flavor) {
+        if (typeof this.isFlavorSoldOut === 'function' && this.isFlavorSoldOut(flavor)) return;
         this.selectedFlavor = flavor;
         // If current plan is not available for the new variant, pick first available
         var v = VARIANT_MAP[flavor];
@@ -242,21 +273,12 @@
       },
 
       init() {
-        /* ── DEBUG ── */
-        console.group('[ctr-ss] init debug');
-        console.log('PLANS:', JSON.parse(JSON.stringify(PLANS)));
-        console.log('selectedPlanId:', this.selectedPlanId);
-        console.log('selectedFlavor:', this.selectedFlavor);
-        console.log('currentVariant:', this.currentVariant);
-        var v = this.currentVariant;
-        if (v) {
-          console.log('sellingPlans keys:', Object.keys(v.sellingPlans || {}));
-          console.log('sellingPlans[selectedPlanId]:', (v.sellingPlans || {})[String(this.selectedPlanId)]);
+        if (typeof this._bindCartRefresh === 'function') {
+          this._bindCartRefresh();
         }
-        console.log('getPlanPrice():', this.getPlanPrice());
-        console.log('subscribeMode:', this.subscribeMode);
-        console.groupEnd();
-        /* ── END DEBUG ── */
+        if (typeof this.isFlavorSoldOut === 'function' && this.isFlavorSoldOut(this.selectedFlavor)) {
+          this.selectedFlavor = firstInStockFlavor();
+        }
 
         if (
           !window.matchMedia('(max-width: 767px)').matches ||
@@ -269,7 +291,7 @@
         );
         observer.observe(this.$refs.primaryCta);
       }
-    };
+    });
   }
 
   window.ctrStackSubscribeFactory = ctrStackSubscribeFactory;

@@ -11,6 +11,9 @@
   margin-left: auto;
   margin-right: auto;
   background: var(--pbv2-bg, #f8f3ec);
+  --ctr-low-stock-pink: #e1225c;
+  --ctr-low-stock-pink-light: #faeced;
+  --ctr-low-stock-gallery-bg: #fce9ef;
 }
 
 /* -- Two-column layout -- */
@@ -884,9 +887,11 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  padding-top: 10px;
 }
 
 .ctr-pbv2__pill {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -913,10 +918,81 @@
 }
 
 .ctr-pbv2__pill.is-unavailable {
-  opacity: 0.4;
+  opacity: 1;
+  border-style: dashed;
+  border-color: #bababa;
+  color: #bababa;
   cursor: not-allowed;
   pointer-events: none;
-  text-decoration: line-through;
+  text-decoration: none;
+}
+
+.ctr-pbv2__pill.is-low-stock:not(.is-unavailable) {
+  /* Badge carries accent; pill keeps default styling */
+}
+
+.ctr-inventory-option-label {
+  position: relative;
+}
+
+.ctr-pbv2__flavor-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  background: var(--ctr-low-stock-pink, #e1225c);
+  color: var(--ctr-low-stock-pink-light, #faeced);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 4px 8px;
+  pointer-events: none;
+}
+
+.ctr-pbv2__flavor-badge--sold-out {
+  background: #bababa;
+  color: #fff;
+}
+
+.ctr-pbv2__gallery-low-stock {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  z-index: 2;
+  display: inline-block;
+  background: var(--ctr-low-stock-gallery-bg, #fce9ef);
+  border: 1px solid var(--ctr-low-stock-pink, #e1225c);
+  color: var(--ctr-low-stock-pink, #e1225c);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 8px 14px;
+  pointer-events: none;
+  white-space: nowrap;
+
+  @media (max-width: 767px) {
+    top: 12px;
+    left: 12px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+.ctr-pbv2__gallery-low-stock--mobile {
+  top: 12px;
+  left: 32px;
 }
 
 .ctr-pbv2__flavor-swatch {
@@ -1663,6 +1739,7 @@
 
   .ctr-pbv2__gallery-mobile {
     display: flex;
+    position: relative;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
