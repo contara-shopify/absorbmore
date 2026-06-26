@@ -32,15 +32,49 @@
     return variantMap[flavor] || null;
   }
 
+  function normalizeFlavorName(name) {
+    return String(name == null ? '' : name).trim().toLowerCase();
+  }
+
+  /**
+   * Case-insensitive membership check for a flavor against a list of flavor names.
+   */
+  function flavorInList(flavor, list) {
+    if (!flavor || !list || !list.length) return false;
+    var target = normalizeFlavorName(flavor);
+    for (var i = 0; i < list.length; i++) {
+      if (normalizeFlavorName(list[i]) === target) return true;
+    }
+    return false;
+  }
+
   /**
    * @returns {{ available: boolean, soldOut: boolean, lowStock: boolean, quantity: number }}
    */
   function getFlavorInventoryState(opts) {
+    var inventorySettings = opts.inventorySettings || {};
+
+    // Manual mode: merchant chooses which flavors read as sold out / low stock,
+    // independent of real Shopify inventory. Sold-out flavors are also treated as
+    // unavailable so purchase + auto-selection stay consistent with the badge.
+    if (inventorySettings.mode === 'manual') {
+      var manualSoldOut = flavorInList(opts.flavor, inventorySettings.manualSoldOutFlavors);
+      var manualLowStock = !manualSoldOut && flavorInList(opts.flavor, inventorySettings.manualLowStockFlavors);
+      return {
+        available: !manualSoldOut,
+        soldOut: manualSoldOut,
+        lowStock: manualLowStock,
+        quantity: manualSoldOut ? 0 : 99999
+      };
+    }
+
     var variantMap = opts.variantMap || {};
     var flavor = opts.flavor;
     var format = opts.format;
     var cartItems = opts.cartItems || [];
-    var threshold = opts.threshold != null ? Number(opts.threshold) : 10;
+    var threshold = opts.threshold != null
+      ? Number(opts.threshold)
+      : (inventorySettings.threshold != null ? Number(inventorySettings.threshold) : 10);
 
     var variant = resolveVariant(variantMap, flavor, format);
     var quantity = getAvailableQuantity(variant, cartItems);
@@ -78,7 +112,8 @@
           flavor: flavor,
           format: format != null ? format : getFormat.call(this),
           cartItems: this.getCartItems(),
-          threshold: inventorySettings.threshold
+          threshold: inventorySettings.threshold,
+          inventorySettings: inventorySettings
         });
       },
 
