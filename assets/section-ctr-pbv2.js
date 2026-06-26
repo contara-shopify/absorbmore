@@ -43,7 +43,8 @@
             flavor: f,
             format: format,
             cartItems: [],
-            threshold: INVENTORY_SETTINGS.threshold
+            threshold: INVENTORY_SETTINGS.threshold,
+            inventorySettings: INVENTORY_SETTINGS
           }).available;
         }
         return v.available;
