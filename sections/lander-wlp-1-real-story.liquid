@@ -1,0 +1,640 @@
+{%- comment -%} WLP-1 Real Story VSL — cold paid Meta. Hero is the 65s customer testimonial (autoplay muted, burned captions). Offer reveals after watch trigger or scroll. Live PDP buybox (1mo 20% / 3mo MOST POPULAR 30% / 6mo BEST VALUE 35%). {%- endcomment -%}
+
+{%- liquid
+  assign video_src     = section.settings.video_src     | default: 'https://cdn.shopify.com/videos/c/vp/cfc94774f10c400caaf1ea0d0b9da98d/cfc94774f10c400caaf1ea0d0b9da98d.HD-720p-1.6Mbps-85830065.mp4'
+  assign video_src_hd  = section.settings.video_src_hd  | default: 'https://cdn.shopify.com/videos/c/vp/cfc94774f10c400caaf1ea0d0b9da98d/cfc94774f10c400caaf1ea0d0b9da98d.HD-1080p-2.5Mbps-85830065.mp4'
+  assign video_src_sd  = section.settings.video_src_sd  | default: 'https://cdn.shopify.com/videos/c/vp/cfc94774f10c400caaf1ea0d0b9da98d/cfc94774f10c400caaf1ea0d0b9da98d.SD-480p-0.9Mbps-85830065.mp4'
+  assign video_poster  = section.settings.video_poster  | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/wlp1-real-story-poster.jpg?v=1780699542'
+  assign buy_img       = section.settings.buy_img       | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?v=1774483977&width=960'
+  assign cart_1mo      = section.settings.cart_1mo      | default: '/cart/52472821121313:1?selling_plan=691162546465'
+  assign cart_3mo      = section.settings.cart_3mo      | default: '/cart/52472821154081:1?selling_plan=691162579233'
+  assign cart_6mo      = section.settings.cart_6mo      | default: '/cart/52472821186849:1?selling_plan=691166544161'
+  assign price_1mo_per = section.settings.price_1mo_per | default: '$79.20/mo'
+  assign price_1mo_total = section.settings.price_1mo_total | default: '$79.20'
+  assign price_1mo_was = section.settings.price_1mo_was | default: '$99.20'
+  assign price_1mo_save = section.settings.price_1mo_save | default: '$20.00'
+  assign price_3mo_per = section.settings.price_3mo_per | default: '$69.00/mo'
+  assign price_3mo_total = section.settings.price_3mo_total | default: '$207.00'
+  assign price_3mo_was = section.settings.price_3mo_was | default: '$296.00'
+  assign price_3mo_save = section.settings.price_3mo_save | default: '$89.00'
+  assign price_6mo_per = section.settings.price_6mo_per | default: '$64.00/mo'
+  assign price_6mo_total = section.settings.price_6mo_total | default: '$384.00'
+  assign price_6mo_was = section.settings.price_6mo_was | default: '$594.00'
+  assign price_6mo_save = section.settings.price_6mo_save | default: '$210.00'
+  assign rating        = section.settings.rating        | default: '4.8'
+  assign reveal_seconds = section.settings.reveal_seconds | default: 15
+-%}
+
+<style>
+  .vsl{ --ink:#1c2230; --ink-soft:#3a4456; --muted:#7a8395; --line:#e3e6ec; --line-soft:#eef0f5;
+        --paper:#fbfaf7; --cream:#f6f3ec; --cream-soft:#faf8f3; --blue:#4659ff; --blue-deep:#2f3fd4; --blue-soft:#e8ebff;
+        --sage:#2f7d5e; --warn:#c44a2a; --gold:#f0a92b;
+        color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .vsl *{box-sizing:border-box}
+  .vsl img,.vsl video{max-width:100%;display:block}
+  .vsl a{color:inherit;text-decoration:none}
+  .vsl .wrap{max-width:920px;margin:0 auto;padding:0 18px}
+  .vsl .wrap--wide{max-width:1120px}
+  .vsl .center{text-align:center}
+
+  /* ---------- TOP STICKY BAR (cold-Meta hook frame) ---------- */
+  .vsl-bar{position:sticky;top:0;z-index:60;background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);transition:background .25s ease}
+  .vsl-bar__row{display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 14px;font-size:13px;text-align:center;line-height:1.3;min-height:42px}
+  .vsl-bar__lead{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;display:inline-flex;align-items:center;gap:8px}
+  .vsl-bar__dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(240,169,43,.25);animation:vslPulse 2.2s ease-in-out infinite}
+  @keyframes vslPulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .vsl-bar__cta{display:none;background:var(--blue);color:#fff;padding:7px 14px;border-radius:4px;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin-left:8px;transition:background .2s}
+  .vsl-bar__cta:hover{background:var(--blue-deep)}
+  .vsl-bar.is-revealed{background:var(--blue-deep)}
+  .vsl-bar.is-revealed .vsl-bar__cta{display:inline-flex}
+  .vsl-bar.is-revealed .vsl-bar__dot{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+  @media(max-width:480px){.vsl-bar__row{gap:8px;padding:9px 12px}.vsl-bar__lead{font-size:11px;letter-spacing:.04em}.vsl-bar__cta{font-size:11px;padding:6px 10px}}
+
+  /* ---------- HERO FRAME ---------- */
+  .vsl-hero{background:var(--cream);padding:22px 0 30px;border-bottom:1px solid var(--line)}
+  @media(min-width:880px){.vsl-hero{padding:36px 0 44px}}
+  .vsl-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--ink);background:var(--cream-soft);border:1px solid var(--line);padding:6px 11px;border-radius:999px;margin:0 auto 14px;}
+  .vsl-hero__eyebrow svg{width:13px;height:13px;color:var(--sage);flex:0 0 auto}
+  .vsl-hero h1{font-size:clamp(26px,5.6vw,40px);line-height:1.1;letter-spacing:-.025em;font-weight:800;margin:0 auto 12px;max-width:720px;color:var(--ink)}
+  .vsl-hero h1 em{font-style:normal;color:var(--blue-deep)}
+  .vsl-hero__sub{font-size:clamp(15px,2.1vw,18px);max-width:600px;margin:0 auto 18px;color:var(--ink-soft);line-height:1.5}
+  .vsl-hero__sub b{color:var(--ink);font-weight:600}
+
+  /* ---------- VIDEO PLAYER ---------- */
+  .vsl-player{position:relative;max-width:420px;margin:0 auto;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -18px rgba(28,34,48,.45);aspect-ratio:9/16}
+  @media(min-width:880px){.vsl-player{max-width:480px;border-radius:18px}}
+  .vsl-player video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  .vsl-player__poster{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .3s ease}
+  .vsl-player.is-playing .vsl-player__poster{opacity:0;pointer-events:none}
+  .vsl-player__overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 100%);padding:18px;pointer-events:none}
+  .vsl-player__play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;cursor:pointer;border:0;padding:0;box-shadow:0 8px 28px rgba(0,0,0,.35);pointer-events:auto;transition:transform .2s}
+  .vsl-player__play:hover{transform:translate(-50%,-50%) scale(1.06)}
+  .vsl-player__play svg{width:30px;height:30px;color:#1c2230;margin-left:4px}
+  .vsl-player.is-playing .vsl-player__play{display:none}
+  .vsl-player__unmute{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:8px 12px;border-radius:999px;border:0;cursor:pointer;pointer-events:auto;backdrop-filter:blur(4px);transition:background .2s,opacity .25s;z-index:3}
+  .vsl-player__unmute:hover{background:rgba(0,0,0,.85)}
+  .vsl-player__unmute svg{width:14px;height:14px}
+  .vsl-player.is-unmuted .vsl-player__unmute{opacity:.55}
+  .vsl-player__caption-tag{position:absolute;left:14px;top:14px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;background:rgba(255,255,255,.92);color:var(--ink);padding:5px 10px;border-radius:999px;pointer-events:none;z-index:2;display:inline-flex;align-items:center;gap:6px}
+  .vsl-player__caption-tag svg{width:11px;height:11px;color:var(--warn)}
+  .vsl-player__progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.18);overflow:hidden;z-index:3}
+  .vsl-player__progress span{display:block;height:100%;width:0;background:var(--gold);transition:width .15s linear}
+
+  /* ---------- TRUST STRIP ---------- */
+  .vsl-trust{background:var(--paper);padding:14px 0;border-bottom:1px solid var(--line)}
+  .vsl-trust__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 18px;align-items:center;justify-items:center;text-align:center;font-size:12px;color:var(--ink-soft);font-weight:600}
+  @media(min-width:760px){.vsl-trust__grid{grid-template-columns:repeat(4,1fr);font-size:13px}}
+  .vsl-trust__cell{display:inline-flex;align-items:center;gap:7px;line-height:1.2}
+  .vsl-trust__cell svg{width:15px;height:15px;color:var(--blue);flex:0 0 auto}
+  .vsl-trust__cell b{color:var(--ink);font-weight:700}
+
+  /* ---------- SECTIONS ---------- */
+  .vsl-sec{padding:42px 0;border-bottom:1px solid var(--line)}
+  .vsl-sec--blue{background:var(--blue-soft)}
+  .vsl-sec--cream{background:var(--cream)}
+  .vsl-sec--ink{background:var(--ink);color:#fff}
+  .vsl-sec--ink h2{color:#fff}
+  .vsl-sec__eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--sage);margin:0 0 8px}
+  .vsl-sec__eyebrow.on-ink{color:var(--gold)}
+  .vsl-sec h2{font-size:clamp(22px,4.2vw,32px);line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:0 0 12px;color:var(--ink);max-width:680px}
+  .vsl-sec h2.center{margin-left:auto;margin-right:auto}
+  .vsl-sec p{font-size:clamp(15px,2vw,17px);line-height:1.55;color:var(--ink-soft);margin:0 0 14px}
+  .vsl-sec--ink p{color:rgba(255,255,255,.85)}
+
+  /* ---------- RECAP ("what she said") ---------- */
+  .vsl-recap__grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+  @media(min-width:760px){.vsl-recap__grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+  .vsl-recap__card{background:var(--cream-soft);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;position:relative}
+  .vsl-recap__t{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-deep);margin:0 0 8px}
+  .vsl-recap__q{font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin:0 0 10px}
+  .vsl-recap__q::before{content:"\201C";color:var(--blue);font-weight:800;margin-right:2px}
+  .vsl-recap__q::after{content:"\201D";color:var(--blue);font-weight:800;margin-left:2px}
+  .vsl-recap__cap{font-size:12px;color:var(--muted);font-style:italic}
+
+  /* ---------- TRANSITION BAND ---------- */
+  .vsl-band{background:var(--ink);color:#fff;padding:26px 0;text-align:center}
+  .vsl-band__lead{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--gold);margin:0 0 6px}
+  .vsl-band__line{font-size:clamp(17px,2.6vw,22px);font-weight:700;line-height:1.3;margin:0 0 14px;color:#fff;max-width:580px;margin-left:auto;margin-right:auto}
+  .vsl-band__cta{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff !important;font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;padding:13px 26px;border-radius:4px;transition:background .2s}
+  .vsl-band__cta:hover{background:var(--blue-deep)}
+  .vsl-band__cta::after{content:" →";margin-left:8px}
+
+  /* ---------- BUYBOX ---------- */
+  .vsl-buy{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;max-width:560px;margin:18px auto 0;position:relative;box-shadow:0 18px 40px -22px rgba(28,34,48,.18)}
+  @media(min-width:760px){.vsl-buy{padding:26px}}
+  .vsl-buy__flag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px;white-space:nowrap}
+  .vsl-buy__hero{display:flex;align-items:center;justify-content:center;background:var(--cream);border-radius:10px;padding:14px;margin:6px 0 14px}
+  .vsl-buy__hero img{width:160px;height:auto}
+  .vsl-buy h3{font-size:20px;font-weight:800;margin:0 0 6px;text-align:center;color:var(--ink)}
+  .vsl-buy__stars{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-soft);margin:0 0 16px}
+  .vsl-buy__stars b{color:var(--ink);font-weight:700}
+  .stars5{display:inline-block;width:78px;height:14px;background:linear-gradient(90deg,var(--gold) 0%,var(--gold) 100%);-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='78' height='14' viewBox='0 0 78 14'><g fill='black'><polygon points='7,0 8.6,4.8 13.5,4.8 9.5,7.7 11,12.6 7,9.6 3,12.6 4.5,7.7 0.5,4.8 5.4,4.8'/><polygon points='23,0 24.6,4.8 29.5,4.8 25.5,7.7 27,12.6 23,9.6 19,12.6 20.5,7.7 16.5,4.8 21.4,4.8'/><polygon points='39,0 40.6,4.8 45.5,4.8 41.5,7.7 43,12.6 39,9.6 35,12.6 36.5,7.7 32.5,4.8 37.4,4.8'/><polygon points='55,0 56.6,4.8 61.5,4.8 57.5,7.7 59,12.6 55,9.6 51,12.6 52.5,7.7 48.5,4.8 53.4,4.8'/><polygon points='71,0 72.6,4.8 77.5,4.8 73.5,7.7 75,12.6 71,9.6 67,12.6 68.5,7.7 64.5,4.8 69.4,4.8'/></g></svg>") no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='78' height='14' viewBox='0 0 78 14'><g fill='black'><polygon points='7,0 8.6,4.8 13.5,4.8 9.5,7.7 11,12.6 7,9.6 3,12.6 4.5,7.7 0.5,4.8 5.4,4.8'/><polygon points='23,0 24.6,4.8 29.5,4.8 25.5,7.7 27,12.6 23,9.6 19,12.6 20.5,7.7 16.5,4.8 21.4,4.8'/><polygon points='39,0 40.6,4.8 45.5,4.8 41.5,7.7 43,12.6 39,9.6 35,12.6 36.5,7.7 32.5,4.8 37.4,4.8'/><polygon points='55,0 56.6,4.8 61.5,4.8 57.5,7.7 59,12.6 55,9.6 51,12.6 52.5,7.7 48.5,4.8 53.4,4.8'/><polygon points='71,0 72.6,4.8 77.5,4.8 73.5,7.7 75,12.6 71,9.6 67,12.6 68.5,7.7 64.5,4.8 69.4,4.8'/></g></svg>") no-repeat}
+  .vsl-buy__sub{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;text-align:center}
+
+  .vsl-opts{display:grid;gap:10px;margin:0 0 16px}
+  .vsl-opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;transition:all .15s ease}
+  .vsl-opt:hover{border-color:var(--blue-soft)}
+  .vsl-opt.is-on{border-color:var(--blue);background:var(--blue-soft)}
+  .vsl-opt input{position:absolute;opacity:0;pointer-events:none}
+  .vsl-opt__bullet{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;position:relative;transition:all .15s}
+  .vsl-opt.is-on .vsl-opt__bullet{border-color:var(--blue)}
+  .vsl-opt.is-on .vsl-opt__bullet::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+  .vsl-opt__main{flex:1;min-width:0}
+  .vsl-opt__title{font-weight:700;font-size:15px;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:6px;line-height:1.25}
+  .vsl-opt__chip{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--cream);color:var(--ink-soft);white-space:nowrap}
+  .vsl-opt__chip--blue{background:var(--blue);color:#fff}
+  .vsl-opt__chip--sage{background:var(--sage);color:#fff}
+  .vsl-opt__meta{font-size:12px;color:var(--muted);margin-top:3px}
+  .vsl-opt__price{text-align:right;flex:0 0 auto;font-size:13px}
+  .vsl-opt__price b{display:block;font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+  .vsl-opt__price-row{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+  .vsl-opt__price-row s{margin-right:4px}
+  .vsl-opt__save{display:block;font-size:11px;color:var(--sage);font-weight:700;margin-top:2px}
+
+  .vsl-buy__list{list-style:none;padding:0;margin:0 0 16px;display:grid;gap:8px}
+  .vsl-buy__list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--ink);line-height:1.4}
+  .vsl-buy__list li svg{width:18px;height:18px;color:var(--sage);flex:0 0 auto;margin-top:1px}
+  .vsl-buy__cta{display:flex;align-items:center;justify-content:center;width:100%;padding:16px;background:var(--blue);color:#fff !important;font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;border:0;cursor:pointer;text-decoration:none;transition:background .2s}
+  .vsl-buy__cta:hover{background:var(--blue-deep)}
+  .vsl-buy__cta::after{content:" →";margin-left:10px}
+  .vsl-buy__fine{font-size:12px;color:var(--muted);text-align:center;margin:10px 0 0;line-height:1.4}
+
+  /* ---------- ACTIVES ---------- */
+  .vsl-actives{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+  @media(min-width:760px){.vsl-actives{grid-template-columns:repeat(3,1fr);gap:16px}}
+  .vsl-act{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .vsl-act__name{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-deep);margin:0 0 6px}
+  .vsl-act__h{font-size:17px;font-weight:800;margin:0 0 8px;line-height:1.25;color:var(--ink)}
+  .vsl-act__t{font-size:14px;line-height:1.5;color:var(--ink-soft);margin:0}
+
+  /* ---------- COMPARISON TABLE ---------- */
+  .vsl-cmp{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .vsl-cmp table{width:100%;border-collapse:collapse;font-size:13px}
+  .vsl-cmp th,.vsl-cmp td{padding:11px 10px;text-align:center;border-bottom:1px solid var(--line);vertical-align:middle}
+  .vsl-cmp th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--cream-soft)}
+  .vsl-cmp tr:last-child td{border-bottom:0}
+  .vsl-cmp .vsl-cmp__lbl{text-align:left;font-weight:600;color:var(--ink);padding-left:14px;background:var(--cream-soft)}
+  .vsl-cmp .yes{color:var(--sage);font-weight:700}
+  .vsl-cmp .no{color:var(--warn);font-weight:600}
+  .vsl-cmp .wlp-col{background:var(--blue-soft);font-weight:700;color:var(--blue-deep)}
+  @media(max-width:520px){.vsl-cmp{font-size:12px}.vsl-cmp th,.vsl-cmp td{padding:9px 6px}}
+
+  /* ---------- REVIEWS PROOF ---------- */
+  .vsl-rev{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+  @media(min-width:760px){.vsl-rev{grid-template-columns:repeat(3,1fr);gap:16px}}
+  .vsl-rev__card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .vsl-rev__stars{margin-bottom:8px}
+  .vsl-rev__q{font-size:14px;color:var(--ink);line-height:1.5;margin:0 0 10px}
+  .vsl-rev__n{font-size:12px;color:var(--ink-soft);font-weight:700}
+  .vsl-rev__v{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--sage);font-weight:600;margin-left:6px}
+  .vsl-rev__v svg{width:11px;height:11px}
+
+  /* ---------- FAQ ---------- */
+  .vsl-faq{max-width:680px;margin:18px auto 0}
+  .vsl-faq__item{background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .vsl-faq__q{cursor:pointer;padding:16px 18px;font-weight:700;font-size:15px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:14px;list-style:none;line-height:1.35}
+  .vsl-faq__q::-webkit-details-marker{display:none}
+  .vsl-faq__q::after{content:"+";font-size:22px;color:var(--blue);font-weight:400;transition:transform .2s}
+  .vsl-faq__item[open] .vsl-faq__q::after{transform:rotate(45deg)}
+  .vsl-faq__a{padding:0 18px 18px;font-size:14px;color:var(--ink-soft);line-height:1.6}
+
+  /* ---------- FINAL ---------- */
+  .vsl-final{background:var(--ink);color:#fff;padding:48px 0;text-align:center}
+  .vsl-final h2{color:#fff;margin:0 auto 12px;max-width:560px}
+  .vsl-final p{color:rgba(255,255,255,.78);max-width:520px;margin:0 auto 20px}
+  .vsl-final__cta{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff !important;font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:16px 30px;border-radius:6px;transition:background .2s}
+  .vsl-final__cta:hover{background:var(--blue-deep)}
+  .vsl-final__cta::after{content:" →";margin-left:10px}
+  .vsl-final__fine{margin-top:14px;font-size:12px;color:rgba(255,255,255,.55)}
+
+  /* ---------- STICKY MOBILE CTA ---------- */
+  .vsl-mob{position:fixed;left:0;right:0;bottom:-80px;background:#fff;border-top:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:12px;z-index:55;box-shadow:0 -8px 24px -10px rgba(28,34,48,.18);transition:bottom .35s ease}
+  .vsl-mob.is-on{bottom:0}
+  .vsl-mob__price{flex:0 0 auto;display:flex;flex-direction:column;line-height:1.1;font-size:11px;color:var(--muted)}
+  .vsl-mob__price b{font-size:16px;color:var(--ink);font-weight:800}
+  .vsl-mob__cta{flex:1;display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff !important;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:13px 14px;border-radius:6px;text-decoration:none}
+  .vsl-mob__cta::after{content:" →";margin-left:8px}
+  @media(min-width:880px){.vsl-mob{display:none}}
+
+  /* ---------- DISCLOSURE ---------- */
+  .vsl-disc{padding:18px 0 28px;background:var(--paper);font-size:11px;line-height:1.55;color:var(--muted);text-align:center}
+</style>
+
+<div class="vsl">
+
+  <!-- TOP STICKY BAR -->
+  <div class="vsl-bar" id="vslBar" role="banner">
+    <div class="vsl-bar__row">
+      <span class="vsl-bar__lead"><span class="vsl-bar__dot"></span>Real customer · 2-month update</span>
+      <a href="#buy" class="vsl-bar__cta">Try WLP-1 · 35% off</a>
+    </div>
+  </div>
+
+  <!-- HERO (cold-Meta framing above the video) -->
+  <section class="vsl-hero center">
+    <div class="wrap">
+      <span class="vsl-hero__eyebrow">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+        Verified customer · 2-month results
+      </span>
+      <h1>She tried oral GLP-1 for 2 months. <em>Here's what happened.</em></h1>
+      <p class="vsl-hero__sub">A real customer filmed at home. No script, no actors. <b>Press play to hear her story.</b></p>
+
+      <div class="vsl-player" id="vslPlayer">
+        <span class="vsl-player__caption-tag">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+          Captions on
+        </span>
+        <video id="vslVid" muted autoplay playsinline webkit-playsinline loop preload="metadata" poster="{{ video_poster }}">
+          <source src="{{ video_src }}" type="video/mp4">
+          <source src="{{ video_src_sd }}" type="video/mp4">
+        </video>
+        <button class="vsl-player__unmute" type="button" id="vslUnmute" aria-label="Unmute video">
+          <svg viewBox="0 0 24 24" fill="currentColor" id="vslSpeakerIcon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z" opacity=".55"/><path d="M16.5 12c0-2.49-1.4-4.6-3.5-5.6v11.2c2.1-1 3.5-3.11 3.5-5.6zm-12-3h4l5-5v18l-5-5H4.5l-1-1V10l1-1z" opacity="0"/></svg>
+          <span id="vslUnmuteLabel">Tap to unmute</span>
+        </button>
+        <button class="vsl-player__play" type="button" id="vslPlayBtn" aria-label="Play video">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="vsl-player__overlay"></div>
+        <div class="vsl-player__progress"><span id="vslProg"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="vsl-trust">
+    <div class="wrap">
+      <div class="vsl-trust__grid">
+        <div class="vsl-trust__cell"><span class="stars5" aria-hidden="true"></span><b>{{ rating }}</b>/5</div>
+        <div class="vsl-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4z"/></svg>30-day guarantee</div>
+        <div class="vsl-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2V11H3v2zm4 8h10v-2H7v2zm0-4h10v-2H7v2zM21 7h-2v10h2V7zM7 11V3h10v8H7zM3 7h2V5H3v2zm0 12h2v-2H3v2z"/></svg>No needles, no Rx</div>
+        <div class="vsl-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V6c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zM9 6h6v2H9V6z"/></svg>Ships in 2 days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="vsl-sec vsl-sec--cream">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center" style="text-align:center">How WLP-1 works</p>
+      <h2 class="center">Three actives. One GLP-1 pathway.</h2>
+      <p class="center" style="text-align:center;max-width:560px;margin-left:auto;margin-right:auto">Same biological pathway GLP-1 injections target, activated naturally with three patented plant compounds, formulated for absorption.</p>
+
+      <div class="vsl-actives">
+        <div class="vsl-act">
+          <p class="vsl-act__name">IGOB131®</p>
+          <p class="vsl-act__h">Curbs the cravings.</p>
+          <p class="vsl-act__t">Patented African mango seed extract clinically shown to support appetite regulation and reduce snacking behavior.</p>
+        </div>
+        <div class="vsl-act">
+          <p class="vsl-act__name">CQR300®</p>
+          <p class="vsl-act__h">Targets stored fat.</p>
+          <p class="vsl-act__t">A clinically studied black ginger extract that supports the body's ability to use stored fat for energy, not just store it.</p>
+        </div>
+        <div class="vsl-act">
+          <p class="vsl-act__name">Capsifen® (Grains of Paradise)</p>
+          <p class="vsl-act__h">Lifts daily energy.</p>
+          <p class="vsl-act__t">Activates brown adipose tissue (BAT) to support a higher resting calorie burn, so you feel lighter throughout the day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSITION BAND -->
+  <div class="vsl-band">
+    <div class="wrap">
+      <p class="vsl-band__lead">Same WLP-1. Same offer.</p>
+      <p class="vsl-band__line">She started with one bottle. You can too. Up to 35% off the same protocol below.</p>
+      <a href="#buy" class="vsl-band__cta">See the offer</a>
+    </div>
+  </div>
+
+  <!-- BUYBOX -->
+  <section class="vsl-sec vsl-sec--blue" id="buy">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center" style="text-align:center">Pick your plan</p>
+      <h2 class="center">WLP-1, oral GLP-1 support.</h2>
+
+      <div class="vsl-buy">
+        <span class="vsl-buy__flag">Subscribe &amp; save up to 35%</span>
+        <div class="vsl-buy__hero"><img src="{{ buy_img }}" alt="WLP-1 bottle" loading="lazy" width="160" height="160"></div>
+        <h3>WLP-1 · Oral GLP-1 Support</h3>
+        <div class="vsl-buy__stars"><span class="stars5" aria-hidden="true"></span><b>{{ rating }}</b> stars · Real reviews</div>
+
+        <p class="vsl-buy__sub">Choose your plan</p>
+        <div class="vsl-opts">
+          <label class="vsl-opt" data-opt data-cart="{{ cart_1mo }}" data-price="{{ price_1mo_per }}">
+            <input type="radio" name="vsl-plan" value="1mo">
+            <span class="vsl-opt__bullet"></span>
+            <div class="vsl-opt__main">
+              <div class="vsl-opt__title">Monthly <span class="vsl-opt__chip">Save 20%</span></div>
+              <div class="vsl-opt__meta">1-month supply, delivered every month. Cancel anytime.</div>
+            </div>
+            <div class="vsl-opt__price">
+              <b>{{ price_1mo_per }}</b>
+              <span class="vsl-opt__price-row"><s>{{ price_1mo_was }}</s>{{ price_1mo_total }} total</span>
+              <span class="vsl-opt__save">Save {{ price_1mo_save }}</span>
+            </div>
+          </label>
+
+          <label class="vsl-opt is-on" data-opt data-cart="{{ cart_3mo }}" data-price="{{ price_3mo_per }}">
+            <input type="radio" name="vsl-plan" value="3mo" checked>
+            <span class="vsl-opt__bullet"></span>
+            <div class="vsl-opt__main">
+              <div class="vsl-opt__title">3 Months <span class="vsl-opt__chip">Save 30%</span> <span class="vsl-opt__chip vsl-opt__chip--blue">Most Popular</span></div>
+              <div class="vsl-opt__meta">3-month supply, refills every 3 months.</div>
+            </div>
+            <div class="vsl-opt__price">
+              <b>{{ price_3mo_per }}</b>
+              <span class="vsl-opt__price-row"><s>{{ price_3mo_was }}</s>{{ price_3mo_total }} total</span>
+              <span class="vsl-opt__save">Save {{ price_3mo_save }}</span>
+            </div>
+          </label>
+
+          <label class="vsl-opt" data-opt data-cart="{{ cart_6mo }}" data-price="{{ price_6mo_per }}">
+            <input type="radio" name="vsl-plan" value="6mo">
+            <span class="vsl-opt__bullet"></span>
+            <div class="vsl-opt__main">
+              <div class="vsl-opt__title">6 Months <span class="vsl-opt__chip">Save 35%</span> <span class="vsl-opt__chip vsl-opt__chip--sage">Best Value</span></div>
+              <div class="vsl-opt__meta">6-month supply, refills every 6 months.</div>
+            </div>
+            <div class="vsl-opt__price">
+              <b>{{ price_6mo_per }}</b>
+              <span class="vsl-opt__price-row"><s>{{ price_6mo_was }}</s>{{ price_6mo_total }} total</span>
+              <span class="vsl-opt__save">Save {{ price_6mo_save }}</span>
+            </div>
+          </label>
+        </div>
+
+        <ul class="vsl-buy__list">
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>3 patented actives: CQR300®, IGOB131®, Capsifen® (Grains of Paradise)</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Same biology GLP-1 injections target. No needles, no Rx.</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Free shipping on orders $50+</li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>30-day money-back guarantee, even on empty bottles</li>
+        </ul>
+
+        <a href="{{ cart_3mo }}" class="vsl-buy__cta" data-buy-cta data-atc>Start with WLP-1</a>
+        <p class="vsl-buy__fine">Subscription discount applies automatically at checkout. Pause or cancel in 1 click.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="vsl-sec">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center" style="text-align:center">WLP-1 vs the alternatives</p>
+      <h2 class="center">Same pathway. None of the downsides.</h2>
+
+      <div class="vsl-cmp">
+        <table>
+          <thead>
+            <tr><th></th><th class="wlp-col">WLP-1</th><th>GLP-1 injections</th><th>Standard diet pills</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="vsl-cmp__lbl">Format</td><td class="wlp-col yes">Oral capsule</td><td class="no">Weekly needle</td><td class="yes">Pill</td></tr>
+            <tr><td class="vsl-cmp__lbl">Prescription</td><td class="wlp-col yes">No Rx</td><td class="no">Required</td><td class="yes">No Rx</td></tr>
+            <tr><td class="vsl-cmp__lbl">Targets GLP-1 pathway</td><td class="wlp-col yes">Yes, naturally</td><td class="yes">Yes, synthetically</td><td class="no">No</td></tr>
+            <tr><td class="vsl-cmp__lbl">Reported "food noise" relief</td><td class="wlp-col yes">Yes</td><td class="yes">Yes</td><td class="no">Rare</td></tr>
+            <tr><td class="vsl-cmp__lbl">Risk of rebound on stop</td><td class="wlp-col yes">Lower</td><td class="no">Common</td><td class="no">Common</td></tr>
+            <tr><td class="vsl-cmp__lbl">Money-back guarantee</td><td class="wlp-col yes">30 days</td><td class="no">None</td><td class="no">Rarely</td></tr>
+            <tr><td class="vsl-cmp__lbl">Cost (3-mo plan)</td><td class="wlp-col yes">{{ price_3mo_total }}</td><td class="no">$1,000+</td><td class="yes">Varies</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS PROOF -->
+  <section class="vsl-sec vsl-sec--cream">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center" style="text-align:center">Real reviews · Verified buyers</p>
+      <h2 class="center">She's not the only one.</h2>
+
+      <div class="vsl-rev">
+        <div class="vsl-rev__card">
+          <span class="stars5 vsl-rev__stars" aria-hidden="true"></span>
+          <p class="vsl-rev__q">"I have lost over 5 pounds in the first month. Feel like I am eating less and no longer have cravings to snack."</p>
+          <div><span class="vsl-rev__n">Nicole S.</span><span class="vsl-rev__v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</span></div>
+        </div>
+        <div class="vsl-rev__card">
+          <span class="stars5 vsl-rev__stars" aria-hidden="true"></span>
+          <p class="vsl-rev__q">"The hunger and food noise has been a game changer for me. Worth giving a try."</p>
+          <div><span class="vsl-rev__n">Jenn O.</span><span class="vsl-rev__v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</span></div>
+        </div>
+        <div class="vsl-rev__card">
+          <span class="stars5 vsl-rev__stars" aria-hidden="true"></span>
+          <p class="vsl-rev__q">"Noticed a difference in one month. Less food cravings. Appetite has decreased. I no longer feel hungry all the time."</p>
+          <div><span class="vsl-rev__n">Meredith N.</span><span class="vsl-rev__v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="vsl-sec">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center" style="text-align:center">FAQ</p>
+      <h2 class="center">Common questions before starting.</h2>
+
+      <div class="vsl-faq">
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">Is this like a shot? Will I have to inject anything?</summary><div class="vsl-faq__a">No needles, no appointments, no prescription. WLP-1 is a daily oral capsule with three patented plant-based actives that target the same GLP-1 pathway as injectables, naturally.</div></details>
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">Will I gain the weight back if I stop?</summary><div class="vsl-faq__a">Because WLP-1 supports the GLP-1 pathway gradually rather than overriding it pharmacologically, the rebound effect customers report is meaningfully lower than what's reported with injectables. Still, sustainable changes are most likely when WLP-1 is paired with the eating and movement habits you already enjoy.</div></details>
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">How long until I notice anything?</summary><div class="vsl-faq__a">Most customers report shifts in appetite and "food noise" within the first 2 to 4 weeks. Visible changes (clothes fitting different, energy in the afternoon) tend to follow at the 6 to 10 week mark, similar to the customer in the video.</div></details>
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">I'm already on a GLP-1 injection. Can I take both?</summary><div class="vsl-faq__a">Please consult your prescribing doctor first. Many customers use WLP-1 as a transition tool when they choose to come off injections, to help support appetite regulation as the medication clears.</div></details>
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">What if it doesn't work for me?</summary><div class="vsl-faq__a">You're covered by our 30-day money-back guarantee, even on empty bottles. Email support and we'll process the refund. No phone tree, no restocking fee.</div></details>
+        <details class="vsl-faq__item"><summary class="vsl-faq__q">Can I pause or cancel my subscription?</summary><div class="vsl-faq__a">Yes, anytime. Pause for a month, switch your delivery cadence, or cancel in one tap from your account. No contracts.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="vsl-final">
+    <div class="wrap">
+      <p class="vsl-sec__eyebrow center on-ink" style="text-align:center;margin-bottom:8px">Try WLP-1 risk-free</p>
+      <h2 class="center">If it doesn't work, we'll refund you.</h2>
+      <p>30-day money-back guarantee, even on empty bottles. Free shipping on $50+. Pause or cancel in 1 click.</p>
+      <a href="#buy" class="vsl-final__cta">Start with WLP-1</a>
+      <p class="vsl-final__fine">Subscription pricing shown. The Absorption Company · Made in USA, FDA-registered facility.</p>
+    </div>
+  </section>
+
+  <!-- COMPLIANCE DISCLOSURE -->
+  <div class="vsl-disc">
+    <div class="wrap">
+      <p>*Customer story reflects this individual's experience. Individual results vary. Statements have not been evaluated by the FDA. WLP-1 is a dietary supplement and is not intended to diagnose, treat, cure, or prevent any disease, and is not a substitute for a prescription medication. Consult your healthcare provider before starting a new supplement, especially if pregnant, nursing, or taking prescription medication.</p>
+    </div>
+  </div>
+
+  <!-- STICKY MOBILE CTA -->
+  <div class="vsl-mob" id="vslMob">
+    <div class="vsl-mob__price">
+      <span>From</span>
+      <b>{{ price_6mo_per }}</b>
+    </div>
+    <a href="{{ cart_3mo }}" class="vsl-mob__cta" data-buy-cta data-atc>Start with WLP-1</a>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var REVEAL_AT = {{ reveal_seconds }};
+  var v = document.getElementById('vslVid');
+  var player = document.getElementById('vslPlayer');
+  var unmute = document.getElementById('vslUnmute');
+  var unmuteLbl = document.getElementById('vslUnmuteLabel');
+  var playBtn = document.getElementById('vslPlayBtn');
+  var prog = document.getElementById('vslProg');
+  var bar = document.getElementById('vslBar');
+  var mob = document.getElementById('vslMob');
+  if(!v) return;
+
+  var revealed = false;
+  function reveal(){
+    if(revealed) return;
+    revealed = true;
+    bar.classList.add('is-revealed');
+    mob.classList.add('is-on');
+  }
+
+  // Autoplay-muted on load (cold Meta best practice)
+  // Browsers block sound until user interacts. Provide a clear unmute button.
+  v.addEventListener('play', function(){
+    player.classList.add('is-playing');
+  });
+  v.addEventListener('pause', function(){
+    player.classList.remove('is-playing');
+  });
+  v.addEventListener('ended', function(){
+    player.classList.remove('is-playing');
+  });
+  v.addEventListener('timeupdate', function(){
+    if(v.duration > 0){
+      var p = (v.currentTime / v.duration) * 100;
+      if(prog) prog.style.width = p + '%';
+    }
+    if(v.currentTime >= REVEAL_AT) reveal();
+  });
+
+  // Big play overlay (in case autoplay is blocked)
+  playBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    v.play();
+  });
+
+  // Unmute pill — most important VSL interaction
+  unmute.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(v.muted){
+      v.muted = false;
+      v.volume = 1;
+      v.play();
+      player.classList.add('is-unmuted');
+      unmuteLbl.textContent = 'Muted on';
+      // Once unmuted, hide the pill after a couple seconds
+      setTimeout(function(){ unmute.style.display = 'none'; }, 1800);
+    }
+  });
+
+  // Click anywhere on video toggles play/pause once it's started
+  v.addEventListener('click', function(){
+    if(v.paused){ v.play(); } else { v.pause(); }
+  });
+
+  // Reveal on scroll past the video
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting && en.boundingClientRect.top < 0) reveal();
+      });
+    }, {threshold: 0});
+    io.observe(player);
+  }
+
+  // ---------- BUYBOX PLAN PICKER ----------
+  var opts = document.querySelectorAll('[data-opt]');
+  var buyCtas = document.querySelectorAll('[data-buy-cta]');
+  opts.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      opts.forEach(function(o){ o.classList.remove('is-on'); var i=o.querySelector('input'); if(i) i.checked=false; });
+      opt.classList.add('is-on');
+      var i = opt.querySelector('input'); if(i) i.checked = true;
+      var cart = opt.getAttribute('data-cart');
+      buyCtas.forEach(function(c){ c.setAttribute('href', cart); });
+    });
+  });
+
+  // ATC handler — POST /cart/add.js so the Skio selling_plan actually attaches.
+  // Cart permalinks (/cart/X:1?selling_plan=Y) silently drop the plan on absorbmore.com.
+  function parseCart(url){
+    var m = (url || '').match(/\/cart\/(\d+):(\d+)(?:\?selling_plan=(\d+))?/);
+    if(!m) return null;
+    return { id: m[1], quantity: parseInt(m[2], 10) || 1, selling_plan: m[3] || null };
+  }
+  document.querySelectorAll('[data-atc]').forEach(function(cta){
+    cta.addEventListener('click', function(e){
+      var url = cta.getAttribute('href') || '';
+      var parsed = parseCart(url);
+      if(!parsed) return;
+      e.preventDefault();
+      var origLabel = cta.innerHTML;
+      cta.setAttribute('aria-busy','true');
+      cta.innerHTML = 'Adding…';
+      var body = { id: parsed.id, quantity: parsed.quantity };
+      if(parsed.selling_plan) body.selling_plan = parsed.selling_plan;
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(function(){ window.location.href = '/cart'; })
+        .catch(function(){ window.location.href = url; })
+        .finally(function(){ cta.innerHTML = origLabel; cta.removeAttribute('aria-busy'); });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WLP-1 Real Story VSL",
+  "settings": [
+    { "type": "header", "content": "Video" },
+    { "type": "url",  "id": "video_src",     "label": "720p video src" },
+    { "type": "url",  "id": "video_src_hd",  "label": "1080p video src" },
+    { "type": "url",  "id": "video_src_sd",  "label": "480p fallback src" },
+    { "type": "url",  "id": "video_poster",  "label": "Video poster image" },
+    { "type": "range","id": "reveal_seconds","label":"Reveal CTA after (seconds of watch)", "min":5,"max":60,"step":1,"default":15 },
+
+    { "type": "header", "content": "Buy box image" },
+    { "type": "url", "id": "buy_img", "label": "Bottle image" },
+
+    { "type": "header", "content": "Cart URLs (Skio)" },
+    { "type": "url", "id": "cart_1mo", "label": "1-month cart URL" },
+    { "type": "url", "id": "cart_3mo", "label": "3-month cart URL" },
+    { "type": "url", "id": "cart_6mo", "label": "6-month cart URL" },
+
+    { "type": "header", "content": "Pricing — 1 mo" },
+    { "type": "text", "id": "price_1mo_per",  "label": "Per period (1mo)" },
+    { "type": "text", "id": "price_1mo_total","label": "Total (1mo)" },
+    { "type": "text", "id": "price_1mo_was",  "label": "Was (1mo)" },
+    { "type": "text", "id": "price_1mo_save", "label": "Save (1mo)" },
+
+    { "type": "header", "content": "Pricing — 3 mo" },
+    { "type": "text", "id": "price_3mo_per",  "label": "Per period (3mo)" },
+    { "type": "text", "id": "price_3mo_total","label": "Total (3mo)" },
+    { "type": "text", "id": "price_3mo_was",  "label": "Was (3mo)" },
+    { "type": "text", "id": "price_3mo_save", "label": "Save (3mo)" },
+
+    { "type": "header", "content": "Pricing — 6 mo" },
+    { "type": "text", "id": "price_6mo_per",  "label": "Per period (6mo)" },
+    { "type": "text", "id": "price_6mo_total","label": "Total (6mo)" },
+    { "type": "text", "id": "price_6mo_was",  "label": "Was (6mo)" },
+    { "type": "text", "id": "price_6mo_save", "label": "Save (6mo)" },
+
+    { "type": "header", "content": "Misc" },
+    { "type": "text", "id": "rating", "label": "Rating", "default": "4.8" }
+  ],
+  "presets": [{ "name": "WLP-1 Real Story VSL" }]
+}
+{% endschema %}

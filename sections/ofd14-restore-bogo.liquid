@@ -1,0 +1,992 @@
+{% comment %}
+  OFD14 — Restore BOGO 50% (Mix & Match Flavors).
+  BOFU / MOFU / winback / churn / re-engage.
+  Offer: Buy 1, Get 1 Half Off. Advertise BOGO 50% as the hook; charge $93.80
+  on subscribe (matches the better Buy 2/30% off math). One-time = literal BOGO at $100.50.
+  Conversion lever = pick a flavor for each bag (Raspberry + Mango mix-and-match).
+  Page: /pages/ofd14-restore-bogo
+  Template: templates/page.ofd14-restore-bogo.json
+{% endcomment %}
+
+<style>
+  .ofd14{
+    --rasp:#C63947;
+    --rasp-bright:#D8505E;
+    --rasp-deep:#9E2B38;
+    --rasp-darker:#7A1E2A;
+    --rasp-soft:rgba(198,57,71,0.08);
+    --mango:#F2961C;
+    --mango-bright:#FFB347;
+    --mango-deep:#C36A00;
+    --mango-soft:rgba(242,150,28,0.10);
+    --cream:#FFF7F1;
+    --cream-deep:#FBE9D9;
+    --pink-wash:#FBECEE;
+    --line:#ecd2d6;
+    --ink:#1a1814;
+    --ink-mute:#5a554d;
+    --ink-soft:#9a958d;
+    --white:#ffffff;
+  }
+  .ofd14 *,.ofd14 *::before,.ofd14 *::after{box-sizing:border-box;}
+  .ofd14{color:var(--ink);padding:0;}
+  .ofd14 p{margin:0 0 14px;font-size:16px;line-height:1.6;color:var(--ink-mute);}
+  .ofd14 h1,.ofd14 h2,.ofd14 h3{margin:0 0 14px;letter-spacing:-0.01em;font-weight:800;color:var(--ink);}
+  .ofd14 h1{font-size:36px;line-height:1.05;}
+  .ofd14 h2{font-size:28px;line-height:1.15;}
+  .ofd14 h3{font-size:18px;line-height:1.3;}
+  .ofd14 .eb{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--rasp);margin:0 0 12px;text-transform:uppercase;}
+  .ofd14 .rasp{color:var(--rasp);}
+  .ofd14 .mango{color:var(--mango-deep);}
+  .ofd14 .cream{color:var(--cream);}
+  .ofd14 .ital{font-style:italic;font-weight:800;color:var(--rasp);}
+  .ofd14 .strike{text-decoration:line-through;opacity:.5;font-weight:500;margin-right:6px;}
+  .ofd14 .inner{max-width:1140px;margin:0 auto;padding:0 20px;}
+  .ofd14 .sec{padding:48px 0;}
+  .ofd14 .sec--pink{background:var(--pink-wash);}
+  .ofd14 .sec--cream{background:var(--cream);}
+  .ofd14 .sec--ink{background:var(--ink);color:#fff;}
+  .ofd14 .sec--ink h2,.ofd14 .sec--ink h3{color:#fff;}
+  .ofd14 .sec--ink p{color:rgba(255,247,241,0.85);}
+  .ofd14 .center{text-align:center;}
+
+  .ofd14 .btn{display:inline-block;background:var(--rasp);color:#fff;font-weight:700;font-size:15px;letter-spacing:.04em;padding:16px 28px;border-radius:999px;text-decoration:none;text-align:center;border:none;cursor:pointer;transition:transform .15s, background .15s;}
+  .ofd14 .btn:hover{transform:translateY(-1px);background:var(--rasp-deep);}
+  .ofd14 .btn--cream{background:var(--cream);color:var(--rasp-deep);}
+  .ofd14 .btn--cream:hover{background:var(--white);}
+  .ofd14 .btn--ink{background:var(--ink);color:#fff;}
+  .ofd14 .btn.full{display:block;width:100%;}
+
+  .ofd14 .stars{color:var(--rasp);font-size:16px;letter-spacing:1px;display:inline-flex;align-items:center;gap:8px;}
+  .ofd14 .stars small{color:var(--ink-mute);font-weight:600;font-size:13px;letter-spacing:0;}
+  .ofd14 .trust{font-size:12px;color:var(--ink-mute);margin:10px 0 0;letter-spacing:.02em;}
+
+  /* === STICKY BANNER === */
+  .ofd14-bar{position:sticky;top:0;z-index:50;background:var(--rasp);color:#fff;padding:10px 14px;text-align:center;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;line-height:1.2;box-shadow:0 2px 10px rgba(122,30,42,0.18);}
+  .ofd14-bar .lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;display:inline-flex;align-items:center;gap:8px;}
+  .ofd14-bar .lbl::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:o14Pulse 1.6s ease-in-out infinite;}
+  .ofd14-bar .pipe{opacity:.45;}
+  .ofd14-bar a.cta-mini{color:#fff;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;}
+  @keyframes o14Pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+  @media (max-width:480px){
+    .ofd14-bar{padding:8px 10px;gap:6px;font-size:11px;}
+    .ofd14-bar .lbl{font-size:10px;letter-spacing:.14em;}
+  }
+
+  /* === HERO === */
+  .ofd14-hero{position:relative;padding:36px 0 44px;background:#fff;color:var(--ink);overflow:hidden;}
+  .ofd14-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(40% 35% at 92% 8%,var(--pink-wash),transparent 70%),radial-gradient(40% 40% at 6% 96%,rgba(242,150,28,0.10),transparent 65%);pointer-events:none;}
+  .ofd14-hero .inner{position:relative;}
+  .ofd14-hero h1{color:var(--ink);font-size:26px;line-height:1.12;letter-spacing:-0.02em;text-wrap:balance;}
+  .ofd14-hero h1 .accent{color:var(--rasp);}
+  .ofd14-hero h1 .underline{color:var(--rasp);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;text-decoration-color:var(--rasp);}
+  .ofd14-hero p{color:var(--ink-mute);}
+  .ofd14-hero .pill{display:inline-flex;align-items:center;gap:8px;background:var(--rasp);color:#fff;padding:8px 16px;border-radius:999px;font-size:11px;letter-spacing:.22em;font-weight:800;text-transform:uppercase;margin:0 0 16px;box-shadow:0 4px 14px rgba(198,57,71,0.20);}
+  .ofd14-hero .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:o14Pulse 1.6s ease-in-out infinite;}
+  .ofd14-hero .grid{display:grid;grid-template-columns:1fr;gap:26px;align-items:center;}
+
+  /* Hero benefits eyebrow strip — sits above the offer headline */
+  .ofd14-hero .benefits-eb{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 8px;background:var(--pink-wash);border:1px solid var(--line);border-radius:14px;padding:12px 10px;margin:0 0 22px;}
+  .ofd14-hero .benefits-eb .b{display:flex;align-items:center;gap:7px;font-size:11.5px;letter-spacing:.03em;font-weight:700;color:var(--ink);line-height:1.2;padding:4px 2px;}
+  .ofd14-hero .benefits-eb .b .ic{width:22px;height:22px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:var(--rasp);}
+  @media (min-width:560px){
+    .ofd14-hero .benefits-eb{grid-template-columns:repeat(6,1fr);}
+    .ofd14-hero .benefits-eb .b{font-size:12px;}
+  }
+
+  .ofd14-hero .hero-img{border-radius:18px;overflow:hidden;background:#fff;position:relative;border:1px solid var(--line);box-shadow:0 18px 50px rgba(122,30,42,0.10);padding:18px 14px 56px;}
+  .ofd14-hero .hero-img img{width:100%;height:auto;display:block;object-fit:contain;}
+  .ofd14-hero .hero-img--mobile{display:block;margin:0 0 22px;}
+  .ofd14-hero .hero-img--desktop{display:none;}
+  @media (min-width:760px){
+    .ofd14-hero .hero-img--mobile{display:none;}
+    .ofd14-hero .hero-img--desktop{display:block;}
+  }
+  .ofd14-hero .hero-img .badge{position:absolute;top:14px;left:14px;background:var(--rasp);color:#fff;font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;padding:6px 12px;border-radius:999px;box-shadow:0 4px 12px rgba(198,57,71,0.25);z-index:2;}
+  .ofd14-hero .hero-img .scarcity{position:absolute;bottom:14px;left:14px;right:14px;background:#fff;color:var(--rasp-deep);font-size:11px;letter-spacing:.06em;font-weight:800;padding:8px 12px;border-radius:10px;text-align:center;border:1px solid var(--line);box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+
+  .ofd14-hero .deal-card{background:#fff;border:2px solid var(--rasp);border-radius:18px;padding:18px 20px 16px;margin:18px 0 20px;position:relative;box-shadow:0 12px 32px rgba(198,57,71,0.12);}
+  .ofd14-hero .deal-card .ribbon{position:absolute;top:-12px;left:18px;background:var(--rasp);color:#fff;font-size:10.5px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;padding:5px 11px;border-radius:999px;}
+  .ofd14-hero .deal-card .row1{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 0 4px;}
+  .ofd14-hero .deal-card .was{font-size:18px;color:var(--ink-soft);text-decoration:line-through;font-weight:600;font-variant-numeric:tabular-nums;}
+  .ofd14-hero .deal-card .now{font-size:36px;font-weight:800;color:var(--rasp);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1;}
+  .ofd14-hero .deal-card .per{font-size:13px;color:var(--ink-mute);font-weight:600;}
+  .ofd14-hero .deal-card .save-tag{display:inline-flex;align-items:center;gap:6px;background:var(--rasp);color:#fff;padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
+  .ofd14-hero .deal-card .urgency{margin:8px 0 0;font-size:12.5px;color:var(--rasp-deep);font-weight:700;display:flex;align-items:center;gap:7px;}
+  .ofd14-hero .deal-card .urgency::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rasp);animation:o14Pulse 1.6s ease-in-out infinite;flex-shrink:0;}
+  .ofd14-hero ul.feats{list-style:none;padding:0;margin:0 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .ofd14-hero ul.feats li{font-size:15px;line-height:1.4;padding:11px 0 11px 30px;position:relative;color:var(--ink);border-bottom:1px solid var(--line);}
+  .ofd14-hero ul.feats li:last-child{border-bottom:none;}
+  .ofd14-hero ul.feats li::before{content:"";position:absolute;left:0;top:13px;width:18px;height:18px;border-radius:50%;background:var(--pink-wash);}
+  .ofd14-hero ul.feats li::after{content:"";position:absolute;left:5px;top:17px;width:8px;height:5px;border-left:2px solid var(--rasp);border-bottom:2px solid var(--rasp);transform:rotate(-45deg);}
+  .ofd14-hero .stars{color:var(--rasp);margin:14px 0 6px;}
+  .ofd14-hero .stars small{color:var(--ink-mute);}
+  .ofd14-hero .ctas{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+  .ofd14-hero .btn--secondary{background:transparent;border:1.5px solid var(--rasp);color:var(--rasp);}
+  .ofd14-hero .btn--secondary:hover{background:var(--rasp);color:#fff;}
+  .ofd14-hero .trust-row{display:flex;flex-wrap:wrap;gap:14px 18px;justify-content:center;margin-top:14px;font-size:12px;font-weight:700;color:var(--ink-mute);}
+  .ofd14-hero .trust-row span{display:inline-flex;align-items:center;gap:6px;}
+  .ofd14-hero .trust-row span::before{content:"✓";color:var(--rasp);font-weight:800;}
+  @media (min-width:760px){
+    .ofd14-hero{padding:54px 0 60px;}
+    .ofd14-hero h1{font-size:34px;}
+    .ofd14-hero .grid{grid-template-columns:1fr 1.05fr;gap:38px;}
+    .ofd14-hero .ctas{flex-direction:row;align-items:center;}
+  }
+
+  /* === RASPBERRY LE BANNER === */
+  .ofd14-le{padding:44px 0;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;position:relative;}
+  .ofd14-le::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--rasp-bright),var(--rasp),var(--rasp-deep));}
+  .ofd14-le .inner{max-width:760px;position:relative;}
+  .ofd14-le .stars{color:var(--rasp);font-size:20px;letter-spacing:.08em;margin:0 0 14px;line-height:1;}
+  .ofd14-le blockquote{margin:0;font-size:22px;line-height:1.3;letter-spacing:-0.01em;font-weight:700;color:var(--ink);font-family:inherit;}
+  .ofd14-le blockquote .hi{background:linear-gradient(180deg,transparent 62%,var(--rasp-soft) 62%);padding:0 2px;}
+  .ofd14-le .attribution{margin:18px 0 0;font-size:13px;color:var(--ink-mute);display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .ofd14-le .attribution strong{color:var(--ink);font-weight:800;}
+  .ofd14-le .verified{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rasp);background:var(--rasp-soft);padding:3px 8px;border-radius:999px;}
+  .ofd14-le .verified svg{width:12px;height:12px;}
+  @media (min-width:760px){
+    .ofd14-le blockquote{font-size:28px;}
+  }
+
+  /* === MIX & MATCH MODULE === */
+  /* === INGREDIENTS / WHAT'S IN THE SCOOP === */
+  .ofd14-ing{background:var(--cream);padding:54px 0;position:relative;overflow:hidden;}
+  .ofd14-ing::before{content:"";position:absolute;inset:0;background:radial-gradient(40% 40% at 92% 6%,var(--pink-wash),transparent 70%),radial-gradient(35% 35% at 6% 94%,rgba(242,150,28,0.10),transparent 65%);pointer-events:none;}
+  .ofd14-ing .inner{position:relative;}
+  .ofd14-ing .head{max-width:680px;margin:0 auto 26px;text-align:center;}
+  .ofd14-ing .head .eb{color:var(--rasp);}
+  .ofd14-ing .head h2 .accent{color:var(--rasp);}
+  .ofd14-ing .pill-strip{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 22px;}
+  .ofd14-ing .pill-strip .ps-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--rasp);color:var(--rasp);font-size:11.5px;letter-spacing:.16em;font-weight:800;text-transform:uppercase;padding:7px 14px;border-radius:999px;}
+  .ofd14-ing .pill-strip .ps-pill .num{background:var(--rasp);color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0;}
+  .ofd14-ing .grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:980px;margin:0 auto;}
+  .ofd14-ing .ing-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;display:flex;gap:14px;align-items:flex-start;position:relative;overflow:hidden;}
+  .ofd14-ing .ing-card::before{content:"";position:absolute;top:0;left:0;bottom:0;width:5px;background:var(--rasp);}
+  .ofd14-ing .ing-card .ic{flex-shrink:0;width:48px;height:48px;border-radius:14px;background:var(--pink-wash);display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .ofd14-ing .ing-card .body{flex:1;min-width:0;}
+  .ofd14-ing .ing-card .cat{font-size:10.5px;letter-spacing:.18em;font-weight:800;color:var(--rasp);text-transform:uppercase;margin:0 0 4px;}
+  .ofd14-ing .ing-card h3{font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;color:var(--ink);}
+  .ofd14-ing .ing-card h3 .dose{color:var(--rasp);font-weight:800;font-variant-numeric:tabular-nums;}
+  .ofd14-ing .ing-card p{font-size:14px;color:var(--ink-mute);margin:0;line-height:1.5;}
+  .ofd14-ing .ing-card .actives{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .ofd14-ing .ing-card .actives span{font-size:11.5px;font-weight:700;color:var(--ink);background:var(--pink-wash);padding:4px 9px;border-radius:6px;}
+  .ofd14-ing .zero-strip{margin:26px auto 0;max-width:760px;background:var(--ink);color:#fff;border-radius:16px;padding:18px 18px 16px;display:grid;grid-template-columns:1fr;gap:10px;text-align:center;}
+  .ofd14-ing .zero-strip .zhead{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--pink-wash);text-transform:uppercase;}
+  .ofd14-ing .zero-strip .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .ofd14-ing .zero-strip .z{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .ofd14-ing .zero-strip .z .x{color:var(--rasp);font-weight:800;font-size:20px;line-height:1;}
+  .ofd14-ing .zero-strip .z .lbl{font-size:12.5px;font-weight:700;letter-spacing:.04em;}
+  .ofd14-ing .compare-line{margin:22px auto 0;max-width:680px;background:#fff;border:1px dashed var(--rasp);border-radius:14px;padding:14px 18px;text-align:center;font-size:14px;color:var(--ink);line-height:1.55;}
+  .ofd14-ing .compare-line strong{color:var(--rasp);}
+  .ofd14-ing .cta-row{text-align:center;margin-top:24px;}
+  @media (min-width:760px){
+    .ofd14-ing .grid{grid-template-columns:1fr 1fr;}
+    .ofd14-ing .ing-card{padding:22px 22px 20px;}
+    .ofd14-ing .ing-card h3{font-size:19px;}
+  }
+
+  /* === MIX & MATCH (legacy, removed from page) === */
+  .ofd14-mix{background:var(--cream);padding:54px 0;}
+  .ofd14-mix .head{max-width:680px;margin:0 auto 22px;text-align:center;}
+  .ofd14-mix .duo-shot{max-width:780px;margin:0 auto 28px;border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 40px rgba(122,30,42,0.08);}
+  .ofd14-mix .duo-shot img{width:100%;display:block;}
+  .ofd14-mix .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:680px;margin:0 auto;}
+  .ofd14-mix .slot{background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
+  .ofd14-mix .slot .step{position:absolute;top:-14px;left:18px;background:var(--rasp);color:#fff;font-size:11px;letter-spacing:.16em;font-weight:800;text-transform:uppercase;padding:5px 11px;border-radius:999px;}
+  .ofd14-mix .slot .img-wrap{width:100%;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--cream-deep);margin:6px 0 12px;}
+  .ofd14-mix .slot .img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .ofd14-mix .slot h3{font-size:17px;margin:0 0 4px;}
+  .ofd14-mix .slot .sub{font-size:12px;color:var(--ink-mute);margin:0 0 12px;letter-spacing:.04em;}
+  .ofd14-mix .swatch-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .ofd14-mix .swatch{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:700;font-size:13px;padding:8px 12px;border-radius:999px;cursor:pointer;transition:all .15s;}
+  .ofd14-mix .swatch::before{content:"";width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+  .ofd14-mix .swatch.rasp::before{background:radial-gradient(circle at 30% 30%, #FF8FA3 0%, #E83358 100%);}
+  .ofd14-mix .swatch.mango::before{background:radial-gradient(circle at 30% 30%, #FFD27A 0%, #F2961C 100%);}
+  .ofd14-mix .swatch.sel.rasp{background:var(--rasp);color:#fff;border-color:var(--rasp);}
+  .ofd14-mix .swatch.sel.mango{background:var(--mango);color:#fff;border-color:var(--mango);}
+  .ofd14-mix .combo-readout{margin:22px auto 0;max-width:680px;background:#fff;border:2px solid var(--rasp);border-radius:16px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
+  .ofd14-mix .combo-readout .lbl{font-size:11px;letter-spacing:.18em;font-weight:800;color:var(--ink-mute);text-transform:uppercase;margin:0;}
+  .ofd14-mix .combo-readout .val{font-size:18px;font-weight:800;color:var(--ink);margin:2px 0 0;}
+  .ofd14-mix .combo-readout .price-block{text-align:right;}
+  .ofd14-mix .combo-readout .strike-row{font-size:13px;color:var(--ink-soft);text-decoration:line-through;}
+  .ofd14-mix .combo-readout .total{font-size:24px;font-weight:800;color:var(--rasp);font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
+  .ofd14-mix .combo-readout .save{font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--rasp);text-transform:uppercase;}
+  @media (max-width:480px){
+    .ofd14-mix .slot{padding:14px;}
+    .ofd14-mix .slot .step{font-size:10px;padding:4px 9px;}
+    .ofd14-mix .combo-readout{flex-direction:column;align-items:flex-start;}
+    .ofd14-mix .combo-readout .price-block{align-self:flex-end;text-align:right;}
+  }
+
+  /* === REASON-TO-COME-BACK / WINBACK === */
+  .ofd14-winback{padding:54px 0;background:var(--pink-wash);}
+  .ofd14-winback .inner{max-width:980px;}
+  .ofd14-winback .head{max-width:680px;margin:0 auto 26px;text-align:center;}
+  .ofd14-winback .cards{display:grid;grid-template-columns:1fr;gap:14px;}
+  .ofd14-winback .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;}
+  .ofd14-winback .card .n{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--rasp);margin:0 0 8px;text-transform:uppercase;}
+  .ofd14-winback .card h3{margin:0 0 8px;font-size:17px;}
+  .ofd14-winback .card p{margin:0;color:var(--ink-mute);font-size:14.5px;line-height:1.55;}
+  @media (min-width:760px){
+    .ofd14-winback .cards{grid-template-columns:repeat(3,1fr);}
+  }
+
+  /* === COMPARISON STRIP === */
+  .ofd14-compare{padding:54px 0;background:#fff;}
+  .ofd14-compare .inner{max-width:780px;}
+  .ofd14-compare table{width:100%;border-collapse:collapse;font-size:14px;margin-top:18px;}
+  .ofd14-compare th,.ofd14-compare td{padding:14px 10px;border-bottom:1px solid var(--line);text-align:left;}
+  .ofd14-compare th{font-size:11px;letter-spacing:.16em;font-weight:800;text-transform:uppercase;color:var(--ink-mute);}
+  .ofd14-compare th.col-restore{color:var(--rasp);}
+  .ofd14-compare td.col-restore{font-weight:700;color:var(--ink);background:var(--pink-wash);}
+  .ofd14-compare td.col-other{color:var(--ink-mute);}
+  .ofd14-compare .check{color:var(--rasp);font-weight:800;}
+  .ofd14-compare .x{color:var(--ink-soft);}
+
+  /* === BUYBOX (full) === */
+  .ofd14-bb{background:var(--cream);padding:54px 0;}
+  .ofd14-bb .wrap{background:#fff;border-radius:22px;border:1px solid var(--line);padding:22px;max-width:780px;margin:0 auto;box-shadow:0 18px 50px rgba(122,30,42,0.07);}
+  .ofd14-bb .bundle-preview{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 16px;display:flex;align-items:center;gap:14px;}
+  .ofd14-bb .bundle-preview .img{width:108px;height:108px;flex-shrink:0;border-radius:12px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .ofd14-bb .bundle-preview .img img{width:100%;height:100%;object-fit:contain;display:block;}
+  .ofd14-bb .bundle-preview .meta .pl{font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--rasp);text-transform:uppercase;margin:0 0 4px;}
+  .ofd14-bb .bundle-preview .meta h4{margin:0;font-size:17px;letter-spacing:-0.01em;line-height:1.2;}
+  .ofd14-bb .bundle-preview .meta p{margin:4px 0 0;font-size:13px;color:var(--ink-mute);}
+  .ofd14-bb .banner{display:inline-flex;align-items:center;gap:8px;background:var(--rasp);color:#fff;padding:7px 14px;border-radius:999px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;margin:0 0 14px;}
+  .ofd14-bb .banner::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:o14Pulse 1.6s ease-in-out infinite;}
+  .ofd14-bb .head{margin:0 0 14px;}
+  .ofd14-bb h3{font-size:24px;margin:0 0 6px;letter-spacing:-0.01em;line-height:1.18;}
+  .ofd14-bb .sub-line{font-size:14px;color:var(--ink-mute);margin:0;line-height:1.5;}
+
+  /* Pickers — stacked vertically (Bag 1 on top of Bag 2). Each row: bold label, then 2 swatches side-by-side below. */
+  .ofd14-bb .pickers{display:flex;flex-direction:column;gap:12px;margin:20px 0 12px;}
+  .ofd14-bb .pick{background:var(--pink-wash);border-radius:14px;padding:12px 14px 14px;border:1px solid var(--line);position:relative;}
+  .ofd14-bb .pick .step{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;background:transparent;color:var(--ink);font-size:11px;letter-spacing:.22em;font-weight:800;text-transform:uppercase;padding:0;margin:0 0 9px;border-radius:0;position:static;}
+  .ofd14-bb .pick .step .sub{font-size:10.5px;letter-spacing:.1em;color:var(--rasp);font-weight:800;}
+  .ofd14-bb .pick .step .sub--mute{color:var(--ink-soft);}
+  .ofd14-bb .pick .lbl{display:none;}
+  .ofd14-bb .pick .flavor-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ofd14-bb .refill-note{display:flex;align-items:flex-start;gap:9px;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:14px 0 0;font-size:12.5px;color:var(--ink-mute);line-height:1.45;}
+  .ofd14-bb .refill-note svg{width:16px;height:16px;flex-shrink:0;color:var(--rasp);margin-top:1px;}
+  .ofd14-bb .refill-note strong{color:var(--ink);font-weight:800;}
+  .ofd14-bb .pick .swatch{display:flex;align-items:center;gap:9px;width:100%;border:2px solid var(--line);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:11px 12px;border-radius:12px;cursor:pointer;transition:all .15s;text-align:left;line-height:1;}
+  .ofd14-bb .pick .swatch .name{flex:1;min-width:0;}
+  .ofd14-bb .pick .swatch .dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);}
+  .ofd14-bb .pick .swatch .dot-rasp{background:radial-gradient(circle at 30% 30%, #FF8FA3 0%, #E83358 100%);}
+  .ofd14-bb .pick .swatch .dot-mango{background:radial-gradient(circle at 30% 30%, #FFD27A 0%, #F2961C 100%);}
+  .ofd14-bb .pick .swatch .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ofd14-bb .pick .swatch .tag{font-size:9px;letter-spacing:.14em;font-weight:800;padding:3px 6px;border-radius:4px;background:var(--ink);color:#fff;}
+  .ofd14-bb .pick .swatch:hover{border-color:var(--ink-soft);}
+  .ofd14-bb .pick .swatch.sel{border-color:var(--rasp);background:var(--rasp-soft);box-shadow:0 0 0 3px rgba(198,57,71,0.12);}
+  .ofd14-bb .pick .swatch.sel .tag{background:var(--rasp);}
+
+  /* Plan card — single sub plan, with gift line baked in */
+  .ofd14-bb .plan-wrap{border:2px solid var(--rasp);border-radius:14px;margin:6px 0 0;background:var(--rasp-soft);overflow:hidden;}
+  .ofd14-bb .plan{padding:16px;cursor:default;display:flex;align-items:flex-start;gap:12px;position:relative;background:transparent;}
+  .ofd14-bb .plan input{position:absolute;opacity:0;pointer-events:none;}
+  .ofd14-bb .plan .radio{flex-shrink:0;width:20px;height:20px;border:2px solid var(--rasp);border-radius:50%;margin-top:2px;position:relative;background:#fff;}
+  .ofd14-bb .plan .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--rasp);}
+  .ofd14-bb .plan-body{flex:1;min-width:0;}
+  .ofd14-bb .plan-title{font-weight:800;font-size:16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;color:var(--ink);line-height:1.25;}
+  .ofd14-bb .badge{font-size:9.5px;letter-spacing:.14em;font-weight:800;background:var(--rasp);color:#fff;padding:3px 8px;border-radius:999px;text-transform:uppercase;}
+  .ofd14-bb .plan-meta{font-size:13px;color:var(--ink-mute);margin-top:5px;line-height:1.5;}
+  .ofd14-bb .plan-price{display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap;flex-shrink:0;font-weight:500;}
+  .ofd14-bb .plan-price .strike{font-size:13px;text-decoration:line-through;opacity:.55;margin:0 0 2px;}
+  .ofd14-bb .plan-price .mo{font-weight:800;font-size:18px;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums;}
+  .ofd14-bb .plan-price .total{font-size:12px;color:var(--ink-mute);margin-top:2px;}
+  .ofd14-bb .plan-price .save{display:inline-block;font-size:11px;color:#fff;background:var(--rasp);font-weight:800;margin-top:6px;padding:3px 7px;border-radius:6px;letter-spacing:.04em;}
+
+  /* Free gifts callout — directly under the plan, mango-tinted */
+  .ofd14-bb .gift-callout{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF4E6 0%,#FFE3CC 100%);border:1.5px dashed var(--mango-deep);border-radius:12px;padding:13px 14px;margin:10px 0 0;}
+  .ofd14-bb .gift-callout .gift-ic{width:30px;height:30px;flex-shrink:0;color:var(--mango-deep);}
+  .ofd14-bb .gift-callout .gift-copy{flex:1;min-width:0;}
+  .ofd14-bb .gift-callout .gift-title{margin:0;font-size:14.5px;font-weight:800;color:var(--ink);line-height:1.3;}
+  .ofd14-bb .gift-callout .gift-title strong{color:var(--mango-deep);}
+  .ofd14-bb .gift-callout .gift-sub{margin:6px 0 0;font-size:12px;color:var(--ink-mute);line-height:1.4;}
+  .ofd14-bb .gift-callout .gift-list{margin:6px 0 0;padding:0 0 0 16px;font-size:13px;color:var(--ink);line-height:1.5;}
+  .ofd14-bb .gift-callout .gift-list li{margin:0;padding:0;}
+
+  /* Today's value strip — between ATC and gifts */
+  .ofd14-bb .value-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 4px 6px;font-size:14px;color:var(--ink);}
+  .ofd14-bb .value-row .lbl{font-weight:700;}
+  .ofd14-bb .value-row .total-now{font-weight:800;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .ofd14-bb .value-row .total-now .strike{font-size:13px;text-decoration:line-through;opacity:.5;margin-right:6px;font-weight:500;}
+
+  .ofd14-bb .reassure{font-size:12px;color:var(--ink-mute);margin:10px 0 0;text-align:center;line-height:1.5;}
+  .ofd14-bb .trust-row{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line);}
+  .ofd14-bb .trust-row .trust{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-mute);font-weight:600;}
+  .ofd14-bb .trust-row .trust svg{width:14px;height:14px;color:var(--rasp);}
+  .ofd14-bb ul.feat-list{list-style:none;padding:0;margin:16px 0 0;}
+  .ofd14-bb ul.feat-list li{font-size:13.5px;line-height:1.5;padding:8px 0 8px 24px;position:relative;color:var(--ink-mute);}
+  .ofd14-bb ul.feat-list li::before{content:"";position:absolute;left:0;top:11px;width:14px;height:14px;border-radius:50%;background:var(--pink-wash);}
+  .ofd14-bb ul.feat-list li::after{content:"";position:absolute;left:3px;top:14px;width:7px;height:4px;border-left:2px solid var(--rasp);border-bottom:2px solid var(--rasp);transform:rotate(-45deg);}
+
+  @media (max-width:419px){
+    .ofd14-bb .pick{padding:11px 12px;gap:11px;}
+    .ofd14-bb .pick .swatch{font-size:13px;padding:9px 9px;gap:7px;}
+    .ofd14-bb .pick .swatch .tag{font-size:8.5px;padding:2px 5px;}
+    .ofd14-bb .plan-title{font-size:15px;}
+    .ofd14-bb .plan-price .mo{font-size:17px;}
+  }
+
+  /* === FAQ === */
+  .ofd14-faq details{background:#fff;border:1px solid var(--line);border-radius:12px;margin:0 0 10px;overflow:hidden;}
+  .ofd14-faq summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:800;color:var(--ink);position:relative;font-size:15px;}
+  .ofd14-faq summary::-webkit-details-marker{display:none;}
+  .ofd14-faq summary::after{content:"+";position:absolute;right:18px;top:14px;font-size:20px;color:var(--rasp);}
+  .ofd14-faq details[open] summary::after{content:"\2013";}
+  .ofd14-faq details[open]{box-shadow:0 4px 16px rgba(122,30,42,0.06);}
+  .ofd14-faq p{padding:0 18px 16px;margin:0;font-size:14px;color:var(--ink-mute);line-height:1.55;}
+
+  /* === FINAL CTA === */
+  .ofd14-final{position:relative;padding:54px 0;background:#fff;color:var(--ink);overflow:hidden;text-align:center;border-top:1px solid var(--line);}
+  .ofd14-final::before{content:"";position:absolute;inset:0;background:radial-gradient(45% 45% at 92% 8%,var(--pink-wash),transparent 70%),radial-gradient(40% 40% at 8% 92%,rgba(242,150,28,0.10),transparent 65%);pointer-events:none;}
+  .ofd14-final .inner{position:relative;max-width:700px;}
+  .ofd14-final .eb{color:var(--rasp);}
+  .ofd14-final h2{color:var(--ink);font-size:32px;line-height:1.1;}
+  .ofd14-final h2 .accent{color:var(--rasp);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;text-decoration-color:var(--rasp);}
+  .ofd14-final p{color:var(--ink-mute);}
+  .ofd14-final .trust{color:var(--ink-soft);}
+
+  /* === REVIEWS === */
+  .ofd14-revs{padding:54px 0;background:#fff;}
+  .ofd14-revs .head{text-align:center;max-width:640px;margin:0 auto 26px;}
+  .ofd14-revs .grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:980px;margin:0 auto;}
+  .ofd14-revs .r{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .ofd14-revs .r .stars{color:var(--rasp);font-size:14px;margin-bottom:8px;}
+  .ofd14-revs .r h3{font-size:15px;margin:0 0 8px;}
+  .ofd14-revs .r p{font-size:14px;color:var(--ink-mute);margin:0 0 10px;line-height:1.5;}
+  .ofd14-revs .r .who{font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--ink-soft);text-transform:uppercase;display:flex;gap:8px;align-items:center;}
+  .ofd14-revs .r .who::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--rasp);}
+  @media (min-width:760px){
+    .ofd14-revs .grid{grid-template-columns:repeat(3,1fr);}
+  }
+
+  /* === RESPONSIVE TYPE === */
+  @media (min-width:760px){
+    .ofd14 h1{font-size:54px;}
+    .ofd14 h2{font-size:36px;}
+    .ofd14 h3{font-size:20px;}
+    .ofd14 p{font-size:17px;}
+  }
+</style>
+
+<div class="ofd14"
+     data-offer="bogo50"
+     data-vid-rasp="52841665659169"
+     data-vid-mango="52841665691937"
+     data-vid-mix="52841665724705"
+     data-plan-2mo="690941526305"
+     data-img-rasp="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-bundle-restore-raspberry.png?v=1781304280"
+     data-img-mango="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-bundle-restore-mango.png?v=1781304283"
+     data-img-mix="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-bundle-restore-both.png?v=1781304286">
+
+  {%- comment -%} === STICKY OFFER BAR === {%- endcomment -%}
+  <div class="ofd14-bar">
+    <span class="lbl">BOGO 50% + $70 in Free Gifts</span>
+    <span class="pipe">·</span>
+    <span class="lbl">Subscriber Only</span>
+    <span class="pipe">·</span>
+    <a href="#buybox" class="cta-mini">Claim Offer →</a>
+  </div>
+
+  {%- comment -%} === HERO === {%- endcomment -%}
+  <section class="sec ofd14-hero">
+    <div class="inner">
+      <div class="grid">
+        <div>
+          <span class="pill">Summer Raspberry Drop · Limited Time</span>
+          <h1>The <span class="accent">12-in-1</span> multivitamin hydration powder. <br><span class="underline">Second bag's half off.</span></h1>
+          <p style="font-size:17px;margin:14px 0 0;">Six daily wins per scoop. <strong>One juicy raspberry glass, every morning.</strong></p>
+
+          {%- comment -%} The 6 Daily Wins — the subhead made visual {%- endcomment -%}
+          <div class="benefits-eb" aria-label="The 6 Daily Wins" style="margin:18px 0 4px;">
+            <div class="b"><span class="ic">💧</span>Hydration</div>
+            <div class="b"><span class="ic">🛡️</span>Immunity</div>
+            <div class="b"><span class="ic">⚡</span>Energy</div>
+            <div class="b"><span class="ic">🎯</span>Focus</div>
+            <div class="b"><span class="ic">🧘</span>Recovery</div>
+            <div class="b"><span class="ic">🌿</span>Detox</div>
+          </div>
+
+          {%- comment -%} Hero image — mobile-only slot, sits between the 6-win pills and the bullets {%- endcomment -%}
+          <div class="hero-img hero-img--mobile">
+            <span class="badge">New · Summer Drop</span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-hero-rasp-bag-glass-frother.png?v=1781221967" alt="Restore Raspberry bag with pink raspberry drink, frother, and fresh raspberries on white" loading="eager">
+            <div class="scarcity">Limited summer batch · gone when it's gone</div>
+          </div>
+
+          <ul class="feats">
+            <li><strong>12 pills' worth of nutrients per glass.</strong> 900mg+ electrolytes, methylated B-complex, glutathione, CoQ10, vitamin C + zinc.</li>
+            <li><strong>Bright, juicy raspberry. Limited summer batch.</strong> Pairs with the fan-favorite Mango Lemonade everyone keeps reordering.</li>
+            <li><strong>Zero sugar. Zero crash. Zero syrupy aftermath.</strong> Light enough for morning, juicy enough for after-pool.</li>
+          </ul>
+
+          <div class="deal-card">
+            <span class="ribbon">BOGO 50% · Limited Time</span>
+            <div class="row1">
+              <span class="was">$134.00</span>
+              <span class="now">$93.80</span>
+              <span class="per">/ 2 bags · 56 servings</span>
+            </div>
+            <span class="save-tag">You save $40.20 + $70 in free gifts</span>
+            <p class="urgency">Raspberry is a one-time summer batch. When it's gone, it's gone.</p>
+          </div>
+
+          <p class="stars">★★★★★ <small>4.97 · 374 verified Restore reviews</small></p>
+
+          <div class="ctas">
+            <a href="#buybox" class="btn">Claim BOGO 50% → $93.80</a>
+            <a href="#whats-inside" class="btn btn--secondary">See What's Inside</a>
+          </div>
+
+          <div class="trust-row">
+            <span>Free shipping over $50</span>
+            <span>Pause or cancel anytime</span>
+            <span>30-day money back</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="hero-img hero-img--desktop">
+            <span class="badge">New · Summer Drop</span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-hero-rasp-bag-glass-frother.png?v=1781221967" alt="Restore Raspberry bag with pink raspberry drink, frother, and fresh raspberries on white" loading="eager">
+            <div class="scarcity">Limited summer batch · gone when it's gone</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === RASPBERRY LIMITED-EDITION BANNER === {%- endcomment -%}
+  <section class="ofd14-le">
+    <div class="inner">
+      <p class="stars" aria-label="5 out of 5 stars">★★★★★</p>
+      <blockquote>"One glass replaced my multivitamin, my electrolytes, and the energy drink I was crashing on at 3pm. <span class="hi">I haven't opened the cabinet in four months.</span>"</blockquote>
+      <p class="attribution">
+        <strong>Sarah K.</strong>
+        <span class="verified">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          Verified Subscriber
+        </span>
+      </p>
+    </div>
+  </section>
+
+  {%- comment -%} === WHAT'S IN THE SCOOP === {%- endcomment -%}
+  <section class="ofd14-ing" id="whats-inside">
+    <div class="inner">
+      <div class="head">
+        <p class="eb">12 pills, one juicy glass</p>
+        <h2>What's actually in every <span class="accent">raspberry scoop.</span></h2>
+        <p>Most "hydration" drinks are flavored salt. Restore is a multivitamin, an electrolyte stack, and a recovery cocktail in a single glass. Here's the dose breakdown.</p>
+      </div>
+
+      <div class="pill-strip" aria-label="The 6 daily wins per scoop">
+        <span class="ps-pill"><span class="num">1</span>Hydration</span>
+        <span class="ps-pill"><span class="num">2</span>Immunity</span>
+        <span class="ps-pill"><span class="num">3</span>Energy</span>
+        <span class="ps-pill"><span class="num">4</span>Focus</span>
+        <span class="ps-pill"><span class="num">5</span>Recovery</span>
+        <span class="ps-pill"><span class="num">6</span>Detox</span>
+      </div>
+
+      <div class="grid">
+        <div class="ing-card">
+          <div class="ic">💧</div>
+          <div class="body">
+            <p class="cat">Hydration · Performance</p>
+            <h3><span class="dose">900mg+</span> balanced electrolytes</h3>
+            <p>The full mineral stack your cells need to actually absorb water. Pre-workout, post-pool, hangover, flight day — this is the engine.</p>
+            <div class="actives">
+              <span>Sodium</span><span>Potassium</span><span>Magnesium</span><span>Chloride</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ing-card">
+          <div class="ic">⚡</div>
+          <div class="body">
+            <p class="cat">Energy · Focus · Mood</p>
+            <h3>Methylated <span class="dose">B-complex</span></h3>
+            <p>The bioavailable form (methyl-B12, methylfolate) your body actually uses, not the cheap synthetic version that ends up in your urine.</p>
+            <div class="actives">
+              <span>Methyl-B12</span><span>Methylfolate</span><span>B6</span><span>B2 / Riboflavin</span><span>B3 / Niacin</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ing-card">
+          <div class="ic">🛡️</div>
+          <div class="body">
+            <p class="cat">Immunity</p>
+            <h3>Vitamin C + <span class="dose">Zinc</span></h3>
+            <p>The dose pairing most people only remember once they're already sniffly. Daily, in the glass you were going to drink anyway.</p>
+            <div class="actives">
+              <span>Vitamin C</span><span>Zinc</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ing-card">
+          <div class="ic">🧘</div>
+          <div class="body">
+            <p class="cat">Recovery · Calm</p>
+            <h3><span class="dose">Magnesium</span> glycinate</h3>
+            <p>The gentle, glycinate-bound form for muscle recovery, sleep quality, and cramp prevention. Not the laxative kind.</p>
+            <div class="actives">
+              <span>Magnesium Glycinate</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ing-card">
+          <div class="ic">✨</div>
+          <div class="body">
+            <p class="cat">Antioxidant · Skin · Detox</p>
+            <h3><span class="dose">Glutathione</span> + CoQ10</h3>
+            <p>The master antioxidant + the cellular-energy molecule. The pair that costs $40/bottle each at the supplement store, in every scoop.</p>
+            <div class="actives">
+              <span>L-Glutathione</span><span>CoQ10</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ing-card">
+          <div class="ic">🌿</div>
+          <div class="body">
+            <p class="cat">Cellular wellness</p>
+            <h3>Methylfolate + <span class="dose">trace minerals</span></h3>
+            <p>The activated folate your liver doesn't have to convert, plus the trace minerals most multivitamins skip to save margin.</p>
+            <div class="actives">
+              <span>Methylfolate</span><span>Selenium</span><span>Manganese</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="zero-strip">
+        <p class="zhead">And what's not in the bag</p>
+        <div class="row">
+          <div class="z"><span class="x">✗</span><span class="lbl">Zero sugar</span></div>
+          <div class="z"><span class="x">✗</span><span class="lbl">Zero artificial colors</span></div>
+          <div class="z"><span class="x">✗</span><span class="lbl">Zero crash</span></div>
+        </div>
+      </div>
+
+      <p class="compare-line">Built to replace the multivitamin, the electrolyte mix, the B-complex, the magnesium pill, and the immunity stack. <strong>One scoop. One glass. Six daily wins.</strong></p>
+
+      <div class="cta-row">
+        <a href="#buybox" class="btn">Claim BOGO 50% → $93.80</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === WINBACK / WHY NOW === {%- endcomment -%}
+  <section class="ofd14-winback">
+    <div class="inner">
+      <div class="head">
+        <p class="eb">Why now</p>
+        <h2>The easiest <span class="ital">"yes"</span> we'll send all year.</h2>
+        <p>Two bags. Second one half off. Pick your flavors.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <p class="n">01 · Summer only</p>
+          <h3>Raspberry, while it lasts.</h3>
+          <p>One seasonal batch. When it's gone, it's gone.</p>
+        </div>
+        <div class="card">
+          <p class="n">02 · No tradeoff</p>
+          <h3>Try Raspberry. Keep Mango.</h3>
+          <p>One of each. Or double up on Raspberry. Your call.</p>
+        </div>
+        <div class="card">
+          <p class="n">03 · Best price</p>
+          <h3>$93.80 for two bags.</h3>
+          <p>$46.90 a bag. Save $40.20 plus $70 in free gifts on day one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === COMPARE === {%- endcomment -%}
+  <section class="ofd14-compare">
+    <div class="inner">
+      <p class="eb center">Restore vs. the cabinet</p>
+      <h2 class="center">One drink. <span class="ital">Twelve pills' worth.</span></h2>
+      <p class="center" style="max-width:540px;margin:0 auto;">Why the "second bag half off" math actually matters: every glass of Restore replaces the multivitamin, the electrolyte mix, and the immunity tablets you'd otherwise stack in the morning.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th class="col-restore">Restore</th>
+            <th>Typical electrolyte mix</th>
+            <th>Generic multivitamin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>900mg+ electrolytes</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other"><span class="check">✓</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+          </tr>
+          <tr>
+            <td>Methylated B-complex</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+            <td class="col-other">Synthetic only</td>
+          </tr>
+          <tr>
+            <td>Vitamin C + zinc</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+            <td class="col-other"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Glutathione (master antioxidant)</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+          </tr>
+          <tr>
+            <td>CoQ10 for cellular energy</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other"><span class="x">✗</span></td>
+            <td class="col-other">Rarely</td>
+          </tr>
+          <tr>
+            <td>Zero sugar</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other">Often loaded</td>
+            <td class="col-other">N/A</td>
+          </tr>
+          <tr>
+            <td>Tastes like something you'd actually drink</td>
+            <td class="col-restore"><span class="check">✓</span></td>
+            <td class="col-other">Salty / chalky</td>
+            <td class="col-other">Pill aftertaste</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {%- comment -%} === REVIEWS === {%- endcomment -%}
+  <section class="ofd14-revs">
+    <div class="inner">
+      <div class="head">
+        <p class="eb center">4.97 · 374 verified reviews</p>
+        <h2>People came back. <span class="ital">Then they reordered.</span></h2>
+      </div>
+      <div class="grid">
+        <div class="r">
+          <div class="stars">★★★★★</div>
+          <h3>"It's the only one I actually finish."</h3>
+          <p>I've bought half a dozen electrolyte mixes that ended up in the back of the cabinet. This is the only one I open every morning. The mango is genuinely good.</p>
+          <p class="who">Verified · Subscriber, 8 months</p>
+        </div>
+        <div class="r">
+          <div class="stars">★★★★★</div>
+          <h3>"Replaced four bottles on my counter."</h3>
+          <p>Multivitamin, electrolytes, B-complex, vitamin C — all four were on my counter. Now it's one bag. My countertop is happier and my morning is shorter.</p>
+          <p class="who">Verified · Subscriber, 4 months</p>
+        </div>
+        <div class="r">
+          <div class="stars">★★★★★</div>
+          <h3>"Convinced my wife with the second bag."</h3>
+          <p>I ordered Restore for me. She tried mine, stole it, and started ordering her own. BOGO is how the whole household got on it.</p>
+          <p class="who">Verified · Subscriber, 1 year</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BUYBOX === {%- endcomment -%}
+  <section id="buybox" class="ofd14-bb">
+    <div class="inner">
+      <div class="wrap">
+        <span class="banner">BOGO 50% · Summer Drop</span>
+
+        <div class="bundle-preview" id="ofd14-bundle-preview">
+          <div class="img"><img id="ofd14-bundle-img" src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd14-bundle-restore-both.png?v=1781304286" alt="Your Restore pair"></div>
+          <div class="meta">
+            <p class="pl">Your Pair</p>
+            <h4 id="ofd14-bundle-title">1 Raspberry · 1 Mango Lemonade</h4>
+            <p>2 bags · 56 servings · ships together</p>
+          </div>
+        </div>
+
+        <div class="head">
+          <h3>Pick your pair. Lock in <span class="rasp">$40.20 off</span> plus <span class="rasp">$70 in gifts.</span></h3>
+          <p class="sub-line">Two bags of Restore. 56 servings. Free shipping. Pause or cancel anytime.</p>
+          <p class="stars" style="margin:10px 0 0;">★★★★★ <small>4.97 · 374 verified Restore reviews</small></p>
+        </div>
+
+        {%- comment -%} Flavor pickers — Bag 1 = recurring refill flavor. Bag 2 = one-time second bag in this order. {%- endcomment -%}
+        <div class="pickers">
+          <div class="pick">
+            <span class="step">Bag 1 <span class="sub">· Your refill flavor</span></span>
+            <div class="flavor-row">
+              <button type="button" class="swatch sel" data-bb-flavor="rasp" data-bb-slot="1">
+                <span class="dot dot-rasp"></span>
+                <span class="name">Raspberry</span>
+                <span class="tag">NEW</span>
+              </button>
+              <button type="button" class="swatch" data-bb-flavor="mango" data-bb-slot="1">
+                <span class="dot dot-mango"></span>
+                <span class="name">Mango</span>
+              </button>
+            </div>
+          </div>
+          <div class="pick">
+            <span class="step">Bag 2 <span class="sub sub--mute">· Second bag, this order only</span></span>
+            <div class="flavor-row">
+              <button type="button" class="swatch" data-bb-flavor="rasp" data-bb-slot="2">
+                <span class="dot dot-rasp"></span>
+                <span class="name">Raspberry</span>
+                <span class="tag">NEW</span>
+              </button>
+              <button type="button" class="swatch sel" data-bb-flavor="mango" data-bb-slot="2">
+                <span class="dot dot-mango"></span>
+                <span class="name">Mango</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Subscriber-only BOGO 50% — $93.80 for 2 bags via Skio selling plan. {%- endcomment -%}
+        <div class="plan-wrap">
+          <label class="plan sel" data-plan="sub-2mo" data-total="93.80" data-mo="46.90">
+            <input type="radio" name="ofd14-plan" value="sub-2mo" checked>
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">Subscribe &amp; Save <span class="badge">Subscriber Only</span></span>
+              <span class="plan-meta">2 bags ship now. Then 1 bag every month. Pause, swap, or cancel anytime.</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$134.00</span>
+              <span class="mo">$46.90/bag</span>
+              <span class="total">$93.80 today</span>
+              <span class="save">SAVE $40.20</span>
+            </span>
+          </label>
+        </div>
+
+        {%- comment -%} $70 gifts callout — itemized: frother, water bottle, tote. {%- endcomment -%}
+        <div class="gift-callout">
+          <svg class="gift-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3.5 8.5h17v3h-17z"/>
+            <path d="M5 11.5v9h14v-9"/>
+            <path d="M12 8.5V21"/>
+            <path d="M12 8.5c-2-2.5-5-3-5.5-1.5S8 8.5 12 8.5Zm0 0c2-2.5 5-3 5.5-1.5S16 8.5 12 8.5Z"/>
+          </svg>
+          <div class="gift-copy">
+            <p class="gift-title">Plus <strong>$70 in free gifts</strong> with your first order:</p>
+            <ul class="gift-list">
+              <li>3-speed frother</li>
+              <li>Black stainless steel water bottle</li>
+              <li>Large Carry All Absorption Company tote</li>
+            </ul>
+            <p class="gift-sub">Subscriber bonus. Yours to keep, even if you cancel.</p>
+          </div>
+        </div>
+
+        <div class="value-row">
+          <span class="lbl">Today's total</span>
+          <span class="total-now"><span class="strike">$134.00</span>$93.80</span>
+        </div>
+
+        <button type="button" id="ofd14-atc" class="btn full">Add to Cart · $93.80</button>
+        <p class="reassure">Free shipping. 30-day money-back guarantee. Pause or cancel anytime.</p>
+
+        <div class="trust-row">
+          <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Free shipping</span>
+          <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>30-day guarantee</span>
+          <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Cancel anytime</span>
+        </div>
+
+        <ul class="feat-list">
+          <li>900mg+ balanced electrolytes per serving</li>
+          <li>Full multivitamin: Vit C, B-complex, methylfolate, magnesium</li>
+          <li>Glutathione for skin clarity and antioxidant defense</li>
+          <li>Zero sugar. Two flavors. One juicy summer ritual.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FAQ === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner" style="max-width:760px;">
+      <p class="eb">Before you grab a pair</p>
+      <h2>The questions <span class="ital">everyone asks.</span></h2>
+      <div class="ofd14-faq" style="margin-top:14px;">
+        <details>
+          <summary>How does the BOGO 50% work?</summary>
+          <p>Start a subscription and your first order is 2 bags for $93.80 ($46.90/bag, save $40.20) plus $70 in free gifts. After that, you get 1 bag every month at the same per-bag price. Pause or cancel anytime.</p>
+        </details>
+        <details>
+          <summary>What's in the $70 in free gifts?</summary>
+          <p>A 3-speed frother (for the smoothest Restore pour), a black stainless steel water bottle, and the large Carry All Absorption Company tote. All three ship with your first order. Yours to keep, even if you cancel.</p>
+        </details>
+        <details>
+          <summary>Can I get one Raspberry and one Mango Lemonade?</summary>
+          <p>Yes. One of each, two Raspberry, or two Mango. Your call. The second bag is half off either way.</p>
+        </details>
+        <details>
+          <summary>Why is BOGO only for subscribers?</summary>
+          <p>Subscribers are how we keep Restore in stock, so we save the best price (and the gifts) for them. Pause or cancel anytime if it's not for you.</p>
+        </details>
+        <details>
+          <summary>Is Raspberry really only here for the summer?</summary>
+          <p>Yes. It's a single seasonal batch. Whichever flavor you set as Bag 1 is the flavor we'll refill with each month. If you pick Raspberry as your refill, you'll keep getting it until the batch sells through, then we'll roll you to Mango Lemonade so you're never without your daily glass.</p>
+        </details>
+        <details>
+          <summary>How long does one bag last?</summary>
+          <p>28 servings per bag. One a day = about a month per bag, or two months across the pair.</p>
+        </details>
+        <details>
+          <summary>What's actually in it?</summary>
+          <p>900mg+ electrolytes, a full daily multivitamin (Vit C, zinc, methylated B-complex, methylfolate, magnesium), glutathione for antioxidant support, and CoQ10 for cellular energy. Zero sugar, zero artificial colors.</p>
+        </details>
+        <details>
+          <summary>What if I don't love the new flavor?</summary>
+          <p>30-day money-back guarantee on both bags, even if they're half empty. Send them back, get a full refund. We'd rather you find the one you actually love.</p>
+        </details>
+        <details>
+          <summary>How fast does it ship?</summary>
+          <p>Orders placed before 2pm PT ship same day. Free shipping over $50, so the pair always ships free.</p>
+        </details>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;">
+        <a href="#buybox" class="btn">Claim BOGO 50% →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FINAL CTA === {%- endcomment -%}
+  <section class="ofd14-final">
+    <div class="inner">
+      <p class="eb">Summer drop. One easy yes.</p>
+      <h2>Pick your pair. <span class="accent">Second one half off.</span></h2>
+      <p style="font-size:17px;">Try the juicy new Raspberry while it's still in season. Pair it with the Mango Lemonade everyone keeps reordering. Or double up on Raspberry before the batch sells out. Either way, you keep $40.20 plus $70 in free gifts.</p>
+
+      <p style="margin-top:22px;"><a href="#buybox" class="btn">Claim BOGO 50% → $93.80</a></p>
+      <p class="trust">Free shipping over $50 · 30-day money-back guarantee · Pause or cancel anytime.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var root = document.currentScript.closest('.ofd14') || document.querySelector('.ofd14');
+    if(!root) return;
+
+    var vidRasp  = root.getAttribute('data-vid-rasp') || '';
+    var vidMango = root.getAttribute('data-vid-mango') || '';
+    var vidMix   = root.getAttribute('data-vid-mix') || '';
+    var plan2mo  = root.getAttribute('data-plan-2mo') || '';
+    var imgRasp  = root.getAttribute('data-img-rasp') || '';
+    var imgMango = root.getAttribute('data-img-mango') || '';
+    var imgMix   = root.getAttribute('data-img-mix') || '';
+
+    function resolveBundle(){
+      var f1 = getSlot('1'), f2 = getSlot('2');
+      if(f1 === 'rasp'  && f2 === 'rasp')  return { id: vidRasp,  img: imgRasp,  title: '2 Raspberry' };
+      if(f1 === 'mango' && f2 === 'mango') return { id: vidMango, img: imgMango, title: '2 Mango Lemonade' };
+      return { id: vidMix, img: imgMix, title: '1 Raspberry · 1 Mango Lemonade' };
+    }
+
+    function updateBundlePreview(){
+      var b = resolveBundle();
+      var imgEl = root.querySelector('#ofd14-bundle-img');
+      var ttlEl = root.querySelector('#ofd14-bundle-title');
+      if(imgEl && b.img) imgEl.src = b.img;
+      if(ttlEl) ttlEl.textContent = b.title;
+    }
+
+    // === Buybox is the source of truth for the flavor pair ===
+    function getSlot(slot){
+      var sel = root.querySelector('.ofd14-bb .swatch.sel[data-bb-slot="'+slot+'"]');
+      return sel ? sel.getAttribute('data-bb-flavor') : (slot === '1' ? 'rasp' : 'mango');
+    }
+
+    function setBbSlot(slot, flavor){
+      root.querySelectorAll('.ofd14-bb .swatch[data-bb-slot="'+slot+'"]').forEach(function(s){
+        s.classList.toggle('sel', s.getAttribute('data-bb-flavor') === flavor);
+      });
+      updateBundlePreview();
+    }
+
+    root.querySelectorAll('.ofd14-bb .swatch').forEach(function(s){
+      s.addEventListener('click', function(){
+        setBbSlot(s.getAttribute('data-bb-slot'), s.getAttribute('data-bb-flavor'));
+      });
+    });
+
+    // === Plan selector ===
+    var planLabels = root.querySelectorAll('.ofd14-bb .plan');
+    var atc = root.querySelector('#ofd14-atc');
+    planLabels.forEach(function(p){
+      p.addEventListener('click', function(){
+        planLabels.forEach(function(x){ x.classList.remove('sel'); });
+        p.classList.add('sel');
+        var t = p.getAttribute('data-total');
+        if(atc) atc.textContent = 'Add to Cart · $' + t;
+        var input = p.querySelector('input'); if(input) input.checked = true;
+      });
+    });
+
+    // === Add to cart === (subscription-only BOGO 50%)
+    if(atc){
+      atc.addEventListener('click', function(e){
+        e.preventDefault();
+        var bundle = resolveBundle();
+        if(!bundle.id || !plan2mo){
+          alert('Buybox is wired but a bundle variant ID or selling plan is missing.');
+          return;
+        }
+        var item = {
+          id: parseInt(bundle.id,10),
+          quantity: 1,
+          selling_plan: parseInt(plan2mo,10)
+        };
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+          body: JSON.stringify({ items: [ item ] })
+        }).then(function(r){
+          if(!r.ok) throw new Error('add failed');
+          window.location.href = '/checkout';
+        }).catch(function(){
+          alert('Could not add to cart. Please try again.');
+        });
+      });
+    }
+
+    updateBundlePreview();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "OFD14 Restore BOGO",
+  "settings": [
+    { "type": "header", "content": "Bundle Variants & Selling Plan" },
+    { "type": "text", "id": "variant_rasp",  "label": "Bundle variant: 2 Raspberry",            "default": "52841665659169" },
+    { "type": "text", "id": "variant_mango", "label": "Bundle variant: 2 Mango Lemonade",       "default": "52841665691937" },
+    { "type": "text", "id": "variant_mix",   "label": "Bundle variant: Raspberry + Mango",      "default": "52841665724705" },
+    { "type": "text", "id": "selling_plan_2mo", "label": "Skio selling plan ID (every 2 months)", "default": "690941526305" },
+    { "type": "header", "content": "Offer copy" },
+    { "type": "text", "id": "bar_label", "label": "Sticky bar label", "default": "BOGO 50% + $70 in Free Gifts · Subscriber Only" }
+  ],
+  "presets": [{ "name": "OFD14 Restore BOGO" }]
+}
+{% endschema %}

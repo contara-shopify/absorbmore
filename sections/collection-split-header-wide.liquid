@@ -9,6 +9,20 @@
   assign padding_bottom_mobile = section.settings.padding_bottom_mobile
   assign mobile_image_position = section.settings.mobile_image_position | default: 'bottom'
 
+  assign enable_desktop_sizing = section.settings.enable_desktop_sizing
+  assign desktop_breakpoint = section.settings.desktop_breakpoint | default: 768
+  assign breakpoint_mobile = desktop_breakpoint | minus: 1
+  assign desktop_max_height = section.settings.desktop_max_height | default: 0
+  assign image_width_percent = section.settings.image_width_percent | default: 50
+  assign left_width_percent = 100 | minus: image_width_percent
+  unless enable_desktop_sizing
+    assign desktop_breakpoint = 768
+    assign breakpoint_mobile = 767
+    assign desktop_max_height = 0
+    assign image_width_percent = 50
+    assign left_width_percent = 50
+  endunless
+
   assign heading = section.settings.heading
   if heading == blank
     if collection
@@ -50,6 +64,7 @@
   assign image_alt = section.settings.image_alt
   assign image_max_width = section.settings.image_max_width | default: 800
   assign image_placeholder_text = section.settings.image_placeholder_text
+  assign image_aspect_ratio = image.aspect_ratio | default: 1
 
   assign show_badge = section.settings.show_badge
   assign badge_text = section.settings.badge_text
@@ -297,7 +312,7 @@
     padding-bottom: {{ padding_bottom_mobile }}px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: {{ desktop_breakpoint }}px) {
     [data-style-id="{{ section.id }}"].ctr-psc {
       padding-top: {{ padding_top_desktop }}px;
       padding-bottom: {{ padding_bottom_desktop }}px;
@@ -311,7 +326,7 @@
     overflow: hidden;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: {{ breakpoint_mobile }}px) {
     [data-style-id="{{ section.id }}"] .ctr-psc__card[data-mobile-image="top"] .ctr-psc__col--right {
       order: 0;
     }
@@ -320,10 +335,18 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: {{ desktop_breakpoint }}px) {
     [data-style-id="{{ section.id }}"] .ctr-psc__card {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: {{ left_width_percent }}% {{ image_width_percent }}%;
+      {% if desktop_max_height > 0 %}max-height: {{ desktop_max_height }}px;{% endif %}
     }
+    {% if enable_desktop_sizing %}
+    /* Image column drives the section height via its natural ratio,
+       so it grows with the screen instead of being a fixed height. */
+    [data-style-id="{{ section.id }}"] .ctr-psc__col--right {
+      aspect-ratio: {{ image_aspect_ratio }};
+    }
+    {% endif %}
   }
 
   [data-style-id="{{ section.id }}"] .ctr-psc__col {
@@ -346,10 +369,10 @@
   }
 
   [data-style-id="{{ section.id }}"] .ctr-psc__col-inner {
-    padding: 32px 28px;
+    padding: 22px 22px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: {{ desktop_breakpoint }}px) {
     [data-style-id="{{ section.id }}"] .ctr-psc__col-inner {
       padding: 56px 56px;
     }
@@ -374,7 +397,7 @@
   [data-style-id="{{ section.id }}"] .ctr-psc__description {
     font-size: clamp(15px, 1.6vw, 18px);
     line-height: 1.5;
-    margin: 0 0 24px;
+    margin: 0 0 0;
     max-width: 36ch;
   }
   [data-style-id="{{ section.id }}"] .ctr-psc__description p { margin: 0 0 0.6em; }
@@ -431,7 +454,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 320px;
+    min-height: fit-content;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -440,9 +463,21 @@
 
   [data-style-id="{{ section.id }}"] .ctr-psc__media img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100% !important;
+    height: auto;
     display: block;
+  }
+
+  /* Desktop: fill the right column so no background gap shows above/below.
+     Mobile keeps natural aspect ratio (height: auto) above — no zoom/crop. */
+  @media (min-width: {{ desktop_breakpoint }}px) {
+    [data-style-id="{{ section.id }}"] .ctr-psc__media img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   [data-style-id="{{ section.id }}"] .ctr-psc__media-placeholder {
@@ -565,6 +600,46 @@
       "step": 4,
       "unit": "px",
       "default": 32
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_desktop_sizing",
+      "label": "Enable desktop sizing controls",
+      "info": "Turn on to use the custom breakpoint, max height, and image width below. When off, defaults to a 50/50 split that grows with content.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "desktop_breakpoint",
+      "label": "Desktop breakpoint",
+      "info": "Width at which the layout switches from stacked (mobile) to side-by-side (desktop).",
+      "min": 480,
+      "max": 1280,
+      "step": 16,
+      "unit": "px",
+      "default": 768
+    },
+    {
+      "type": "range",
+      "id": "desktop_max_height",
+      "label": "Max height (desktop)",
+      "info": "Caps the section height on desktop and lets the image crop to fill. 0 = dynamic / no cap.",
+      "min": 0,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_width_percent",
+      "label": "Image width (desktop)",
+      "info": "Percent of the row width the image column takes. The text column takes the rest.",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 50
     },
     {
       "type": "header",

@@ -1010,7 +1010,8 @@
                   selected
                 {% endif %}
               >
-                {{ product_variant.title -}}
+                {%- assign _plan_name = product_variant.selling_plan_allocations.first.selling_plan.name -%}
+                {%- if _plan_name != blank -%}{{ _plan_name }}{%- else -%}{{ product_variant.title }}{%- endif -%}
                 {%- if product_variant.metafields.custom.choose_supply_variant_subheading != blank %}
                   - {{ product_variant.metafields.custom.choose_supply_variant_subheading -}}
                 {%- endif %}

@@ -1,0 +1,46 @@
+{% comment %}
+    Shortcode renderer: [monthly]
+
+    Returns the subscription monthly cost for the current product, e.g. "$69/mo".
+    Always uses the discounted subscription (skio) price ÷ months, falling back
+    to the variant's one-time price when no subscription price is configured.
+    Mirrors the per-month math used by the PDP plan selector
+    (blocks/_main_product__choose_plan.liquid).
+
+    On a product page it renders a reactive <span> that updates live as the
+    shopper switches the selected supply variant (reads the `pdp` Alpine scope).
+    The server-rendered value is kept inside the span as a no-flash fallback and
+    is what shows anywhere `pdp` is not in scope.
+
+    Params:
+    - static_only: {bool} when true, return the plain money string only (no
+                   <span>/Alpine). Use when the caller escapes the output or
+                   injects it into an attribute.
+
+    Returns an empty string when there is no product/variant in scope.
+{% endcomment %}
+{%- liquid
+  assign _v = product.selected_or_first_available_variant | default: product.variants.first
+  unless _v
+    break
+  endunless
+
+  assign _months = _v.title | split: ' ' | first | times: 1
+  if _months < 1
+    assign _months = 1
+  endif
+
+  assign _skio = _v.metafields.custom.choose_supply_variant_price.value | default: 0
+  assign _base = _v.price
+  if _skio > 0
+    assign _base = _skio
+  endif
+
+  assign _monthly_cents = _base | divided_by: _months
+  assign _monthly = _monthly_cents | money
+-%}
+{%- if static_only -%}
+  {{- _monthly -}}/mo
+{%- else -%}
+  <span class="_monthly-price" x-text="pdp?.selected_variant ? (() => { const v = pdp.selected_variant; const m = Math.max(1, parseInt(v.title, 10) || 1); const s = Number(v?.metafields?.custom?.choose_supply_variant_price?.value ?? v?.metafields?.custom?.choose_supply_variant_price); const b = (Number.isFinite(s) && s > 0) ? s : (v.price || 0); return utils.formatMoney(Math.round(b / m)) + '/mo'; })() : $el.textContent">{{- _monthly -}}/mo</span>
+{%- endif -%}

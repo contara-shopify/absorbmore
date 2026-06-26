@@ -3809,7 +3809,6 @@ var initPageTransitions = /* @__PURE__ */ __name(() => {
                 document.dispatchEvent(new CustomEvent("pageFullyLoaded", {}));
                 (_a4 = Shopify == null ? void 0 : Shopify.PaymentButton) == null ? void 0 : _a4.init();
                 (_b3 = window == null ? void 0 : window.okeWidgetApi) == null ? void 0 : _b3.initAllWidgets();
-                (_c3 = window == null ? void 0 : window.yotpoWidgetsContainer) == null ? void 0 : _c3.initWidgets();
                 (_e2 = (_d2 = window == null ? void 0 : window.loyaltylion) == null ? void 0 : _d2.ui) == null ? void 0 : _e2.refresh();
                 setTimeout(() => {
                   var _a5;

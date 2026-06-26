@@ -1,0 +1,566 @@
+{% comment %}
+  Restore Raspberry — VIP Early Access lander.
+  Phase 2 of the Restore Raspberry launch (subscribers + waitlist, 24hr window).
+  Page: /pages/restore-vip-access
+  Template: templates/page.restore-vip-access.json
+  Visual DNA inherits from restore-summer-lander but pivots to "insider" framing
+  with a prominent 24-hour countdown.
+{% endcomment %}
+
+<style>
+  .rvip{
+    /* Campaign palette — #C63947 leads. Cream + white only support, no competing accents. */
+    --rasp:#C63947;
+    --rasp-bright:#D8505E;
+    --rasp-deep:#9E2B38;
+    --rasp-darker:#7A1E2A;
+    --rasp-soft:rgba(198,57,71,0.08);
+    --rasp-glass:rgba(255,255,255,0.14);
+    --cream:#FFF7F1;
+    --cream-deep:#FBE9D9;
+    --pink-wash:#FBECEE;
+    --pink-tint:#F4CCD3;
+    --white:#ffffff;
+    --ink:#1a1814;
+    --ink-mute:#5a554d;
+    --ink-soft:#9a958d;
+    --line:#ecd2d6;
+  }
+  .rvip *,.rvip *::before,.rvip *::after{box-sizing:border-box;}
+  .rvip{color:var(--ink);padding:0;}
+  .rvip p{margin:0 0 14px;font-size:16px;line-height:1.6;color:var(--ink-mute);}
+  .rvip h1,.rvip h2,.rvip h3{margin:0 0 14px;letter-spacing:-0.01em;font-weight:800;color:var(--ink);}
+  .rvip h1{font-size:36px;line-height:1.05;}
+  .rvip h2{font-size:28px;line-height:1.15;}
+  .rvip h3{font-size:18px;line-height:1.3;}
+  .rvip .eb{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--rasp);margin:0 0 12px;text-transform:uppercase;}
+  .rvip .rasp{color:var(--rasp);}
+  .rvip .cream{color:var(--cream);}
+  .rvip .underlined{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;text-decoration-color:rgba(255,247,241,0.6);}
+  .rvip .ital{font-style:italic;font-weight:800;color:var(--rasp);}
+  .rvip .strike{text-decoration:line-through;opacity:.5;font-weight:500;margin-right:6px;}
+  .rvip .inner{max-width:1140px;margin:0 auto;padding:0 20px;}
+  .rvip .sec{padding:48px 0;}
+  .rvip .sec--pink{background:var(--pink-wash);}
+  .rvip .sec--cream{background:var(--cream);}
+  .rvip .center{text-align:center;}
+
+  .rvip .btn{display:inline-block;background:var(--rasp);color:#fff;font-weight:700;font-size:15px;letter-spacing:.04em;padding:16px 28px;border-radius:999px;text-decoration:none;text-align:center;border:none;cursor:pointer;transition:transform .15s, background .15s;font-family:inherit;line-height:1.2;}
+  .rvip .btn:disabled,.rvip .btn[aria-busy="true"]{opacity:.7;cursor:wait;}
+  .rvip .btn:hover{transform:translateY(-1px);background:var(--rasp-deep);}
+  .rvip .btn--cream{background:var(--cream);color:var(--rasp-deep);}
+  .rvip .btn--cream:hover{background:var(--white);}
+  .rvip .btn--ink{background:var(--ink);color:#fff;}
+  .rvip .btn.full{display:block;width:100%;}
+
+  .rvip .stars{color:var(--rasp);font-size:16px;letter-spacing:1px;display:inline-flex;align-items:center;gap:8px;}
+  .rvip .stars small{color:var(--ink-mute);font-weight:600;font-size:13px;letter-spacing:0;}
+  .rvip .trust{font-size:12px;color:var(--ink-mute);margin:10px 0 0;letter-spacing:.02em;}
+
+  /* === VIP HERO === */
+  .rvip-hero{position:relative;padding:48px 0 48px;background:#fff;color:var(--ink);overflow:hidden;}
+  .rvip-hero .inner{position:relative;}
+  .rvip-hero h1{color:var(--ink);}
+  .rvip-hero h1 .cream{color:var(--rasp);}
+  .rvip-hero h1 .underlined{text-decoration-color:rgba(198,57,71,0.35);}
+  .rvip-hero p{color:var(--ink-mute);}
+  .rvip-hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;}
+  .rvip-hero .vip-chip{display:inline-flex;align-items:center;gap:8px;background:var(--rasp);color:#fff;border:none;padding:8px 16px;border-radius:999px;font-size:11px;letter-spacing:.22em;font-weight:800;text-transform:uppercase;margin:0;box-shadow:0 4px 14px rgba(198,57,71,0.25);}
+  .rvip-hero .vip-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,0.6);}
+  .rvip-hero .le-chip{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--rasp-deep);border:1px solid var(--rasp);padding:7px 15px;border-radius:999px;font-size:11px;letter-spacing:.22em;font-weight:800;text-transform:uppercase;margin:0;}
+  .rvip-hero .le-chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--rasp);}
+  .rvip-hero .grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;}
+  .rvip-hero .hero-img{aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:#fff;position:relative;border:6px solid var(--rasp);padding:14px;box-shadow:0 24px 60px rgba(122,30,42,0.22);}
+  .rvip-hero .hero-img img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px;}
+  .rvip-hero .hero-img::after{content:"NEW · RASPBERRY";position:absolute;top:26px;left:26px;background:var(--rasp);color:#fff;font-size:10px;letter-spacing:.18em;font-weight:800;padding:7px 12px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,0.18);}
+  .rvip-hero .insider{font-size:15px;line-height:1.55;color:var(--ink-mute);margin:8px 0 18px;}
+  .rvip-hero .insider strong{color:var(--ink);}
+  .rvip-hero .proof{font-size:13px;letter-spacing:.06em;font-weight:700;text-transform:uppercase;color:var(--rasp);margin:0 0 16px;display:flex;flex-wrap:wrap;gap:6px 14px;}
+  .rvip-hero .proof span{position:relative;padding-left:14px;}
+  .rvip-hero .proof span::before{content:"";position:absolute;left:0;top:50%;width:5px;height:5px;border-radius:50%;background:var(--rasp);transform:translateY(-50%);}
+  .rvip-hero ul.feats{list-style:none;padding:0;margin:0 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .rvip-hero ul.feats li{font-size:15px;line-height:1.4;padding:12px 0 12px 30px;position:relative;color:var(--ink);border-bottom:1px solid var(--line);}
+  .rvip-hero ul.feats li:last-child{border-bottom:none;}
+  .rvip-hero ul.feats li strong{color:var(--ink);font-weight:800;}
+  .rvip-hero ul.feats li::before{content:"";position:absolute;left:0;top:14px;width:18px;height:18px;border-radius:50%;background:var(--rasp);}
+  .rvip-hero ul.feats li::after{content:"";position:absolute;left:5px;top:18px;width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);}
+
+  /* === STICKY COUNTDOWN BAR === */
+  .rvip-bar{position:sticky;top:0;z-index:50;background:var(--rasp);color:#fff;padding:10px 16px;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--rasp-deep);box-shadow:0 2px 10px rgba(122,30,42,0.18);line-height:1.2;}
+  .rvip-bar .lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:rgba(255,247,241,0.92);display:inline-flex;align-items:center;gap:8px;}
+  .rvip-bar .lbl::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,0.55);animation:rvipPulse 1.6s ease-in-out infinite;}
+  .rvip-bar .time{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.04em;}
+  .rvip-bar .time .sep{opacity:.55;margin:0 1px;}
+  .rvip-bar .time .u{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-right:6px;margin-left:1px;}
+  .rvip-bar .ended-text{display:none;font-size:13px;font-weight:700;}
+  .rvip-bar.is-ended{background:var(--ink);}
+  .rvip-bar.is-ended .time,.rvip-bar.is-ended .lbl{display:none;}
+  .rvip-bar.is-ended .ended-text{display:inline;}
+  @media (max-width:480px){
+    .rvip-bar{padding:8px 12px;gap:6px;}
+    .rvip-bar .lbl{font-size:10px;letter-spacing:.16em;}
+    .rvip-bar .time{font-size:13px;}
+  }
+
+  /* === COUNTDOWN (legacy, retained for back-compat if reintroduced) === */
+  .rvip-clock{background:rgba(255,247,241,0.12);backdrop-filter:blur(10px);border:1px solid rgba(255,247,241,0.32);border-radius:18px;padding:18px;margin:22px 0 18px;}
+  .rvip-clock .lbl{font-size:11px;letter-spacing:.22em;font-weight:800;color:#fff;text-transform:uppercase;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .rvip-clock .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:rvipPulse 1.6s ease-in-out infinite;}
+  @keyframes rvipPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,255,255,0.55);}50%{opacity:.5;box-shadow:0 0 0 8px rgba(255,255,255,0);}}
+  .rvip-clock .digits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .rvip-clock .cell{background:var(--white);border:none;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 6px 18px rgba(122,30,42,0.18);}
+  .rvip-clock .n{font-size:30px;font-weight:800;line-height:1;color:var(--rasp-deep);font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
+  .rvip-clock .u{display:block;margin-top:6px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .rvip-clock .ended{display:none;font-size:13px;color:#fff;margin:10px 0 0;font-weight:700;text-align:center;}
+  .rvip-clock.is-ended .digits{opacity:.5;}
+  .rvip-clock.is-ended .ended{display:block;}
+
+  /* === FLAVOR REVEAL === */
+  .rvip-flavor{background:#fff;}
+  .rvip-flavor .grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;}
+  .rvip-flavor .img{aspect-ratio:1/1;border-radius:24px;overflow:hidden;background:#fff;position:relative;border:6px solid var(--rasp);padding:14px;box-shadow:0 18px 40px rgba(122,30,42,0.18);}
+  .rvip-flavor .img img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px;}
+  .rvip-flavor .img::after{content:"REPLACES 12 DAILY VITAMINS · 1 DELICIOUS DRINK";position:absolute;bottom:26px;left:26px;right:26px;background:rgba(255,255,255,0.96);color:var(--rasp-deep);font-size:10px;letter-spacing:.14em;font-weight:800;padding:9px 14px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.22);text-align:center;line-height:1.3;}
+
+  /* === STUDIO GALLERY === */
+  .rvip-gallery{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 0;}
+  .rvip-gallery .tile{aspect-ratio:3/4;border-radius:20px;overflow:hidden;background:var(--pink-wash);position:relative;}
+  .rvip-gallery .tile img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rvip-gallery .tile .cap{position:absolute;left:14px;bottom:14px;background:#fff;color:var(--rasp);font-size:10px;letter-spacing:.18em;font-weight:800;padding:7px 11px;border-radius:999px;text-transform:uppercase;}
+
+  /* === CLOSER IMAGE === */
+  .rvip-closer{aspect-ratio:16/10;border-radius:24px;overflow:hidden;background:var(--pink-wash);margin:0 0 26px;max-width:520px;margin-left:auto;margin-right:auto;}
+  .rvip-closer img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rvip-flavor ul{list-style:none;padding:0;margin:18px 0 22px;}
+  .rvip-flavor li{font-size:15px;line-height:1.5;padding:10px 0 10px 30px;position:relative;color:var(--ink);}
+  .rvip-flavor li strong{color:var(--rasp);font-weight:800;}
+  .rvip-flavor li::before{content:"";position:absolute;left:2px;top:13px;width:14px;height:18px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C63947'><path d='M12 2.5c3.5 4.5 6.5 8.2 6.5 11.8a6.5 6.5 0 0 1-13 0c0-3.6 3-7.3 6.5-11.8Z'/></svg>");background-size:contain;background-repeat:no-repeat;background-position:center;}
+
+  /* === BENEFIT STRIP === */
+  .rvip-ben{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border-radius:20px;overflow:hidden;}
+  .rvip-ben .card{background:#fff;padding:22px 14px;text-align:center;}
+  .rvip-ben .ico{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:var(--rasp-soft);color:var(--rasp);}
+  .rvip-ben .ico svg{width:22px;height:22px;display:block;}
+  .rvip-ben .lbl{font-size:13px;font-weight:800;color:var(--ink);letter-spacing:.02em;margin:0 0 4px;}
+  .rvip-ben .sub{font-size:12px;color:var(--ink-soft);line-height:1.4;}
+
+  /* === BUYBOX === */
+  .rvip-bb{background:#fff;border:2px solid var(--rasp);border-radius:24px;padding:24px;display:grid;grid-template-columns:1fr;gap:22px;box-shadow:0 20px 50px rgba(198,57,71,0.14);position:relative;}
+  .rvip-bb .vip-banner{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--rasp);color:#fff;border:none;font-size:11px;letter-spacing:.22em;font-weight:800;text-transform:uppercase;padding:7px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(198,57,71,0.35);}
+  .rvip-bb .prod-img{aspect-ratio:1/1;border-radius:18px;background:var(--pink-wash);overflow:hidden;}
+  .rvip-bb .prod-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rvip-bb .plan{border:2px solid var(--line);border-radius:14px;padding:16px;margin:0 0 10px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;position:relative;background:#fff;}
+  .rvip-bb .plan.sel{border-color:var(--rasp);background:var(--rasp-soft);}
+  .rvip-bb .plan input{position:absolute;opacity:0;pointer-events:none;}
+  .rvip-bb .radio{width:20px;height:20px;border-radius:50%;border:2px solid #c5cbd9;flex-shrink:0;margin-top:2px;position:relative;}
+  .rvip-bb .plan.sel .radio{border-color:var(--rasp);}
+  .rvip-bb .plan.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--rasp);}
+  .rvip-bb .plan-body{flex:1;}
+  .rvip-bb .plan-title{font-weight:800;font-size:16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;color:var(--ink);}
+  .rvip-bb .plan-meta{font-size:13px;color:var(--ink-mute);margin-top:4px;line-height:1.45;}
+  .rvip-bb .plan-meta.small{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .rvip-bb .plan-price{display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap;flex-shrink:0;font-weight:500;}
+  .rvip-bb .plan-price .strike{font-size:13px;text-decoration:line-through;opacity:.55;margin:0 0 2px;}
+  .rvip-bb .plan-price .mo{font-weight:800;font-size:18px;color:var(--ink);line-height:1.1;}
+  .rvip-bb .plan-price .total{font-size:12px;color:var(--ink-mute);margin-top:2px;}
+  .rvip-bb .plan-price .save{font-size:12px;color:var(--rasp-deep);font-weight:700;margin-top:4px;}
+  .rvip-bb .badge{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--rasp);color:#fff;padding:4px 9px;border-radius:6px;font-weight:800;box-shadow:0 2px 6px rgba(198,57,71,0.28);}
+  .rvip-bb .badge--vip{background:var(--ink);color:var(--cream);box-shadow:0 2px 6px rgba(26,24,20,0.25);}
+  .rvip-bb .badge--pop{background:var(--rasp-deep);color:#fff;box-shadow:0 2px 6px rgba(122,30,42,0.3);}
+  .rvip-bb .badge--best{background:var(--ink);color:#fff;box-shadow:0 2px 6px rgba(26,24,20,0.25);}
+  .rvip-bb .reassure{font-size:12px;color:var(--ink-soft);text-align:center;margin:14px 0 0;line-height:1.5;}
+  .rvip-bb .prod-features{margin:14px 0 0;font-size:13px;color:var(--ink-mute);padding-left:0;}
+  .rvip-bb .prod-features li{padding:4px 0 4px 22px;position:relative;list-style:none;}
+  .rvip-bb .prod-features li::before{content:"✓";position:absolute;left:0;color:var(--rasp);font-weight:800;}
+  .rvip-bb .plan-gift{display:inline-flex;align-items:center;gap:5px;background:var(--rasp-soft);color:var(--rasp-deep);font-size:12px;font-weight:800;padding:4px 9px;border-radius:6px;margin:8px 0 0;letter-spacing:.01em;line-height:1.2;}
+  .rvip-bb .plan-gift svg{width:13px;height:13px;flex-shrink:0;}
+
+  /* === WHY VIP === */
+  .rvip-why{display:grid;grid-template-columns:1fr;gap:14px;margin:24px 0 0;}
+  .rvip-why .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;}
+  .rvip-why .card .n{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--rasp);text-transform:uppercase;margin:0 0 8px;}
+  .rvip-why .card h3{font-size:17px;margin:0 0 8px;}
+  .rvip-why .card p{margin:0;font-size:14.5px;color:var(--ink-mute);line-height:1.55;}
+
+  /* === FAQ === */
+  .rvip-faq details{border-bottom:1px solid var(--line);padding:16px 0;}
+  .rvip-faq summary{cursor:pointer;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:12px;color:var(--ink);}
+  .rvip-faq summary::-webkit-details-marker{display:none;}
+  .rvip-faq summary::after{content:"+";font-weight:400;font-size:22px;line-height:1;color:var(--rasp);}
+  .rvip-faq details[open] summary::after{content:"−";}
+  .rvip-faq p{margin:10px 0 0;font-size:15px;color:var(--ink-mute);}
+
+  /* === FINAL CTA === */
+  .rvip-final{background:var(--rasp);color:#fff;text-align:center;position:relative;overflow:hidden;}
+  .rvip-final::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 90% 10%,var(--rasp-bright),transparent 60%),radial-gradient(70% 60% at 10% 100%,var(--rasp-deep),transparent 65%);pointer-events:none;}
+  .rvip-final h2,.rvip-final p{color:#fff;}
+  .rvip-final .inner{position:relative;}
+  .rvip-final .rvip-clock{max-width:420px;margin:22px auto;}
+
+  /* === DESKTOP === */
+  @media (min-width:768px){
+    .rvip p{font-size:17px;}
+    .rvip h1{font-size:60px;}
+    .rvip h2{font-size:42px;}
+    .rvip .sec{padding:72px 0;}
+    .rvip-hero{padding:72px 0 72px;}
+    .rvip-hero .grid{grid-template-columns:1.1fr 1fr;gap:56px;}
+    .rvip-hero .hero-img{aspect-ratio:4/5;}
+    .rvip-clock .digits{gap:14px;}
+    .rvip-clock .cell{padding:18px 8px;}
+    .rvip-clock .n{font-size:48px;}
+    .rvip-flavor .grid{grid-template-columns:1fr 1.05fr;gap:48px;}
+    .rvip-gallery{grid-template-columns:repeat(3,1fr);gap:18px;}
+    .rvip-ben{grid-template-columns:repeat(6,1fr);}
+    .rvip-ben .card{padding:28px 14px;}
+    .rvip-bb{grid-template-columns:0.9fr 1.1fr;padding:36px;gap:36px;}
+    .rvip-why{grid-template-columns:repeat(3,1fr);}
+  }
+</style>
+
+<div class="rvip" data-deadline="{{ section.settings.deadline_iso }}">
+
+  {%- comment -%} === STICKY COUNTDOWN BAR === {%- endcomment -%}
+  <div class="rvip-bar" data-clock>
+    <span class="lbl">VIP Early Access Ends In</span>
+    <span class="time"><span data-d>00</span><span class="u">d</span><span data-h>00</span><span class="u">h</span><span data-m>00</span><span class="u">m</span><span data-s>00</span><span class="u">s</span></span>
+    <span class="ended-text">Public launch is live. Grab your bag before stock runs out.</span>
+  </div>
+
+  {%- comment -%} === VIP HERO === {%- endcomment -%}
+  <section class="rvip-hero">
+    <div class="inner">
+      <div class="grid">
+        <div>
+          <div class="chips">
+            <span class="vip-chip">{{ section.settings.chip_label }}</span>
+            <span class="le-chip">Limited Edition · Summer Drop</span>
+          </div>
+          <h1>Meet Restore <span class="cream underlined">Raspberry</span>. The new pink drink.</h1>
+          <p class="insider"><strong>The daily electrolyte + multivitamin drink, now in juicy raspberry.</strong> A limited edition summer flavor. Gone when it's gone.</p>
+          <p class="proof"><span>Limited edition</span><span>Multivitamin drink</span><span>Zero sugar</span></p>
+
+          <ul class="feats">
+            <li><strong>All-day hydration.</strong> 900mg+ balanced electrolytes, no bloat.</li>
+            <li><strong>Full multivitamin in every sip.</strong> No morning pill stack.</li>
+            <li><strong>Daily detox support.</strong> Glutathione + vitamin C clear the load.</li>
+            <li><strong>Juicy raspberry. Zero sugar.</strong> 28 delicious servings per bag.</li>
+          </ul>
+
+          <p style="margin-top:8px;"><a href="#buybox" class="btn">Try Today For $50.25</a></p>
+          <p class="trust" style="color:var(--ink-mute);">Free shipping on $50+ · 30-day money-back guarantee · 25% off first sub</p>
+        </div>
+        <div class="hero-img">
+          <img src="{{ 'restore-studio-splash.jpg' | asset_url }}" alt="Restore Raspberry splashing into the glass" loading="eager">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FLAVOR REVEAL === {%- endcomment -%}
+  <section class="rvip-flavor sec">
+    <div class="inner">
+      <div class="grid">
+        <div class="img">
+          <img src="{{ 'restore-pool-lifestyle-1.jpg' | asset_url }}" alt="Sunbathing by the pool with Restore Raspberry" loading="lazy">
+        </div>
+        <div>
+          <p class="eb">Just in time for summer heat</p>
+          <h2>Stay ahead of <span class="ital">summer dehydration</span>. In a juicy pink drink.</h2>
+          <p>Our new limited edition flavor packs the full Restore stack into one delicious raspberry sip. Hydration, immunity, recovery, detox, energy.</p>
+          <ul>
+            <li><strong>Deep cellular hydration.</strong> 900mg+ electrolytes replenish minerals, reduce cramps, and clear midday fog.</li>
+            <li><strong>Immune defense, amplified.</strong> Liposomal Vitamin C absorbs up to 5X better than standard supplements for real protection.</li>
+            <li><strong>Stress recovery, built in.</strong> Magnesium Glycinate helps your body wind down, repair, and reset.</li>
+            <li><strong>Daily detox support.</strong> Liposomal Glutathione clears toxins and supports brighter, clearer skin.</li>
+            <li><strong>Sustained clean energy.</strong> B Vitamins + Methylfolate fuel sharper focus and mood without the crash.</li>
+          </ul>
+          <p class="stars">★★★★★ <small>4.97 · 374 reviews on Restore</small></p>
+          <p style="margin-top:14px;"><a href="#buybox" class="btn">Try Today For $50.25</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BENEFIT STRIP === {%- endcomment -%}
+  <section class="sec sec--pink">
+    <div class="inner">
+      <div class="center" style="max-width:640px;margin:0 auto 22px;">
+        <p class="eb">One drink. Six daily wins.</p>
+        <h2>Why fans don't <span class="ital">skip a day</span>.</h2>
+      </div>
+      <div class="rvip-ben">
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c3.5 4.5 6.5 8.2 6.5 11.8a6.5 6.5 0 0 1-13 0c0-3.6 3-7.3 6.5-11.8Z"/><path d="M8.5 14.5a3.5 3.5 0 0 0 3 3"/></svg></div><div class="lbl">Hydration</div><div class="sub">900mg+ balanced electrolytes</div></div>
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 5.5v6c0 4.4 3.1 8.2 7.5 9.5 4.4-1.3 7.5-5.1 7.5-9.5v-6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="lbl">Immunity</div><div class="sub">Vitamin C + zinc support</div></div>
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 2 4.5 13.5h6L10 22l9-11.5h-6L13.5 2Z"/></svg></div><div class="lbl">Energy</div><div class="sub">B-complex, methylfolate</div></div>
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div><div class="lbl">Focus</div><div class="sub">Steady, no caffeine spike</div></div>
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c0-8 5.5-14 16-15-.5 9.5-6.5 15-15 15Z"/><path d="M4 20c3-4 7-8 14-11"/></svg></div><div class="lbl">Recovery</div><div class="sub">Magnesium for muscle recovery</div></div>
+        <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12c1.5 2 6.5 2 8 0"/><path d="M9.5 9.5v.5M14.5 9.5v.5"/></svg></div><div class="lbl">Detox</div><div class="sub">Glutathione + antioxidants</div></div>
+      </div>
+
+      {%- comment -%} === STUDIO GALLERY === {%- endcomment -%}
+      <div class="rvip-gallery">
+        <div class="tile">
+          <img src="{{ 'restore-studio-splash.jpg' | asset_url }}" alt="Restore Raspberry splash" loading="lazy">
+          <span class="cap">The pour</span>
+        </div>
+        <div class="tile">
+          <img src="{{ 'restore-studio-glass-ice.jpg' | asset_url }}" alt="Restore Raspberry over ice with raspberries" loading="lazy">
+          <span class="cap">Over ice</span>
+        </div>
+        <div class="tile">
+          <img src="{{ 'restore-studio-bag-glass.jpg' | asset_url }}" alt="Restore Raspberry bag and glass" loading="lazy">
+          <span class="cap">28 servings</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BUYBOX === {%- endcomment -%}
+  <section class="sec sec--cream" id="buybox">
+    <div class="inner">
+      <div class="rvip-bb">
+        <span class="vip-banner">VIP Early Access · Locked Price</span>
+        <div class="prod-img">
+          <img src="{{ 'restore-studio-bag-glass.jpg' | asset_url }}" alt="Restore Raspberry bag and pink drink" loading="lazy">
+        </div>
+        <div>
+          <p class="eb">Restore Raspberry · 28 servings</p>
+          <h3 style="font-size:26px;line-height:1.15;margin:0 0 10px;letter-spacing:-0.01em;">Save up to <span class="rasp">35%</span> on the pink drink.</h3>
+          <p style="font-size:15px;color:var(--ink-mute);margin:0 0 14px;line-height:1.5;">Free shipping. $70 in free gifts. Pause or cancel anytime.</p>
+          <p class="stars" style="margin:0 0 20px;">★★★★★ <small>4.97 · 374 verified Restore reviews</small></p>
+
+          <label class="plan sel" data-plan="1mo" data-mo="50.25" data-total="50.25" data-variant="52876415992097" data-selling-plan="{{ section.settings.plan_id_1mo | default: '690941395233' }}">
+            <input type="radio" name="rvip-plan" value="1mo" checked>
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">1 Month <span class="badge">Save 25%</span> <span class="badge badge--vip">VIP</span></span>
+              <span class="plan-meta">1 bag / 28 servings, delivered monthly.</span>
+              <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              <span class="plan-gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5h17v3h-17z"/><path d="M5 11.5v9h14v-9"/><path d="M12 8.5V21"/><path d="M12 8.5c-2-2.5-5-3-5.5-1.5S8 8.5 12 8.5Zm0 0c2-2.5 5-3 5.5-1.5S16 8.5 12 8.5Z"/></svg>Plus $70 in free gifts</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$67.00</span>
+              <span class="mo">$50.25/mo</span>
+              <span class="total">$50.25 total</span>
+              <span class="save">save $16.75</span>
+            </span>
+          </label>
+
+          <label class="plan" data-plan="2mo" data-mo="46.90" data-total="93.80" data-variant="52876416024865" data-selling-plan="{{ section.settings.plan_id_2mo | default: '690941559073' }}">
+            <input type="radio" name="rvip-plan" value="2mo">
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">2 Months <span class="badge">Save 30%</span> <span class="badge badge--pop">Most Popular</span></span>
+              <span class="plan-meta">2 bags / 56 servings, delivered every 2 months.</span>
+              <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              <span class="plan-gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5h17v3h-17z"/><path d="M5 11.5v9h14v-9"/><path d="M12 8.5V21"/><path d="M12 8.5c-2-2.5-5-3-5.5-1.5S8 8.5 12 8.5Zm0 0c2-2.5 5-3 5.5-1.5S16 8.5 12 8.5Z"/></svg>Plus $70 in free gifts</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$134.00</span>
+              <span class="mo">$46.90/mo</span>
+              <span class="total">$93.80 total</span>
+              <span class="save">save $40.20</span>
+            </span>
+          </label>
+
+          <label class="plan" data-plan="3mo" data-mo="43.55" data-total="130.65" data-variant="52876416385313" data-selling-plan="{{ section.settings.plan_id_3mo | default: '690975899937' }}">
+            <input type="radio" name="rvip-plan" value="3mo">
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">3 Months <span class="badge">Save 35%</span> <span class="badge badge--best">Best Value</span></span>
+              <span class="plan-meta">3 bags / 84 servings, delivered every 3 months.</span>
+              <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              <span class="plan-gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5h17v3h-17z"/><path d="M5 11.5v9h14v-9"/><path d="M12 8.5V21"/><path d="M12 8.5c-2-2.5-5-3-5.5-1.5S8 8.5 12 8.5Zm0 0c2-2.5 5-3 5.5-1.5S16 8.5 12 8.5Z"/></svg>Plus $70 in free gifts</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$201.00</span>
+              <span class="mo">$43.55/mo</span>
+              <span class="total">$130.65 total</span>
+              <span class="save">save $70.35</span>
+            </span>
+          </label>
+
+          <button type="button" id="rvip-atc" class="btn full" style="margin-top:6px;">Try Today For $50.25</button>
+          <p class="reassure">Free shipping over $50 · 30-day money-back guarantee · Pause or cancel anytime.</p>
+
+          <ul class="prod-features">
+            <li>900mg+ balanced electrolytes per serving</li>
+            <li>Full multivitamin: Vit C, B-complex, methylfolate, magnesium</li>
+            <li>Glutathione for daily detox and antioxidant defense</li>
+            <li>Zero sugar, zero bloat, all juicy raspberry flavor</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === WHY VIP === {%- endcomment -%}
+  <section class="sec sec--pink">
+    <div class="inner">
+      <div class="center" style="max-width:640px;margin:0 auto;">
+        <p class="eb">Why you got the invite</p>
+        <h2>VIPs <span class="ital">go first</span>. Always.</h2>
+        <p style="color:var(--ink-mute);">You showed up early. So we save the first bags for you, 24 hours before the rest of the world hears about it.</p>
+      </div>
+      <div class="rvip-why">
+        <div class="card">
+          <p class="n">01 · First crack</p>
+          <h3>You get it before public launch.</h3>
+          <p>Restore Raspberry opens to everyone tomorrow. You're shopping it tonight.</p>
+        </div>
+        <div class="card">
+          <p class="n">02 · Limited flavor</p>
+          <h3>Here for summer. Gone when it's gone.</h3>
+          <p>Raspberry is a limited-time drop. Once stock is out, that's it for the season.</p>
+        </div>
+        <div class="card">
+          <p class="n">03 · Ships first</p>
+          <h3>Your bag is set aside before the rush.</h3>
+          <p>VIP orders are pulled from limited launch stock and ship before public-launch demand hits. No backorder roulette.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FAQ === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner" style="max-width:760px;">
+      <p class="eb">VIP FAQ</p>
+      <h2>Quick answers before you <span class="ital">grab a bag</span>.</h2>
+      <div class="rvip-faq" style="margin-top:14px;">
+        <details><summary>Why am I seeing this page?</summary><p>You're either an active Restore subscriber or you signed up for the mystery waitlist. Either way, we love you for it, so you get first crack at the new flavor.</p></details>
+        <details><summary>How long is the VIP window?</summary><p>24 hours from the launch of early access. After that, Restore Raspberry opens to the public and starts moving fast.</p></details>
+        <details><summary>Is the flavor really limited?</summary><p>Yes. Raspberry is a limited-time summer drop. Once this run sells through, it's gone until we decide to bring it back.</p></details>
+        <details><summary>Does it taste like real raspberry?</summary><p>Bright, juicy, a little tart. Zero sugar, no syrupy aftertaste. We tasted a lot of versions to get here.</p></details>
+        <details><summary>When does it ship?</summary><p>Orders placed during the VIP window ship in 2 days. You'll be sipping it before most people know it exists.</p></details>
+        <details><summary>Can I switch my current Restore sub to Raspberry?</summary><p>Yes. Sign in to your account, swap the flavor on your next shipment in two clicks. Same price, same cadence.</p></details>
+        <details><summary>What if I don't love it?</summary><p>Send the bag back within 30 days for a full refund. Even if it's empty. We'd rather you love it.</p></details>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FINAL CTA === {%- endcomment -%}
+  <section class="sec rvip-final">
+    <div class="inner" style="max-width:680px;">
+      <div class="rvip-closer">
+        <img src="{{ 'restore-studio-glass-ice.png' | asset_url }}" alt="Restore Raspberry over ice" loading="lazy">
+      </div>
+      <p class="eb" style="color:rgba(255,247,241,0.85);">VIP Early Access</p>
+      <h2>The pink drink. <span class="cream underlined">Yours first.</span></h2>
+      <p style="color:rgba(255,247,241,0.92);">Zero sugar. Full multivitamin. Limited time flavor. The clock is real.</p>
+
+      <p style="margin-top:22px;"><a href="#buybox" class="btn btn--cream">Try Today For $50.25</a></p>
+      <p class="trust" style="color:rgba(255,247,241,0.78);">Free shipping on $50+ · 30-day money-back guarantee · Subscription pricing shown.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var root = document.currentScript.closest('.rvip') || document.querySelector('.rvip');
+    if(!root) return;
+
+    // === Countdown ===
+    var deadlineStr = root.getAttribute('data-deadline') || '';
+    var deadline = deadlineStr ? new Date(deadlineStr).getTime() : 0;
+    // Fallback: if deadline missing or already past, use 24h-from-first-visit (stored in localStorage).
+    if(!deadline || isNaN(deadline) || deadline < Date.now()){
+      var stored = parseInt(localStorage.getItem('rvipDeadline') || '0', 10);
+      if(!stored || stored < Date.now()){
+        stored = Date.now() + 24*60*60*1000;
+        localStorage.setItem('rvipDeadline', String(stored));
+      }
+      deadline = stored;
+    }
+
+    var clocks = root.querySelectorAll('[data-clock]');
+    function pad(n){ n = Math.max(0, n|0); return n < 10 ? '0'+n : ''+n; }
+    function tick(){
+      var ms = deadline - Date.now();
+      if(ms <= 0){
+        clocks.forEach(function(c){ c.classList.add('is-ended'); });
+        ['[data-d]','[data-h]','[data-m]','[data-s]'].forEach(function(sel){
+          root.querySelectorAll(sel).forEach(function(el){ el.textContent = '00'; });
+        });
+        return;
+      }
+      var s = Math.floor(ms/1000);
+      var d = Math.floor(s/86400); s -= d*86400;
+      var h = Math.floor(s/3600);  s -= h*3600;
+      var m = Math.floor(s/60);    s -= m*60;
+      root.querySelectorAll('[data-d]').forEach(function(el){ el.textContent = pad(d); });
+      root.querySelectorAll('[data-h]').forEach(function(el){ el.textContent = pad(h); });
+      root.querySelectorAll('[data-m]').forEach(function(el){ el.textContent = pad(m); });
+      root.querySelectorAll('[data-s]').forEach(function(el){ el.textContent = pad(s); });
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // === Buybox plan selector ===
+    var opts = root.querySelectorAll('.rvip-bb .plan');
+    var atc = root.querySelector('#rvip-atc');
+    opts.forEach(function(o){
+      o.addEventListener('click', function(){
+        opts.forEach(function(x){ x.classList.remove('sel'); });
+        o.classList.add('sel');
+        var total = o.getAttribute('data-total');
+        if(atc) atc.textContent = 'Try Today For $' + total;
+      });
+    });
+    if(atc){
+      atc.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(atc.getAttribute('aria-busy') === 'true') return;
+        var selected = root.querySelector('.rvip-bb .plan.sel');
+        if(!selected) return;
+        var variantId = selected.getAttribute('data-variant');
+        var sellingPlan = selected.getAttribute('data-selling-plan');
+        if(!variantId){
+          alert('Variant not configured.');
+          return;
+        }
+        var body = { items: [ { id: parseInt(variantId, 10), quantity: 1 } ] };
+        if(sellingPlan && sellingPlan.length > 0){
+          body.items[0].selling_plan = parseInt(sellingPlan, 10);
+        }
+        var prevText = atc.textContent;
+        atc.setAttribute('aria-busy','true');
+        atc.disabled = true;
+        atc.textContent = 'Adding to cart…';
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function(r){
+          if(!r.ok){ return r.json().then(function(j){ throw new Error(j.description || j.message || 'Add to cart failed'); }); }
+          atc.textContent = 'Going to checkout…';
+          window.location.href = '/checkout';
+        }).catch(function(err){
+          atc.removeAttribute('aria-busy');
+          atc.disabled = false;
+          atc.textContent = prevText;
+          alert(err.message || 'Could not add to cart. Please try again.');
+        });
+      });
+    }
+
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Restore VIP Early Access",
+  "settings": [
+    { "type": "text", "id": "chip_label", "label": "VIP Chip Label", "default": "VIP Early Access · Insider Drop" },
+    { "type": "text", "id": "deadline_iso", "label": "Countdown Deadline (ISO, e.g. 2026-06-23T00:00:00-07:00)", "default": "2026-06-23T00:00:00-07:00", "info": "When this passes the clock shows the ended state. Leave blank to use a per-visitor 24h fallback." },
+    { "type": "header", "content": "Buybox (variants wired in code)" },
+    { "type": "text", "id": "plan_id_1mo", "label": "Skio selling plan ID — 1 Bag (every 1 month)", "info": "Numeric ID only, e.g. 691219792161. Leave blank to add as one-time." },
+    { "type": "text", "id": "plan_id_2mo", "label": "Skio selling plan ID — 2 Bags (every 2 months)" },
+    { "type": "text", "id": "plan_id_3mo", "label": "Skio selling plan ID — 3 Bags (every 3 months)" }
+  ],
+  "presets": [{ "name": "Restore VIP Early Access" }]
+}
+{% endschema %}

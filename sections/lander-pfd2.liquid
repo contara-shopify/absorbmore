@@ -116,7 +116,6 @@
   .pfd2-body{padding:0 0 16px}
   .pfd2-body p{margin:0 0 18px;font-size:17px;line-height:1.65;color:#1E2330}
   .pfd2-body p.lede{font-size:19px;line-height:1.55;color:var(--ink);font-weight:500}
-  .pfd2-body p.lede::first-letter{font-size:54px;font-weight:700;float:left;line-height:.9;padding:6px 10px 0 0;color:var(--blue)}
   .pfd2-body strong{font-weight:700;color:var(--ink)}
 
   /* ---------- SECTION IMAGE ---------- */
@@ -164,7 +163,7 @@
   .pfd2-buy__label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);font-weight:700;max-width:720px;margin:0 auto 10px;padding:0 4px}
 
   .pfd2-buy__list{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-  .pfd2-row{position:relative;display:block;padding:18px 18px 16px;border-bottom:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s ease}
+  .pfd2-row{position:relative;display:block;padding:18px 18px 16px;border-bottom:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s ease;cursor:pointer}
   .pfd2-row:last-child{border-bottom:0}
   .pfd2-row:hover{background:#FBFAF6}
   .pfd2-row--best{background:#F4EFE4}
@@ -174,8 +173,8 @@
   .pfd2-row__left{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
   .pfd2-row__namerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .pfd2-row__radio{width:18px;height:18px;border:2px solid #B7BBC4;border-radius:999px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:#fff;margin-right:2px}
-  .pfd2-row--best .pfd2-row__radio{border-color:var(--ink)}
-  .pfd2-row--best .pfd2-row__radio:after{content:"";width:9px;height:9px;background:var(--ink);border-radius:999px;display:block}
+  .pfd2-row.is-selected .pfd2-row__radio{border-color:var(--ink)}
+  .pfd2-row.is-selected .pfd2-row__radio:after{content:"";width:9px;height:9px;background:var(--ink);border-radius:999px;display:block}
   .pfd2-row__name{font-size:19px;font-weight:700;color:var(--ink);line-height:1.1}
   .pfd2-row__pill{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;padding:4px 9px;border-radius:4px;line-height:1}
   .pfd2-row__pill--save{background:var(--red);color:#fff}
@@ -190,8 +189,9 @@
   .pfd2-row__was{text-decoration:line-through;color:var(--mute);margin-right:4px}
   .pfd2-row__save{font-size:13px;color:var(--blue-deep);font-weight:600;white-space:nowrap}
 
-  .pfd2-row__cta{display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;padding:11px 18px;border-radius:6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:10px}
-  .pfd2-row--best .pfd2-row__cta{background:var(--blue)}
+  .pfd2-row__cta{display:none;align-items:center;justify-content:center;background:var(--ink);color:#fff;padding:11px 18px;border-radius:6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:10px;border:0;cursor:pointer;font-family:inherit;-webkit-appearance:none;appearance:none}
+  .pfd2-row.is-selected .pfd2-row__cta{display:inline-flex}
+  .pfd2-row--best.is-selected .pfd2-row__cta{background:var(--blue)}
   .pfd2-row__cta:after{content:" →";margin-left:6px}
 
   @media(max-width:480px){
@@ -547,10 +547,21 @@
         <p class="pfd2-buy__sub">Subscribe and save. Skip, swap, or cancel anytime. 30-day money-back guarantee on every order.</p>
       </div>
 
-      <p class="pfd2-buy__label">Subscribe and save · {{ discount_1bot }}% off every order</p>
+      <p class="pfd2-buy__label">Subscribe and save · up to {{ discount_3bot }}% off every order</p>
       <div class="pfd2-buy__list">
 
-        <a class="pfd2-row" href="{{ cart_1bot }}">
+        {%- assign v1 = cart_1bot | split: '/cart/' | last | split: ':' | first -%}
+        {%- assign p1 = cart_1bot | split: 'selling_plan=' | last -%}
+        {%- assign v2 = cart_2bot | split: '/cart/' | last | split: ':' | first -%}
+        {%- assign p2 = cart_2bot | split: 'selling_plan=' | last -%}
+        {%- assign v3 = cart_3bot | split: '/cart/' | last | split: ':' | first -%}
+        {%- assign p3 = cart_3bot | split: 'selling_plan=' | last -%}
+
+        <form action="/cart/add" method="post" class="pfd2-row">
+          <input type="hidden" name="id" value="{{ v1 }}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ p1 }}">
+          <input type="hidden" name="return_to" value="/checkout">
           <div class="pfd2-row__top">
             <div class="pfd2-row__left">
               <div class="pfd2-row__namerow">
@@ -566,10 +577,14 @@
               <span class="pfd2-row__save">{{ price_1bot_save }}</span>
             </div>
           </div>
-          <span class="pfd2-row__cta">Start with 1</span>
-        </a>
+          <button type="submit" class="pfd2-row__cta">Start with 1</button>
+        </form>
 
-        <a class="pfd2-row pfd2-row--best" href="{{ cart_2bot }}">
+        <form action="/cart/add" method="post" class="pfd2-row pfd2-row--best is-selected">
+          <input type="hidden" name="id" value="{{ v2 }}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ p2 }}">
+          <input type="hidden" name="return_to" value="/checkout">
           <div class="pfd2-row__top">
             <div class="pfd2-row__left">
               <div class="pfd2-row__namerow">
@@ -586,10 +601,14 @@
               <span class="pfd2-row__save">{{ price_2bot_save }}</span>
             </div>
           </div>
-          <span class="pfd2-row__cta">Start 2-Bottle Plan</span>
-        </a>
+          <button type="submit" class="pfd2-row__cta">Start 2-Bottle Plan</button>
+        </form>
 
-        <a class="pfd2-row" href="{{ cart_3bot }}">
+        <form action="/cart/add" method="post" class="pfd2-row">
+          <input type="hidden" name="id" value="{{ v3 }}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ p3 }}">
+          <input type="hidden" name="return_to" value="/checkout">
           <div class="pfd2-row__top">
             <div class="pfd2-row__left">
               <div class="pfd2-row__namerow">
@@ -606,8 +625,8 @@
               <span class="pfd2-row__save">{{ price_3bot_save }}</span>
             </div>
           </div>
-          <span class="pfd2-row__cta">Start 3-Bottle Plan</span>
-        </a>
+          <button type="submit" class="pfd2-row__cta">Start 3-Bottle Plan</button>
+        </form>
 
       </div>
 
@@ -618,6 +637,19 @@
       </div>
     </div>
   </section>
+
+  <script>
+    (function(){
+      var rows = document.querySelectorAll('.pfd2-buy__list .pfd2-row');
+      rows.forEach(function(row){
+        row.addEventListener('click', function(e){
+          if (e.target.closest('.pfd2-row__cta')) return;
+          rows.forEach(function(r){ r.classList.remove('is-selected'); });
+          row.classList.add('is-selected');
+        });
+      });
+    })();
+  </script>
 
   <!-- ============ REVIEWS ============ -->
   <section class="pfd2-rev">

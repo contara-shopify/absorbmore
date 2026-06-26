@@ -1,0 +1,972 @@
+{%- comment -%}
+  OFD7 — GLP-1 Off-Ramp advertorial/protocol hybrid.
+  Audience: People tapering off GLP-1 injections, side-effect refugees, can't-take-shots.
+  Reframe: shots cover 1 of 3 areas. WLP-1 covers all three.
+  Compliance: structure/function only, "GLP-1 injections" never brand names, ~ on weight numbers.
+  Buybox: native form POST /cart/add, return_to=/checkout. Default 3-mo sub.
+{%- endcomment -%}
+
+{%- liquid
+  assign hero_img    = section.settings.hero_img    | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?v=1774483977&width=960'
+  assign bottle_img  = section.settings.bottle_img  | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1.png?v=1774483977&width=600'
+  assign benefit_img_1 = section.settings.benefit_img_1 | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1_Image2.png?v=1774483977&width=480'
+  assign benefit_img_2 = section.settings.benefit_img_2 | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_WLP1_Image3.png?v=1774483977&width=480'
+
+  comment
+    WLP-1 variant + Skio selling plan IDs (pulled from wlp-1-real-story 2026-06-25).
+    1mo: variant 52472821121313, plan 691162546465 (20% off, $79.20/mo)
+    3mo: variant 52472821154081, plan 691162579233 (30% off, $69.30/mo, $207.90 total)
+    6mo: variant 52472821186849, plan 691166544161 (35% off, $64.35/mo, $386.10 total)
+  endcomment
+
+  assign v_1mo        = section.settings.v_1mo        | default: '52472821121313'
+  assign p_1mo        = section.settings.p_1mo        | default: '691162546465'
+  assign price_1mo    = section.settings.price_1mo    | default: '$79.20'
+  assign was_1mo      = section.settings.was_1mo      | default: '$99.00'
+  assign save_1mo     = section.settings.save_1mo     | default: 'Save 20%'
+
+  assign v_3mo        = section.settings.v_3mo        | default: '52472821154081'
+  assign p_3mo        = section.settings.p_3mo        | default: '691162579233'
+  assign price_3mo    = section.settings.price_3mo    | default: '$69.30'
+  assign was_3mo      = section.settings.was_3mo      | default: '$99.00'
+  assign total_3mo    = section.settings.total_3mo    | default: '$207.90 total'
+  assign save_3mo     = section.settings.save_3mo     | default: 'Save 30%'
+
+  assign v_6mo        = section.settings.v_6mo        | default: '52472821186849'
+  assign p_6mo        = section.settings.p_6mo        | default: '691166544161'
+  assign price_6mo    = section.settings.price_6mo    | default: '$64.35'
+  assign was_6mo      = section.settings.was_6mo      | default: '$99.00'
+  assign total_6mo    = section.settings.total_6mo    | default: '$386.10 total'
+  assign save_6mo     = section.settings.save_6mo     | default: 'Save 35%'
+
+  assign h1_text      = section.settings.h1_text      | default: 'The 90-day off-ramp from <em>GLP-1 injections</em>.'
+  assign sub_text     = section.settings.sub_text     | default: 'A daily oral capsule that supports your body’s own GLP-1, so you can taper off the shot without bouncing back to where you started.'
+  assign eyebrow_text = section.settings.eyebrow_text | default: 'For people coming off GLP-1 injections'
+
+  assign rating       = section.settings.rating       | default: '4.8'
+  assign review_count = section.settings.review_count | default: '1,200+'
+
+  assign featured_pull   = section.settings.featured_pull   | default: 'I tried the GLP-1 shots before too and they did not give me the feeling and results like this has.'
+  assign featured_body   = section.settings.featured_body   | default: 'Wow. Just wow. Just after a few days I could see a difference in the way I felt. I noticed I was not craving food like I normally did and just all around felt better. If you are looking for a weight management support, I highly recommend this.'
+  assign featured_name   = section.settings.featured_name   | default: 'Jessica N.'
+  assign featured_title  = section.settings.featured_title  | default: 'Verified Customer · WLP-1'
+-%}
+
+<style>
+  .ofd7 { --bg:#ffffff; --bg-soft:#f7f8ff; --bg-tint:#eef0ff; --paper:#fafbff; --ink:#0d1130; --ink-soft:#3a3f5e; --muted:#6a708e; --line:#dde0f3; --line-soft:#ebedf8; --brand:#4659FF; --brand-hover:#3142d1; --brand-deep:#2231a8; --brand-tint:#e6e9ff; --accent:#FF7815; --accent-hover:#e76b0e; --green:#3EA193; --green-deep:#2d7268; --green-tint:#e1f2ee; --ink-deep:#080d24; --red:#E1225C; --red-soft:#ff406f; --gold:#FFB237;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .ofd7 *{box-sizing:border-box}
+  .ofd7 img{max-width:100%;display:block;height:auto}
+  .ofd7 a{color:inherit;text-decoration:none}
+  .ofd7 .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+  .ofd7 .wrap-narrow{max-width:760px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .ofd7-hero{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-soft) 100%);padding:30px 0 40px;border-bottom:1px solid var(--line-soft);position:relative}
+  .ofd7-hero__grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center}
+  @media(min-width:880px){.ofd7-hero__grid{grid-template-columns:1.05fr .95fr;gap:48px;padding:14px 0}}
+  .ofd7-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:16px}
+  .ofd7-hero__eyebrow::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;display:inline-block}
+  .ofd7-hero h1{font-size:clamp(30px,5.6vw,50px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 14px;color:var(--ink-deep)}
+  .ofd7-hero h1 em{font-style:normal;color:var(--brand)}
+  .ofd7-hero__sub{font-size:clamp(15px,2vw,18px);max-width:540px;margin:0 0 18px;color:var(--ink-soft);line-height:1.5}
+  .ofd7-hero__sub b{color:var(--ink);font-weight:600}
+  .ofd7-hero__bullets{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:9px;max-width:560px}
+  .ofd7-hero__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:15px;font-weight:500;color:var(--ink);line-height:1.45}
+  .ofd7-hero__bullets li svg{width:20px;height:20px;flex:0 0 auto;color:var(--brand);margin-top:2px}
+  .ofd7-hero__bullets li b{color:var(--ink-deep);font-weight:700}
+  .ofd7-hero__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:440px;padding:16px 30px;background:var(--brand);color:#fff !important;font-weight:600;font-size:15px;letter-spacing:.01em;border-radius:2px;border:none;cursor:pointer;text-decoration:none;transition:background .2s}
+  .ofd7-hero__cta:hover{background:var(--brand-hover);color:#fff !important}
+  .ofd7-hero__cta:after{content:" →";margin-left:10px}
+  .ofd7-hero__rating{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:13px;color:var(--ink-soft);flex-wrap:wrap}
+  .ofd7-hero__stars{color:var(--accent);letter-spacing:2px;font-size:14px}
+  .ofd7-hero__rating b{color:var(--ink-deep);font-weight:700}
+  .ofd7-hero__media{position:relative;text-align:center}
+  .ofd7-hero__card{background:var(--bg-soft);border-radius:8px;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1/1;border:1px solid var(--line);overflow:hidden;padding:18px;display:flex;align-items:center;justify-content:center}
+  .ofd7-hero__card img{width:100%;height:100%;object-fit:contain}
+  .ofd7-hero__badge{position:absolute;top:-10px;right:14px;background:var(--accent);color:#fff;border-radius:999px;width:96px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;line-height:1;transform:rotate(-8deg);border:3px solid #fff;box-shadow:0 6px 14px rgba(8,13,36,.18)}
+  .ofd7-hero__badge big{font-size:22px;letter-spacing:-.01em}
+  .ofd7-hero__badge span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .ofd7-hero__chip{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#fff;color:var(--ink-deep);border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:12px;font-weight:700;letter-spacing:.04em;line-height:1;box-shadow:0 6px 16px rgba(8,13,36,.12);white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+  .ofd7-hero__chip::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;flex:0 0 auto}
+  @media(max-width:879px){.ofd7-hero__card{max-width:340px}.ofd7-hero__badge{top:-6px;right:6px;width:80px;height:80px}.ofd7-hero__badge big{font-size:18px}.ofd7-hero__chip{font-size:11px;padding:8px 14px;bottom:10px}}
+
+  /* TRUST STRIP */
+  .ofd7-trust{background:var(--bg-soft);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:14px 0}
+  .ofd7-trust__row{display:grid;grid-template-columns:1fr;gap:10px 16px;font-size:13px;font-weight:500;color:var(--ink)}
+  @media(min-width:520px){.ofd7-trust__row{grid-template-columns:1fr 1fr;text-align:center}}
+  @media(min-width:720px){.ofd7-trust__row{grid-template-columns:repeat(4,1fr)}}
+  .ofd7-trust__cell{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  @media(min-width:520px){.ofd7-trust__cell{justify-content:center}}
+  .ofd7-trust__cell svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+
+  /* SECTION BASE */
+  .ofd7-sec{padding:54px 0}
+  .ofd7-sec--soft{background:var(--bg-soft)}
+  .ofd7-sec--tint{background:var(--bg-tint)}
+  .ofd7-sec--ink{background:var(--ink-deep);color:#fff}
+  .ofd7-sec--ink h2,.ofd7-sec--ink h3{color:#fff}
+  .ofd7-sec__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.24em;font-weight:700;color:var(--ink);margin:0 0 12px;display:inline-flex;align-items:center;gap:10px}
+  .ofd7-sec__eyebrow::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;display:inline-block}
+  .ofd7-sec--ink .ofd7-sec__eyebrow{color:rgba(255,255,255,.85)}
+  .ofd7-sec--ink .ofd7-sec__eyebrow::before{background:var(--accent)}
+  .ofd7-sec__title{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.035em;color:var(--ink-deep);margin:0 0 12px;line-height:1.05}
+  .ofd7-sec--ink .ofd7-sec__title{color:#fff}
+  .ofd7-sec__title em{font-style:normal;color:var(--brand)}
+  .ofd7-sec--ink .ofd7-sec__title em{color:var(--accent)}
+  .ofd7-sec__sub{font-size:16px;color:var(--ink-soft);max-width:680px;margin:0 0 28px;line-height:1.6}
+  .ofd7-sec--ink .ofd7-sec__sub{color:rgba(255,255,255,.82)}
+
+  /* INLINE ANCHOR CTA */
+  .ofd7-anchor{display:flex;justify-content:center;margin-top:34px}
+  .ofd7-anchor a{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:380px;padding:16px 26px;background:var(--brand);color:#fff !important;font-weight:700;font-size:15px;letter-spacing:.01em;border-radius:2px;text-decoration:none;transition:background .2s}
+  .ofd7-anchor a:hover{background:var(--brand-hover);color:#fff !important}
+  .ofd7-anchor a:after{content:" →";margin-left:10px}
+  .ofd7-sec--ink .ofd7-anchor a{background:var(--accent);color:#fff !important}
+  .ofd7-sec--ink .ofd7-anchor a:hover{background:var(--accent-hover);color:#fff !important}
+
+  /* LEDE — problem→answer 1+1 block (bullets) */
+  .ofd7-lede{display:grid;grid-template-columns:1fr;gap:18px;max-width:980px;margin:0 auto}
+  @media(min-width:760px){.ofd7-lede{grid-template-columns:1fr auto 1fr;align-items:stretch;gap:16px}}
+  .ofd7-lede__card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px 22px;position:relative;display:flex;flex-direction:column}
+  .ofd7-lede__card--prob{border-left:4px solid var(--red)}
+  .ofd7-lede__card--ans{border-left:4px solid var(--brand);background:var(--paper)}
+  .ofd7-lede__label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0 0 10px}
+  .ofd7-lede__card--prob .ofd7-lede__label{color:var(--red)}
+  .ofd7-lede__card--ans .ofd7-lede__label{color:var(--brand)}
+  .ofd7-lede__h{font-size:clamp(20px,3.2vw,26px);font-weight:800;line-height:1.15;letter-spacing:-.02em;color:var(--ink-deep);margin:0 0 14px}
+  .ofd7-lede__list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .ofd7-lede__list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.45;color:var(--ink)}
+  .ofd7-lede__list li svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
+  .ofd7-lede__card--prob .ofd7-lede__list li svg{color:var(--red)}
+  .ofd7-lede__card--ans .ofd7-lede__list li svg{color:var(--brand)}
+  .ofd7-lede__list li b{color:var(--ink-deep);font-weight:700}
+  .ofd7-lede__arrow{display:flex;align-items:center;justify-content:center;color:var(--brand)}
+  .ofd7-lede__arrow svg{width:42px;height:42px}
+  @media(max-width:759px){.ofd7-lede__arrow{transform:rotate(90deg);padding:4px 0}.ofd7-lede__arrow svg{width:32px;height:32px}}
+
+  /* 3-AREA SECTION (dark) */
+  .ofd7-three{display:grid;grid-template-columns:1fr;gap:14px;max-width:980px;margin:0 auto}
+  @media(min-width:760px){.ofd7-three{grid-template-columns:repeat(3,1fr)}}
+  .ofd7-three__card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:24px 20px;position:relative}
+  .ofd7-three__num{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--accent);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .ofd7-three__h{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:0 0 8px;line-height:1.15}
+  .ofd7-three__p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.78);margin:0 0 12px}
+  .ofd7-three__tag{font-size:12px;font-weight:700;color:#fff;background:var(--brand);display:inline-block;padding:5px 10px;border-radius:4px;letter-spacing:.02em}
+  .ofd7-three__tag--shot{background:var(--red)}
+  .ofd7-three__tag--no{background:rgba(255,255,255,.18);color:rgba(255,255,255,.7)}
+  .ofd7-three__tag--all{background:var(--green)}
+  .ofd7-three__sum{max-width:760px;margin:30px auto 0;text-align:center;padding:22px;background:rgba(255,255,255,.06);border-radius:10px}
+  .ofd7-three__sum p{font-size:17px;line-height:1.5;color:#fff;margin:0;font-weight:600}
+  .ofd7-three__sum p em{font-style:normal;color:var(--accent)}
+
+  /* FEATURED TESTIMONIAL (distinct, large, gold-accent band) */
+  .ofd7-feat{background:linear-gradient(135deg, var(--ink-deep) 0%, #131830 100%);padding:64px 0;position:relative;overflow:hidden}
+  .ofd7-feat::before{content:"";position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,178,55,.18) 0%,transparent 70%);border-radius:50%}
+  .ofd7-feat__inner{max-width:880px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
+  .ofd7-feat__eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-weight:800;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:20px}
+  .ofd7-feat__eyebrow::before{content:"★";color:var(--gold);font-size:14px;letter-spacing:0}
+  .ofd7-feat__stars{color:var(--gold);font-size:22px;letter-spacing:3px;margin-bottom:20px}
+  .ofd7-feat__quote{font-size:clamp(24px,3.8vw,36px);font-weight:800;line-height:1.15;letter-spacing:-.025em;color:#fff;margin:0 0 22px;max-width:820px}
+  .ofd7-feat__quote::before{content:"\201C";color:var(--gold);font-size:1.1em;font-weight:800}
+  .ofd7-feat__quote::after{content:"\201D";color:var(--gold);font-size:1.1em;font-weight:800}
+  .ofd7-feat__body{font-size:16px;line-height:1.6;color:rgba(255,255,255,.78);max-width:680px;margin:0 0 24px}
+  .ofd7-feat__attr{display:flex;align-items:center;gap:14px;border-top:1px solid rgba(255,255,255,.14);padding-top:20px}
+  .ofd7-feat__avatar{width:46px;height:46px;border-radius:50%;background:var(--gold);color:var(--ink-deep);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex:0 0 auto}
+  .ofd7-feat__name{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ofd7-feat__verif{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--green);background:rgba(62,161,147,.18);padding:3px 8px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase}
+  .ofd7-feat__title{font-size:12px;color:rgba(255,255,255,.62);margin:2px 0 0;letter-spacing:.04em}
+
+  /* MEET WLP-1 — visual comparison block */
+  .ofd7-meet__compare{display:grid;grid-template-columns:1fr;gap:16px;max-width:920px;margin:0 auto 36px}
+  @media(min-width:720px){.ofd7-meet__compare{grid-template-columns:1fr auto 1fr;align-items:stretch}}
+  .ofd7-meet__col{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px 22px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .ofd7-meet__col--shot{border-top:4px solid var(--red)}
+  .ofd7-meet__col--wlp{border-top:4px solid var(--brand);background:var(--paper)}
+  .ofd7-meet__icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 0 14px}
+  .ofd7-meet__col--shot .ofd7-meet__icon{background:#ffe4eb;color:var(--red)}
+  .ofd7-meet__col--wlp .ofd7-meet__icon{background:var(--brand-tint);color:var(--brand)}
+  .ofd7-meet__icon svg{width:32px;height:32px}
+  .ofd7-meet__lbl{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin:0 0 8px}
+  .ofd7-meet__col--shot .ofd7-meet__lbl{color:var(--red)}
+  .ofd7-meet__col--wlp .ofd7-meet__lbl{color:var(--brand)}
+  .ofd7-meet__h{font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--ink-deep);margin:0 0 10px;line-height:1.2}
+  .ofd7-meet__p{font-size:14.5px;line-height:1.5;color:var(--ink-soft);margin:0}
+  .ofd7-meet__arrow{display:flex;align-items:center;justify-content:center;color:var(--brand)}
+  .ofd7-meet__arrow svg{width:38px;height:38px}
+  @media(max-width:719px){.ofd7-meet__arrow{transform:rotate(90deg);padding:4px 0}}
+
+  .ofd7-meet__why{max-width:680px;margin:0 auto;text-align:center}
+  .ofd7-meet__why p{font-size:17px;line-height:1.6;color:var(--ink);margin:0}
+  .ofd7-meet__why p b{color:var(--ink-deep);font-weight:700}
+  .ofd7-meet__why p .blue{color:var(--brand);font-weight:700}
+
+  /* TIMELINE — Without WLP-1 vs With WLP-1 */
+  .ofd7-time{display:flex;flex-direction:column;gap:22px;max-width:1080px;margin:0 auto}
+  .ofd7-time__row{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr;gap:0}
+  @media(min-width:880px){.ofd7-time__row{grid-template-columns:130px 1fr auto 1fr}}
+  .ofd7-time__month{background:var(--ink-deep);color:#fff;padding:20px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+  @media(min-width:880px){.ofd7-time__month{padding:24px 14px}}
+  .ofd7-time__month-num{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .ofd7-time__month-big{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .ofd7-time__month-sub{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);margin-top:6px}
+  .ofd7-time__side{padding:22px 22px}
+  .ofd7-time__side--bad{background:#fff5f7;border-top:1px solid #ffd5de}
+  .ofd7-time__side--good{background:var(--paper);border-top:1px solid var(--line-soft)}
+  @media(min-width:880px){
+    .ofd7-time__side--bad{border-top:0;border-right:1px dashed var(--line)}
+    .ofd7-time__side--good{border-top:0}
+  }
+  .ofd7-time__head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+  .ofd7-time__head--bad{color:var(--red)}
+  .ofd7-time__head--good{color:var(--brand)}
+  .ofd7-time__list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .ofd7-time__list li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;line-height:1.45;color:var(--ink)}
+  .ofd7-time__list li svg{width:20px;height:20px;flex:0 0 auto;margin-top:1px}
+  .ofd7-time__list--bad li svg{color:var(--red)}
+  .ofd7-time__list--good li svg{color:var(--green-deep)}
+  .ofd7-time__list li b{color:var(--ink-deep);font-weight:700}
+  .ofd7-time__connect{display:flex;align-items:center;justify-content:center;background:var(--bg-soft);padding:0 8px;color:var(--brand)}
+  .ofd7-time__connect svg{width:34px;height:34px}
+  @media(max-width:879px){.ofd7-time__connect{padding:10px 0;background:transparent}.ofd7-time__connect svg{transform:rotate(90deg);width:28px;height:28px}}
+
+  /* INGREDIENTS */
+  .ofd7-ing{display:grid;grid-template-columns:1fr;gap:14px;max-width:980px;margin:0 auto}
+  @media(min-width:760px){.ofd7-ing{grid-template-columns:repeat(3,1fr)}}
+  .ofd7-ing__card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 22px;display:flex;flex-direction:column;gap:10px}
+  .ofd7-ing__name{font-size:18px;font-weight:800;color:var(--ink-deep);margin:0;line-height:1.2}
+  .ofd7-ing__name em{font-style:normal;color:var(--brand);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:4px}
+  .ofd7-ing__role{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.16em;text-transform:uppercase}
+  .ofd7-ing__p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0}
+  .ofd7-ing__p b{color:var(--ink-deep);font-weight:700}
+  .ofd7-ing__cite{font-size:12px;color:var(--muted);margin:0}
+  .ofd7-ing__cite a{color:var(--brand);font-weight:600}
+
+  /* BUYBOX — bigger, gifts row, benefit images */
+  .ofd7-buy{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 22px 30px;max-width:560px;margin:0 auto;position:relative;box-shadow:0 14px 38px rgba(8,13,36,.08)}
+  .ofd7-buy__flag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--brand);color:#fff;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border-radius:3px}
+  .ofd7-buy__media{position:relative;text-align:center;margin:8px 0 18px}
+  .ofd7-buy__hero{background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:10px;padding:14px;max-width:340px;margin:0 auto;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1}
+  .ofd7-buy__hero img{width:100%;height:100%;object-fit:contain;max-width:280px}
+  .ofd7-buy__bens{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 0;max-width:340px;margin-left:auto;margin-right:auto}
+  .ofd7-buy__ben{background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:8px;padding:8px;text-align:center}
+  .ofd7-buy__ben img{width:100%;height:100%;object-fit:cover;border-radius:4px;aspect-ratio:1/1}
+  .ofd7-buy__head{text-align:center;margin:0 0 16px}
+  .ofd7-buy__h{font-size:20px;font-weight:800;color:var(--ink-deep);margin:0 0 4px;letter-spacing:-.01em}
+  .ofd7-buy__sub{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .ofd7-buy__sub b{color:var(--ink-deep);font-weight:700}
+
+  .ofd7-buy__gifts{background:var(--paper);border:1px dashed var(--brand);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin:0 0 18px}
+  .ofd7-buy__gifts svg{width:22px;height:22px;color:var(--brand);flex:0 0 auto;margin-top:1px}
+  .ofd7-buy__gifts-text{font-size:13.5px;color:var(--ink);line-height:1.4}
+  .ofd7-buy__gifts-text b{display:block;color:var(--ink-deep);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+
+  .ofd7-buy__list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+  .ofd7-row{position:relative;display:flex;flex-direction:column;gap:8px;background:#fff;border:2px solid var(--line);border-radius:10px;padding:14px 14px 12px;cursor:pointer;transition:border-color .2s,background .2s}
+  .ofd7-row:has(input:checked){border-color:var(--brand);background:var(--paper)}
+  .ofd7-row__input{position:absolute;opacity:0;pointer-events:none}
+  .ofd7-row__top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .ofd7-row__left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .ofd7-row__radio{width:20px;height:20px;border:2px solid var(--line);border-radius:50%;flex:0 0 auto;background:#fff;position:relative;transition:border-color .2s}
+  .ofd7-row__radio:after{content:"";position:absolute;inset:3px;border-radius:50%;background:transparent;transition:background .2s}
+  .ofd7-row:has(input:checked) .ofd7-row__radio{border-color:var(--brand)}
+  .ofd7-row:has(input:checked) .ofd7-row__radio:after{background:var(--brand)}
+  .ofd7-row__name{font-size:15px;font-weight:700;color:var(--ink-deep);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ofd7-row__pill{display:inline-block;background:var(--brand);color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:3px;line-height:1}
+  .ofd7-row__pill--best{background:var(--green)}
+  .ofd7-row__right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:0 0 auto}
+  .ofd7-row__price{font-size:18px;font-weight:800;color:var(--ink-deep);letter-spacing:-.01em;line-height:1}
+  .ofd7-row__per{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .ofd7-row__was{font-size:12px;color:var(--muted);text-decoration:line-through}
+  .ofd7-row__meta{font-size:12.5px;color:var(--muted);margin:0;padding-left:30px}
+  .ofd7-row__meta b{color:var(--ink);font-weight:700}
+
+  .ofd7-buy__cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:17px 20px;background:var(--brand);color:#fff !important;font-size:15px;font-weight:700;letter-spacing:.01em;border:none;border-radius:3px;cursor:pointer;transition:background .2s;-webkit-appearance:none;font-family:inherit}
+  .ofd7-buy__cta:hover{background:var(--brand-hover)}
+  .ofd7-buy__cta:after{content:" →"}
+  .ofd7-buy__cta-price{opacity:.85;font-weight:600}
+  .ofd7-buy__guarantee{font-size:12.5px;color:var(--ink-soft);text-align:center;margin:14px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;line-height:1.4}
+  .ofd7-buy__guarantee svg{width:16px;height:16px;color:var(--green);flex:0 0 auto}
+
+  /* REVIEWS WIDGET WRAPPER */
+  .ofd7-rev{max-width:980px;margin:0 auto}
+
+  /* FAQ */
+  .ofd7-faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+  .ofd7-faq details{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .ofd7-faq summary{padding:18px 22px;font-size:15.5px;font-weight:700;color:var(--ink-deep);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;list-style:none;line-height:1.35}
+  .ofd7-faq summary::-webkit-details-marker{display:none}
+  .ofd7-faq summary:after{content:"+";font-size:24px;font-weight:400;color:var(--brand);transition:transform .2s;flex:0 0 auto;line-height:1}
+  .ofd7-faq details[open] summary:after{transform:rotate(45deg)}
+  .ofd7-faq__body{padding:0 22px 18px;font-size:14.5px;line-height:1.6;color:var(--ink-soft)}
+  .ofd7-faq__body p{margin:0 0 10px}
+  .ofd7-faq__body p:last-child{margin:0}
+
+  /* FINAL CTA */
+  .ofd7-final{background:var(--ink-deep);color:#fff;padding:60px 0 64px;text-align:center}
+  .ofd7-final h2{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.03em;color:#fff;margin:0 0 12px;line-height:1.05}
+  .ofd7-final h2 em{font-style:normal;color:var(--accent)}
+  .ofd7-final p{font-size:16px;color:rgba(255,255,255,.85);max-width:560px;margin:0 auto 26px;line-height:1.55}
+  .ofd7-final__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:360px;padding:17px 30px;background:var(--brand);color:#fff !important;font-weight:700;font-size:15px;border-radius:3px;border:none;cursor:pointer;transition:background .2s;-webkit-appearance:none;font-family:inherit;text-decoration:none}
+  .ofd7-final__cta:hover{background:var(--brand-hover);color:#fff !important}
+  .ofd7-final__cta:after{content:" →";margin-left:10px}
+  .ofd7-final__meta{font-size:13px;color:rgba(255,255,255,.7);margin:14px 0 0}
+
+  /* DISCLAIMER */
+  .ofd7-disclaim{padding:24px 0 100px;background:var(--bg-soft)}
+  .ofd7-disclaim p{font-size:12px;line-height:1.55;color:var(--muted);max-width:840px;margin:0 auto;padding:0 18px;text-align:center}
+
+  /* STICKY BOTTOM ATC */
+  .ofd7-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(8,13,36,.08);padding:10px 14px;z-index:90;transform:translateY(110%);transition:transform .25s ease}
+  .ofd7-sticky.is-on{transform:translateY(0)}
+  .ofd7-sticky__inner{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .ofd7-sticky__price{flex:1;min-width:0}
+  .ofd7-sticky__lbl{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);line-height:1;margin-bottom:3px}
+  .ofd7-sticky__now{font-size:18px;font-weight:800;color:var(--ink-deep);letter-spacing:-.01em}
+  .ofd7-sticky__was{font-size:13px;color:var(--muted);text-decoration:line-through;margin-left:6px}
+  .ofd7-sticky__form{margin:0;flex:0 0 auto}
+  .ofd7-sticky__btn{padding:13px 22px;background:var(--brand);color:#fff !important;font-weight:700;font-size:14px;border:none;border-radius:3px;cursor:pointer;-webkit-appearance:none;font-family:inherit;white-space:nowrap}
+  .ofd7-sticky__btn:hover{background:var(--brand-hover);color:#fff !important}
+  @media(min-width:880px){.ofd7-sticky{display:none}}
+</style>
+
+<div class="ofd7">
+
+  <!-- HERO -->
+  <div class="ofd7-hero">
+    <div class="wrap">
+      <div class="ofd7-hero__grid">
+        <div>
+          <div class="ofd7-hero__eyebrow">{{ eyebrow_text }}</div>
+          <h1>{{ h1_text }}</h1>
+          <p class="ofd7-hero__sub">{{ sub_text }}</p>
+          <ul class="ofd7-hero__bullets">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Supports your body's natural GLP-1</b> so you feel fuller, longer</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Quiets food noise</b> and reduces cravings between meals</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Supports increased calories burned at rest</b>, so your metabolism keeps working</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>2 capsules a day.</b> No needles. No prescription.</span></li>
+          </ul>
+          <a href="#buy" class="ofd7-hero__cta">Start The Off-Ramp</a>
+          <div class="ofd7-hero__rating">
+            <span class="ofd7-hero__stars">★★★★★</span>
+            <b>{{ rating }}</b>
+            <span>· {{ review_count }} verified reviews</span>
+          </div>
+        </div>
+        <div class="ofd7-hero__media">
+          <div class="ofd7-hero__card">
+            <img src="{{ hero_img }}" alt="WLP-1 oral GLP-1 support" loading="eager" width="440" height="440">
+          </div>
+          <div class="ofd7-hero__badge">
+            <big>90</big>
+            <span>Day Off-Ramp</span>
+          </div>
+          <div class="ofd7-hero__chip">GLP-1 boost in a pill</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="ofd7-trust">
+    <div class="wrap">
+      <div class="ofd7-trust__row">
+        <div class="ofd7-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>No prescription</div>
+        <div class="ofd7-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>No needles</div>
+        <div class="ofd7-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Clinically studied actives</div>
+        <div class="ofd7-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>30-day guarantee</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEDE: problem → answer (BULLETS) -->
+  <div class="ofd7-sec">
+    <div class="wrap">
+      <div style="text-align:center;max-width:680px;margin:0 auto 36px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">The Bounce-Back Problem</div>
+        <h2 class="ofd7-sec__title">The shot ends. Your <em>appetite returns</em>. Your metabolism does not.</h2>
+      </div>
+
+      <div class="ofd7-lede">
+        <div class="ofd7-lede__card ofd7-lede__card--prob">
+          <p class="ofd7-lede__label">The problem</p>
+          <h3 class="ofd7-lede__h">Most people regain the weight within a year of stopping.</h3>
+          <ul class="ofd7-lede__list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span>The shot only supports <b>appetite</b>. When it wears off, hunger returns.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Metabolism slows</b> on injections from muscle loss and reduced energy use.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span>Cravings come back. <b>Food noise gets loud</b> again, often within weeks.</span></li>
+          </ul>
+        </div>
+        <div class="ofd7-lede__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="ofd7-lede__card ofd7-lede__card--ans">
+          <p class="ofd7-lede__label">The answer</p>
+          <h3 class="ofd7-lede__h">WLP-1 is the off-ramp.</h3>
+          <ul class="ofd7-lede__list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>A daily oral capsule</b> that supports your body's own GLP-1.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Covers the <b>3 areas</b> weight management depends on, not just appetite.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Start during your taper.</b> WLP-1 picks up the work as the shot fades.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ofd7-anchor"><a href="#buy">Start The Off-Ramp</a></div>
+    </div>
+  </div>
+
+  <!-- 3-AREA SECTION (dark) -->
+  <div class="ofd7-sec ofd7-sec--ink">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 36px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">Why The Shot Is Not Enough On Its Own</div>
+        <h2 class="ofd7-sec__title">Weight management depends on <em>three areas</em>. The shot supports one.</h2>
+        <p class="ofd7-sec__sub" style="margin-left:auto;margin-right:auto;text-align:center">When you stop the shot, the area it covered returns. The other two have been waiting.</p>
+      </div>
+
+      <div class="ofd7-three">
+        <div class="ofd7-three__card">
+          <div class="ofd7-three__num">Area 01</div>
+          <h3 class="ofd7-three__h">Appetite</h3>
+          <p class="ofd7-three__p">How hungry you feel between meals. How loud "food noise" is in your head all day.</p>
+          <div><span class="ofd7-three__tag ofd7-three__tag--shot">Shot covers this</span></div>
+        </div>
+        <div class="ofd7-three__card">
+          <div class="ofd7-three__num">Area 02</div>
+          <h3 class="ofd7-three__h">Metabolism</h3>
+          <p class="ofd7-three__p">How many calories your body burns at rest. Drops on injections as muscle and energy use decline.</p>
+          <div><span class="ofd7-three__tag ofd7-three__tag--no">Shot does not</span></div>
+        </div>
+        <div class="ofd7-three__card">
+          <div class="ofd7-three__num">Area 03</div>
+          <h3 class="ofd7-three__h">Cravings</h3>
+          <p class="ofd7-three__p">The pull toward sweets, salt, and emotional eating, especially under stress.</p>
+          <div><span class="ofd7-three__tag ofd7-three__tag--no">Shot does not</span></div>
+        </div>
+      </div>
+
+      <div class="ofd7-three__sum">
+        <p>WLP-1 supports <em>all three</em>. That is the off-ramp.</p>
+      </div>
+
+      <div class="ofd7-anchor"><a href="#buy">Start The Off-Ramp</a></div>
+    </div>
+  </div>
+
+  <!-- FEATURED TESTIMONIAL — distinct dark band with gold accent -->
+  <div class="ofd7-feat">
+    <div class="ofd7-feat__inner">
+      <div class="ofd7-feat__eyebrow">Featured Review</div>
+      <div class="ofd7-feat__stars">★★★★★</div>
+      <h2 class="ofd7-feat__quote">{{ featured_pull }}</h2>
+      <p class="ofd7-feat__body">{{ featured_body }}</p>
+      <div class="ofd7-feat__attr">
+        <div class="ofd7-feat__avatar">{{ featured_name | slice: 0, 1 }}</div>
+        <div>
+          <div class="ofd7-feat__name">{{ featured_name }} <span class="ofd7-feat__verif">✓ Verified</span></div>
+          <p class="ofd7-feat__title">{{ featured_title }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUYBOX (moved higher — right after the proof) -->
+  <div class="ofd7-sec ofd7-sec--soft" id="buy">
+    <div class="wrap">
+      <div style="text-align:center;max-width:640px;margin:0 auto 28px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">Start The Off-Ramp</div>
+        <h2 class="ofd7-sec__title">Subscribe and <em>save up to 35%</em>.</h2>
+      </div>
+
+      <div class="ofd7-buy" data-buybox>
+        <div class="ofd7-buy__flag">Choose Your Plan</div>
+
+        <div class="ofd7-buy__media">
+          <div class="ofd7-buy__hero"><img src="{{ bottle_img }}" alt="WLP-1 bottle" loading="lazy" width="280" height="280"></div>
+          <div class="ofd7-buy__bens">
+            <div class="ofd7-buy__ben"><img src="{{ benefit_img_1 }}" alt="WLP-1 benefit" loading="lazy" width="160" height="160"></div>
+            <div class="ofd7-buy__ben"><img src="{{ benefit_img_2 }}" alt="WLP-1 benefit" loading="lazy" width="160" height="160"></div>
+          </div>
+        </div>
+
+        <div class="ofd7-buy__head">
+          <h3 class="ofd7-buy__h">WLP-1 · Oral GLP-1 Support</h3>
+          <p class="ofd7-buy__sub"><b>2 capsules a day.</b> Supports appetite, metabolism, and cravings.</p>
+        </div>
+
+        <div class="ofd7-buy__gifts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+          <div class="ofd7-buy__gifts-text">
+            <b>Free with every subscription</b>
+            The GLP-1 Off-Ramp Protocol + 30-day meal plan + daily tracker. ($45 value)
+          </div>
+        </div>
+
+        <form action="/cart/add" method="post" class="ofd7-buy__form" data-buyform>
+          <input type="hidden" name="id" value="{{ v_3mo }}" data-variant>
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ p_3mo }}" data-selling-plan>
+          <input type="hidden" name="return_to" value="/checkout">
+
+          <div class="ofd7-buy__list">
+            <label class="ofd7-row" data-plan="1mo" data-variant-id="{{ v_1mo }}" data-plan-id="{{ p_1mo }}" data-price="{{ price_1mo }}" data-was="{{ was_1mo }}">
+              <input type="radio" name="plan" value="1mo" class="ofd7-row__input">
+              <span class="ofd7-row__top">
+                <span class="ofd7-row__left">
+                  <span class="ofd7-row__radio"></span>
+                  <span class="ofd7-row__name">1 Month</span>
+                </span>
+                <span class="ofd7-row__right">
+                  <span class="ofd7-row__price">{{ price_1mo }}<span class="ofd7-row__per">/mo</span></span>
+                  <span class="ofd7-row__was">{{ was_1mo }}</span>
+                </span>
+              </span>
+              <span class="ofd7-row__meta"><b>{{ save_1mo }}.</b> Delivered every 30 days.</span>
+            </label>
+
+            <label class="ofd7-row" data-plan="3mo" data-variant-id="{{ v_3mo }}" data-plan-id="{{ p_3mo }}" data-price="{{ price_3mo }}" data-was="{{ was_3mo }}">
+              <input type="radio" name="plan" value="3mo" class="ofd7-row__input" checked>
+              <span class="ofd7-row__top">
+                <span class="ofd7-row__left">
+                  <span class="ofd7-row__radio"></span>
+                  <span class="ofd7-row__name">3 Months <span class="ofd7-row__pill">Most Popular</span></span>
+                </span>
+                <span class="ofd7-row__right">
+                  <span class="ofd7-row__price">{{ price_3mo }}<span class="ofd7-row__per">/mo</span></span>
+                  <span class="ofd7-row__was">{{ was_3mo }}</span>
+                </span>
+              </span>
+              <span class="ofd7-row__meta"><b>{{ save_3mo }}.</b> {{ total_3mo }}. Free expedited shipping. Delivered every 3 months.</span>
+            </label>
+
+            <label class="ofd7-row" data-plan="6mo" data-variant-id="{{ v_6mo }}" data-plan-id="{{ p_6mo }}" data-price="{{ price_6mo }}" data-was="{{ was_6mo }}">
+              <input type="radio" name="plan" value="6mo" class="ofd7-row__input">
+              <span class="ofd7-row__top">
+                <span class="ofd7-row__left">
+                  <span class="ofd7-row__radio"></span>
+                  <span class="ofd7-row__name">6 Months <span class="ofd7-row__pill ofd7-row__pill--best">Best Value</span></span>
+                </span>
+                <span class="ofd7-row__right">
+                  <span class="ofd7-row__price">{{ price_6mo }}<span class="ofd7-row__per">/mo</span></span>
+                  <span class="ofd7-row__was">{{ was_6mo }}</span>
+                </span>
+              </span>
+              <span class="ofd7-row__meta"><b>{{ save_6mo }}.</b> {{ total_6mo }}. Free expedited shipping. Delivered every 6 months.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="ofd7-buy__cta" data-cta>
+            <span class="ofd7-buy__cta-label">Start The Off-Ramp</span>
+            <span class="ofd7-buy__cta-sep">·</span>
+            <span class="ofd7-buy__cta-price" data-cta-price>{{ price_3mo }}/mo</span>
+          </button>
+
+          <p class="ofd7-buy__guarantee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3 9-8 10-5-1-8-5-8-10V6l8-4z"/></svg>
+            30-day money-back guarantee. Free shipping. Pause or cancel anytime.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEET WLP-1 — visual comparison + prose -->
+  <div class="ofd7-sec">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 30px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">Meet WLP-1</div>
+        <h2 class="ofd7-sec__title">Support the GLP-1 <em>your body already makes</em>. Instead of forcing it in.</h2>
+      </div>
+
+      <div class="ofd7-meet__compare">
+        <div class="ofd7-meet__col ofd7-meet__col--shot">
+          <div class="ofd7-meet__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4.5L9 10l-5 5 1.5 1.5 1.5-1.5L9 12l5 5 5-5L9 4l5.5.5z" transform="rotate(45 12 12)"/><line x1="3" y1="21" x2="6" y2="18"/></svg>
+          </div>
+          <p class="ofd7-meet__lbl">The Shot</p>
+          <h3 class="ofd7-meet__h">Synthetic GLP-1. Forced in.</h3>
+          <p class="ofd7-meet__p">Injected at high doses. Works while in your system. When you stop, the support stops.</p>
+        </div>
+        <div class="ofd7-meet__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="ofd7-meet__col ofd7-meet__col--wlp">
+          <div class="ofd7-meet__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C10 6 6 8 6 13a6 6 0 0012 0c0-5-4-7-6-11z"/></svg>
+          </div>
+          <p class="ofd7-meet__lbl">WLP-1</p>
+          <h3 class="ofd7-meet__h">Biomimetic. Supported out.</h3>
+          <p class="ofd7-meet__p">A daily capsule that helps your body produce its own GLP-1 the way it was designed to.</p>
+        </div>
+      </div>
+
+      <div class="ofd7-meet__why">
+        <p>For people <span class="blue">tapering off</span>, <span class="blue">unable to tolerate</span>, or <span class="blue">unable to start</span> GLP-1 injections, WLP-1 is the version that fits inside a normal life. Two capsules a day. No needle. No prescription.</p>
+      </div>
+
+      <div class="ofd7-anchor"><a href="#buy">Start The Off-Ramp</a></div>
+    </div>
+  </div>
+
+  <!-- 90-DAY OFF-RAMP TIMELINE — without/with split -->
+  <div class="ofd7-sec ofd7-sec--soft">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 36px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">The 90-Day Off-Ramp</div>
+        <h2 class="ofd7-sec__title">Your body, after the shot. <em>WLP-1 alongside.</em></h2>
+        <p class="ofd7-sec__sub" style="margin-left:auto;margin-right:auto;text-align:center">Three months of bridge support during the window the shot's effect fades. Each month, what stops working and how WLP-1 catches it.</p>
+      </div>
+
+      <div class="ofd7-time">
+
+        <!-- MONTH 1 -->
+        <div class="ofd7-time__row">
+          <div class="ofd7-time__month">
+            <div class="ofd7-time__month-num">Month</div>
+            <div class="ofd7-time__month-big">01</div>
+            <div class="ofd7-time__month-sub">The shot fades</div>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--bad">
+            <div class="ofd7-time__head ofd7-time__head--bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Without WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--bad">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Appetite ramps back fast.</b> Last dose wears off. Hunger returns.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Food noise gets loud.</b> The 3pm sugar pull comes back.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Old patterns return</b> at meal times you used to skip.</span></li>
+            </ul>
+          </div>
+          <div class="ofd7-time__connect" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--good">
+            <div class="ofd7-time__head ofd7-time__head--good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M20 6L9 17l-5-5"/></svg>
+              With WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--good">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Your own GLP-1 takes over.</b> Biomimetic support kicks in.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Feel fuller, longer</b> on the meals you already eat.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Food noise stays quiet.</b> Cravings ease, not return.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- MONTH 2 -->
+        <div class="ofd7-time__row">
+          <div class="ofd7-time__month">
+            <div class="ofd7-time__month-num">Month</div>
+            <div class="ofd7-time__month-big">02</div>
+            <div class="ofd7-time__month-sub">Cravings test you</div>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--bad">
+            <div class="ofd7-time__head ofd7-time__head--bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Without WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--bad">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Stress cravings spike.</b> Emotional eating creeps back in.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Sugar pulls in the afternoon</b> derail the new normal.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span>This is the month <b>most people slip</b> back into old patterns.</span></li>
+            </ul>
+          </div>
+          <div class="ofd7-time__connect" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--good">
+            <div class="ofd7-time__head ofd7-time__head--good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M20 6L9 17l-5-5"/></svg>
+              With WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--good">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>CQR300 + IGOB131 support cravings,</b> including stress-related ones.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>In clinical study, <b>uncontrolled eating scores improved 22.3%</b>.*</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Hold the line</b> on the month most people lose it.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- MONTH 3 -->
+        <div class="ofd7-time__row">
+          <div class="ofd7-time__month">
+            <div class="ofd7-time__month-num">Month</div>
+            <div class="ofd7-time__month-big">03</div>
+            <div class="ofd7-time__month-sub">Metabolism rebuilds</div>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--bad">
+            <div class="ofd7-time__head ofd7-time__head--bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Without WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--bad">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Resting calorie burn stays suppressed</b> from months on the shot.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span>The same meals you used to lose on <b>now hold you steady or add weight</b>.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg><span><b>Regain accelerates</b> even when eating has not changed.</span></li>
+            </ul>
+          </div>
+          <div class="ofd7-time__connect" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="ofd7-time__side ofd7-time__side--good">
+            <div class="ofd7-time__head ofd7-time__head--good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex:0 0 auto"><path d="M20 6L9 17l-5-5"/></svg>
+              With WLP-1
+            </div>
+            <ul class="ofd7-time__list ofd7-time__list--good">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Grains of Paradise supports increased calories burned at rest</b>.*</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Your body <b>keeps working between meals</b>, not just while the shot was active.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>The off-ramp lands you on a <b>new baseline you can hold</b>.</span></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ofd7-anchor"><a href="#buy">Start The Off-Ramp</a></div>
+    </div>
+  </div>
+
+  <!-- INGREDIENTS -->
+  <div class="ofd7-sec">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 36px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">What Is Inside</div>
+        <h2 class="ofd7-sec__title">Three <em>natural ingredients</em>. Each one supports a different area.</h2>
+        <p class="ofd7-sec__sub" style="margin-left:auto;margin-right:auto;text-align:center">No synthetic hormones. No stimulants. Each clinically studied for the area it covers.</p>
+      </div>
+
+      <div class="ofd7-ing">
+        <div class="ofd7-ing__card">
+          <div>
+            <span class="ofd7-ing__role">Appetite</span>
+            <h3 class="ofd7-ing__name" style="margin-top:6px">IGOB131<sup style="font-size:9px">™</sup></h3>
+          </div>
+          <p class="ofd7-ing__p"><b>Irvingia gabonensis</b> (African bush mango) seed extract. Supports leptin function and adiponectin, the hormones that tell your brain you are satisfied and your body to release stored fat.*</p>
+          <p class="ofd7-ing__cite">Clinically studied weight loss ingredient.*</p>
+        </div>
+
+        <div class="ofd7-ing__card">
+          <div>
+            <span class="ofd7-ing__role">Metabolism + Cardio</span>
+            <h3 class="ofd7-ing__name" style="margin-top:6px">CQR300<sup style="font-size:9px">™</sup></h3>
+          </div>
+          <p class="ofd7-ing__p">Standardized cissus quadrangularis extract. Supports <b>metabolic balance</b>, healthy cholesterol levels already within the normal range, and blood sugar levels already within the normal range.*</p>
+          <p class="ofd7-ing__cite">Clinically studied multi-functional weight management activity.*</p>
+        </div>
+
+        <div class="ofd7-ing__card">
+          <div>
+            <span class="ofd7-ing__role">Calories at rest</span>
+            <h3 class="ofd7-ing__name" style="margin-top:6px">Grains of Paradise</h3>
+          </div>
+          <p class="ofd7-ing__p">200mg standardized extract. Supports thermogenesis and <b>calories burned at rest</b>. In a published clinical study, supplementation supported reductions in body weight over 4 weeks.*</p>
+          <p class="ofd7-ing__cite"><a href="https://pubmed.ncbi.nlm.nih.gov/24759256/" target="_blank" rel="noopener">PubMed 24759256</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KLAVIYO REVIEWS WIDGET -->
+  <div class="ofd7-sec ofd7-sec--soft">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 30px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">Verified Customer Reviews</div>
+        <h2 class="ofd7-sec__title">Read every review. <em>Including the tough ones.</em></h2>
+      </div>
+      <div class="ofd7-rev">
+        {% comment %} Klaviyo Reviews widget — pulls full WLP-1 review feed. Replace product_id if Klaviyo product mapping changes. {% endcomment %}
+        <div class="klaviyo-reviews" data-product-id="10282549149985"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="ofd7-sec">
+    <div class="wrap">
+      <div style="text-align:center;max-width:640px;margin:0 auto 32px">
+        <div class="ofd7-sec__eyebrow" style="justify-content:center">Questions</div>
+        <h2 class="ofd7-sec__title">What to know <em>before you start</em>.</h2>
+      </div>
+      <div class="ofd7-faq">
+        <details>
+          <summary>I am tapering off GLP-1 injections. When should I start WLP-1?</summary>
+          <div class="ofd7-faq__body">
+            <p>Most customers start WLP-1 in the final month of their taper, while they still have some GLP-1 in their system. That way the bridge is already in place when the injection wears off, instead of starting from a gap. Always check with your prescribing doctor on timing.</p>
+          </div>
+        </details>
+        <details>
+          <summary>I tried GLP-1 injections and they did not work for me. Will WLP-1?</summary>
+          <div class="ofd7-faq__body">
+            <p>WLP-1 targets three areas, not one. The shot only supports appetite. If injections did not give you the result you wanted, it may be because the other two areas, metabolism and cravings, were never supported. WLP-1 covers all three.</p>
+          </div>
+        </details>
+        <details>
+          <summary>How is WLP-1 different from GLP-1 injections?</summary>
+          <div class="ofd7-faq__body">
+            <p>The shot injects a synthetic version of GLP-1. WLP-1 supports the GLP-1 your body already makes. The shot only targets appetite. WLP-1 supports appetite, metabolism, and cravings. The shot requires a prescription, a needle, and routine clinic visits. WLP-1 is a daily capsule shipped to your door.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Will WLP-1 cause the same side effects as the shot?</summary>
+          <div class="ofd7-faq__body">
+            <p>WLP-1 supports your body's own GLP-1 gradually instead of injecting a synthetic dose. The most commonly reported side effects from injections, including nausea and gastric issues, come from the way the synthetic version overrides your system. WLP-1 works with it. As with any supplement, individuals may respond differently, and you should stop use and consult your doctor if you experience adverse effects.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Can I take WLP-1 while still on injections?</summary>
+          <div class="ofd7-faq__body">
+            <p>Many customers do, especially as they prepare to taper. WLP-1 has been shown to support the efficacy of GLP-1 already in the body. Always check with your prescribing doctor first.</p>
+          </div>
+        </details>
+        <details>
+          <summary>How quickly will I see results?</summary>
+          <div class="ofd7-faq__body">
+            <p>Most customers report reduced cravings and quieter food noise in the first 2 to 3 weeks. In a clinical study of one of the core actives, participants lost ~4 lbs in 4 weeks. Up to 12.5% weight loss has been reported in 10 weeks.* Results vary by person and pairing with food and movement.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What is the dose?</summary>
+          <div class="ofd7-faq__body">
+            <p>Two capsules per day. Take with water. Most customers take both in the morning. Some split it morning and afternoon.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What if it does not work for me?</summary>
+          <div class="ofd7-faq__body">
+            <p>30-day money-back guarantee. If WLP-1 is not the right fit, contact our team and we will refund your order. No friction.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="ofd7-final">
+    <div class="wrap-narrow">
+      <h2>Step off the shot. Without <em>stepping back</em> on the scale.</h2>
+      <p>WLP-1 is the bridge. Start during your taper. Stay on it for the 90 days that matter most.</p>
+      <form action="/cart/add" method="post" style="margin:0;display:inline-block;width:100%;max-width:360px">
+        <input type="hidden" name="id" value="{{ v_3mo }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="selling_plan" value="{{ p_3mo }}">
+        <input type="hidden" name="return_to" value="/checkout">
+        <button type="submit" class="ofd7-final__cta">Start The Off-Ramp · {{ price_3mo }}/mo</button>
+      </form>
+      <p class="ofd7-final__meta">30-day guarantee. Free shipping. Cancel anytime.</p>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="ofd7-disclaim">
+    <p>*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Individual results vary. WLP-1 is a dietary supplement and is not a substitute for a prescription medication. Always consult your physician before starting any supplement, especially if you are pregnant, nursing, or taking prescription medication.</p>
+  </div>
+
+  <!-- STICKY BOTTOM ATC -->
+  <div class="ofd7-sticky" id="ofd7Sticky">
+    <div class="ofd7-sticky__inner">
+      <div class="ofd7-sticky__price">
+        <div class="ofd7-sticky__lbl">Subscribe &amp; Save 30%</div>
+        <div><span class="ofd7-sticky__now" data-sticky-price>{{ price_3mo }}/mo</span><span class="ofd7-sticky__was">{{ was_3mo }}</span></div>
+      </div>
+      <form action="/cart/add" method="post" class="ofd7-sticky__form" data-sticky-form>
+        <input type="hidden" name="id" value="{{ v_3mo }}" data-sticky-variant>
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="selling_plan" value="{{ p_3mo }}" data-sticky-plan>
+        <input type="hidden" name="return_to" value="/checkout">
+        <button type="submit" class="ofd7-sticky__btn">Start</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* Buybox plan toggle — swap hidden variant + selling_plan + CTA price.
+     Native form POST /cart/add → return_to=/checkout. No JS interceptor,
+     no fetch, no cookie race (per memory: cart permalinks drop selling_plan,
+     JS fetch + window.location strands cart). */
+  (function(){
+    var form = document.querySelector('[data-buyform]');
+    if(!form) return;
+    var variantInput = form.querySelector('[data-variant]');
+    var planInput    = form.querySelector('[data-selling-plan]');
+    var ctaPrice     = form.querySelector('[data-cta-price]');
+    var stickyVariant = document.querySelector('[data-sticky-variant]');
+    var stickyPlan    = document.querySelector('[data-sticky-plan]');
+    var stickyPrice   = document.querySelector('[data-sticky-price]');
+
+    form.addEventListener('change', function(e){
+      if(e.target.name !== 'plan') return;
+      var label = e.target.closest('[data-plan]');
+      if(!label) return;
+      var vid   = label.getAttribute('data-variant-id');
+      var pid   = label.getAttribute('data-plan-id');
+      var price = label.getAttribute('data-price');
+      if(variantInput) variantInput.value = vid;
+      if(planInput)    planInput.value    = pid;
+      if(ctaPrice)     ctaPrice.textContent = price + '/mo';
+      if(stickyVariant) stickyVariant.value = vid;
+      if(stickyPlan)    stickyPlan.value    = pid;
+      if(stickyPrice)   stickyPrice.textContent = price + '/mo';
+    });
+  })();
+
+  /* Sticky bottom ATC — reveal after scrolling past hero CTA. */
+  (function(){
+    var sticky = document.getElementById('ofd7Sticky');
+    if(!sticky) return;
+    var threshold = 520;
+    var onScroll = function(){
+      if(window.scrollY > threshold){ sticky.classList.add('is-on'); }
+      else { sticky.classList.remove('is-on'); }
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "OFD7 GLP-1 Off-Ramp",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "eyebrow_text", "label": "Eyebrow text" },
+    { "type": "textarea", "id": "h1_text", "label": "H1 (use <em>…</em> for accent)" },
+    { "type": "textarea", "id": "sub_text", "label": "Hero sub-headline" },
+    { "type": "url", "id": "hero_img", "label": "Hero image" },
+    { "type": "url", "id": "bottle_img", "label": "Buybox bottle image" },
+    { "type": "url", "id": "benefit_img_1", "label": "Buybox benefit image 1" },
+    { "type": "url", "id": "benefit_img_2", "label": "Buybox benefit image 2" },
+    { "type": "header", "content": "Trust / Rating" },
+    { "type": "text", "id": "rating", "label": "Star rating" },
+    { "type": "text", "id": "review_count", "label": "Review count" },
+    { "type": "header", "content": "Featured Testimonial" },
+    { "type": "text", "id": "featured_pull", "label": "Featured pull quote" },
+    { "type": "textarea", "id": "featured_body", "label": "Supporting body text" },
+    { "type": "text", "id": "featured_name", "label": "Reviewer name" },
+    { "type": "text", "id": "featured_title", "label": "Reviewer subtitle" },
+    { "type": "header", "content": "Cart — 1 Month Plan" },
+    { "type": "text", "id": "v_1mo", "label": "Variant ID (1mo)" },
+    { "type": "text", "id": "p_1mo", "label": "Selling plan ID (1mo)" },
+    { "type": "text", "id": "price_1mo", "label": "Price per month (1mo)" },
+    { "type": "text", "id": "was_1mo", "label": "Compare-at (1mo)" },
+    { "type": "text", "id": "save_1mo", "label": "Save copy (1mo)" },
+    { "type": "header", "content": "Cart — 3 Month Plan (default)" },
+    { "type": "text", "id": "v_3mo", "label": "Variant ID (3mo)" },
+    { "type": "text", "id": "p_3mo", "label": "Selling plan ID (3mo)" },
+    { "type": "text", "id": "price_3mo", "label": "Price per month (3mo)" },
+    { "type": "text", "id": "was_3mo", "label": "Compare-at (3mo)" },
+    { "type": "text", "id": "total_3mo", "label": "Total copy (3mo)" },
+    { "type": "text", "id": "save_3mo", "label": "Save copy (3mo)" },
+    { "type": "header", "content": "Cart — 6 Month Plan" },
+    { "type": "text", "id": "v_6mo", "label": "Variant ID (6mo)" },
+    { "type": "text", "id": "p_6mo", "label": "Selling plan ID (6mo)" },
+    { "type": "text", "id": "price_6mo", "label": "Price per month (6mo)" },
+    { "type": "text", "id": "was_6mo", "label": "Compare-at (6mo)" },
+    { "type": "text", "id": "total_6mo", "label": "Total copy (6mo)" },
+    { "type": "text", "id": "save_6mo", "label": "Save copy (6mo)" }
+  ],
+  "presets": [{ "name": "OFD7 GLP-1 Off-Ramp" }]
+}
+{% endschema %}

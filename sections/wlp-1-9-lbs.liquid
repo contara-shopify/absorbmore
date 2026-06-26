@@ -672,7 +672,7 @@
         body: JSON.stringify({ items: [item] })
       })
       .then(function(res){ if(!res.ok) throw new Error('cart_'+res.status); return res.json(); })
-      .then(function(){ showToast('Added to cart →'); window.location.href = '/cart'; })
+      .then(function(){ showToast('Heading to checkout →'); window.location.href = '/checkout'; })
       .catch(function(err){
         btn.disabled = false;
         btn.textContent = orig;

@@ -1,0 +1,177 @@
+{%- comment -%}
+  Raspberry Restore Reveal — clone of absorbmore.attn.tv/p/CtO/new-raspberry-restore
+  Email-only capture → Klaviyo list "Raspberry Restore Teaser" (id Vz36Lf)
+  Public Klaviyo company id: WL8khy
+  v2: white content section w/ raspberry accents, portrait product shot on desktop.
+{%- endcomment -%}
+
+<style>
+  html,body{margin:0;padding:0;background:#fff}
+  /* Standalone-render: full-bleed overlay covering theme chrome */
+  #shopify-section-{{ section.id }}{position:fixed;inset:0;z-index:2147483640;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .rrr-wrap{display:flex;flex-direction:column;background:#fff;color:#0a0a0a;min-height:100%}
+  .rrr-content{background:#fff;padding:28px 22px 32px;display:flex;flex-direction:column}
+  .rrr-eyebrow{font-size:.8125rem;font-weight:700;letter-spacing:.08em;margin:0 0 14px;color:#C63947;text-transform:uppercase}
+  .rrr-h1{font-size:2.125rem;line-height:1.05;font-weight:800;color:#0a0a0a;margin:0 0 16px;letter-spacing:-.01em}
+  .rrr-h1 .accent{color:#C63947}
+  .rrr-sub{font-size:1.0625rem;line-height:1.3;font-weight:700;color:#0a0a0a;margin:0 0 14px}
+  .rrr-body{font-size:.875rem;line-height:1.5;margin:0 0 22px;color:#3a3a3a}
+  .rrr-cta-label{font-size:1.0625rem;font-weight:700;margin:0 0 12px;color:#0a0a0a}
+  .rrr-cta-label .accent{color:#C63947}
+  .rrr-legal{font-size:.6875rem;line-height:1.5;color:#5a5a5a;margin:0 0 14px}
+  .rrr-legal a{color:#0a0a0a;text-decoration:underline}
+  .rrr-form{display:flex;flex-direction:column;gap:12px}
+  .rrr-input{height:50px;padding:0 16px;font-size:.9375rem;border:1.5px solid #d6d6d6;background:#fff;color:#000;width:100%;box-sizing:border-box;border-radius:0;outline:0;transition:border-color .15s}
+  .rrr-input::placeholder{color:#888}
+  .rrr-input:focus{border-color:#C63947}
+  .rrr-btn{height:54px;background:#C63947;color:#fff;font-size:.9375rem;font-weight:700;letter-spacing:.04em;border:0;cursor:pointer;text-transform:uppercase;border-radius:0;transition:background .15s}
+  .rrr-btn:hover{background:#A82D3A}
+  .rrr-btn:disabled{opacity:.7;cursor:not-allowed}
+  .rrr-msg{font-size:.875rem;margin-top:10px;min-height:1.2em;color:#0a0a0a}
+  .rrr-msg.err{color:#C63947}
+  .rrr-image{width:100%;background:#fff url("{{ 'raspberry-reveal-mobile.jpg' | asset_url }}") center top/cover no-repeat;aspect-ratio:1189/740}
+  .rrr-success{display:none}
+  .rrr-success h2{font-size:1.75rem;color:#C63947;margin:0 0 12px;font-weight:800}
+  .rrr-success p{font-size:1rem;line-height:1.5;margin:0;color:#0a0a0a}
+
+  @media (min-width: 768px){
+    .rrr-wrap{flex-direction:row;min-height:100vh}
+    .rrr-image{width:50%;aspect-ratio:auto;min-height:100vh;background:#fff url("{{ 'raspberry-reveal-desktop.jpg' | asset_url }}") center center/contain no-repeat;order:1}
+    .rrr-content{width:50%;padding:64px 72px;min-height:100vh;justify-content:center;order:2}
+    .rrr-h1{font-size:2.75rem;margin-bottom:20px}
+    .rrr-sub{font-size:1.25rem}
+    .rrr-body{font-size:.9375rem}
+    .rrr-eyebrow{font-size:.875rem}
+    .rrr-cta-label{font-size:1.1875rem}
+    .rrr-input{height:54px;font-size:1rem;padding:0 18px}
+    .rrr-btn{height:58px;font-size:1rem}
+  }
+  @media (min-width: 1100px){
+    .rrr-content{padding:80px 88px}
+    .rrr-h1{font-size:3rem}
+  }
+</style>
+
+<div class="rrr-wrap" id="rrrWrap">
+  <div class="rrr-content">
+    <div class="rrr-form-state" id="rrrFormState">
+      <p class="rrr-eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1 class="rrr-h1">Meet <span class="accent">Raspberry</span> Restore</h1>
+      <p class="rrr-sub">{{ section.settings.sub_headline }}</p>
+      <p class="rrr-body">{{ section.settings.body }}</p>
+      <p class="rrr-cta-label">{{ section.settings.form_heading }}</p>
+
+      <div class="rrr-legal">
+        By submitting your email address, you agree to receive marketing emails including AI content from The Absorption Company. We may share info with service providers per our Privacy Policy. You can unsubscribe at any time. By submitting your email address, you also agree to our <a href="/policies/terms-of-service" target="_blank" rel="noopener">Terms (incl. arbitration)</a> &amp; <a href="/policies/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>.
+      </div>
+
+      <form class="rrr-form" id="rrrForm" novalidate>
+        <input class="rrr-input" id="rrrEmail" type="email" required autocomplete="email" placeholder="Email Address" aria-label="Email Address">
+        <button class="rrr-btn" type="submit" id="rrrBtn">Sign Up For Early Access</button>
+        <div class="rrr-msg" id="rrrMsg" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <div class="rrr-success" id="rrrSuccess">
+      <p class="rrr-eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2>{{ section.settings.success_heading }}</h2>
+      <p>{{ section.settings.success_body }}</p>
+    </div>
+  </div>
+  <div class="rrr-image" role="img" aria-label="Raspberry Restore bag with raspberry drink"></div>
+</div>
+
+<script>
+  (function(){
+    function hideFloaters(){
+      var sel = 'iframe[id*="attentive" i], iframe[title*="Sign Up" i], iframe[title*="chat" i], #gorgias-chat-container, .needsclick[id*="attentive"], [id^="attentive_"]';
+      document.querySelectorAll(sel).forEach(function(el){ el.style.display = 'none'; });
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+    hideFloaters();
+    setInterval(hideFloaters, 800);
+  })();
+  (function(){
+    var KLAVIYO_COMPANY_ID = {{ section.settings.klaviyo_company_id | json }};
+    var KLAVIYO_LIST_ID    = {{ section.settings.klaviyo_list_id | json }};
+    var form = document.getElementById('rrrForm');
+    var emailEl = document.getElementById('rrrEmail');
+    var btn = document.getElementById('rrrBtn');
+    var msg = document.getElementById('rrrMsg');
+    var formState = document.getElementById('rrrFormState');
+    var successState = document.getElementById('rrrSuccess');
+
+    function setMsg(text, type){
+      msg.textContent = text || '';
+      msg.className = 'rrr-msg' + (type ? ' ' + type : '');
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var email = (emailEl.value || '').trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+        setMsg('Please enter a valid email address.', 'err');
+        return;
+      }
+      btn.disabled = true;
+      setMsg('Submitting…');
+
+      var body = {
+        data: {
+          type: 'subscription',
+          attributes: {
+            profile: { data: { type: 'profile', attributes: { email: email } } },
+            custom_source: 'Raspberry Restore Reveal Lander'
+          },
+          relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST_ID } } }
+        }
+      };
+
+      fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(KLAVIYO_COMPANY_ID), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+        body: JSON.stringify(body)
+      }).then(function(r){
+        if (r.status === 202 || r.ok){
+          formState.style.display = 'none';
+          successState.style.display = 'block';
+          try { window.dataLayer = window.dataLayer || []; window.dataLayer.push({event:'raspberry_reveal_signup'}); } catch(_){}
+        } else {
+          return r.json().then(function(j){
+            var detail = (j && j.errors && j.errors[0] && j.errors[0].detail) || 'Something went wrong. Please try again.';
+            setMsg(detail, 'err');
+            btn.disabled = false;
+          }).catch(function(){
+            setMsg('Something went wrong. Please try again.', 'err');
+            btn.disabled = false;
+          });
+        }
+      }).catch(function(){
+        setMsg('Network error. Please try again.', 'err');
+        btn.disabled = false;
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Raspberry Reveal",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text",     "id": "eyebrow",       "label": "Eyebrow",       "default": "NEW LIMITED EDITION FLAVOR" },
+    { "type": "text",     "id": "headline",      "label": "Headline (unused — inline)","default": "Meet Raspberry Restore" },
+    { "type": "text",     "id": "sub_headline",  "label": "Sub-headline",  "default": "A multivitamin with all the nutrients you need for the summer" },
+    { "type": "textarea", "id": "body",          "label": "Body",          "default": "The Foundational Daily Nutrients for hydration, immunity, energy, focus, recovery, and detox with over 900+ mg of electrolytes" },
+    { "type": "text",     "id": "form_heading",  "label": "Form heading",  "default": "Sign Up Today For Early Access!" },
+    { "type": "header", "content": "Success state" },
+    { "type": "text",     "id": "success_heading","label": "Success heading","default": "You're on the list." },
+    { "type": "textarea", "id": "success_body",   "label": "Success body",   "default": "We'll email you the moment new Raspberry Restore drops. Early access goes to the list first." },
+    { "type": "header", "content": "Klaviyo" },
+    { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo Public Company ID", "default": "WL8khy" },
+    { "type": "text", "id": "klaviyo_list_id",    "label": "Klaviyo List ID",           "default": "Vz36Lf" }
+  ],
+  "presets": [{ "name": "Raspberry Reveal" }]
+}
+{% endschema %}

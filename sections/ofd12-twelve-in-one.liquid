@@ -1,0 +1,932 @@
+{% comment %}
+  Restore — OFD12 "12 Pills in 1 Drink" lander (Pragmatic Optimizer persona).
+  Page: /pages/ofd12-twelve-in-one
+  Template: templates/page.ofd12-twelve-in-one.json
+  Angle: stack consolidation + absorption math. Clean clinical palette (TAC Blue).
+{% endcomment %}
+
+{%- liquid
+  assign restore = all_products['restore']
+-%}
+
+<style>
+  .o12{
+    --blue:#4659FF;
+    --blue-deep:#2d3fd9;
+    --blue-soft:rgba(70,89,255,0.06);
+    --blue-tint:#EEF0FF;
+    --ink:#0d1117;
+    --ink-mute:#3a4150;
+    --ink-soft:#6b7385;
+    --line:#e6e9f2;
+    --line-strong:#c9cee0;
+    --cream:#FAFAF7;
+    --warn:#E1225C;
+  }
+  .o12 *,.o12 *::before,.o12 *::after{box-sizing:border-box;}
+  .o12{color:var(--ink);padding:0;}
+  .o12 p{margin:0 0 14px;font-size:16px;line-height:1.6;color:var(--ink-mute);}
+  .o12 h1,.o12 h2,.o12 h3{margin:0 0 14px;letter-spacing:-0.015em;font-weight:800;color:var(--ink);}
+  .o12 h1{font-size:36px;line-height:1.05;}
+  .o12 h2{font-size:28px;line-height:1.15;}
+  .o12 h3{font-size:18px;line-height:1.3;}
+  .o12 .eb{font-size:11px;letter-spacing:.2em;font-weight:700;color:var(--blue);margin:0 0 14px;text-transform:uppercase;}
+  .o12 .blue{color:var(--blue);}
+  .o12 .num{font-variant-numeric:tabular-nums;}
+  .o12 .strike{text-decoration:line-through;opacity:.5;font-weight:500;margin-right:6px;}
+  .o12 .inner{max-width:1140px;margin:0 auto;padding:0 20px;}
+  .o12 .sec{padding:56px 0;}
+  .o12 .sec--tint{background:var(--blue-soft);}
+  .o12 .sec--cream{background:var(--cream);}
+  .o12 .sec--ink{background:#0d1117;color:#fff;}
+  .o12 .sec--ink h2,.o12 .sec--ink h3,.o12 .sec--ink p{color:#fff;}
+  .o12 .center{text-align:center;}
+
+  .o12 .btn{display:inline-block;background:var(--blue);color:#fff;font-weight:700;font-size:15px;letter-spacing:.03em;padding:16px 28px;border-radius:10px;text-decoration:none;text-align:center;border:none;cursor:pointer;transition:transform .15s;}
+  .o12 .btn:hover{transform:translateY(-1px);}
+  .o12 .btn--ghost{background:#fff;color:var(--ink);border:2px solid var(--ink);}
+  .o12 .btn--white{background:#fff;color:var(--blue);}
+  .o12 .btn.full{display:block;width:100%;}
+
+  .o12 .stars{color:var(--blue);font-size:15px;letter-spacing:1px;display:inline-flex;align-items:center;gap:8px;}
+  .o12 .stars small{color:var(--ink-mute);font-weight:600;font-size:13px;letter-spacing:0;}
+
+  .o12 .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-mute);margin:0 6px 6px 0;}
+  .o12 .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+
+  .o12 .trust{font-size:12px;color:var(--ink-soft);margin:10px 0 0;letter-spacing:.02em;}
+
+  /* === HERO === */
+  .o12-hero{padding:36px 0 40px;background:linear-gradient(180deg,#fff 0%,var(--blue-soft) 100%);}
+  .o12-hero .grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;}
+  .o12-hero .hero-img{aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:#eceff5;position:relative;}
+  .o12-hero .hero-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .o12-hero .hero-img::after{content:"NEW LIMITED TIME RASPBERRY FLAVOR";position:absolute;top:18px;left:18px;background:#C63947;color:#fff;font-size:10px;letter-spacing:.14em;font-weight:800;padding:7px 12px;border-radius:6px;}
+  .o12-hero .qfacts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:18px 0 0;padding:14px 0 0;border-top:1px solid var(--line);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-mute);}
+  .o12-hero .qfacts span{display:inline-flex;align-items:center;gap:8px;}
+  .o12-hero .qfacts span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--blue);}
+  .o12-hero ul{list-style:none;padding:0;margin:18px 0 22px;}
+  .o12-hero li{font-size:15.5px;line-height:1.5;padding:8px 0 8px 32px;position:relative;color:var(--ink);}
+  .o12-hero li::before{content:"";position:absolute;left:0;top:12px;width:20px;height:20px;border-radius:6px;background:var(--blue);}
+  .o12-hero li::after{content:"";position:absolute;left:6px;top:17px;width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);}
+
+  /* === STAT GRID === */
+  .o12-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border-radius:14px;overflow:hidden;border:1px solid var(--line);}
+  .o12-stat{background:#fff;padding:24px 16px;text-align:center;}
+  .o12-stat .n{font-size:30px;font-weight:800;line-height:1;margin:0 0 6px;color:var(--blue);}
+  .o12-stat .l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:700;}
+
+  /* === THE STACK (12 PILLS BREAKDOWN) === */
+  .o12-stack{display:grid;grid-template-columns:1fr;gap:24px;align-items:center;}
+  .o12-stack .visual{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 24px;text-align:center;}
+  .o12-stack .visual .vs-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;margin:18px 0 0;}
+  .o12-stack .pile{background:var(--blue-soft);border-radius:14px;padding:20px 12px;}
+  .o12-stack .pile .big{font-size:48px;font-weight:800;line-height:1;color:var(--ink);margin:0 0 6px;font-variant-numeric:tabular-nums;}
+  .o12-stack .pile .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:700;}
+  .o12-stack .vs{font-size:13px;font-weight:800;color:var(--ink-soft);letter-spacing:.1em;}
+  .o12-stack .glass{background:var(--blue);color:#fff;border-radius:14px;padding:20px 12px;}
+  .o12-stack .glass .big{color:#fff;font-size:48px;font-weight:800;line-height:1;margin:0 0 6px;}
+  .o12-stack .glass .lbl{color:rgba(255,255,255,0.85);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;}
+
+  .o12-pill-list{margin:22px 0 0;list-style:none;padding:0;border-top:1px solid var(--line);}
+  .o12-pill-list li{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
+  .o12-pill-list .role{color:var(--ink);font-weight:700;flex:1;}
+  .o12-pill-list .amt{color:var(--blue);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;}
+
+  /* === MECHANISM === */
+  .o12-mech{display:grid;grid-template-columns:1fr;gap:14px;}
+  .o12-mech .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;}
+  .o12-mech .card .n{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:800;margin:0 0 8px;}
+  .o12-mech .card h3{font-size:17px;margin:0 0 8px;line-height:1.25;}
+  .o12-mech .card p{margin:0;font-size:14.5px;line-height:1.6;color:var(--ink-mute);}
+
+  /* === ABSORPTION COMPARE BARS (compact) === */
+  .o12-bars{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;max-width:620px;margin:0 auto 32px;}
+  .o12-bars .row{margin:0 0 18px;}
+  .o12-bars .row:last-of-type{margin:0 0 6px;}
+  .o12-bars .row .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8px;}
+  .o12-bars .row .lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:800;}
+  .o12-bars .row .pct{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-0.01em;font-variant-numeric:tabular-nums;}
+  .o12-bars .row--us .lbl,.o12-bars .row--us .pct{color:var(--blue);}
+  .o12-bars .bar{background:var(--blue-tint);border-radius:99px;height:10px;overflow:hidden;}
+  .o12-bars .fill{height:100%;background:var(--ink-soft);border-radius:99px;}
+  .o12-bars .row--us .fill{background:var(--blue);}
+  .o12-bars .cap{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--line);}
+  .o12-bars .cap strong{color:var(--ink);}
+
+  /* === DECOR (gradient blobs for personality) === */
+  .o12 .decor{position:absolute;pointer-events:none;z-index:0;border-radius:50%;filter:blur(50px);opacity:.9;}
+  .o12 .decor--blue{background:rgba(70,89,255,0.22);}
+  .o12 .decor--rose{background:rgba(225,34,92,0.16);}
+  .o12 .decor--cyan{background:rgba(70,180,255,0.16);}
+  .o12 .decor--violet{background:rgba(140,90,255,0.16);}
+  .o12 .sec,.o12-hero{position:relative;overflow:hidden;}
+  .o12 .sec > .inner,.o12-hero > .inner{position:relative;z-index:1;}
+  .o12 .sec--ink .decor--blue{background:rgba(70,89,255,0.45);}
+  .o12 .sec--ink .decor--rose{background:rgba(225,34,92,0.32);}
+
+  /* === PILLAR BAND === */
+  .o12-pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .o12-pillar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:flex;flex-direction:column;gap:10px;}
+  .o12-pillar .head{display:flex;align-items:center;gap:10px;}
+  .o12-pillar .num{font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.1em;font-variant-numeric:tabular-nums;}
+  .o12-pillar .lbl{font-size:15px;font-weight:800;letter-spacing:-0.005em;color:var(--ink);}
+  .o12-pillar .why{font-size:13.5px;color:var(--ink-mute);line-height:1.5;margin:0;}
+  .o12-pillar .nuts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px;border-top:1px solid var(--line);}
+  .o12-pillar .nut{font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-soft);padding:4px 8px;border-radius:5px;letter-spacing:.02em;white-space:nowrap;}
+
+  /* === SPEC TABLE === */
+  .o12-spec{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .o12-spec th,.o12-spec td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  .o12-spec thead th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:700;background:var(--cream);}
+  .o12-spec td:last-child{text-align:right;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .o12-spec tr:last-child td{border-bottom:none;}
+
+  /* === COMPARISON === */
+  .o12-cmp{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .o12-cmp th,.o12-cmp td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  .o12-cmp thead th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:700;background:var(--cream);}
+  .o12-cmp .col-us{background:var(--blue-soft);font-weight:700;}
+  .o12-cmp .col-us strong{color:var(--blue);}
+  .o12-cmp tr:last-child td{border-bottom:none;}
+
+  /* === BUYBOX === */
+  .o12-bb{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;grid-template-columns:1fr;gap:22px;box-shadow:0 20px 50px rgba(13,17,23,0.06);}
+  .o12-bb .prod-img{aspect-ratio:1/1;border-radius:14px;background:var(--blue-soft);overflow:hidden;}
+  .o12-bb .prod-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .o12-bb .plan-wrap{border:2px solid var(--line);border-radius:12px;margin:0 0 10px;background:#fff;overflow:hidden;transition:border-color .15s,background .15s;}
+  .o12-bb .plan-wrap:has(.plan.sel){border-color:var(--blue);background:var(--blue-soft);}
+  .o12-bb .plan{border:none;border-radius:0;padding:16px;margin:0;cursor:pointer;display:flex;align-items:flex-start;gap:12px;position:relative;background:transparent;}
+  .o12-bb .plan.sel{background:transparent;}
+  .o12-bb .flavor-pick{display:none;padding:0 16px 16px;}
+  .o12-bb .plan-wrap:has(.plan.sel) .flavor-pick{display:block;}
+  .o12-bb .flavor-pick .pick-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:800;margin:0 0 10px;padding-top:14px;border-top:1px solid rgba(70,89,255,0.18);}
+  .o12-bb .flavor-pick .chips{display:flex;flex-direction:column;gap:6px;}
+  .o12-bb .flavor-pick .chip{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;transition:border-color .15s;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.3;}
+  .o12-bb .flavor-pick .chip::before{content:"";width:13px;height:13px;border-radius:50%;border:1.5px solid var(--line);background:#fff;flex-shrink:0;display:inline-block;}
+  .o12-bb .flavor-pick .chip.sel{border-color:var(--blue);}
+  .o12-bb .flavor-pick .chip.sel::before{border-color:var(--blue);background:radial-gradient(circle, var(--blue) 0 3.5px, #fff 4.5px);}
+  .o12-bb .flavor-pick .chip em{font-style:normal;color:var(--ink-mute);font-weight:500;font-size:12.5px;margin-left:auto;padding-left:10px;}
+  .o12-bb .plan input{position:absolute;opacity:0;pointer-events:none;}
+  .o12-bb .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-strong);flex-shrink:0;margin-top:2px;position:relative;}
+  .o12-bb .plan.sel .radio{border-color:var(--blue);}
+  .o12-bb .plan.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue);}
+  .o12-bb .plan-body{flex:1;}
+  .o12-bb .plan-title{font-weight:800;font-size:15.5px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;color:var(--ink);}
+  .o12-bb .plan-meta{font-size:13px;color:var(--ink-mute);margin-top:4px;line-height:1.45;}
+  .o12-bb .plan-meta.small{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .o12-bb .plan-price{display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap;flex-shrink:0;font-weight:500;}
+  .o12-bb .plan-price .strike{font-size:13px;text-decoration:line-through;opacity:.55;margin:0 0 2px;}
+  .o12-bb .plan-price .mo{font-weight:800;font-size:17px;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums;}
+  .o12-bb .plan-price .total{font-size:12px;color:var(--ink-mute);margin-top:2px;}
+  .o12-bb .plan-price .save{font-size:12px;color:var(--blue);font-weight:700;margin-top:4px;}
+  .o12-bb .badge{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--blue);color:#fff;padding:4px 8px;border-radius:5px;font-weight:800;}
+  .o12-bb .badge--pop{background:var(--ink);}
+  .o12-bb .badge--best{background:var(--blue-deep);}
+  .o12-bb .reassure{font-size:12px;color:var(--ink-soft);text-align:center;margin:14px 0 0;line-height:1.5;}
+  .o12-bb .prod-features{margin:14px 0 0;font-size:13px;color:var(--ink-mute);padding-left:0;}
+  .o12-bb .prod-features li{padding:4px 0 4px 22px;position:relative;list-style:none;}
+  .o12-bb .prod-features li::before{content:"✓";position:absolute;left:0;color:var(--blue);font-weight:800;}
+
+  /* === REVIEW PULL === */
+  .o12-pull{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px 24px;text-align:center;max-width:760px;margin:0 auto;}
+  .o12-pull .qmark{font-size:32px;color:var(--blue);font-weight:800;line-height:1;margin:0 0 8px;}
+  .o12-pull blockquote{margin:0 0 16px;font-size:19px;line-height:1.5;font-weight:600;color:var(--ink);}
+  .o12-pull .meta{font-size:13px;color:var(--ink-mute);font-weight:700;letter-spacing:.04em;}
+  .o12-pull .meta span{color:var(--ink-soft);font-weight:500;display:block;margin-top:4px;letter-spacing:0;}
+
+  .o12-tsupport{display:grid;grid-template-columns:1fr;gap:14px;margin:28px 0 0;}
+  .o12-tsupport .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .o12-tsupport .card .st{color:var(--blue);font-size:14px;letter-spacing:.06em;margin:0 0 10px;font-weight:800;}
+  .o12-tsupport .card blockquote{margin:0 0 14px;font-size:15px;line-height:1.55;color:var(--ink);font-weight:500;}
+  .o12-tsupport .card .who{font-size:12px;color:var(--ink-mute);letter-spacing:.04em;font-weight:700;text-transform:uppercase;}
+
+  /* === CITATIONS === */
+  .o12 sup.o12-cite{font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;margin-left:2px;vertical-align:super;line-height:0;font-variant-numeric:tabular-nums;letter-spacing:0;text-transform:none;}
+  .o12 sup.o12-cite:hover{text-decoration:underline;}
+  .o12 sup.o12-cite.invert{color:#fff;}
+
+  /* === REFERENCES === */
+  .o12-refs{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:24px 22px;}
+  .o12-refs summary{cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .o12-refs summary::-webkit-details-marker{display:none;}
+  .o12-refs summary::after{content:"+";font-weight:400;font-size:22px;line-height:1;color:var(--blue);}
+  .o12-refs[open] summary::after{content:"−";}
+  .o12-refs ol{margin:18px 0 0;padding:0 0 0 20px;color:var(--ink-mute);font-size:13px;line-height:1.6;}
+  .o12-refs ol li{margin:0 0 12px;padding-left:4px;}
+  .o12-refs ol li:last-child{margin:0;}
+  .o12-refs ol li strong{color:var(--ink);}
+  .o12-refs .foot{font-size:11.5px;color:var(--ink-soft);margin:16px 0 0;line-height:1.55;}
+
+  /* === FAQ === */
+  .o12-faq details{border-bottom:1px solid var(--line);padding:18px 0;}
+  .o12-faq summary{cursor:pointer;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:12px;color:var(--ink);}
+  .o12-faq summary::-webkit-details-marker{display:none;}
+  .o12-faq summary::after{content:"+";font-weight:400;font-size:22px;line-height:1;color:var(--blue);}
+  .o12-faq details[open] summary::after{content:"−";}
+  .o12-faq p{margin:10px 0 0;font-size:15px;color:var(--ink-mute);}
+
+  /* === FINAL CTA === */
+  .o12-final{text-align:center;}
+
+  /* === INLINE CTA ROWS === */
+  .o12-cta-row{text-align:center;margin:32px 0 0;}
+  .o12-cta-row .micro{display:block;font-size:11.5px;color:var(--ink-soft);margin:10px 0 0;letter-spacing:.06em;text-transform:uppercase;font-weight:700;}
+  .sec--ink .o12-cta-row .micro,.sec--tint .o12-cta-row .micro{color:var(--ink-mute);}
+
+  /* === THIN BANNERS === */
+  .o12-banner{background:#0d1117;color:#fff;padding:28px 20px;text-align:center;position:relative;overflow:hidden;}
+  .o12-banner--quote blockquote{font-size:18px;line-height:1.4;font-weight:600;letter-spacing:-0.015em;margin:0 auto 10px;max-width:760px;color:#fff;font-style:normal;}
+  .o12-banner--quote blockquote::before{content:"\201C";display:block;font-size:36px;line-height:0.6;color:var(--blue);font-weight:800;margin:0 0 12px;}
+  .o12-banner--quote .who{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.7);margin:0;}
+  .o12-banner--quote .who .star{color:var(--blue);letter-spacing:.04em;}
+  .o12-banner--rating{background:var(--blue-tint);color:var(--ink);padding:16px 20px;border-top:1px solid rgba(70,89,255,0.18);border-bottom:1px solid rgba(70,89,255,0.18);}
+  .o12-banner--rating .row{display:flex;flex-direction:column;align-items:center;gap:6px;max-width:920px;margin:0 auto;text-align:center;}
+  .o12-banner--rating .stars{color:var(--blue);font-size:15px;letter-spacing:.04em;font-weight:800;display:inline-flex;align-items:center;gap:8px;}
+  .o12-banner--rating .stars b{color:var(--ink);}
+  .o12-banner--rating blockquote{font-size:14px;line-height:1.45;color:var(--ink);margin:0;font-style:normal;font-weight:500;}
+  .o12-banner--rating blockquote::before{content:"";}
+  .o12-banner--rating .who{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);margin:0;}
+  .o12-banner--trust{background:var(--blue);color:#fff;padding:18px 20px;}
+  .o12-banner--trust ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;}
+  .o12-banner--trust li{display:inline-flex;align-items:center;gap:10px;}
+  .o12-banner--trust li::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7;}
+  .o12-banner--trust li:first-child::before{display:none;}
+
+  /* === GUARANTEE BADGE (inline) === */
+  .o12-guarantee{display:inline-flex;align-items:center;gap:10px;background:var(--blue-tint);color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:99px;margin:18px 0 0;}
+  .o12-guarantee::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--blue);position:relative;flex-shrink:0;}
+  .sec--ink .o12-guarantee,.o12-banner .o12-guarantee{background:rgba(70,89,255,0.18);color:#fff;}
+  .sec--ink .o12-guarantee::before{background:#fff;}
+
+  /* === FLAVOR NOTE === */
+  .o12-flavors-wrap{max-width:720px;margin:0 auto;}
+  .o12-flavors{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media(min-width:600px){.o12-flavors{grid-template-columns:1fr 1fr;gap:12px;}}
+  .o12-flavors .fcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;overflow:hidden;display:flex;align-items:center;gap:14px;}
+  .o12-flavors .fcard .blob{position:absolute;width:120px;height:120px;border-radius:50%;filter:blur(28px);opacity:.55;pointer-events:none;z-index:0;top:-35px;right:-30px;}
+  .o12-flavors .fcard--rasp .blob{background:radial-gradient(circle, #FF5577 0%, #FF8FA3 60%, transparent 75%);}
+  .o12-flavors .fcard--mango .blob{background:radial-gradient(circle, #FFB347 0%, #FFD27A 60%, transparent 75%);}
+  .o12-flavors .fcard > *{position:relative;z-index:1;}
+  .o12-flavors .swatch{width:42px;height:42px;border-radius:50%;flex-shrink:0;}
+  .o12-flavors .fcard--rasp .swatch{background:radial-gradient(circle at 30% 30%, #FF8FA3 0%, #E83358 100%);}
+  .o12-flavors .fcard--mango .swatch{background:radial-gradient(circle at 30% 30%, #FFD27A 0%, #F2961C 100%);}
+  .o12-flavors .fcard .meta{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .o12-flavors .fcard h4{font-size:16px;line-height:1.2;letter-spacing:-0.01em;margin:0;font-weight:800;color:var(--ink);}
+  .o12-flavors .fcard .tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--ink-mute);}
+  .o12-flavors .fcard--rasp .tag{color:#C63947;}
+  .o12-flavors .fcard--mango .tag{color:#A0640C;}
+  .o12-flavors .fcard .taste{font-size:12.5px;line-height:1.35;color:var(--ink-mute);margin:2px 0 0;font-weight:500;}
+  .o12-flavors-foot{margin:14px 0 0;text-align:center;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .o12-flavors-foot strong{color:var(--ink);font-weight:700;}
+
+  /* === DESKTOP === */
+  @media (min-width:768px){
+    .o12 p{font-size:17px;}
+    .o12 h1{font-size:56px;}
+    .o12 h2{font-size:40px;}
+    .o12 .sec{padding:84px 0;}
+    .o12-hero{padding:64px 0 80px;}
+    .o12-hero .grid{grid-template-columns:1.1fr 1fr;gap:56px;}
+    .o12-stats{grid-template-columns:repeat(4,1fr);}
+    .o12-stat{padding:36px 16px;}
+    .o12-stat .n{font-size:42px;}
+    .o12-stack{grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+    .o12-stack .visual{padding:36px;}
+    .o12-stack .pile .big,.o12-stack .glass .big{font-size:64px;}
+    .o12-mech{grid-template-columns:repeat(3,1fr);}
+    .o12-bars{padding:28px 28px;margin:0 auto 48px;}
+    .o12-pillars{grid-template-columns:repeat(3,1fr);gap:16px;}
+    .o12-pillar{padding:24px 22px;}
+    .o12-bb{grid-template-columns:0.9fr 1.1fr;padding:36px;gap:36px;}
+    .o12-banner{padding:44px 20px;}
+    .o12-banner--quote blockquote{font-size:24px;line-height:1.35;}
+    .o12-banner--rating{padding:18px 20px;}
+    .o12-banner--rating .row{flex-direction:row;justify-content:center;gap:18px;text-align:left;}
+    .o12-banner--rating blockquote{font-size:15px;}
+    .o12-banner--trust{padding:22px 20px;}
+    .o12-banner--trust ul{flex-direction:row;gap:24px;font-size:13px;}
+    .o12-banner--trust li::before{width:5px;height:5px;}
+    .o12-pull{padding:48px 40px;}
+    .o12-pull blockquote{font-size:24px;}
+    .o12-tsupport{grid-template-columns:repeat(3,1fr);}
+    .o12-cmp{font-size:15px;}
+    .o12-cmp th,.o12-cmp td{padding:16px 14px;}
+    .o12-spec{font-size:15px;}
+    .o12-spec th,.o12-spec td{padding:16px 18px;}
+  }
+</style>
+
+<div class="o12">
+
+  {%- comment -%} === HERO === {%- endcomment -%}
+  <section class="o12-hero">
+    <div class="decor decor--blue" style="top:-160px;right:-140px;width:480px;height:480px;"></div>
+    <div class="decor decor--rose" style="bottom:-180px;left:-160px;width:420px;height:420px;opacity:.6;"></div>
+    <div class="inner">
+      <div class="grid">
+        <div>
+          <p class="eb">{{ section.settings.eyebrow }}</p>
+          <h1><span class="num">12</span> pills in <span class="blue">1 delicious drink</span>.</h1>
+          <p style="font-size:18px;color:var(--ink-mute);">Restore replaces the morning supplement stack with a single serving. Full multivitamin, 900mg of balanced electrolytes, magnesium, glutathione, B-complex, and methylfolate. Zero sugar. One scoop. Done.</p>
+          <div class="qfacts">
+            <span>12+ vitamins</span>
+            <span>900mg electrolytes</span>
+            <span>0g sugar</span>
+            <span>28 servings</span>
+          </div>
+          <ul>
+            <li><strong>One serving = a full morning stack.</strong> 12+ vitamins and minerals in one glass.</li>
+            <li><strong>900mg balanced electrolytes.</strong> Sodium, potassium, magnesium, chloride. No sodium overload.</li>
+            <li><strong>Built for absorption.</strong> Liquid delivery with our Capsoil-backed format, not chalky capsules sitting in the stomach.</li>
+            <li><strong>One bag = 28 days.</strong> $1.79 per serving on the 3-month plan.</li>
+          </ul>
+          <p class="stars">★★★★★ <small>4.97 from 374 verified Restore reviews</small></p>
+          <p style="margin-top:18px;"><a href="#buybox" class="btn">Start Restore</a></p>
+          <p class="trust">28 servings per bag · Free shipping over $50 · 30-day money-back guarantee</p>
+        </div>
+        <div class="hero-img">
+          <img src="{{ 'restore-studio-splash.jpg' | asset_url }}" alt="Restore Raspberry splashing into a glass with fresh raspberries" loading="eager">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === SKINNY RATING BAR (under hero) === {%- endcomment -%}
+  <aside class="o12-banner o12-banner--rating">
+    <div class="row">
+      <span class="stars">★★★★★ <b>4.97</b></span>
+      <blockquote>"The taste is superior to any other electrolyte I've tried."</blockquote>
+      <p class="who">Tracie C. · Verified buyer</p>
+    </div>
+  </aside>
+
+  {%- comment -%} === THE STACK BREAKDOWN === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="decor decor--violet" style="top:-140px;right:-120px;width:380px;height:380px;"></div>
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 28px;">
+        <p class="eb">The math</p>
+        <h2>The morning stack, <span class="blue">consolidated</span>.</h2>
+        <p>Most people building a serious daily routine are taking six to twelve standalone pills before breakfast. Restore is one scoop that covers the same ground, in a format built for higher absorption.</p>
+      </div>
+
+      <div class="o12-stack">
+        <div class="visual">
+          <p class="eb">Side by side</p>
+          <h3 style="font-size:20px;">Same nutrients. Different delivery.</h3>
+          <div class="vs-grid">
+            <div class="pile">
+              <div class="big num">12</div>
+              <div class="lbl">Pills, AM</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="glass">
+              <div class="big num">1</div>
+              <div class="lbl">Scoop, AM</div>
+            </div>
+          </div>
+          <p style="margin:20px 0 0;font-size:13.5px;color:var(--ink-soft);">A pile of capsules has to dissolve, survive stomach acid, and clear first-pass metabolism. A liquid serving starts absorbing on contact.</p>
+        </div>
+
+        <div>
+          <p class="eb">What each pill becomes</p>
+          <h3 style="font-size:20px;">One serving of Restore replaces:</h3>
+          <ul class="o12-pill-list">
+            <li><span class="role">Multivitamin (full A-K spectrum)</span><span class="amt">2 capsules</span></li>
+            <li><span class="role">Electrolyte stick (Na / K / Mg / Cl)</span><span class="amt">1 packet</span></li>
+            <li><span class="role">Magnesium glycinate</span><span class="amt">2 capsules</span></li>
+            <li><span class="role">Vitamin C (1000mg+)</span><span class="amt">1 tablet</span></li>
+            <li><span class="role">B-complex (B1-B12)</span><span class="amt">1 capsule</span></li>
+            <li><span class="role">Methylfolate (active B9)</span><span class="amt">1 capsule</span></li>
+            <li><span class="role">Glutathione (master antioxidant)</span><span class="amt">2 capsules</span></li>
+            <li><span class="role">Zinc + immune trace minerals</span><span class="amt">2 capsules</span></li>
+          </ul>
+          <p style="margin:18px 0 0;font-size:13.5px;color:var(--ink-soft);">Stack the bottles up to roughly $80 to $150 per month at retail. Restore subscription starts at $43.55.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === SOCIAL PROOF (moved up) === {%- endcomment -%}
+  <section class="sec">
+    <div class="decor decor--rose" style="top:-120px;left:-100px;width:340px;height:340px;"></div>
+    <div class="decor decor--blue" style="bottom:-140px;right:-120px;width:380px;height:380px;"></div>
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 18px;">
+        <p class="eb">Verified Restore reviews</p>
+        <h2>★★★★★ <span class="blue">4.97 from 374 customers</span>.</h2>
+      </div>
+      <div class="o12-pull" style="margin-top:24px;">
+        <div class="qmark">"</div>
+        <blockquote>I cut my morning routine from eleven pills down to one scoop. I noticed the energy difference inside a week. The fact that I actually take it every day is the part that matters.</blockquote>
+        <p class="meta">Mark D.<span>Verified Restore customer · ★★★★★</span></p>
+      </div>
+      <div class="o12-tsupport">
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"I love that I get my hydration along with other supplements in one. The taste is superior to any other electrolyte I have ever tried."</blockquote>
+          <p class="who">Tracie C. · Verified buyer</p>
+        </div>
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"I drink it first thing in the morning. I don't need a second cup of coffee, nor do I want to go back to bed."</blockquote>
+          <p class="who">Dayna L. · Verified buyer</p>
+        </div>
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"Definitely deserves all the hype. I feel great mentally and my body feels rejuvenated. The flavors don't have that awful synthetic taste."</blockquote>
+          <p class="who">Natalie D. · Verified buyer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BUYBOX (moved up) === {%- endcomment -%}
+  <section class="sec sec--tint" id="buybox">
+    <div class="decor decor--rose" style="top:-180px;right:-80px;width:420px;height:420px;"></div>
+    <div class="decor decor--blue" style="bottom:-200px;left:-100px;width:440px;height:440px;"></div>
+    <div class="inner">
+      <div class="o12-bb">
+        <div class="prod-img">
+          <img src="{{ 'restore-studio-both-flavors.jpg' | asset_url }}" alt="Restore Raspberry and Mango Lemonade bags with their prepared drinks, frother, and fresh fruit" loading="lazy">
+        </div>
+        <div>
+          <p class="eb">Your daily Restore</p>
+          <h3 style="font-size:28px;line-height:1.15;margin:0 0 10px;letter-spacing:-0.015em;">Save up to <span class="blue">35%</span> on Restore.</h3>
+          <p style="font-size:15px;color:var(--ink-mute);margin:0 0 14px;line-height:1.5;">Subscribe, pause anytime. Free shipping over $50. 30-day money-back guarantee.</p>
+          <p class="stars" style="margin:0 0 22px;">★★★★★ <small>4.97 · 374 verified Restore reviews</small></p>
+
+          {%- comment -%} Single-line ATC. Each chip carries the variant + Skio selling plan for that flavor/tier combo. Tier discount (25/30/35%) is baked into the plan. Variants: Restore Raspberry product for all-Rasp tiers, main Restore product for all-Mango tiers, Restore 5x Absorption product for 2-bag Rasp+Mango mix. {%- endcomment -%}
+          <div class="plan-wrap">
+            <label class="plan" data-plan="1mo" data-mo="50.25" data-total="50.25">
+              <input type="radio" name="o12-plan" value="1mo">
+              <span class="radio"></span>
+              <span class="plan-body">
+                <span class="plan-title">1 Month <span class="badge">Save 25%</span></span>
+                <span class="plan-meta">28 servings. 1 bag delivered every month.</span>
+                <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              </span>
+              <span class="plan-price">
+                <span class="strike">$67.00</span>
+                <span class="mo">$50.25/mo</span>
+                <span class="total">$1.79 / serving</span>
+                <span class="save">save $16.75</span>
+              </span>
+            </label>
+            <div class="flavor-pick">
+              <p class="pick-lbl">Pick your flavor</p>
+              <div class="chips">
+                <span class="chip sel" data-variant="52876415992097" data-plan="690941395233">Raspberry Restore</span>
+                <span class="chip" data-variant="51524909302049" data-plan="690941395233">Mango Lemonade</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="plan-wrap">
+            <label class="plan sel" data-plan="2mo" data-mo="46.90" data-total="93.80">
+              <input type="radio" name="o12-plan" value="2mo" checked>
+              <span class="radio"></span>
+              <span class="plan-body">
+                <span class="plan-title">2 Months <span class="badge">Save 30%</span> <span class="badge badge--pop">Most Popular</span></span>
+                <span class="plan-meta">56 servings. 2 bags delivered every 2 months.</span>
+                <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              </span>
+              <span class="plan-price">
+                <span class="strike">$134.00</span>
+                <span class="mo">$46.90/mo</span>
+                <span class="total">$1.67 / serving</span>
+                <span class="save">save $40.20</span>
+              </span>
+            </label>
+            <div class="flavor-pick">
+              <p class="pick-lbl">Pick your flavors</p>
+              <div class="chips">
+                <span class="chip sel" data-variant="52885804548385" data-plan="690941559073">Mix <em>1 Raspberry + 1 Mango</em></span>
+                <span class="chip" data-variant="52876416024865" data-plan="690941559073">All Raspberry <em>2 bags</em></span>
+                <span class="chip" data-variant="51524909334817" data-plan="690941559073">All Mango Lemonade <em>2 bags</em></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="plan-wrap">
+            <label class="plan" data-plan="3mo" data-mo="43.55" data-total="130.65">
+              <input type="radio" name="o12-plan" value="3mo">
+              <span class="radio"></span>
+              <span class="plan-body">
+                <span class="plan-title">3 Months <span class="badge">Save 35%</span> <span class="badge badge--best">Best Value</span></span>
+                <span class="plan-meta">84 servings. 3 bags delivered every 3 months.</span>
+                <span class="plan-meta small">Free shipping. Pause or cancel anytime.</span>
+              </span>
+              <span class="plan-price">
+                <span class="strike">$201.00</span>
+                <span class="mo">$43.55/mo</span>
+                <span class="total">$1.56 / serving</span>
+                <span class="save">save $70.35</span>
+              </span>
+            </label>
+            <div class="flavor-pick">
+              <p class="pick-lbl">Pick your flavors</p>
+              <div class="chips">
+                <span class="chip sel" data-variant="52876416385313" data-plan="690975899937">All Raspberry <em>3 bags</em></span>
+                <span class="chip" data-variant="52106782408993" data-plan="690975899937">All Mango Lemonade <em>3 bags</em></span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" id="o12-atc" class="btn full" style="margin-top:6px;">Add to Cart · $93.80</button>
+          <p class="reassure">Free shipping over $50 · 30-day money-back guarantee · Pause or cancel anytime.</p>
+
+          <ul class="prod-features">
+            <li>Full multivitamin (A, B-complex, C, D, E, K, methylfolate)</li>
+            <li>900mg balanced electrolytes per serving</li>
+            <li>Magnesium, zinc, glutathione</li>
+            <li>Zero sugar. Under 10 calories.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BANNER 1 — quote pull === {%- endcomment -%}
+  <aside class="o12-banner o12-banner--quote">
+    <blockquote>I cut my morning routine from eleven pills to one scoop.</blockquote>
+    <p class="who">Mark D. · Verified Restore customer · <span class="star">★★★★★</span></p>
+  </aside>
+
+  {%- comment -%} === PILLAR BAND (moved above mechanism) === {%- endcomment -%}
+  <section class="sec">
+    <div class="decor decor--rose" style="top:-140px;right:-140px;width:400px;height:400px;"></div>
+    <div class="decor decor--violet" style="bottom:-180px;left:-120px;width:380px;height:380px;"></div>
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 24px;">
+        <p class="eb">Six daily systems</p>
+        <h2>One drink. <span class="blue">Six daily wins</span>.</h2>
+      </div>
+      <div class="o12-pillars">
+        <div class="o12-pillar">
+          <div class="head"><span class="num">01</span><span class="lbl">Hydration</span></div>
+          <p class="why">Balanced electrolytes move water into cells instead of pooling in the gut. The reason you stay hydrated, not bloated.</p>
+          <div class="nuts">
+            <span class="nut">Sodium 350mg</span>
+            <span class="nut">Potassium 300mg</span>
+            <span class="nut">Magnesium 200mg</span>
+          </div>
+        </div>
+        <div class="o12-pillar">
+          <div class="head"><span class="num">02</span><span class="lbl">Immunity</span></div>
+          <p class="why">High-dose vitamin C plus zinc support neutrophil function, lymphocyte proliferation, and cytokine modulation.<a href="#refs" class="o12-cite"><sup class="o12-cite">[8]</sup></a></p>
+          <div class="nuts">
+            <span class="nut">Vitamin C 1000mg</span>
+            <span class="nut">Zinc 10mg</span>
+            <span class="nut">Vitamin D</span>
+          </div>
+        </div>
+        <div class="o12-pillar">
+          <div class="head"><span class="num">03</span><span class="lbl">Energy</span></div>
+          <p class="why">Methylated B-vitamins skip the conversion step folic acid and cyanocobalamin require, making them the bioavailable forms.<a href="#refs" class="o12-cite"><sup class="o12-cite">[7]</sup></a></p>
+          <div class="nuts">
+            <span class="nut">B-complex (B1-B12)</span>
+            <span class="nut">Methylfolate 400mcg</span>
+          </div>
+        </div>
+        <div class="o12-pillar">
+          <div class="head"><span class="num">04</span><span class="lbl">Focus</span></div>
+          <p class="why">Magnesium and B12 support neurotransmitter balance. The clean, no-caffeine clarity that doesn't crash at 3pm.</p>
+          <div class="nuts">
+            <span class="nut">Magnesium 200mg</span>
+            <span class="nut">Methylfolate 400mcg</span>
+            <span class="nut">B12</span>
+          </div>
+        </div>
+        <div class="o12-pillar">
+          <div class="head"><span class="num">05</span><span class="lbl">Recovery</span></div>
+          <p class="why">Liposomal magnesium bisglycinate hits a different absorption ceiling than magnesium oxide, which clinical work pegs at just 11% bioavailability.<a href="#refs" class="o12-cite"><sup class="o12-cite">[6]</sup></a></p>
+          <div class="nuts">
+            <span class="nut">Magnesium 200mg</span>
+            <span class="nut">Glutathione 250mg</span>
+            <span class="nut">Potassium 300mg</span>
+          </div>
+        </div>
+        <div class="o12-pillar">
+          <div class="head"><span class="num">06</span><span class="lbl">Detox</span></div>
+          <p class="why">Oral liposomal glutathione measurably raises systemic GSH and immune-function markers in randomized trials.<a href="#refs" class="o12-cite"><sup class="o12-cite">[4]</sup></a></p>
+          <div class="nuts">
+            <span class="nut">Glutathione 250mg</span>
+            <span class="nut">Vitamin C 1000mg</span>
+            <span class="nut">B-complex</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="o12-cta-row">
+        <a href="#buybox" class="btn">Start Restore</a>
+        <span class="micro">One scoop, every morning · 30-day money-back guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === SPEC TABLE (moved above mechanism) === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="decor decor--violet" style="top:-120px;left:-100px;width:340px;height:340px;opacity:.7;"></div>
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 24px;">
+        <p class="eb">What's in every serving</p>
+        <h2>The full <span class="blue">spec sheet</span>.</h2>
+        <p>Every line, labeled. No prop blends. No "complex" hiding low doses.</p>
+      </div>
+      <div style="max-width:760px;margin:0 auto;">
+        <table class="o12-spec">
+          <thead>
+            <tr>
+              <th>Nutrient</th>
+              <th>Role</th>
+              <th>Per serving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Sodium</strong></td><td>Cellular hydration, nerve signaling</td><td>350mg</td></tr>
+            <tr><td><strong>Potassium</strong></td><td>Muscle function, blood pressure</td><td>300mg</td></tr>
+            <tr><td><strong>Magnesium</strong></td><td>Energy production, sleep quality</td><td>200mg</td></tr>
+            <tr><td><strong>Chloride</strong></td><td>Fluid balance</td><td>50mg</td></tr>
+            <tr><td><strong>Vitamin C</strong></td><td>Collagen, immune support</td><td>1000mg</td></tr>
+            <tr><td><strong>B-Complex</strong></td><td>Cellular energy, methylation</td><td>Full B1-B12</td></tr>
+            <tr><td><strong>Methylfolate</strong></td><td>Active B9 your body can use</td><td>400mcg</td></tr>
+            <tr><td><strong>Glutathione</strong></td><td>Master antioxidant, detox support</td><td>250mg</td></tr>
+            <tr><td><strong>Zinc</strong></td><td>Immune defense, skin integrity</td><td>10mg</td></tr>
+            <tr><td><strong>Vitamins A, D, E, K</strong></td><td>Fat-soluble baseline coverage</td><td>Full RDA</td></tr>
+            <tr><td><strong>Sugar</strong></td><td>—</td><td>0g</td></tr>
+            <tr><td><strong>Calories</strong></td><td>—</td><td>&lt;10</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px;color:var(--ink-soft);margin-top:14px;text-align:center;">Exact amounts subject to formulation updates. See product label for full breakdown.</p>
+      </div>
+
+      <div class="o12-cta-row">
+        <a href="#buybox" class="btn">Start Restore</a>
+        <span class="micro">12+ vitamins · 900mg electrolytes · 0g sugar · 30-day guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BANNER 2 — trust strip === {%- endcomment -%}
+  <aside class="o12-banner o12-banner--trust">
+    <ul>
+      <li>Free shipping over $50</li>
+      <li>30-day money-back guarantee</li>
+      <li>Pause or cancel anytime</li>
+    </ul>
+  </aside>
+
+  {%- comment -%} === MECHANISM (3 cards) === {%- endcomment -%}
+  <section class="sec sec--tint">
+    <div class="decor decor--cyan" style="top:-100px;left:-120px;width:360px;height:360px;"></div>
+    <div class="decor decor--blue" style="bottom:-160px;right:-100px;width:420px;height:420px;opacity:.6;"></div>
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 32px;">
+        <p class="eb">Why the format matters</p>
+        <h2>Label dose vs. <span class="blue">bloodstream dose</span>.</h2>
+        <p style="font-size:16px;margin:0;">Most of a standard supplement dose never reaches your bloodstream. Restore is engineered around the opposite problem.</p>
+      </div>
+
+      <div class="o12-bars">
+        <div class="row">
+          <div class="top">
+            <span class="lbl">Standard pill stack</span>
+            <span class="pct">~16%</span>
+          </div>
+          <div class="bar"><div class="fill" style="width:16%;"></div></div>
+        </div>
+        <div class="row row--us">
+          <div class="top">
+            <span class="lbl">Restore liquid serving</span>
+            <span class="pct">5× more</span>
+          </div>
+          <div class="bar"><div class="fill" style="width:80%;"></div></div>
+        </div>
+        <p class="cap">Up to <strong>84%</strong> of the dose on a standard capsule label is flushed before absorption.<a href="#refs" class="o12-cite"><sup class="o12-cite">[1]</sup></a> <strong>Capsoil-backed</strong> liposomal delivery lets co-factors arrive together and absorb on contact.<a href="#refs" class="o12-cite"><sup class="o12-cite">[2]</sup></a></p>
+      </div>
+
+      <div class="o12-mech">
+        <div class="card">
+          <div class="n">01 / Delivery</div>
+          <h3>Liquid serving, not a slow-release tablet.</h3>
+          <p>Capsules can sit in the gut for 30+ minutes before they break down. A liposomal liquid serving starts moving through the gut wall on contact, with 1.77× the bioavailability of standard vitamin C in randomized trials.<a href="#refs" class="o12-cite"><sup class="o12-cite">[3]</sup></a></p>
+        </div>
+        <div class="card">
+          <div class="n">02 / Co-factors</div>
+          <h3>Nutrients dosed together, not isolated.</h3>
+          <p>Magnesium needs vitamin D. B12 needs methylfolate. Restore is formulated so co-factors arrive at the same time, the way the body actually uses them.</p>
+        </div>
+        <div class="card">
+          <div class="n">03 / Compliance</div>
+          <h3>One serving you'll actually take every day.</h3>
+          <p>A 12-pill morning is the routine you skip on a busy week. A drink that tastes good is the routine you keep. Consistency outperforms perfection.</p>
+        </div>
+      </div>
+
+      <div class="o12-cta-row">
+        <a href="#buybox" class="btn">Start Restore</a>
+        <span class="micro">Free shipping over $50 · 30-day guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === COMPARISON === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto 24px;">
+        <p class="eb">Restore vs the stack</p>
+        <h2>One bag versus <span class="blue">six bottles</span>.</h2>
+      </div>
+      <table class="o12-cmp">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-us">Restore Daily</th>
+            <th>Pill-by-pill stack</th>
+            <th>Sugar hydration drink</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Pills per morning</td><td class="col-us"><strong>0</strong></td><td>10 to 14</td><td>0</td></tr>
+          <tr><td>Bottles to manage</td><td class="col-us"><strong>1 bag</strong></td><td>6 to 8</td><td>1</td></tr>
+          <tr><td>Multivitamin coverage</td><td class="col-us"><strong>Full</strong></td><td>Full (if compliant)</td><td>None</td></tr>
+          <tr><td>Electrolytes</td><td class="col-us"><strong>900mg balanced</strong></td><td>Varies wildly</td><td>250 to 450mg</td></tr>
+          <tr><td>Sugar</td><td class="col-us"><strong>0g</strong></td><td>0g</td><td>21 to 34g</td></tr>
+          <tr><td>Liquid delivery</td><td class="col-us"><strong>Yes</strong></td><td>No</td><td>Yes</td></tr>
+          <tr><td>Typical retail / month</td><td class="col-us"><strong>$43.55 to $50.25</strong></td><td>$80 to $150</td><td>$40 to $90</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:14px;text-align:center;">Pill-stack retail estimate based on average direct-to-consumer pricing for the six bottle categories listed above. Your stack may vary.</p>
+
+      <div class="o12-cta-row">
+        <a href="#buybox" class="btn">Start Restore</a>
+        <span class="micro">1 bag = 28 days · 30-day money-back guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FLAVOR SHOWCASE — compact two-flavor strip === {%- endcomment -%}
+  <section class="sec">
+    <div class="inner">
+      <div class="o12-flavors-wrap">
+        <h3 style="text-align:center;font-size:22px;line-height:1.2;letter-spacing:-0.01em;margin:0 0 16px;">Two flavors. <span class="blue">One full formula.</span></h3>
+
+        <div class="o12-flavors">
+          <article class="fcard fcard--rasp">
+            <div class="blob"></div>
+            <div class="swatch"></div>
+            <div class="meta">
+              <span class="tag">New limited time flavor</span>
+              <h4>Raspberry Restore</h4>
+              <p class="taste">Bright, tart, never syrupy.</p>
+            </div>
+          </article>
+
+          <article class="fcard fcard--mango">
+            <div class="blob"></div>
+            <div class="swatch"></div>
+            <div class="meta">
+              <span class="tag">Year-round</span>
+              <h4>Mango Lemonade</h4>
+              <p class="taste">Sun-ripe mango, citrus-zest finish.</p>
+            </div>
+          </article>
+        </div>
+
+        <p class="o12-flavors-foot"><strong>Same 12-in-1 formula in both.</strong> Pick one, or mix in your subscription.</p>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FAQ === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner" style="max-width:760px;">
+      <p class="eb">FAQ</p>
+      <h2>Before you start <span class="blue">Restore</span>.</h2>
+      <div class="o12-faq" style="margin-top:14px;">
+        <details><summary>Does this really replace a multivitamin?</summary><p>Yes. Restore covers the A-K vitamin spectrum, the full B-complex including methylfolate, and the trace minerals most multivitamins are built around. The spec table above lists every line.</p></details>
+        <details><summary>Why a liquid format instead of capsules?</summary><p>Capsules have to break down before absorption can start. A liposomal liquid serving begins absorbing on contact with the gut wall. For nutrients with notoriously low oral bioavailability the format matters more than the dose: peer-reviewed studies put conventional magnesium at 11% absorbed,<a href="#refs" class="o12-cite"><sup class="o12-cite">[6]</sup></a> conventional B12 at 8%,<a href="#refs" class="o12-cite"><sup class="o12-cite">[7]</sup></a> and conventional vitamin C at 7%.<a href="#refs" class="o12-cite"><sup class="o12-cite">[1]</sup></a></p></details>
+        <details><summary>How is the electrolyte balance set?</summary><p>900mg total, weighted toward magnesium and potassium rather than sodium-dominant. Built for daily hydration, not endurance-athlete sodium replacement.</p></details>
+        <details><summary>Will this cause bloating like other hydration drinks?</summary><p>Bloat usually comes from sodium overload or sugar. Restore is moderate-sodium and zero-sugar. Most users report the opposite of the typical hydration-stick bloat.</p></details>
+        <details><summary>Is there any sugar or artificial sweetener?</summary><p>Zero sugar. Sweetened naturally. Under 10 calories per serving.</p></details>
+        <details><summary>When should I take it?</summary><p>Once daily. Most users take it first thing in the morning to anchor the routine. Anytime works.</p></details>
+        <details><summary>Is the subscription locked in?</summary><p>No. Pause, skip, or cancel in two clicks from your account page. No commitment.</p></details>
+        <details><summary>What if it doesn't work for me?</summary><p>Send the bag back within 30 days for a full refund. Even if it is empty.</p></details>
+      </div>
+
+      <div class="o12-cta-row">
+        <a href="#buybox" class="btn">Start Restore</a>
+        <span class="micro">30-day money-back guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === REFERENCES === {%- endcomment -%}
+  <section class="sec" id="refs">
+    <div class="inner" style="max-width:860px;">
+      <details class="o12-refs" open>
+        <summary>Research &amp; references</summary>
+        <ol>
+          <li><strong>Brandon, E.F.A. et al.</strong> "Bioaccessibility of vitamin A, vitamin C and folic acid from dietary supplements, fortified food and infant formula." <em>International Journal of Food Sciences and Nutrition</em>, 65(4): 426–435 (2014). Reported bioaccessibility of vitamin C at 7%, vitamin A at 23%, and folate at 24% from conventional supplements.</li>
+          <li><strong>Capsoil Laboratories.</strong> "A single-site, randomized, crossover comparison bioavailability study of omega-3 self-emulsified powder versus omega-3 dietary oil supplement, in healthy adults." Internal study. Demonstrated a 985% increase in omega-3 bioavailability versus oil supplement. Companion Astaxanthin work showed 68% bioaccessibility versus 17% for conventional oil.</li>
+          <li><strong>Gopi, S. &amp; Balakrishnan, P.</strong> "Evaluation and clinical comparison studies on liposomal and non-liposomal ascorbic acid (vitamin C) and their enhanced bioavailability." <em>Journal of Liposome Research</em>, 31(4): 356–364 (2021). doi:10.1080/08982104.2020.1820521. RCT showed liposomal vitamin C was 1.77× more bioavailable than standard vitamin C.</li>
+          <li><strong>Sinha, R. et al.</strong> "Oral supplementation with liposomal glutathione elevates body stores of glutathione and markers of immune function." <em>European Journal of Clinical Nutrition</em>, 72(1): 105–111 (2018).</li>
+          <li><strong>Weschawalit, S. et al.</strong> "Glutathione and its antiaging and antimelanogenic effects." <em>Clinical, Cosmetic and Investigational Dermatology</em>. Randomized, double-blind, placebo-controlled study. Oral glutathione (250 mg/day) influenced skin properties, including melanin reduction and elasticity.</li>
+          <li><strong>Firoz, M. &amp; Graber, M.</strong> "Bioavailability of US commercial magnesium preparations." <em>Magnesium Research</em>, 14(4): 257–262 (2001). PMID: 11794633. Conventional magnesium oxide showed only 11% bioavailability at median dosage.</li>
+          <li><strong>Rakusa, Z.T. et al.</strong> "Vitamin B12 in Foods, Food Supplements, and Medicines — A Review of Its Role and Properties with a Focus on Its Stability." <em>Molecules</em>, 28: 240 (2023). Reported only 8% of B12 absorbed from conventional supplements at median dosage; supports methylcobalamin over cyanocobalamin.</li>
+          <li><strong>Carr, A.C. &amp; Maggini, S.</strong> "Vitamin C and Immune Function." <em>Nutrients</em>, 9(11): 1211 (2017). doi:10.3390/nu9111211. Comprehensive review of vitamin C's role in innate and adaptive immunity, neutrophil function, lymphocyte proliferation, and cytokine modulation.</li>
+        </ol>
+        <p class="foot">A complete reference list including Davis, J.L. (2016); Ko, J. (2023); Dalek, P. (2022); Said, H.M. (2011); Etcheverry, P. (2012); Kalamkar, S. (2022); Richie, J.P. (2015); Rimm, E.B. (1998); Hemilä &amp; Chalker (2013); and additional Capsoil internal studies on Astaxanthin and Thymol bioaccessibility is available on request.</p>
+      </details>
+    </div>
+  </section>
+
+  {%- comment -%} === FINAL CTA === {%- endcomment -%}
+  <section class="sec sec--ink">
+    <div class="decor decor--blue" style="top:-180px;right:-160px;width:520px;height:520px;"></div>
+    <div class="decor decor--rose" style="bottom:-180px;left:-160px;width:440px;height:440px;"></div>
+    <div class="inner o12-final" style="max-width:680px;">
+      <h2>Trade <span class="blue">12 bottles</span> for one bag.</h2>
+      <p style="color:rgba(255,255,255,0.82);">One scoop. Full multivitamin. Balanced electrolytes. Liquid delivery. Zero sugar. 28 days per bag.</p>
+      <p style="margin-top:22px;"><a href="#buybox" class="btn btn--white">Start Restore</a></p>
+      <p><span class="o12-guarantee">30-day money-back guarantee</span></p>
+      <p class="trust" style="color:rgba(255,255,255,0.65);">Subscription pricing shown. Pause or cancel anytime. Free shipping over $50.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var planEls = document.querySelectorAll('.o12-bb .plan');
+    var chipEls = document.querySelectorAll('.o12-bb .flavor-pick .chip');
+    var atc = document.getElementById('o12-atc');
+
+    function syncAtc(){
+      var sel = document.querySelector('.o12-bb .plan.sel');
+      if(!sel) return;
+      atc.textContent = 'Add to Cart · $' + sel.getAttribute('data-total');
+    }
+
+    function selectPlan(planLabel){
+      planEls.forEach(function(x){ x.classList.remove('sel'); });
+      planLabel.classList.add('sel');
+      var input = planLabel.querySelector('input');
+      if(input) input.checked = true;
+      syncAtc();
+    }
+
+    planEls.forEach(function(p){
+      p.addEventListener('click', function(){ selectPlan(p); });
+    });
+
+    chipEls.forEach(function(c){
+      c.addEventListener('click', function(e){
+        e.stopPropagation();
+        var wrap = c.closest('.plan-wrap');
+        wrap.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('sel'); });
+        c.classList.add('sel');
+        var planLabel = wrap.querySelector('.plan');
+        if(!planLabel.classList.contains('sel')) selectPlan(planLabel);
+      });
+    });
+
+    atc.addEventListener('click', function(e){
+      e.preventDefault();
+      var planSel = document.querySelector('.o12-bb .plan.sel');
+      if (!planSel) return;
+      var chipSel = planSel.parentElement.querySelector('.chip.sel');
+      if (!chipSel) return;
+      var variant = parseInt(chipSel.getAttribute('data-variant'), 10);
+      var sellingPlan = parseInt(chipSel.getAttribute('data-plan'), 10);
+      if (!variant || !sellingPlan) return;
+      var origLabel = atc.textContent;
+      atc.textContent = 'Adding...';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          items: [{ id: variant, quantity: 1, selling_plan: sellingPlan }]
+        })
+      }).then(function(r){
+        if (!r.ok) throw new Error('add failed');
+        window.location.href = '/checkout';
+      }).catch(function(){
+        atc.textContent = 'Try again';
+        setTimeout(function(){ atc.textContent = origLabel; }, 2500);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "OFD12 Twelve In One",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "HYDRATE · IMMUNITY · ENERGY · FOCUS · RECOVERY · DETOX" }
+  ],
+  "presets": [{ "name": "OFD12 Twelve In One" }]
+}
+{% endschema %}

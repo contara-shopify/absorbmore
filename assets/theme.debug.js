@@ -4545,7 +4545,6 @@ const initPageTransitions = () => {
                 document.dispatchEvent(new CustomEvent("pageFullyLoaded", {}));
                 Shopify?.PaymentButton?.init();
                 window?.okeWidgetApi?.initAllWidgets();
-                window?.yotpoWidgetsContainer?.initWidgets();
                 window?.loyaltylion?.ui?.refresh();
 
                 setTimeout(() => {

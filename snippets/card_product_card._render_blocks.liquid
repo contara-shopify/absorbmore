@@ -12,6 +12,17 @@
     endif
     if block.type == '_card_product_card__rating'
       render 'card_product_card.rating.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images
+      assign _ctr_pcf_inject = false
+      for _ctr_o in product.options_with_values
+        assign _ctr_on = _ctr_o.name | downcase
+        if _ctr_on == 'flavor' or _ctr_on == 'flavour'
+          assign _ctr_pcf_inject = true
+          break
+        endif
+      endfor
+      if _ctr_pcf_inject
+        render 'ctr-product-card-flavors', product: product, variant: variant
+      endif
     endif
     if block.type == '_card_product_card__add_to_cart_toggle'
       render 'card_product_card.add_to_cart_toggle.static', section_id: section_id, block_id: block_id, style_id: style_id, selector: selector, product: product, variant: variant, section: section, block: block, preorder: preorder, preorder_date: preorder_date, preorder_quantity: preorder_quantity, price: price, compare_at_price: compare_at_price, is_bundle: is_bundle, is_pdp: is_pdp, preload_images: preload_images

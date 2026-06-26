@@ -1,0 +1,879 @@
+{%- comment -%} Magnesium Glycinate vs Melatonin advertorial lander. Educational, skeptic-friendly. Category critique of melatonin -> magnesium as the root-cause swap. Hero builds trust before product reveal. Buybox defaults to subscription via POST /cart/add (cart permalinks drop selling_plan on this theme). {%- endcomment -%}
+
+{%- liquid
+  assign variant_1 = section.settings.variant_1 | default: '52439421976865'
+  assign variant_2 = section.settings.variant_2 | default: '52439422009633'
+  assign variant_3 = section.settings.variant_3 | default: '52439422042401'
+  assign sub_plan  = section.settings.sub_plan  | default: '691154485537'
+
+  assign price_1_ot  = section.settings.price_1_ot  | default: '$28.00'
+  assign price_1_sub = section.settings.price_1_sub | default: '$22.40'
+  assign price_1_was = section.settings.price_1_was | default: '$28.00'
+
+  assign price_2_ot  = section.settings.price_2_ot  | default: '$56.00'
+  assign price_2_sub = section.settings.price_2_sub | default: '$44.80'
+  assign price_2_was = section.settings.price_2_was | default: '$56.00'
+
+  assign price_3_ot  = section.settings.price_3_ot  | default: '$84.00'
+  assign price_3_sub = section.settings.price_3_sub | default: '$67.20'
+  assign price_3_was = section.settings.price_3_was | default: '$84.00'
+
+  assign hero_img    = section.settings.hero_img    | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Magnesium_fca66eba-7d7b-41d2-b6a1-9209fb90e380.png?v=1768241640'
+  assign bundle_img  = section.settings.bundle_img  | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/magnesium-sleep-bundle.png'
+  assign bundle_url  = section.settings.bundle_url  | default: '/products/magnesium-sleep-bundle'
+  assign rating      = section.settings.rating      | default: '4.7'
+  assign review_count = section.settings.review_count | default: '2,400+'
+-%}
+
+<style>
+  .mvm{ --bg:#ffffff; --bg-soft:#f6f8ff; --bg-tint:#eef2ff; --paper:#fafbff; --ink:#0a1233; --ink-soft:#2a3260; --muted:#6b7390; --line:#dfe4f7; --line-soft:#ecf0fb; --brand:#4659FF; --brand-hover:#3a4ad9; --brand-deep:#2c39b3; --brand-tint:#e6e9ff; --accent:#FF7815; --accent-hover:#e76b0e; --accent-deep:#c25a0c; --accent-tint:#ffe9d6; --ink-deep:#080d24;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .mvm *{box-sizing:border-box}
+  .mvm img{max-width:100%;display:block}
+  .mvm a{color:inherit;text-decoration:none}
+  .mvm .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+  .mvm .wrap-narrow{max-width:780px;margin:0 auto;padding:0 18px}
+
+  /* TOP BAR */
+  .mvm-bar{background:var(--ink-deep);color:#fff}
+  .mvm-bar__row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;font-size:13px;text-align:center;line-height:1.3}
+  .mvm-bar__lead{font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .mvm-bar__lead em{font-style:normal;color:var(--accent);font-weight:700}
+  @media(max-width:480px){.mvm-bar__row{font-size:12px;gap:6px}}
+
+  /* HERO */
+  .mvm-hero{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-soft) 100%);padding:32px 0 44px;border-bottom:1px solid var(--line-soft)}
+  .mvm-hero__grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center}
+  @media(min-width:880px){.mvm-hero__grid{grid-template-columns:1.1fr .9fr;gap:48px}}
+  @media(max-width:879px){.mvm-hero{padding:18px 0 28px}.mvm-hero__grid{gap:18px}}
+  .mvm-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px}
+  .mvm-hero__eyebrow::before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block}
+  .mvm-hero h1{font-size:clamp(30px,5.4vw,48px);line-height:1.04;letter-spacing:-.035em;font-weight:800;margin:0 0 14px;color:var(--ink-deep)}
+  .mvm-hero h1 em{font-style:normal;color:var(--brand)}
+  .mvm-hero h1 .strike{text-decoration:line-through;text-decoration-thickness:3px;text-decoration-color:var(--accent);color:var(--ink-soft);font-weight:700}
+  .mvm-hero__sub{font-size:clamp(15px,2vw,18px);max-width:560px;margin:0 0 20px;color:var(--ink-soft);line-height:1.55}
+  .mvm-hero__sub b{color:var(--ink);font-weight:600}
+  .mvm-hero__bullets{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px;max-width:560px}
+  .mvm-hero__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--ink);line-height:1.4}
+  .mvm-hero__bullets li strong{font-weight:700;color:var(--ink-deep)}
+  .mvm-hero__bullets li svg{width:20px;height:20px;flex:0 0 auto;color:var(--brand);margin-top:2px}
+  .mvm-hero__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:440px;padding:16px 30px;background:var(--brand);color:#fff !important;font-weight:600;font-size:15px;border-radius:2px;transition:background .2s}
+  .mvm-hero__cta:hover{background:var(--brand-hover)}
+  .mvm-hero__cta:after{content:" →";margin-left:10px}
+  .mvm-hero__guarantee{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink-soft)}
+  .mvm-hero__guarantee svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+  .mvm-hero__media{position:relative;text-align:center}
+  .mvm-hero__card{background:var(--bg-soft);border-radius:12px;padding:24px;position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+  .mvm-hero__card img{max-width:86%;max-height:86%;object-fit:contain}
+  .mvm-hero__badge{position:absolute;top:-28px;right:-12px;background:var(--accent);color:#fff;border-radius:999px;width:116px;height:116px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;line-height:1;transform:rotate(-8deg);border:4px solid var(--bg);box-shadow:0 10px 22px rgba(8,13,36,.24)}
+  .mvm-hero__badge big{font-size:30px}
+  .mvm-hero__badge span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-top:4px;font-weight:700}
+  @media(max-width:760px){.mvm-hero__badge{top:-22px;right:6px;width:96px;height:96px}.mvm-hero__badge big{font-size:24px}}
+
+  /* 3 USPs (replaces trust strip) */
+  .mvm-usp{background:#fff;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 0}
+  .mvm-usp__row{display:grid;grid-template-columns:1fr;gap:14px;text-align:center;font-size:14px;font-weight:500;color:var(--ink-deep);align-items:center;justify-items:center}
+  @media(min-width:720px){.mvm-usp__row{grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0}}
+  .mvm-usp__cell{display:flex;align-items:center;gap:10px;padding:0 12px}
+  .mvm-usp__cell svg{width:24px;height:24px;color:var(--ink-deep);flex:0 0 auto}
+  @media(min-width:720px){.mvm-usp__row::after,.mvm-usp__row::before{content:""}}
+  .mvm-usp__row > .mvm-usp__cell + .mvm-usp__cell{position:relative}
+  @media(min-width:720px){
+    .mvm-usp__row{grid-template-columns:repeat(3,1fr)}
+    .mvm-usp__row > .mvm-usp__cell + .mvm-usp__cell::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:24px;background:var(--line)}
+  }
+  .mvm-stars5:before{content:"★★★★★";color:var(--accent);letter-spacing:1px}
+
+  /* SECTION BASE */
+  .mvm-sec{padding:56px 0}
+  .mvm-sec--blue{background:var(--bg-tint)}
+  .mvm-sec--soft{background:var(--bg-soft)}
+  .mvm-sec--ink{background:var(--ink-deep);color:#fff}
+  .mvm-sec--ink h2,.mvm-sec--ink h3{color:#fff}
+  .mvm-sec__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.24em;font-weight:700;color:var(--ink);margin:0 0 12px;display:inline-flex;align-items:center;gap:10px}
+  .mvm-sec__eyebrow::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;display:inline-block}
+  .mvm-sec--ink .mvm-sec__eyebrow{color:rgba(255,255,255,.85)}
+  .mvm-sec--ink .mvm-sec__eyebrow::before{background:var(--accent)}
+  .mvm-sec__title{font-size:clamp(26px,4.4vw,38px);font-weight:800;letter-spacing:-.035em;color:var(--ink-deep);margin:0 0 12px;line-height:1.07}
+  .mvm-sec__title em{font-style:normal;color:var(--brand)}
+  .mvm-sec--ink .mvm-sec__title{color:#fff}
+  .mvm-sec--ink .mvm-sec__title em{color:var(--accent)}
+  .mvm-sec__sub{font-size:16px;color:var(--ink-soft);max-width:720px;margin:0 0 28px;line-height:1.6}
+  .mvm-sec--ink .mvm-sec__sub{color:rgba(255,255,255,.82)}
+  .mvm .center{text-align:center}
+  .mvm .center .mvm-sec__sub{margin-left:auto;margin-right:auto}
+
+  /* MELATONIN PROBLEM CARDS */
+  .mvm-mel{display:grid;grid-template-columns:1fr;gap:14px;margin-top:8px}
+  @media(min-width:760px){.mvm-mel{grid-template-columns:repeat(2,1fr)}}
+  .mvm-mel__card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+  .mvm-mel__card-h{font-size:17px;font-weight:800;color:var(--ink-deep);margin:0 0 8px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+  .mvm-mel__card-h svg{width:22px;height:22px;color:var(--accent);flex:0 0 auto}
+  .mvm-mel__card-p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;margin:0}
+
+  /* SPLIT CARD (Melatonin vs Magnesium visual — light cards w/ contrasting eyebrows) */
+  .mvm-split{display:grid;grid-template-columns:1fr;gap:14px;margin:0 0 24px}
+  @media(min-width:760px){.mvm-split{grid-template-columns:1fr 1fr;gap:18px}}
+  .mvm-split__card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;position:relative}
+  .mvm-split__card--mag{border-color:var(--brand);box-shadow:0 4px 24px rgba(70,89,255,.10)}
+  .mvm-split__lbl{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:5px 10px;border-radius:999px;margin-bottom:18px;width:fit-content}
+  .mvm-split__card--mel .mvm-split__lbl{background:#f1f2f7;color:var(--muted)}
+  .mvm-split__card--mag .mvm-split__lbl{background:var(--brand-tint);color:var(--brand-deep)}
+  .mvm-split__lbl::before{content:"";width:6px;height:6px;border-radius:50%;display:inline-block}
+  .mvm-split__card--mel .mvm-split__lbl::before{background:var(--muted)}
+  .mvm-split__card--mag .mvm-split__lbl::before{background:var(--brand)}
+  .mvm-split__h{font-size:clamp(20px,2.8vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0 0 18px;color:var(--ink-deep)}
+  .mvm-split__card--mel .mvm-split__h{color:var(--ink-soft)}
+  .mvm-split__list{list-style:none;padding:0;margin:0;display:grid;gap:10px;flex:1}
+  .mvm-split__list li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;line-height:1.45;color:var(--ink);font-weight:500}
+  .mvm-split__list li svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
+  .mvm-split__card--mel li svg{color:var(--muted)}
+  .mvm-split__card--mag li svg{color:var(--brand)}
+  .mvm-split__card--mel li{color:var(--ink-soft)}
+  .mvm-split__card--mag li b{color:var(--ink-deep);font-weight:700}
+
+  /* STAT TRIO */
+  .mvm-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:600px){.mvm-stat-row{grid-template-columns:1fr;gap:8px}}
+  .mvm-stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px 18px;text-align:left}
+  .mvm-stat__lbl{font-size:13px;font-weight:700;color:var(--ink-deep);margin:0 0 10px;letter-spacing:-.005em;line-height:1.3}
+  .mvm-stat__num{font-size:clamp(36px,5vw,48px);font-weight:800;color:var(--brand);letter-spacing:-.035em;line-height:1;margin:0 0 8px;display:flex;align-items:baseline;gap:2px}
+  .mvm-stat__num sup,.mvm-stat__num small{font-size:.5em;color:var(--brand);font-weight:800;letter-spacing:-.02em}
+  .mvm-stat__sub{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.45}
+
+  /* 300+ FUNCTIONS BLOCK */
+  .mvm-fx{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:36px;overflow:hidden}
+  @media(min-width:880px){.mvm-fx{grid-template-columns:.9fr 1.1fr;gap:48px;padding:48px}}
+  .mvm-fx__media{background:var(--bg-soft);border-radius:12px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line-soft);position:relative}
+  .mvm-fx__media img{max-width:78%;max-height:78%;object-fit:contain;transform:rotate(-6deg)}
+  .mvm-fx__h{font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--ink-deep);margin:0 0 14px;letter-spacing:-.035em;line-height:1.05}
+  .mvm-fx__h em{font-style:normal;color:var(--brand)}
+  .mvm-fx__sub{font-size:15.5px;color:var(--ink-soft);margin:0 0 24px;line-height:1.55}
+  .mvm-fx__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:480px) and (max-width:879px){.mvm-fx__grid{grid-template-columns:repeat(3,1fr)}}
+  .mvm-fx__pill{display:flex;align-items:center;gap:10px;background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;color:var(--ink-deep);line-height:1.2}
+  .mvm-fx__pill svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+  .mvm-fx__note{font-size:11px;color:var(--muted);margin:14px 0 0;line-height:1.4}
+
+  /* COMPARISON TABLE */
+  .mvm-comp{background:#fff;border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);font-size:14px;margin-top:8px}
+  .mvm-comp table{width:100%;border-collapse:collapse;min-width:520px}
+  .mvm-comp th,.mvm-comp td{padding:14px 12px;text-align:center;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  .mvm-comp thead th{background:var(--ink-deep);color:#fff;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.14em}
+  .mvm-comp thead th:first-child{text-align:left}
+  .mvm-comp thead th.mag-col{background:var(--brand);color:#fff;font-size:13px;letter-spacing:.04em}
+  .mvm-comp tbody td:first-child{text-align:left;font-weight:600;color:var(--ink);background:var(--paper)}
+  .mvm-comp .yes{color:var(--brand-deep);font-weight:700}
+  .mvm-comp .no{color:var(--muted);font-weight:500}
+  .mvm-comp tbody td.mag-col{background:var(--brand-tint);font-weight:600;border-left:1px solid var(--brand);border-right:1px solid var(--brand)}
+  .mvm-comp tbody tr:last-child td.mag-col{border-bottom:1px solid var(--brand)}
+
+  /* BENEFITS GRID */
+  .mvm-bens{display:grid;grid-template-columns:repeat(1,1fr);gap:12px;margin-top:10px}
+  @media(min-width:600px){.mvm-bens{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:900px){.mvm-bens{grid-template-columns:repeat(3,1fr)}}
+  .mvm-ben{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px;text-align:left}
+  .mvm-ben__ico{width:42px;height:42px;border-radius:10px;background:var(--brand-tint);color:var(--brand-deep);display:flex;align-items:center;justify-content:center;margin:0 0 12px}
+  .mvm-ben__ico svg{width:24px;height:24px}
+  .mvm-ben__h{font-size:16px;font-weight:800;color:var(--ink-deep);margin:0 0 6px;letter-spacing:-.01em}
+  .mvm-ben__p{font-size:14px;color:var(--ink-soft);line-height:1.55;margin:0}
+
+  /* ABSORPTION STAT BLOCK */
+  .mvm-abs{background:#fff;border:1px solid var(--line);border-radius:12px;padding:32px;margin-top:8px}
+  .mvm-abs__grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
+  @media(min-width:760px){.mvm-abs__grid{grid-template-columns:1fr 1fr}}
+  .mvm-abs__num{font-size:clamp(56px,10vw,96px);font-weight:800;color:var(--brand);letter-spacing:-.04em;line-height:1;margin:0 0 6px}
+  .mvm-abs__num sup{font-size:.4em;color:var(--ink-soft);margin-left:2px}
+  .mvm-abs__lbl{font-size:14px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.12em;margin:0 0 6px}
+  .mvm-abs__p{font-size:15px;color:var(--ink-soft);line-height:1.6;margin:0}
+  .mvm-abs__bars{display:grid;gap:14px}
+  .mvm-abs__bar{display:grid;grid-template-columns:120px 1fr 50px;gap:10px;align-items:center;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .mvm-abs__bar-name{text-align:right}
+  .mvm-abs__bar-name b{display:block;color:var(--ink-deep);font-weight:700;font-size:13px}
+  .mvm-abs__bar-track{background:var(--line-soft);border-radius:999px;height:14px;overflow:hidden}
+  .mvm-abs__bar-fill{height:100%;background:var(--brand);border-radius:999px}
+  .mvm-abs__bar-fill--low{background:var(--muted)}
+  .mvm-abs__bar-fill--mid{background:var(--ink-soft)}
+  .mvm-abs__bar-pct{text-align:left;font-weight:800;color:var(--ink-deep)}
+
+  /* CLINICIAN REVIEW */
+  .mvm-clin{max-width:820px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:32px;position:relative}
+  .mvm-clin__badge{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;padding:6px 12px;border-radius:999px;margin-bottom:18px}
+  .mvm-clin__badge svg{width:14px;height:14px}
+  .mvm-clin__h{font-size:22px;font-weight:800;color:var(--ink-deep);margin:0 0 14px;letter-spacing:-.015em;line-height:1.25}
+  .mvm-clin__q{font-size:15.5px;color:var(--ink-soft);line-height:1.65;margin:0 0 14px;font-style:italic}
+  .mvm-clin__q b{color:var(--ink-deep);font-style:normal;font-weight:700}
+  .mvm-clin__tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
+  .mvm-clin__tag{font-size:11px;font-weight:700;color:var(--brand-deep);background:var(--brand-tint);padding:5px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+  .mvm-clin__attr{display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid var(--line)}
+  .mvm-clin__avatar{width:54px;height:54px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;letter-spacing:-.02em;flex:0 0 auto}
+  .mvm-clin__attr-meta{font-size:14px;line-height:1.3}
+  .mvm-clin__attr-meta b{display:block;color:var(--ink-deep);font-weight:800;font-size:15px}
+  .mvm-clin__attr-meta span{color:var(--ink-soft);font-size:13px}
+
+  /* BUYBOX */
+  .mvm-buy{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;max-width:560px;margin:0 auto;box-shadow:0 6px 30px rgba(70,89,255,.06)}
+  .mvm-buy__head{display:flex;gap:16px;align-items:center;margin:0 0 18px}
+  .mvm-buy__thumb{width:80px;height:80px;background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:10px;padding:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .mvm-buy__thumb img{max-width:100%;max-height:100%;object-fit:contain}
+  .mvm-buy__head-text h3{font-size:22px;font-weight:800;color:var(--ink-deep);margin:0 0 4px;letter-spacing:-.02em;line-height:1.15}
+  .mvm-buy__head-text p{font-size:13px;color:var(--ink-soft);margin:0;line-height:1.4}
+  .mvm-buy__stars{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);margin:0 0 18px}
+  .mvm-buy__sub-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.24em;color:var(--ink);margin:0 0 12px}
+  .mvm-opts{display:grid;gap:10px;margin:0 0 18px}
+  .mvm-opt{display:block;border:1.5px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;background:var(--paper);position:relative;transition:border-color .15s, background .15s}
+  .mvm-opt input{position:absolute;opacity:0;pointer-events:none}
+  .mvm-opt__top{display:flex;align-items:flex-start;gap:12px}
+  .mvm-opt__bullet{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#fff;margin-top:2px;transition:border-color .15s}
+  .mvm-opt__bullet::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform .15s}
+  .mvm-opt__main{flex:1;min-width:0}
+  .mvm-opt__name{font-size:15px;font-weight:800;color:var(--ink-deep);display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.25}
+  .mvm-opt__chip{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:2px}
+  .mvm-opt__chip--blue{background:var(--brand);color:#fff}
+  .mvm-opt__meta{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.4}
+  .mvm-opt__price{text-align:right;flex:0 0 auto;line-height:1.2;margin-left:8px}
+  .mvm-opt__price b{display:block;font-size:18px;font-weight:800;color:var(--ink-deep);letter-spacing:-.02em}
+  .mvm-opt__price s{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:3px}
+  .mvm-opt__save{display:block;font-size:11px;color:var(--brand-deep);font-weight:700;margin-top:2px}
+  .mvm-opt.is-on{border-color:var(--accent);background:var(--accent-tint)}
+  .mvm-opt.is-on .mvm-opt__bullet{border-color:var(--accent)}
+  .mvm-opt.is-on .mvm-opt__bullet::after{transform:scale(1)}
+  .mvm-buy__plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 18px;background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:6px}
+  .mvm-plan{position:relative;text-align:center;padding:12px 8px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-soft);transition:background .15s, color .15s}
+  .mvm-plan input{position:absolute;opacity:0;pointer-events:none}
+  .mvm-plan small{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;text-transform:none;letter-spacing:0}
+  .mvm-plan.is-on{background:#fff;color:var(--ink-deep);box-shadow:0 1px 6px rgba(8,13,36,.08)}
+  .mvm-plan.is-on small{color:var(--brand-deep)}
+  .mvm-buy__list{list-style:none;padding:0;margin:0 0 18px;background:var(--bg-soft);border-radius:8px;padding:14px 16px}
+  .mvm-buy__list li{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink);padding:5px 0;line-height:1.4}
+  .mvm-buy__list svg{width:16px;height:16px;color:var(--brand);flex:0 0 auto;margin-top:2px}
+  .mvm-buy__cta{display:flex;align-items:center;justify-content:center;width:100%;padding:16px 24px;background:var(--accent);color:#fff !important;font-weight:700;font-size:15px;letter-spacing:.01em;border-radius:4px;border:none;cursor:pointer;transition:background .2s;font-family:inherit}
+  .mvm-buy__cta:hover{background:var(--accent-hover)}
+  .mvm-buy__cta-sep{margin:0 8px;opacity:.7}
+  .mvm-buy__guarantee{font-size:12.5px;color:var(--ink-soft);text-align:center;margin:14px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;line-height:1.5}
+  .mvm-buy__guarantee svg{width:16px;height:16px;color:var(--brand);flex:0 0 auto}
+
+  /* STACK UPSELL */
+  .mvm-stack{display:grid;grid-template-columns:1fr;gap:24px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;margin-top:8px}
+  @media(min-width:760px){.mvm-stack{grid-template-columns:.8fr 1.2fr;padding:36px}}
+  .mvm-stack__img{background:var(--bg-soft);border-radius:10px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line-soft)}
+  .mvm-stack__img img{max-width:88%;max-height:88%;object-fit:contain}
+  .mvm-stack__chip{display:inline-flex;align-items:center;gap:8px;background:var(--accent-tint);color:var(--accent-deep);font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:14px}
+  .mvm-stack__h{font-size:clamp(22px,3vw,28px);font-weight:800;color:var(--ink-deep);margin:0 0 10px;letter-spacing:-.02em;line-height:1.2}
+  .mvm-stack__h em{font-style:normal;color:var(--brand)}
+  .mvm-stack__p{font-size:15.5px;color:var(--ink-soft);margin:0 0 18px;line-height:1.6}
+  .mvm-stack__bullets{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:8px}
+  .mvm-stack__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:var(--ink);line-height:1.45}
+  .mvm-stack__bullets li svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto;margin-top:2px}
+  .mvm-stack__cta{display:inline-flex;align-items:center;justify-content:center;padding:14px 24px;background:var(--brand);color:#fff !important;font-weight:700;font-size:14.5px;border-radius:2px}
+  .mvm-stack__cta:hover{background:var(--brand-hover)}
+  .mvm-stack__cta:after{content:" →";margin-left:10px}
+
+  /* REVIEWS */
+  .mvm-quotes{display:grid;grid-template-columns:1fr;gap:14px;margin-top:8px}
+  @media(min-width:720px){.mvm-quotes{grid-template-columns:repeat(3,1fr)}}
+  .mvm-quote{background:#fff;border-radius:10px;padding:22px;border:1px solid var(--line);display:flex;flex-direction:column}
+  .mvm-quote__stars{color:var(--accent);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+  .mvm-quote__txt{font-size:14.5px;color:var(--ink);line-height:1.6;margin:0 0 14px}
+  .mvm-quote__name{font-size:13px;font-weight:700;color:var(--ink-deep)}
+  .mvm-quote__verif{font-size:11px;color:var(--brand-deep);font-weight:700;display:flex;align-items:center;gap:4px;margin-top:2px}
+  .mvm-quote__verif svg{width:11px;height:11px}
+
+  /* FAQ */
+  .mvm-faq{display:grid;gap:10px}
+  .mvm-faq details{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+  .mvm-faq summary{font-weight:700;color:var(--ink-deep);font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .mvm-faq summary::-webkit-details-marker{display:none}
+  .mvm-faq summary:after{content:"+";font-size:22px;font-weight:300;color:var(--brand);line-height:1}
+  .mvm-faq details[open] summary:after{content:"−"}
+  .mvm-faq__a{font-size:14.5px;color:var(--ink-soft);line-height:1.65;margin:12px 0 0}
+
+  /* GUARANTEE */
+  .mvm-guar{background:var(--brand-tint);border-radius:12px;padding:30px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;border:1px solid var(--line)}
+  .mvm-guar__seal{width:96px;height:96px;border-radius:50%;background:#fff;border:2px solid var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;text-align:center}
+  .mvm-guar__seal big{font-size:28px;font-weight:800;color:var(--brand-deep);line-height:1}
+  .mvm-guar__seal span{font-size:10px;font-weight:700;color:var(--brand-deep);text-transform:uppercase;letter-spacing:.16em;margin-top:2px}
+  .mvm-guar__txt{flex:1;min-width:240px}
+  .mvm-guar__txt h3{font-size:22px;font-weight:800;color:var(--ink-deep);margin:0 0 8px;letter-spacing:-.02em}
+  .mvm-guar__txt p{font-size:14px;color:var(--ink-soft);margin:0;line-height:1.6}
+
+  /* FINAL CTA */
+  .mvm-final{text-align:center;padding:88px 0}
+  @media(max-width:760px){.mvm-final{padding:64px 0}}
+  .mvm-final h2{font-size:clamp(28px,5vw,44px);margin:0 0 22px;letter-spacing:-.035em;line-height:1.05;color:#fff;font-weight:800}
+  .mvm-final h2 em{font-style:normal;color:var(--accent)}
+  .mvm-final p{color:rgba(255,255,255,.82);margin:0 auto 36px;font-size:16px;line-height:1.6;max-width:620px}
+  .mvm-final__cta{display:inline-flex;align-items:center;justify-content:center;padding:18px 36px;background:var(--accent);color:#fff !important;font-weight:700;font-size:15px;border-radius:2px}
+  .mvm-final__cta:hover{background:var(--accent-hover)}
+  .mvm-final__cta:after{content:" →";margin-left:10px}
+  .mvm-final__fine{margin-top:28px;font-size:12px;color:rgba(255,255,255,.6)}
+
+  /* STICKY MOBILE */
+  .mvm-sticky{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid var(--line);padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 -4px 18px rgba(8,13,36,.10);transform:translateY(140%);transition:transform .25s ease}
+  .mvm-sticky.is-on{transform:translateY(0)}
+  .mvm-sticky__price{font-weight:800;color:var(--ink-deep);font-size:17px;line-height:1.1;white-space:nowrap;letter-spacing:-.02em}
+  .mvm-sticky__price small{display:block;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .mvm-sticky__form{flex:1}
+  .mvm-sticky__btn{width:100%;padding:14px 14px;background:var(--accent);color:#fff !important;font-weight:700;font-size:14px;border-radius:2px;border:none;cursor:pointer;font-family:inherit}
+  .mvm-sticky__btn:after{content:" →";margin-left:6px}
+  @media(min-width:880px){.mvm-sticky{display:none}}
+
+  /* DISCLAIMER */
+  .mvm-disclaim{background:var(--bg-soft);border-top:1px solid var(--line-soft);padding:22px 0;font-size:11px;line-height:1.55;color:var(--muted)}
+  .mvm-disclaim .wrap{max-width:820px}
+  .mvm-disclaim p{margin:0 0 8px}
+  .mvm-disclaim p:last-child{margin-bottom:0}
+</style>
+
+<div class="mvm">
+
+  <!-- TOP BAR -->
+  <div class="mvm-bar">
+    <div class="mvm-bar__row">
+      <span class="mvm-bar__lead">The real reason you're not sleeping · <em>Free shipping on every order</em></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="mvm-hero">
+    <div class="wrap mvm-hero__grid">
+      <div>
+        <span class="mvm-hero__eyebrow">Ditch the melatonin</span>
+        <h1>Stop forcing sleep with melatonin. <em>Fix the deficiency</em> instead.</h1>
+        <p class="mvm-hero__sub">Melatonin doesn't address why you can't fall asleep. <b>Magnesium does.</b> It's the mineral your nervous system needs to wind down, the one most of us don't get enough of, and the one your body actually uses to make melatonin on its own.</p>
+
+        <ul class="mvm-hero__bullets">
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Up to 8x more absorbable</strong> than standard magnesium</span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Calms the nervous system at the root</strong>. No grogginess, no vivid dreams, no tolerance.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Better sleep, calmer mornings, eased muscle tension, steadier mood</strong>. One mineral does it all.</span></li>
+        </ul>
+
+        <a href="#buy" class="mvm-hero__cta">See the Magnesium Difference</a>
+        <div class="mvm-hero__guarantee">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4zm-1 14l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></svg>
+          30-day money-back guarantee · Cancel anytime · Ships free
+        </div>
+      </div>
+
+      <div class="mvm-hero__media">
+        <div class="mvm-hero__card">
+          <div class="mvm-hero__badge"><big>8x</big><span>Absorbable</span></div>
+          <img src="{{ hero_img }}" alt="Magnesium Glycinate 8x absorbable" loading="eager">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 USPs (replaces former trust strip) -->
+  <div class="mvm-usp">
+    <div class="wrap mvm-usp__row">
+      <div class="mvm-usp__cell">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7zM7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg>
+        <span>Free shipping on orders $50+</span>
+      </div>
+      <div class="mvm-usp__cell">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5c0-1 1-2 3-2s3 1 3 2-1 1.6-3 2-3 1-3 2 1 2 3 2 3-1 3-2"/></svg>
+        <span>30 day money-back guarantee</span>
+      </div>
+      <div class="mvm-usp__cell">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 2 3-0.5L19 7l3 1-1 3 1 3-3 1-1 3-3-0.5-3 2-3-2-3 0.5L4 17l-3-1 1-3-1-3 3-1 1-3 3 0.5z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span>HSA/FSA Eligible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMBINED: THE STORY (Melatonin sedates / Magnesium settles + stat trio) -->
+  <section class="mvm-sec mvm-sec--soft">
+    <div class="wrap">
+      <div class="center" style="max-width:720px;margin:0 auto 28px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">The magnesium story</span>
+        <h2 class="mvm-sec__title">Melatonin sedates. <em>Magnesium settles.</em></h2>
+        <p class="mvm-sec__sub">You can't sleep because your nervous system never came down. Magnesium is the off switch your body's been missing.</p>
+      </div>
+
+      <div class="mvm-split">
+        <div class="mvm-split__card mvm-split__card--mel">
+          <span class="mvm-split__lbl">Melatonin Gummy</span>
+          <h3 class="mvm-split__h">Forces sleep on a wired body.</h3>
+          <ul class="mvm-split__list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg><span>Sedates, but never calms the nervous system underneath</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg><span>Morning grogginess and 6am hormone hangover</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg><span>Vivid, exhausting dreams that disrupt REM</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg><span>Tolerance creeps. The dose climbs. The sleep doesn't.</span></li>
+          </ul>
+        </div>
+        <div class="mvm-split__card mvm-split__card--mag">
+          <span class="mvm-split__lbl">Magnesium Glycinate</span>
+          <h3 class="mvm-split__h">Calms the body, then sleep follows.</h3>
+          <ul class="mvm-split__list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Relaxes the nervous system</b> through the calming GABA pathway</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Loosens muscles</b> that have been clenched since 8am</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Supports your own melatonin</b> production, on your own schedule</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Works better the longer you take it,</b> not worse</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mvm-stat-row">
+        <div class="mvm-stat">
+          <p class="mvm-stat__lbl">More absorbable than the standard form</p>
+          <div class="mvm-stat__num">8<small>x</small></div>
+          <p class="mvm-stat__sub">Chelamax chelated magnesium plus Capsoil liposomal delivery. Two absorption systems in one capsule.</p>
+        </div>
+        <div class="mvm-stat">
+          <p class="mvm-stat__lbl">Bioavailable magnesium delivered</p>
+          <div class="mvm-stat__num">64<small>%</small></div>
+          <p class="mvm-stat__sub">vs 8% for the magnesium oxide on most drugstore shelves. Measured in the SHIME in-vitro digestion model.</p>
+        </div>
+        <div class="mvm-stat">
+          <p class="mvm-stat__lbl">Of US adults don't get enough magnesium</p>
+          <div class="mvm-stat__num">50<small>%</small></div>
+          <p class="mvm-stat__sub">Modern diets, stress, caffeine, and depleted soil all drain magnesium faster than we replace it. The deficiency is hiding in plain sight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 300+ BODILY FUNCTIONS -->
+  <section class="mvm-sec">
+    <div class="wrap">
+      <div class="mvm-fx">
+        <div class="mvm-fx__media">
+          <img src="{{ hero_img }}" alt="Magnesium Glycinate" loading="lazy">
+        </div>
+        <div>
+          <h2 class="mvm-fx__h">Supports <em>300+</em> essential bodily functions.</h2>
+          <p class="mvm-fx__sub">Magnesium isn't a single-trick supplement. It's a foundational mineral your body uses everywhere. Restore it and the change shows up across the board.</p>
+          <div class="mvm-fx__grid">
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>Sleep<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>Recovery<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 11h5v2h-7V6h2v7z"/></svg>Stress resilience<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-7 8-13a8 8 0 10-16 0c0 6 8 13 8 13z"/></svg>Mood<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-7-11a5 5 0 019-3 5 5 0 019 3c0 6.5-7 11-7 11z"/></svg>Heart health<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z"/></svg>Brain health<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14v2H5V3zm0 4h14v14H5V7zm2 2v10h10V9H7z"/></svg>Bone strength<sup>*</sup></div>
+            <div class="mvm-fx__pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Muscle relaxation<sup>*</sup></div>
+          </div>
+          <p class="mvm-fx__note"><sup>*</sup>vs traditional magnesium oxide preparations</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="mvm-sec">
+    <div class="wrap">
+      <div class="center" style="max-width:680px;margin:0 auto 24px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Side by side</span>
+        <h2 class="mvm-sec__title">Magnesium fixes. <em>Melatonin masks.</em></h2>
+      </div>
+      <div class="mvm-comp">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Melatonin Gummy</th>
+              <th class="mag-col">Magnesium Glycinate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Calms the nervous system</td><td class="no">No</td><td class="mag-col yes">Yes</td></tr>
+            <tr><td>Relaxes tight muscles</td><td class="no">No</td><td class="mag-col yes">Yes</td></tr>
+            <tr><td>Supports natural melatonin production</td><td class="no">Suppresses it over time</td><td class="mag-col yes">Yes, it's a cofactor</td></tr>
+            <tr><td>Morning grogginess</td><td class="no">Common</td><td class="mag-col yes">None</td></tr>
+            <tr><td>Tolerance builds with use</td><td class="no">Yes</td><td class="mag-col yes">No</td></tr>
+            <tr><td>Works on calm, focus, and mood too</td><td class="no">No</td><td class="mag-col yes">Yes</td></tr>
+            <tr><td>Addresses the root cause</td><td class="no">No</td><td class="mag-col yes">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS (moved up — social proof before buybox) -->
+  <section class="mvm-sec">
+    <div class="wrap">
+      <div class="center" style="max-width:680px;margin:0 auto 24px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Real reviews</span>
+        <h2 class="mvm-sec__title">From people who stopped reaching for melatonin.</h2>
+      </div>
+      <div class="mvm-quotes">
+        <div class="mvm-quote">
+          <div class="mvm-quote__stars">★★★★★</div>
+          <p class="mvm-quote__txt">"I was a nightly melatonin user for years. Switched to this and within a week I was falling asleep faster and waking up without the gummy hangover."</p>
+          <div class="mvm-quote__name">Lauren K.</div>
+          <div class="mvm-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="mvm-quote">
+          <div class="mvm-quote__stars">★★★★★</div>
+          <p class="mvm-quote__txt">"Tried magnesium before from the drugstore and felt nothing. This one is different. My calves stopped cramping at night and I just feel calmer."</p>
+          <div class="mvm-quote__name">James T.</div>
+          <div class="mvm-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+        <div class="mvm-quote">
+          <div class="mvm-quote__stars">★★★★★</div>
+          <p class="mvm-quote__txt">"Took a week to notice but now my Oura sleep scores are consistently 10 to 15 points higher. No grogginess, no weird dreams, just rest."</p>
+          <div class="mvm-quote__name">Priya S.</div>
+          <div class="mvm-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUYBOX -->
+  <section class="mvm-sec mvm-sec--blue" id="buy">
+    <div class="wrap">
+      <div class="center" style="max-width:640px;margin:0 auto 28px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Get yours</span>
+        <h2 class="mvm-sec__title">Try the magnesium that <em>actually absorbs</em>.</h2>
+        <p class="mvm-sec__sub">Most people feel the difference in the first week. If you don't, get every dollar back.</p>
+      </div>
+
+      <div class="mvm-buy" data-buybox>
+        <div class="mvm-buy__head">
+          <div class="mvm-buy__thumb"><img src="{{ hero_img }}" alt="Magnesium Glycinate" loading="lazy"></div>
+          <div class="mvm-buy__head-text">
+            <h3>Magnesium Glycinate</h3>
+            <p>120mg elemental magnesium · 60 servings · Chelamax + Capsoil</p>
+          </div>
+        </div>
+        <div class="mvm-buy__stars"><span class="mvm-stars5"></span><span>{{ rating }} stars · {{ review_count }} reviews</span></div>
+
+        <form action="/cart/add" method="post" data-buyform>
+          <input type="hidden" name="id" value="{{ variant_1 }}" data-variant-id>
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ sub_plan }}" data-selling-plan>
+          <input type="hidden" name="return_to" value="/checkout">
+
+          <p class="mvm-buy__sub-lbl">1. Choose your size</p>
+          <div class="mvm-opts">
+            <label class="mvm-opt" data-size-row="1">
+              <input type="radio" name="size" value="1">
+              <span class="mvm-opt__top">
+                <span class="mvm-opt__bullet"></span>
+                <span class="mvm-opt__main">
+                  <span class="mvm-opt__name">1 Bottle</span>
+                  <span class="mvm-opt__meta">30-day supply</span>
+                </span>
+                <span class="mvm-opt__price"><b data-price-1>{{ price_1_sub }}</b><s data-was-1>{{ price_1_was }}</s></span>
+              </span>
+            </label>
+            <label class="mvm-opt" data-size-row="2">
+              <input type="radio" name="size" value="2">
+              <span class="mvm-opt__top">
+                <span class="mvm-opt__bullet"></span>
+                <span class="mvm-opt__main">
+                  <span class="mvm-opt__name">2 Bottles</span>
+                  <span class="mvm-opt__meta">60-day supply</span>
+                </span>
+                <span class="mvm-opt__price"><b data-price-2>{{ price_2_sub }}</b><s data-was-2>{{ price_2_was }}</s></span>
+              </span>
+            </label>
+            <label class="mvm-opt is-on" data-size-row="3">
+              <input type="radio" name="size" value="3" checked>
+              <span class="mvm-opt__top">
+                <span class="mvm-opt__bullet"></span>
+                <span class="mvm-opt__main">
+                  <span class="mvm-opt__name">3 Bottles <span class="mvm-opt__chip">Most Popular</span></span>
+                  <span class="mvm-opt__meta">90-day supply · 20% off</span>
+                </span>
+                <span class="mvm-opt__price"><b data-price-3>{{ price_3_sub }}</b><s data-was-3>{{ price_3_was }}</s></span>
+              </span>
+            </label>
+          </div>
+
+          <p class="mvm-buy__sub-lbl">2. Choose your plan</p>
+          <div class="mvm-buy__plans">
+            <label class="mvm-plan is-on" data-plan-row="sub">
+              <input type="radio" name="plan" value="sub" checked>
+              Subscribe · Save 20%
+              <small>Delivered monthly · Cancel anytime</small>
+            </label>
+            <label class="mvm-plan" data-plan-row="ot">
+              <input type="radio" name="plan" value="ot">
+              One-time
+              <small>No commitment</small>
+            </label>
+          </div>
+
+          <ul class="mvm-buy__list">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>20% off every order, locked in</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Free shipping every time</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Pause, skip, or cancel from your account</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>30-day money-back guarantee</li>
+          </ul>
+
+          <button type="submit" class="mvm-buy__cta" data-cta>
+            <span data-cta-label>Try Magnesium Glycinate</span>
+            <span class="mvm-buy__cta-sep">·</span>
+            <span data-cta-price>{{ price_3_sub }}</span>
+          </button>
+
+          <p class="mvm-buy__guarantee">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4z"/></svg>
+            30-day money-back guarantee. Free shipping.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUNDLE UPSELL -->
+  <section class="mvm-sec">
+    <div class="wrap">
+      <div class="center" style="max-width:680px;margin:0 auto 24px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Sleep + Magnesium Stack</span>
+        <h2 class="mvm-sec__title">Want to <em>fully unplug</em> at night?</h2>
+        <p class="mvm-sec__sub">Pair Magnesium Glycinate with our Sleep formula. Magnesium handles the nervous system. Sleep handles the wind-down ritual. Together they replace every gummy in your nightstand.</p>
+      </div>
+      <div class="mvm-stack">
+        <div class="mvm-stack__img">
+          <img src="{{ bundle_img }}" alt="Sleep + Magnesium Stack" loading="lazy">
+        </div>
+        <div>
+          <span class="mvm-stack__chip">Bundle · Save more</span>
+          <h3 class="mvm-stack__h">The <em>Sleep + Magnesium Stack</em>.</h3>
+          <p class="mvm-stack__p">For people who want the full root-cause approach. Calm the nervous system, support natural melatonin production, and ease into deeper sleep without the morning fog.</p>
+          <ul class="mvm-stack__bullets">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Two products, one routine.</b> Take 30 minutes before bed.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>No melatonin overload.</b> Supports your body's own rhythm.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><b>Bundle savings</b> vs buying separately.</span></li>
+          </ul>
+          <a href="{{ bundle_url }}" class="mvm-stack__cta">See the Stack</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLINICIAN REVIEW (moved down — MD trust stamp after buybox/bundle) -->
+  <section class="mvm-sec mvm-sec--soft">
+    <div class="wrap">
+      <div class="center" style="max-width:600px;margin:0 auto 24px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Clinician reviewed</span>
+        <h2 class="mvm-sec__title">A second opinion from a real MD.</h2>
+      </div>
+      <div class="mvm-clin">
+        <span class="mvm-clin__badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>Independent review</span>
+        <h3 class="mvm-clin__h">"Eases post-activity tension and muscle fatigue."</h3>
+        <p class="mvm-clin__q">"This formula from Absorption Company can be a great tool for active patients wanting to relieve tension in the muscles after exercise. Magnesium is crucial for energy, nerve function, and muscle relaxation, so it can be especially beneficial for anyone who feels tight after exercise.</p>
+        <p class="mvm-clin__q">This formula is interesting because it can assist with recovery at the cellular level. <b>It helps manage how calcium binds to proteins in the muscle fibers.</b> When there is excess calcium, muscles can stay tight, but magnesium can help them relax.</p>
+        <p class="mvm-clin__q">Research shows that maintaining healthy magnesium levels can reduce soreness and speed up recovery. With regular use, it supports patients with relaxing muscles and better overnight recovery."<sup>†</sup></p>
+        <div class="mvm-clin__tags">
+          <span class="mvm-clin__tag">Muscle ease</span>
+          <span class="mvm-clin__tag">Active recovery</span>
+          <span class="mvm-clin__tag">Night support</span>
+        </div>
+        <div class="mvm-clin__attr">
+          <div class="mvm-clin__avatar">SF</div>
+          <div class="mvm-clin__attr-meta">
+            <b>Dr. Samuel Feng, MD</b>
+            <span>Independent clinical reviewer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mvm-sec mvm-sec--blue">
+    <div class="wrap-narrow">
+      <div class="center" style="max-width:600px;margin:0 auto 28px">
+        <span class="mvm-sec__eyebrow" style="justify-content:center">Questions</span>
+        <h2 class="mvm-sec__title">What to know <em>before you switch</em>.</h2>
+      </div>
+      <div class="mvm-faq">
+        <details>
+          <summary>Can I take this with the melatonin I already have?</summary>
+          <p class="mvm-faq__a">Yes, but most people don't need to. Once magnesium addresses the wind-down piece, melatonin starts feeling unnecessary. Many customers taper off within the first two weeks.</p>
+        </details>
+        <details>
+          <summary>How fast will I feel a difference?</summary>
+          <p class="mvm-faq__a">Some people feel calmer the first night. Most notice a real shift in sleep quality and morning energy in the first 7 to 14 days. The full nervous-system effect builds over a month of consistent use.</p>
+        </details>
+        <details>
+          <summary>What makes this different from drugstore magnesium?</summary>
+          <p class="mvm-faq__a">Two things. Form and absorption. We use magnesium glycinate, the gentlest, most bioavailable form, delivered through Chelamax chelation and Capsoil liposomal technology. The result is up to 8x more absorbed than standard magnesium and 267% more than competing glycinate brands.</p>
+        </details>
+        <details>
+          <summary>Will it cause any stomach issues?</summary>
+          <p class="mvm-faq__a">Glycinate is the form chosen specifically for gentleness. Unlike magnesium citrate or oxide, it doesn't act as a laxative. No bloating, no urgency, no surprise bathroom trips.</p>
+        </details>
+        <details>
+          <summary>When should I take it?</summary>
+          <p class="mvm-faq__a">Two capsules, 30 to 60 minutes before bed. Some people split the dose, one with dinner and one before sleep, for steadier all-day calm.</p>
+        </details>
+        <details>
+          <summary>What if it doesn't work for me?</summary>
+          <p class="mvm-faq__a">30-day money-back guarantee. Email our team and we refund your order, no friction.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="mvm-sec--ink">
+    <div class="mvm-final wrap-narrow">
+      <h2>Stop fighting your nervous system. <em>Feed it.</em></h2>
+      <p>The fix for bad sleep isn't another hormone gummy. It's the mineral your body is missing. Try it for 30 nights and feel the difference.</p>
+      <a href="#buy" class="mvm-final__cta">Get Magnesium Glycinate</a>
+      <p class="mvm-final__fine">30-day money-back guarantee · Free shipping · Cancel anytime</p>
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <div class="mvm-disclaim">
+    <div class="wrap">
+      <p><sup>†</sup>This statement is a clinician's independent professional opinion. Individual results vary.</p>
+      <p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Always consult your physician before starting a new supplement, especially if you take prescription medication.</p>
+    </div>
+  </div>
+
+  <!-- STICKY MOBILE ATC -->
+  <div class="mvm-sticky" id="mvmSticky">
+    <div class="mvm-sticky__price">
+      <span data-sticky-price>{{ price_3_sub }}</span>
+      <small data-sticky-label>Subscribe · Save 20%</small>
+    </div>
+    <form action="/cart/add" method="post" class="mvm-sticky__form">
+      <input type="hidden" name="id" value="{{ variant_3 }}" data-sticky-variant>
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="selling_plan" value="{{ sub_plan }}" data-sticky-plan>
+      <input type="hidden" name="return_to" value="/checkout">
+      <button type="submit" class="mvm-sticky__btn">Try it</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.mvm');
+  if(!root) return;
+  var form = root.querySelector('[data-buyform]');
+  if(!form) return;
+
+  var subPlanId = {{ sub_plan | json }};
+  var variants  = {
+    '1': {{ variant_1 | json }},
+    '2': {{ variant_2 | json }},
+    '3': {{ variant_3 | json }}
+  };
+  var prices = {
+    '1': { sub: {{ price_1_sub | json }}, ot: {{ price_1_ot | json }} },
+    '2': { sub: {{ price_2_sub | json }}, ot: {{ price_2_ot | json }} },
+    '3': { sub: {{ price_3_sub | json }}, ot: {{ price_3_ot | json }} }
+  };
+
+  var variantInput = form.querySelector('[data-variant-id]');
+  var planInput    = form.querySelector('[data-selling-plan]');
+  var ctaPrice     = form.querySelector('[data-cta-price]');
+
+  var stickyPrice  = document.querySelector('[data-sticky-price]');
+  var stickyLabel  = document.querySelector('[data-sticky-label]');
+  var stickyVar    = document.querySelector('[data-sticky-variant]');
+  var stickyPlan   = document.querySelector('[data-sticky-plan]');
+
+  function sync(){
+    var sizeEl = form.querySelector('input[name="size"]:checked');
+    var planEl = form.querySelector('input[name="plan"]:checked');
+    var size = sizeEl ? sizeEl.value : '3';
+    var plan = planEl ? planEl.value : 'sub';
+    variantInput.value = variants[size];
+    planInput.value    = plan === 'sub' ? subPlanId : '';
+    var price = plan === 'sub' ? prices[size].sub : prices[size].ot;
+    ctaPrice.textContent = price;
+
+    // Update active visuals
+    form.querySelectorAll('.mvm-opt').forEach(function(el){
+      var input = el.querySelector('input[name="size"]');
+      el.classList.toggle('is-on', input && input.checked);
+    });
+    form.querySelectorAll('.mvm-plan').forEach(function(el){
+      var input = el.querySelector('input[name="plan"]');
+      el.classList.toggle('is-on', input && input.checked);
+    });
+
+    // Sticky mirror
+    if(stickyPrice){ stickyPrice.textContent = price; }
+    if(stickyLabel){ stickyLabel.textContent = plan === 'sub' ? 'Subscribe · Save 20%' : 'One-time'; }
+    if(stickyVar){ stickyVar.value = variants[size]; }
+    if(stickyPlan){ stickyPlan.value = plan === 'sub' ? subPlanId : ''; }
+  }
+  form.addEventListener('change', sync);
+  sync();
+})();
+
+(function(){
+  var sticky = document.getElementById('mvmSticky');
+  var buy = document.querySelector('[data-buybox]');
+  if(!sticky || !buy) return;
+  function onScroll(){
+    if(window.innerWidth >= 880){ sticky.classList.remove('is-on'); return; }
+    var y = window.scrollY || window.pageYOffset;
+    var buyTop = buy.getBoundingClientRect().top + window.scrollY;
+    if(y > 500 && y < buyTop - 200){ sticky.classList.add('is-on'); }
+    else { sticky.classList.remove('is-on'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+// Direct-to-checkout: POST /cart/add.js then redirect.
+(function(){
+  var root = document.querySelector('.mvm');
+  if(!root) return;
+  root.addEventListener('submit', function(e){
+    var form = e.target;
+    if(!form || form.tagName !== 'FORM') return;
+    if((form.getAttribute('action') || '') !== '/cart/add') return;
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    if(btn){ btn.disabled = true; var orig = btn.innerHTML; btn.innerHTML = 'Adding...'; setTimeout(function(){ if(btn){ btn.innerHTML = orig; btn.disabled = false; } }, 4000); }
+    var fd = new FormData(form);
+    // Strip empty selling_plan so one-time goes through cleanly
+    if(!fd.get('selling_plan')){ fd.delete('selling_plan'); }
+    fetch('/cart/add.js', { method:'POST', body: fd, headers: { 'Accept': 'application/json' } })
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(){ window.location.href = '/checkout'; })
+      .catch(function(){ form.submit(); });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Lander · Mag vs Melatonin",
+  "settings": [
+    { "type": "header", "content": "Product / Variants" },
+    { "type": "text", "id": "variant_1", "label": "1 Bottle variant ID", "default": "52439421976865" },
+    { "type": "text", "id": "variant_2", "label": "2 Bottle variant ID", "default": "52439422009633" },
+    { "type": "text", "id": "variant_3", "label": "3 Bottle variant ID", "default": "52439422042401" },
+    { "type": "text", "id": "sub_plan",  "label": "Skio selling plan ID", "default": "691154485537" },
+
+    { "type": "header", "content": "Pricing — 1 Bottle" },
+    { "type": "text", "id": "price_1_sub", "label": "1B subscribe price", "default": "$22.40" },
+    { "type": "text", "id": "price_1_ot",  "label": "1B one-time price",  "default": "$28.00" },
+    { "type": "text", "id": "price_1_was", "label": "1B was price",       "default": "$28.00" },
+
+    { "type": "header", "content": "Pricing — 2 Bottles" },
+    { "type": "text", "id": "price_2_sub", "label": "2B subscribe price", "default": "$44.80" },
+    { "type": "text", "id": "price_2_ot",  "label": "2B one-time price",  "default": "$56.00" },
+    { "type": "text", "id": "price_2_was", "label": "2B was price",       "default": "$56.00" },
+
+    { "type": "header", "content": "Pricing — 3 Bottles" },
+    { "type": "text", "id": "price_3_sub", "label": "3B subscribe price", "default": "$67.20" },
+    { "type": "text", "id": "price_3_ot",  "label": "3B one-time price",  "default": "$84.00" },
+    { "type": "text", "id": "price_3_was", "label": "3B was price",       "default": "$84.00" },
+
+    { "type": "header", "content": "Media" },
+    { "type": "text", "id": "hero_img",   "label": "Product image URL" },
+    { "type": "text", "id": "bundle_img", "label": "Bundle image URL" },
+    { "type": "text", "id": "bundle_url", "label": "Bundle product URL", "default": "/products/magnesium-sleep-bundle" },
+
+    { "type": "header", "content": "Social proof" },
+    { "type": "text", "id": "rating",       "label": "Star rating",   "default": "4.7" },
+    { "type": "text", "id": "review_count", "label": "Review count",  "default": "2,400+" }
+  ],
+  "presets": [{ "name": "Lander · Mag vs Melatonin" }]
+}
+{% endschema %}
