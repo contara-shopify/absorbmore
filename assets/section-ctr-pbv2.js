@@ -259,7 +259,8 @@
               flavor: f,
               format: format,
               cartItems: [],
-              threshold: INVENTORY_SETTINGS.threshold
+              threshold: INVENTORY_SETTINGS.threshold,
+              inventorySettings: INVENTORY_SETTINGS
             });
             return state.available ? f : firstAvailable;
           }
@@ -446,7 +447,8 @@
               flavor: f,
               format: this.selectedFormat,
               cartItems: this.getCartItems ? this.getCartItems() : [],
-              threshold: INVENTORY_SETTINGS.threshold
+              threshold: INVENTORY_SETTINGS.threshold,
+              inventorySettings: INVENTORY_SETTINGS
             });
             return state.available ? f : firstAvailable;
           }
