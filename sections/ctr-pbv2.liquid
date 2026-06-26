@@ -156,6 +156,7 @@
     "raspberry": "{{ section.settings.swatch_raspberry | default: '#C0392B' }}"
   },
   "inventorySettings": {
+    "mode": {{ section.settings.inventory_badge_mode | default: 'automatic' | json }},
     "enableLowStock": {{ section.settings.low_stock_enable | default: false }},
     "enableSoldOutBadges": {{ section.settings.sold_out_badge_enable | default: false }},
     "threshold": {{ section.settings.low_stock_threshold | default: 10 }},
@@ -163,6 +164,14 @@
     "galleryBadgeText": {{ section.settings.low_stock_gallery_text | default: 'Low Stock - Few Left' | json }},
     "soldOutPillText": {{ section.settings.sold_out_pill_text | default: 'Sold Out' | json }},
     "enableGalleryBadge": {{ section.settings.low_stock_show_gallery_badge | default: false }},
+    "manualLowStockFlavors": [
+      {%- assign manual_low_list = section.settings.manual_low_stock_flavors | default: '' | split: ',' -%}
+      {%- for f in manual_low_list -%}{{ f | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+    ],
+    "manualSoldOutFlavors": [
+      {%- assign manual_sold_list = section.settings.manual_sold_out_flavors | default: '' | split: ',' -%}
+      {%- for f in manual_sold_list -%}{{ f | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+    ],
     "testForceLowStock": {{ section.settings.badge_test_force_low_stock | default: false }},
     "testForceSoldOut": {{ section.settings.badge_test_force_sold_out | default: false }}
   }
@@ -1057,6 +1066,12 @@
     { "type": "text", "id": "swatch_mango", "label": "Mango swatch color", "default": "#F5A623" },
     { "type": "text", "id": "swatch_raspberry", "label": "Raspberry swatch color", "default": "#C0392B" },
     { "type": "header", "content": "Inventory badges" },
+    { "type": "select", "id": "inventory_badge_mode", "label": "Badge mode", "options": [
+      { "value": "automatic", "label": "Automatic (based on inventory)" },
+      { "value": "manual", "label": "Manual (choose flavors)" }
+    ], "default": "automatic", "info": "Automatic uses real Shopify inventory levels. Manual lets you pick exactly which flavors show badges, regardless of stock." },
+    { "type": "text", "id": "manual_low_stock_flavors", "label": "Manual: Low stock flavors", "info": "Manual mode only. Comma-separated flavor names (e.g. Raspberry, Mango). Case-insensitive." },
+    { "type": "text", "id": "manual_sold_out_flavors", "label": "Manual: Sold out flavors", "info": "Manual mode only. Comma-separated flavor names. These flavors are also disabled for purchase." },
     { "type": "checkbox", "id": "low_stock_enable", "label": "Enable low quantity badges", "default": false },
     { "type": "range", "id": "low_stock_threshold", "label": "Low stock threshold", "min": 1, "max": 50, "step": 1, "default": 10 },
     { "type": "text", "id": "low_stock_pill_text", "label": "Low quantity pill text", "default": "Low Stock" },
