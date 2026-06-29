@@ -381,5 +381,10 @@
     document.addEventListener('ctr-inventory:refresh', function () {
       updatePillBadges();
     });
+    if (window.theme_settings?.ctr_inventory_barba_fix === true) {
+      document.addEventListener('pageFullyLoaded', function () {
+        requestAnimationFrame(function () { init(0); });
+      });
+    }
   });
 })();

@@ -33,23 +33,25 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       _stores?.router?.pathname ?? ""
     );
 
-  let product = _products[productHandle] ?? _product.getHtmlProduct(productHandle);
+  const ctrInventoryBarbaFix = window.theme_settings?.ctr_inventory_barba_fix === true;
+
+  let product;
+  if (ctrInventoryBarbaFix) {
+    const htmlProduct = productHandle ? _product.getHtmlProduct(productHandle) : null;
+    product = htmlProduct ?? _products[productHandle];
+  } else {
+    product = _products[productHandle] ?? _product.getHtmlProduct(productHandle);
+  }
 
   if (!product && productHandle) {
     _product.getProductData(productHandle, productId, isPrimary ? "high" : "auto").then((res) => {
-      updateProductState(res, variantId);
+      if (res && (!ctrInventoryBarbaFix || document.contains($el))) {
+        updateProductState(res, variantId);
+      }
     });
   }
 
   product ??= _products[productHandle];
-
-  if (product && !product._full_data) {
-    _product.getHydratedProductData(productHandle, productId).then((res) => {
-      if (state.product?.handle === res.handle) {
-        state.product = res;
-      }
-    });
-  }
 
   if (isPrimary && product) {
     product.selected_variant_id = +(new URL(window.location.href).searchParams.get("variant") || variantId);
@@ -896,6 +898,19 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       initialized ? 2 : 50
     );
   };
+
+  if (product && !product._full_data) {
+    _product.getHydratedProductData(productHandle, productId).then((res) => {
+      if (!res) return;
+      if (ctrInventoryBarbaFix) {
+        if (document.contains($el)) {
+          updateProductState(res, variantId);
+        }
+      } else if (state.product?.handle === res.handle) {
+        state.product = res;
+      }
+    });
+  }
 
   const handleAddAddonsToCart = async () => {
     state.isAdding = true;
