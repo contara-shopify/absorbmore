@@ -100,6 +100,7 @@
       class="relative w-full flex scrollbar-none items-end {{ container_classes }}">
     {% for variant in filtered_variants %}
       <label class="{{ radio_button_class }} ctr-inventory-option-label {% if variant.id == current_value %}active{% endif %}"
+             :class="{ 'sold-out': pdp.isVariantSoldOut({{ variant.id }}) }"
              x-effect="$el.classList.toggle('active', pdp.selected_variant.id === +`{{ variant.id }}`)"
              x-show="offset >= +`{{ forloop.index0 }}`"
           {% if select_on_hover %}
@@ -111,9 +112,7 @@
         {% render 'ctr-main-product-inventory-badges', variant_id: variant.id %}
         <input type="radio"
                class="sr-only"
-            {% if sold_out_variants == 'disable' and variant.available != true %}
-              disabled="disabled"
-            {% endif %}
+               :disabled="pdp.isVariantSoldOut({{ variant.id }})"
                name="{{ block.id }}"
                @change="$data.setSelectedVariant(+$el.value)"
                :checked="pdp.selected_variant.id === +$el.value"

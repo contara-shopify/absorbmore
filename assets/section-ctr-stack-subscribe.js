@@ -10,7 +10,7 @@
     var VARIANT_MAP    = DATA.variantMap    || {};
     var PLANS          = DATA.plans         || [];
     var SWATCH_COLORS  = DATA.swatchColors  || {};
-    var INVENTORY_SETTINGS = DATA.inventorySettings || {};
+    var INVENTORY_LABELS = DATA.inventoryLabels || {};
 
     var PLAN_BY_ID = {};
     PLANS.forEach(function(p) { PLAN_BY_ID[p.id] = p; });
@@ -18,24 +18,24 @@
     var inventoryMethods = (window.ctrFlavorInventory && window.ctrFlavorInventory.createInventoryMethods)
       ? window.ctrFlavorInventory.createInventoryMethods({
           variantMap: VARIANT_MAP,
-          inventorySettings: INVENTORY_SETTINGS,
           getFormat: function() { return null; },
           getSelectedFlavor: function() { return this.selectedFlavor; }
         })
       : {};
 
+    function flavorAvailable(flavor) {
+      if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorState) {
+        return window.ctrFlavorInventory.getFlavorState({
+          variantMap: VARIANT_MAP,
+          flavor: flavor
+        }).available;
+      }
+      return !!(VARIANT_MAP[flavor]);
+    }
+
     function firstInStockFlavor() {
       return FLAVOR_OPTIONS.find(function(f) {
-        if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
-          return window.ctrFlavorInventory.getFlavorInventoryState({
-            variantMap: VARIANT_MAP,
-            flavor: f,
-            cartItems: [],
-            threshold: INVENTORY_SETTINGS.threshold
-          }).available;
-        }
-        var v = VARIANT_MAP[f];
-        return v && v.available;
+        return flavorAvailable(f);
       }) || FLAVOR_OPTIONS[0] || '';
     }
 
@@ -62,6 +62,7 @@
       VARIANT_MAP,
       PLANS,
       SWATCH_COLORS,
+      inventoryLabels: INVENTORY_LABELS,
 
       get currentVariant() {
         return VARIANT_MAP[this.selectedFlavor] || null;
@@ -273,9 +274,6 @@
       },
 
       init() {
-        if (typeof this._bindCartRefresh === 'function') {
-          this._bindCartRefresh();
-        }
         if (typeof this.isFlavorSoldOut === 'function' && this.isFlavorSoldOut(this.selectedFlavor)) {
           this.selectedFlavor = firstInStockFlavor();
         }

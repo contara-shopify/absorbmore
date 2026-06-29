@@ -103,9 +103,8 @@
           "price":          {{ variant.price }},
           "compareAtPrice": {{ variant.compare_at_price | default: variant.price }},
           "available":      {{ variant.available }},
-          "inventory_quantity": {{ variant.inventory_quantity }},
-          "inventory_management": {{ variant.inventory_management | json }},
-          "inventory_policy": {{ variant.inventory_policy | json }},
+          "sold_out":         {{ variant.metafields.custom.sold_out.value | default: false | json }},
+          "low_stock":        {{ variant.metafields.custom.low_stock.value | default: false | json }},
           "sellingPlans": {
             {% for alloc in variant.selling_plan_allocations %}
               {{ alloc.selling_plan.id | append: '' | json }}: {
@@ -155,26 +154,7 @@
     "mango":     "{{ section.settings.swatch_mango | default: '#F5A623' }}",
     "raspberry": "{{ section.settings.swatch_raspberry | default: '#C0392B' }}"
   },
-  "inventorySettings": {
-    "mode": {{ section.settings.inventory_badge_mode | default: 'automatic' | json }},
-    "enableLowStock": {{ section.settings.low_stock_enable | default: false }},
-    "enableSoldOutBadges": {{ section.settings.sold_out_badge_enable | default: false }},
-    "threshold": {{ section.settings.low_stock_threshold | default: 10 }},
-    "pillBadgeText": {{ section.settings.low_stock_pill_text | default: 'Low Stock' | json }},
-    "galleryBadgeText": {{ section.settings.low_stock_gallery_text | default: 'Low Stock - Few Left' | json }},
-    "soldOutPillText": {{ section.settings.sold_out_pill_text | default: 'Sold Out' | json }},
-    "enableGalleryBadge": {{ section.settings.low_stock_show_gallery_badge | default: false }},
-    "manualLowStockFlavors": [
-      {%- assign manual_low_list = section.settings.manual_low_stock_flavors | default: '' | split: ',' -%}
-      {%- for f in manual_low_list -%}{{ f | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
-    ],
-    "manualSoldOutFlavors": [
-      {%- assign manual_sold_list = section.settings.manual_sold_out_flavors | default: '' | split: ',' -%}
-      {%- for f in manual_sold_list -%}{{ f | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
-    ],
-    "testForceLowStock": {{ section.settings.badge_test_force_low_stock | default: false }},
-    "testForceSoldOut": {{ section.settings.badge_test_force_sold_out | default: false }}
-  }
+  "inventoryLabels": {%- render 'ctr-inventory-labels' -%}
 }
 </script>
 
@@ -300,9 +280,15 @@
       </div>
       <div class="ctr-pbv2__hero-image">
         <span
+          class="ctr-pbv2__gallery-low-stock ctr-pbv2__flavor-badge--sold-out"
+          x-show="isSelectedFlavorSoldOut()"
+          x-text="inventoryLabels.soldOutGallery"
+          x-cloak
+        ></span>
+        <span
           class="ctr-pbv2__gallery-low-stock"
-          x-show="inventorySettings.enableGalleryBadge && isSelectedFlavorLowStock()"
-          x-text="inventorySettings.galleryBadgeText"
+          x-show="!isSelectedFlavorSoldOut() && isSelectedFlavorLowStock()"
+          x-text="inventoryLabels.lowStockGallery"
           x-cloak
         ></span>
         {%- for media in gallery_images -%}
@@ -396,9 +382,15 @@
     {%- comment -%} ==== Mobile gallery ==== {%- endcomment -%}
     <div class="ctr-pbv2__gallery-mobile" @scroll.passive="onMobileGalleryScroll($event.target)" x-ref="mobileGallery">
       <span
+        class="ctr-pbv2__gallery-low-stock ctr-pbv2__flavor-badge--sold-out ctr-pbv2__gallery-low-stock--mobile"
+        x-show="isSelectedFlavorSoldOut()"
+        x-text="inventoryLabels.soldOutGallery"
+        x-cloak
+      ></span>
+      <span
         class="ctr-pbv2__gallery-low-stock ctr-pbv2__gallery-low-stock--mobile"
-        x-show="inventorySettings.enableGalleryBadge && isSelectedFlavorLowStock()"
-        x-text="inventorySettings.galleryBadgeText"
+        x-show="!isSelectedFlavorSoldOut() && isSelectedFlavorLowStock()"
+        x-text="inventoryLabels.lowStockGallery"
         x-cloak
       ></span>
       {%- for media in gallery_images -%}
@@ -662,12 +654,12 @@
                               <span
                                 class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
                                 x-show="showSoldOutBadge('{{ flavor_val }}')"
-                                x-text="inventorySettings.soldOutPillText"
+                                x-text="inventoryLabels.soldOutPill"
                               ></span>
                               <span
                                 class="ctr-pbv2__flavor-badge"
                                 x-show="isFlavorLowStock('{{ flavor_val }}')"
-                                x-text="inventorySettings.pillBadgeText"
+                                x-text="inventoryLabels.lowStockPill"
                               ></span>
                               <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
                                 <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
@@ -743,12 +735,12 @@
                           <span
                             class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
                             x-show="showSoldOutBadge('{{ flavor_val }}')"
-                            x-text="inventorySettings.soldOutPillText"
+                            x-text="inventoryLabels.soldOutPill"
                           ></span>
                           <span
                             class="ctr-pbv2__flavor-badge"
                             x-show="isFlavorLowStock('{{ flavor_val }}')"
-                            x-text="inventorySettings.pillBadgeText"
+                            x-text="inventoryLabels.lowStockPill"
                           ></span>
                           <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
                             <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
@@ -831,7 +823,7 @@
           {{ section.settings.cta_text | default: 'Add To Cart' | escape }}{% if cta_initial_price != blank %} - {{ cta_initial_price }}{% endif %}{% if cta_initial_compare != blank %} <span class="ctr-pbv2__cta-compare">{{ cta_initial_compare }}</span>{% endif %}
         </span>
         <template x-if="isAdding"><span class="ctr-pbv2__cta-spinner" aria-hidden="true"></span></template>
-        <template x-if="!isAdding && !currentAvailable"><span>{{ section.settings.cta_sold_out | default: 'Sold Out' | escape }}</span></template>
+        <template x-if="!isAdding && !currentAvailable"><span x-text="inventoryLabels.soldOutCta"></span></template>
         <template x-if="!isAdding && currentAvailable">
           <span>
             {{ section.settings.cta_text | default: 'Add To Cart' | escape }}
@@ -1065,24 +1057,7 @@
     { "type": "text", "id": "flavor_label", "label": "Flavor selector label", "default": "Flavor" },
     { "type": "text", "id": "swatch_mango", "label": "Mango swatch color", "default": "#F5A623" },
     { "type": "text", "id": "swatch_raspberry", "label": "Raspberry swatch color", "default": "#C0392B" },
-    { "type": "header", "content": "Inventory badges" },
-    { "type": "select", "id": "inventory_badge_mode", "label": "Badge mode", "options": [
-      { "value": "automatic", "label": "Automatic (based on inventory)" },
-      { "value": "manual", "label": "Manual (choose flavors)" }
-    ], "default": "automatic", "info": "Automatic uses real Shopify inventory levels. Manual lets you pick exactly which flavors show badges, regardless of stock." },
-    { "type": "text", "id": "manual_low_stock_flavors", "label": "Manual: Low stock flavors", "info": "Manual mode only. Comma-separated flavor names (e.g. Raspberry, Mango). Case-insensitive." },
-    { "type": "text", "id": "manual_sold_out_flavors", "label": "Manual: Sold out flavors", "info": "Manual mode only. Comma-separated flavor names. These flavors are also disabled for purchase." },
-    { "type": "checkbox", "id": "low_stock_enable", "label": "Enable low quantity badges", "default": false },
-    { "type": "range", "id": "low_stock_threshold", "label": "Low stock threshold", "min": 1, "max": 50, "step": 1, "default": 10 },
-    { "type": "text", "id": "low_stock_pill_text", "label": "Low quantity pill text", "default": "Low Stock" },
-    { "type": "text", "id": "low_stock_gallery_text", "label": "Gallery badge text", "default": "Low Stock - Few Left" },
-    { "type": "checkbox", "id": "low_stock_show_gallery_badge", "label": "Show gallery badge", "default": false },
-    { "type": "checkbox", "id": "sold_out_badge_enable", "label": "Enable sold out badge", "default": false },
-    { "type": "text", "id": "sold_out_pill_text", "label": "Sold out pill text", "default": "Sold Out" },
-    { "type": "header", "content": "Temporary badge testing" },
-    { "type": "paragraph", "content": "Remove before launch. Forces badge display without changing inventory or sold-out disabled state." },
-    { "type": "checkbox", "id": "badge_test_force_low_stock", "label": "Force low quantity badges", "default": false },
-    { "type": "checkbox", "id": "badge_test_force_sold_out", "label": "Force sold out badges", "default": false },
+    { "type": "paragraph", "content": "Variant availability badges use metafields custom.low_stock and custom.sold_out. Copy is in theme locales (ctr.inventory.*)." },
     { "type": "header", "content": "Tier 1 — 1 Month Supply" },
     { "type": "text", "id": "tier1_label", "label": "Label", "default": "1 Month Supply" },
     { "type": "text", "id": "tier1_selling_plan_id", "label": "Selling Plan ID", "info": "Numeric ID from Shopify Admin" },
@@ -1147,7 +1122,6 @@
     { "type": "richtext", "id": "modal_footer", "label": "Modal footer" },
     { "type": "header", "content": "CTA & Buttons" },
     { "type": "text", "id": "cta_text", "label": "CTA text", "default": "Add To Cart" },
-    { "type": "text", "id": "cta_sold_out", "label": "Sold out text", "default": "Sold Out" },
     { "type": "color", "id": "button_background", "label": "Button background", "default": "#1d1d1d" },
     { "type": "color", "id": "button_text_color", "label": "Button text color", "default": "#ffffff" },
     { "type": "header", "content": "Trust Badges" },

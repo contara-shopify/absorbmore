@@ -48,6 +48,8 @@
   "inventory_quantity": {{ variant.inventory_quantity | json }},
   "inventory_policy": {{ variant.inventory_policy | json }},
   "inventory_management": {{ variant.inventory_management | json }},
+  "sold_out": {{ variant.metafields.custom.sold_out.value | default: false | json }},
+  "low_stock": {{ variant.metafields.custom.low_stock.value | default: false | json }},
   "preorder": {{ preorder | json }},
   "preorder_date": {{ preorder_date | json }},
   "preorder_quantity": {{ preorder_quantity | json }},

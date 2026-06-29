@@ -18,6 +18,10 @@
   assign match_exact_word = block.settings.match_exact_word
   assign show_inventory_badges = block.settings.show_inventory_badges
   assign custom_css = block.settings.custom_css
+
+  if show_inventory_badges != true and radio_button_class contains 'ctr-flavor-pill'
+    assign show_inventory_badges = true
+  endif
 -%}
 {%- comment -%} Auto Generated Variables end {%- endcomment -%}
 
@@ -140,6 +144,12 @@
           {% endif %} >
         {% for value in option.values %}
           {% liquid
+            if value.name != blank
+              assign option_value_label = value.name
+            else
+              assign option_value_label = value
+            endif
+
             if sold_out_variants == 'hide' and value.available != true
               continue
             endif
@@ -147,7 +157,7 @@
             assign continue = true
 
             for v in product.variants
-              if v.options[_optionIndex] == value
+              if v.options[_optionIndex] == option_value_label
                 unless v.metafields.custom.hide_on_frontend.value
                   assign continue = false
                   break
@@ -160,28 +170,27 @@
             endif
           %}
           <label
-              class="shink-0 !outline-none{% if show_inventory_badges %} ctr-inventory-option-label{% endif %} {{ radio_button_class }} {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+              class="shink-0 !outline-none{% if show_inventory_badges %} ctr-inventory-option-label{% endif %} {{ radio_button_class }} {% if option_value_label == current_value %}active{% endif %}"
+              :class="{ 'sold-out': pdp.isOptionValueSoldOut({{ _optionIndex }}, `{{ option_value_label | escape }}`) }"
               x-effect="$el.classList.toggle('active', pdp.selected_options[index] === $el.getAttribute('aria-label'))"
               x-show="offset >= +`{{ forloop.index0 }}`"
               {% if select_on_hover %}
-                @mouseenter="$data.setProductOption({ index, value: `{{ value }}` })"
+                @mouseenter="$data.setProductOption({ index, value: `{{ option_value_label }}` })"
               {% endif %}
-              aria-label="{{ value }}">
+              aria-label="{{ option_value_label }}">
             {% if show_inventory_badges %}
-              {% render 'ctr-main-product-inventory-badges', option_index: _optionIndex, value: value %}
+              {% render 'ctr-main-product-inventory-badges', option_index: _optionIndex, value: option_value_label %}
             {% endif %}
             <input
                 type="radio"
                 class="sr-only"
-                {% if sold_out_variants == 'disable' and value.available != true %}
-                  disabled="disabled"
-                {% endif %}
+                :disabled="pdp.isOptionValueSoldOut({{ _optionIndex }}, `{{ option_value_label | escape }}`)"
                 name="{{ block.id }}--{{ forloop.index0 }}"
                 @change="$data.setProductOption({ index, value: $el.value })"
                 :checked="pdp.selected_options?.[index] === $el.value"
-                value="{{ value }}">
+                value="{{ option_value_label }}">
             <span>
-              {% assign value_content = radio_button_content | replace: "[value]", value %}
+              {% assign value_content = radio_button_content | replace: "[value]", option_value_label %}
               {% render '_input.inline_richtext', content: value_content %}
             </span>
           </label>

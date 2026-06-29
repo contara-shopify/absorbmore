@@ -27,20 +27,15 @@
     return document.querySelector('.shopify-product-form[data-section-type="main_product"]');
   }
 
-  function getInventorySettings() {
+  function getInventoryLabels() {
     var form = getMainProductForm();
     if (!form) return {};
     try {
-      var raw = form.getAttribute('data-inventory-settings');
+      var raw = form.getAttribute('data-inventory-labels');
       return raw ? JSON.parse(raw) : {};
     } catch (e) {
       return {};
     }
-  }
-
-  function getCartItems() {
-    var store = window.Alpine && window.Alpine.store('cart');
-    return (store && store.state && store.state.items) || window._cart_data?.items || [];
   }
 
   function getVariantById(vid) {
@@ -59,16 +54,13 @@
 
   function updatePillBadges(attempt) {
     attempt = attempt || 0;
-    var settings = getInventorySettings();
-    if (!settings.enableLowStock && !settings.enableSoldOutBadges) return;
+    var labels = getInventoryLabels();
     var inv = window.ctrFlavorInventory;
     if (!inv) {
       if (attempt < 25) setTimeout(function () { updatePillBadges(attempt + 1); }, 150);
       return;
     }
 
-    var cartItems = getCartItems();
-    var threshold = settings.threshold != null ? settings.threshold : 10;
     var pills = document.querySelectorAll('[data-component-choose-plan] .glp-flavor-pill');
 
     Array.prototype.forEach.call(pills, function (pill) {
@@ -80,13 +72,9 @@
       if (!vid) return;
 
       var variant = getVariantById(vid);
-      var state = inv.getVariantInventoryState(variant, cartItems, threshold);
-      var showSoldOut =
-        settings.enableSoldOutBadges && (settings.testForceSoldOut || state.soldOut);
-      var showLowStock =
-        settings.enableLowStock &&
-        !showSoldOut &&
-        (settings.testForceLowStock || state.lowStock);
+      var state = inv.getVariantState(variant);
+      var showSoldOut = state.soldOut;
+      var showLowStock = !showSoldOut && state.lowStock;
 
       pill.classList.toggle('is-sold-out', !!showSoldOut);
       pill.disabled = !!showSoldOut;
@@ -94,22 +82,15 @@
       if (showSoldOut) {
         var soldBadge = document.createElement('span');
         soldBadge.className = 'ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out';
-        soldBadge.textContent = settings.soldOutPillText || 'Sold Out';
+        soldBadge.textContent = labels.soldOutPill || 'Sold Out';
         pill.appendChild(soldBadge);
       } else if (showLowStock) {
         var lowBadge = document.createElement('span');
         lowBadge.className = 'ctr-pbv2__flavor-badge';
-        lowBadge.textContent = settings.pillBadgeText || 'Low Stock';
+        lowBadge.textContent = labels.lowStockPill || 'Low Stock';
         pill.appendChild(lowBadge);
       }
     });
-  }
-
-  function bindCartRefresh() {
-    if (window.__glpFlavorPickerCartBound) return;
-    window.__glpFlavorPickerCartBound = true;
-    document.addEventListener('productAddedToCart', updatePillBadges);
-    document.addEventListener('cart:refresh', updatePillBadges);
   }
 
   function init(attempt) {
@@ -372,7 +353,6 @@
     refreshSubscribeIntent();
     captureInitialPlanId();
     watchUserToggle();
-    bindCartRefresh();
     setTimeout(function () {
       refreshSubscribeIntent();
       captureInitialPlanId();
@@ -398,5 +378,8 @@
 
   ready(function () {
     requestAnimationFrame(function () { init(0); });
+    document.addEventListener('ctr-inventory:refresh', function () {
+      updatePillBadges();
+    });
   });
 })();

@@ -199,7 +199,8 @@
             endcase
           %}
           <label
-              class="shrink-0 flex cursor-pointer border-gray-300 relative !outline-none border-none ac:border-solid ctr-inventory-option-label {% if value == current_value %}active{% endif %} {% if value.available != true %}sold-out{% endif %}"
+              class="shrink-0 flex cursor-pointer border-gray-300 relative !outline-none border-none ac:border-solid ctr-inventory-option-label {% if value == current_value %}active{% endif %}"
+              :class="{ 'sold-out': pdp.isOptionValueSoldOut({{ _optionIndex }}, `{{ value | escape }}`) }"
               x-effect="$el.classList.toggle('active', pdp.selected_options?.[index] === $el.getAttribute('aria-label'))"
               x-show="offset >= +`{{ forloop.index0 }}`"
               {% if select_on_hover and show_tooltip %}
@@ -219,9 +220,7 @@
             <input
                 type="radio"
                 class="sr-only"
-                {% if sold_out_variants == 'disable' and value.available != true %}
-                  disabled="disabled"
-                {% endif %}
+                :disabled="pdp.isOptionValueSoldOut({{ _optionIndex }}, `{{ value | escape }}`)"
                 {% if show_tooltip %}
                   @focus="$tooltip.addTooltip($el.parentElement, $el.value)"
                   @blur="$tooltip.removeTooltip($el.parentElement)"

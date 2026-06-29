@@ -18,7 +18,7 @@
     var VARIANT_MAP    = DATA.variantMap || {};
     var TIERS          = DATA.tiers || [];       // [{id,bagCount,label,badge,price,comparePrice,sellingPlanId,perks}]
     var SWATCH_COLORS  = DATA.swatchColors || {};
-    var INVENTORY_SETTINGS = DATA.inventorySettings || {};
+    var INVENTORY_LABELS = DATA.inventoryLabels || {};
 
     /* Build tier lookup by id */
     var TIER_BY_ID = {};
@@ -27,27 +27,25 @@
     var inventoryMethods = (window.ctrFlavorInventory && window.ctrFlavorInventory.createInventoryMethods)
       ? window.ctrFlavorInventory.createInventoryMethods({
           variantMap: VARIANT_MAP,
-          inventorySettings: INVENTORY_SETTINGS,
           getFormat: function() { return this.selectedFormat; },
           getSelectedFlavor: function() { return this.bagFlavors[0] || FLAVOR_OPTIONS[0] || ''; }
         })
       : {};
 
+    function flavorAvailable(format, flavor) {
+      if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorState) {
+        return window.ctrFlavorInventory.getFlavorState({
+          variantMap: VARIANT_MAP,
+          flavor: flavor,
+          format: format
+        }).available;
+      }
+      return !!VARIANT_MAP[format + '|' + flavor];
+    }
+
     function firstInStockFlavor(format) {
       return FLAVOR_OPTIONS.find(function(f) {
-        var v = VARIANT_MAP[format + '|' + f];
-        if (!v) return false;
-        if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
-          return window.ctrFlavorInventory.getFlavorInventoryState({
-            variantMap: VARIANT_MAP,
-            flavor: f,
-            format: format,
-            cartItems: [],
-            threshold: INVENTORY_SETTINGS.threshold,
-            inventorySettings: INVENTORY_SETTINGS
-          }).available;
-        }
-        return v.available;
+        return flavorAvailable(format, f);
       }) || FLAVOR_OPTIONS[0] || '';
     }
 
@@ -73,6 +71,7 @@
       VARIANT_MAP,
       TIERS,
       SWATCH_COLORS,
+      inventoryLabels: INVENTORY_LABELS,
 
       /* ---- computed ---- */
       get currentTier() {
@@ -252,19 +251,7 @@
         var firstAvailable = firstInStockFlavor(format);
         // Keep current flavor if available for this format, else use first available
         this.bagFlavors = this.bagFlavors.map(function(f) {
-          var v = VARIANT_MAP[format + '|' + f];
-          if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
-            var state = window.ctrFlavorInventory.getFlavorInventoryState({
-              variantMap: VARIANT_MAP,
-              flavor: f,
-              format: format,
-              cartItems: [],
-              threshold: INVENTORY_SETTINGS.threshold,
-              inventorySettings: INVENTORY_SETTINGS
-            });
-            return state.available ? f : firstAvailable;
-          }
-          return (v && v.available) ? f : firstAvailable;
+          return flavorAvailable(format, f) ? f : firstAvailable;
         });
       },
 
@@ -420,9 +407,6 @@
 
       /* ---- Mobile sticky observer ---- */
       init() {
-        if (typeof this._bindCartRefresh === 'function') {
-          this._bindCartRefresh();
-        }
         this._ensureInStockFlavors();
 
         if (
@@ -441,19 +425,7 @@
       _ensureInStockFlavors() {
         var firstAvailable = firstInStockFlavor(this.selectedFormat);
         this.bagFlavors = this.bagFlavors.map(function(f) {
-          if (window.ctrFlavorInventory && window.ctrFlavorInventory.getFlavorInventoryState) {
-            var state = window.ctrFlavorInventory.getFlavorInventoryState({
-              variantMap: VARIANT_MAP,
-              flavor: f,
-              format: this.selectedFormat,
-              cartItems: this.getCartItems ? this.getCartItems() : [],
-              threshold: INVENTORY_SETTINGS.threshold,
-              inventorySettings: INVENTORY_SETTINGS
-            });
-            return state.available ? f : firstAvailable;
-          }
-          var v = VARIANT_MAP[this.selectedFormat + '|' + f];
-          return (v && v.available) ? f : firstAvailable;
+          return flavorAvailable(this.selectedFormat, f) ? f : firstAvailable;
         }.bind(this));
       }
     });

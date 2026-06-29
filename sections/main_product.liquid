@@ -114,17 +114,7 @@
       data-product-id="{{ product.id }}"
       data-variant-id="{{ variant.id }}"
       data-ctr-discount-config='{{ product.metafields.custom.ctr_discount_config.value | json | escape }}'
-      data-inventory-settings='{
-        "enableLowStock": {{ section.settings.low_stock_enable | default: false }},
-        "enableSoldOutBadges": {{ section.settings.sold_out_badge_enable | default: false }},
-        "threshold": {{ section.settings.low_stock_threshold | default: 10 }},
-        "pillBadgeText": {{ section.settings.low_stock_pill_text | default: 'Low Stock' | json }},
-        "galleryBadgeText": {{ section.settings.low_stock_gallery_text | default: 'Low Stock - Few Left' | json }},
-        "soldOutPillText": {{ section.settings.sold_out_pill_text | default: 'Sold Out' | json }},
-        "enableGalleryBadge": {{ section.settings.low_stock_show_gallery_badge | default: false }},
-        "testForceLowStock": {{ section.settings.badge_test_force_low_stock | default: false }},
-        "testForceSoldOut": {{ section.settings.badge_test_force_sold_out | default: false }}
-      }'
+      data-inventory-labels='{%- render 'ctr-inventory-labels' -%}'
       {% if default_select_selling_plan %}
         data-default-subscription="true"
       {% endif %}
@@ -151,7 +141,7 @@
     {{ cleaned_final_content }}
   </form>
 
-  {% if request.design_mode %}
+  {% if product != blank %}
     <script type="application/json"
             data-product-data="{{ product.handle }}"
             data-primary-product-data="{{ product.handle }}">{%- render '_json.product', product: product -%}</script>
@@ -199,77 +189,8 @@
       "info": "Metafield 'namespace.key'. The metafield needs to be of type 'variant_reference' and added to the Product."
     },
     {
-      "type": "header",
-      "content": "Inventory badges"
-    },
-    {
-      "type": "checkbox",
-      "id": "low_stock_enable",
-      "label": "Enable low quantity badges",
-      "default": false
-    },
-    {
-      "type": "range",
-      "id": "low_stock_threshold",
-      "label": "Low stock threshold",
-      "min": 1,
-      "max": 50,
-      "step": 1,
-      "default": 10
-    },
-    {
-      "type": "text",
-      "id": "low_stock_pill_text",
-      "label": "Low quantity pill text",
-      "default": "Low Stock"
-    },
-    {
-      "type": "text",
-      "id": "low_stock_gallery_text",
-      "label": "Gallery badge text",
-      "default": "Low Stock - Few Left"
-    },
-    {
-      "type": "checkbox",
-      "id": "low_stock_show_gallery_badge",
-      "label": "Show gallery badge",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "sold_out_badge_enable",
-      "label": "Enable sold out badge",
-      "default": false
-    },
-    {
-      "type": "text",
-      "id": "sold_out_pill_text",
-      "label": "Sold out pill text",
-      "default": "Sold Out"
-    },
-    {
-      "type": "header",
-      "content": "Temporary badge testing"
-    },
-    {
       "type": "paragraph",
-      "content": "Remove before launch. Forces badge display without changing inventory or sold-out disabled state."
-    },
-    {
-      "type": "checkbox",
-      "id": "badge_test_force_low_stock",
-      "label": "Force low quantity badges",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "badge_test_force_sold_out",
-      "label": "Force sold out badges",
-      "default": false
-    },
-    {
-      "type": "paragraph",
-      "content": "t:all.empty_char"
+      "content": "Variant availability badges use metafields custom.low_stock and custom.sold_out on each variant. Copy is in theme locales (ctr.inventory.*)."
     },
     {
       "type": "paragraph",
