@@ -1,0 +1,230 @@
+{%- comment -%}
+  ctr-product-card-flavors.liquid
+  Flavor swatch picker auto-injected into product cards for multi-flavor products.
+
+  Accepts:
+    product {Object} - Shopify product object (required)
+    variant {Object} - Default selected variant
+
+  Behavior:
+  - Auto-detects products with a "Flavor" or "Flavour" option
+  - Renders only when 2+ distinct flavor values exist
+  - Clicking a swatch calls $data.setSelectedVariant(id) which:
+      * swaps the card image (via $watch in card_product_card.image.static)
+      * updates the card href to ?variant=ID (reactive binding)
+  - Sold-out flavors: grey, non-clickable
+  - Single-variant products: renders nothing
+
+  Swatch color source (in priority order):
+  1. variant.metafields.custom.flavor_swatch_color (type: color)
+     → Must be created in Shopify Admin > Settings > Custom data > Variants
+     → Populate for each flavor variant before launch
+  2. CSS custom property --ctr-swatch-{handleized-flavor-name}
+     → Defaults defined in this file's <style> block
+     → Add new flavors there as the product line grows
+
+  Parent context:
+  - Requires Alpine p_card and $data.setSelectedVariant() from initProductCard()
+  - Must be inside card_product_card._render_blocks.liquid (auto-injected after rating)
+{%- endcomment -%}
+
+{%- liquid
+  comment
+    Find the Flavor option and its position (option1/option2/option3)
+  endcomment
+  assign _cpcf_opt = nil
+  assign _cpcf_pos = nil
+  for _o in product.options_with_values
+    assign _on = _o.name | downcase
+    if _on == 'flavor' or _on == 'flavour'
+      assign _cpcf_opt = _o
+      assign _cpcf_pos = _o.position
+      break
+    endif
+  endfor
+-%}
+
+{%- if _cpcf_opt != nil -%}
+  {%- liquid
+    comment
+      Count distinct flavor values
+    endcomment
+    assign _pcf_key = 'option' | append: _cpcf_pos
+    assign _pcf_seen_count = ''
+    assign _pcf_count = 0
+    for _pv in product.variants
+      assign _pvf_check = _pv[_pcf_key] | append: '~~'
+      unless _pcf_seen_count contains _pvf_check
+        assign _pcf_count = _pcf_count | plus: 1
+        assign _pcf_seen_count = _pcf_seen_count | append: _pvf_check
+      endunless
+    endfor
+  -%}
+
+  {%- if _pcf_count > 1 -%}
+
+    <div class="ctr-pcf" @click.stop="() => {}">
+      <div class="ctr-pcf__sep"></div>
+
+      <div class="ctr-pcf__inner">
+        <p class="ctr-pcf__label">Select Flavor for {{ product.title | escape }}</p>
+
+        <div class="ctr-pcf__swatches">
+          {%- assign _pcf_drawn = '' -%}
+
+          {%- for _fv in product.variants -%}
+            {%- assign _fv_flavor = _fv[_pcf_key] -%}
+            {%- assign _fv_check = _fv_flavor | append: '~~' -%}
+
+            {%- unless _pcf_drawn contains _fv_check -%}
+              {%- assign _pcf_drawn = _pcf_drawn | append: _fv_check -%}
+
+              {%- comment -%}
+                Find best variant for this flavor:
+                prefer available, fall back to first encountered
+              {%- endcomment -%}
+              {%- assign _best = _fv -%}
+              {%- assign _flavor_avail = false -%}
+              {%- for _v2 in product.variants -%}
+                {%- if _v2[_pcf_key] == _fv_flavor and _v2.available -%}
+                  {%- assign _best = _v2 -%}
+                  {%- assign _flavor_avail = true -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- comment -%} Swatch color: metafield > CSS var fallback {%- endcomment -%}
+              {%- assign _fh = _fv_flavor | handleize -%}
+              {%- assign _fc = _best.metafields.custom.flavor_swatch_color.value | default: '' -%}
+              {%- if _fc == blank -%}
+                {%- assign _fc = 'var(--ctr-swatch-' | append: _fh | append: ', #bbb)' -%}
+              {%- endif -%}
+
+              <button
+                type="button"
+                class="ctr-pcf__btn{% unless _flavor_avail %} is-soldout{% endunless %}"
+                :class="{ 'is-on': p_card?.selected_variant?.option{{ _cpcf_pos }} === '{{ _fv_flavor | escape }}' }"
+                {% if _flavor_avail %}
+                  @click="$data.setSelectedVariant({{ _best.id }})"
+                {% else %}
+                  disabled
+                  aria-disabled="true"
+                {% endif %}
+                aria-label="{{ _fv_flavor | escape }}{% unless _flavor_avail %} (sold out){% endunless %}">
+                <span class="ctr-pcf__dot" style="background:{{ _fc }};"></span>
+                <span class="ctr-pcf__name">{{ _fv_flavor | escape }}</span>
+              </button>
+
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="ctr-pcf__sep"></div>
+    </div>
+
+    <style>
+      :root {
+        --ctr-swatch-mango: #FFC72C;
+        --ctr-swatch-raspberry: #C8254C;
+        --ctr-swatch-lemon: #FFE135;
+        --ctr-swatch-lime: #5BA83C;
+        --ctr-swatch-watermelon: #FC3C3C;
+        --ctr-swatch-berry: #7B2FBE;
+        --ctr-swatch-peach: #FF8C69;
+        --ctr-swatch-tropical: #FF6B35;
+      }
+
+      .ctr-pcf {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .ctr-pcf__sep {
+        height: 1px;
+        background: rgba(26, 26, 26, 0.1);
+        width: 100%;
+        flex-shrink: 0;
+        margin: 10px 0;
+      }
+
+      .ctr-pcf__inner {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .ctr-pcf__label {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #1a1a1a;
+        margin: 0;
+        padding: 0;
+      }
+
+      .ctr-pcf__swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .ctr-pcf__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6a6a6a;
+        line-height: 1.4;
+        white-space: nowrap;
+        transition: border-color 0.12s ease, color 0.12s ease;
+        font-family: inherit;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .ctr-pcf__btn:hover:not([disabled]):not(.is-soldout) {
+        border-color: rgba(26, 26, 26, 0.25);
+        color: #1a1a1a;
+      }
+
+      .ctr-pcf__btn.is-on {
+        border-color: #1a1a1a;
+        color: #1a1a1a;
+      }
+
+      .ctr-pcf__btn.is-soldout {
+        opacity: 0.38;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .ctr-pcf__dot {
+        display: block;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 480px) {
+        .ctr-pcf__btn {
+          font-size: 13px;
+          padding: 6px 10px;
+          gap: 6px;
+        }
+        .ctr-pcf__dot {
+          width: 15px;
+          height: 15px;
+        }
+      }
+    </style>
+
+  {%- endif -%}
+{%- endif -%}

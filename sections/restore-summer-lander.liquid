@@ -1,0 +1,497 @@
+{% comment %}
+  Restore Raspberry — Hot Girl Summer (OFD11) lander.
+  Page: /pages/restore-summer
+  Template: templates/page.restore-summer.json
+  Layout adapted from /pages/ofd3-hollywood-secret-wlp-1.
+  Color palette: TAC Blue + Raspberry (brand magenta) + pink/cream washes.
+{% endcomment %}
+
+{%- liquid
+  assign restore = all_products['restore']
+-%}
+
+<style>
+  /* Suppress site-wide popups on this lander (Klaviyo signup, etc.) */
+  body .klaviyo-form,
+  body div[class*="klaviyo-form-"],
+  body div[data-testid="klaviyo-form"],
+  body .needsclick[class*="kl-private-reset-css"]{display:none !important;visibility:hidden !important;}
+  .rsum{
+    --blue:#4659FF;
+    --blue-soft:rgba(70,89,255,0.08);
+    --rasp:#E1225C;
+    --rasp-soft:rgba(225,34,92,0.08);
+    --pink-wash:#FFEEF3;
+    --cream:#FFF7F1;
+    --ink:#0d1117;
+    --ink-mute:#3a4150;
+    --ink-soft:#7a8298;
+    --line:#f1d6df;
+  }
+  .rsum *,.rsum *::before,.rsum *::after{box-sizing:border-box;}
+  .rsum{color:var(--ink);padding:0;}
+  .rsum p{margin:0 0 14px;font-size:16px;line-height:1.6;color:var(--ink-mute);}
+  .rsum h1,.rsum h2,.rsum h3{margin:0 0 14px;letter-spacing:-0.01em;font-weight:800;color:var(--ink);}
+  .rsum h1{font-size:34px;line-height:1.08;}
+  .rsum h2{font-size:28px;line-height:1.15;}
+  .rsum h3{font-size:18px;line-height:1.3;}
+  .rsum .eb{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--rasp);margin:0 0 12px;text-transform:uppercase;}
+  .rsum .eb--blue{color:var(--blue);}
+  .rsum .blue{color:var(--blue);}
+  .rsum .rasp{color:var(--rasp);}
+  .rsum .ital{font-style:italic;font-weight:800;color:var(--rasp);}
+  .rsum .strike{text-decoration:line-through;opacity:.5;font-weight:500;margin-right:6px;}
+  .rsum .inner{max-width:1140px;margin:0 auto;padding:0 20px;}
+  .rsum .sec{padding:48px 0;}
+  .rsum .sec--pink{background:var(--pink-wash);}
+  .rsum .sec--cream{background:var(--cream);}
+  .rsum .sec--rasp{background:linear-gradient(135deg,#FF3D7F 0%,#E1225C 100%);color:#fff;}
+  .rsum .sec--rasp h2,.rsum .sec--rasp h3,.rsum .sec--rasp p{color:#fff;}
+  .rsum .center{text-align:center;}
+
+  .rsum .btn{display:inline-block;background:var(--rasp);color:#fff;font-weight:700;font-size:15px;letter-spacing:.04em;padding:16px 28px;border-radius:999px;text-decoration:none;text-align:center;border:none;cursor:pointer;transition:transform .15s;}
+  .rsum .btn:hover{transform:translateY(-1px);}
+  .rsum .btn--blue{background:var(--blue);}
+  .rsum .btn--ghost{background:#fff;color:var(--ink);border:2px solid var(--ink);}
+  .rsum .btn--white{background:#fff;color:var(--rasp);}
+  .rsum .btn.full{display:block;width:100%;}
+
+  .rsum .stars{color:var(--rasp);font-size:16px;letter-spacing:1px;display:inline-flex;align-items:center;gap:8px;}
+  .rsum .stars small{color:var(--ink-mute);font-weight:600;font-size:13px;letter-spacing:0;}
+
+  .rsum .trust{font-size:12px;color:var(--ink-mute);margin:10px 0 0;letter-spacing:.02em;}
+
+  /* === HERO === */
+  .rsum-hero{padding:32px 0 36px;background:linear-gradient(180deg,var(--pink-wash) 0%,#fff 100%);}
+  .rsum-hero .grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:center;}
+  .rsum-hero .hero-img{aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:#eceff5;position:relative;}
+  .rsum-hero .hero-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rsum-hero .hero-img::after{content:"NEW LIMITED TIME RASPBERRY FLAVOR";position:absolute;top:18px;left:18px;background:var(--rasp);color:#fff;font-size:10px;letter-spacing:.16em;font-weight:800;padding:7px 12px;border-radius:999px;}
+  .rsum-hero ul{list-style:none;padding:0;margin:18px 0 22px;}
+  .rsum-hero li{font-size:15px;line-height:1.5;padding:8px 0 8px 32px;position:relative;color:var(--ink);}
+  .rsum-hero li::before{content:"";position:absolute;left:0;top:12px;width:20px;height:20px;border-radius:50%;background:var(--rasp);}
+  .rsum-hero li::after{content:"";position:absolute;left:6px;top:17px;width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);}
+
+  /* === STAT GRID === */
+  .rsum-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--pink-wash);border-radius:20px;overflow:hidden;}
+  .rsum-stat{background:#fff;padding:24px 16px;text-align:center;}
+  .rsum-stat .n{font-size:30px;font-weight:800;line-height:1;margin:0 0 6px;}
+  .rsum-stat:nth-child(odd) .n{color:var(--blue);}
+  .rsum-stat:nth-child(even) .n{color:var(--rasp);}
+  .rsum-stat .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);}
+  .rsum-stats-blurb{margin:24px 0 0;font-size:15px;color:var(--ink-mute);text-align:center;line-height:1.55;}
+
+  /* === FEATURED TESTIMONIAL === */
+  .rsum-pull{background:#fff;border:2px solid var(--rasp);border-radius:24px;padding:32px 24px;text-align:center;max-width:720px;margin:0 auto;position:relative;}
+  .rsum-pull::before{content:"\201C";position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:60px;height:60px;background:var(--rasp);color:#fff;font-size:60px;line-height:1;border-radius:50%;display:flex;align-items:center;justify-content:center;padding-top:22px;}
+  .rsum-pull blockquote{margin:0 0 16px;font-size:20px;line-height:1.4;font-weight:600;color:var(--ink);}
+  .rsum-pull .meta{font-size:13px;color:var(--ink-mute);font-weight:700;letter-spacing:.04em;}
+  .rsum-pull .meta span{color:var(--ink-soft);font-weight:500;display:block;margin-top:4px;letter-spacing:0;}
+  .rsum-tsupport{display:grid;grid-template-columns:1fr;gap:14px;margin:32px 0 0;}
+  .rsum-tsupport .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;}
+  .rsum-tsupport .card .st{color:var(--rasp);font-size:14px;letter-spacing:.06em;margin:0 0 10px;font-weight:800;}
+  .rsum-tsupport .card blockquote{margin:0 0 14px;font-size:15.5px;line-height:1.55;color:var(--ink);font-weight:500;}
+  .rsum-tsupport .card .who{font-size:12.5px;color:var(--ink-mute);letter-spacing:.04em;font-weight:700;text-transform:uppercase;}
+
+  /* === BUYBOX === */
+  .rsum-bb{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;display:grid;grid-template-columns:1fr;gap:22px;box-shadow:0 20px 50px rgba(225,34,92,0.08);}
+  .rsum-bb .prod-wrap{position:relative;}
+  .rsum-bb .prod-flag{position:absolute;top:14px;left:14px;z-index:2;background:var(--rasp);color:#fff;font-size:10.5px;letter-spacing:.14em;font-weight:800;padding:7px 11px;border-radius:999px;text-transform:uppercase;box-shadow:0 6px 16px rgba(225,34,92,0.28);}
+  .rsum-bb .prod-img{aspect-ratio:1/1;border-radius:18px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:18px;}
+  .rsum-bb .prod-img img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;}
+  .rsum-bb .plan{border:2px solid var(--line);border-radius:14px;padding:16px;margin:0 0 10px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;position:relative;background:#fff;}
+  .rsum-bb .plan.sel{border-color:var(--rasp);background:var(--rasp-soft);}
+  .rsum-bb .plan input{position:absolute;opacity:0;pointer-events:none;}
+  .rsum-bb .radio{width:20px;height:20px;border-radius:50%;border:2px solid #c5cbd9;flex-shrink:0;margin-top:2px;position:relative;}
+  .rsum-bb .plan.sel .radio{border-color:var(--rasp);}
+  .rsum-bb .plan.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--rasp);}
+  .rsum-bb .plan-body{flex:1;}
+  .rsum-bb .plan-title{font-weight:800;font-size:16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;color:var(--ink);}
+  .rsum-bb .plan-meta{font-size:13px;color:var(--ink-mute);margin-top:4px;line-height:1.45;}
+  .rsum-bb .plan-meta.small{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .rsum-bb .plan-price{display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap;flex-shrink:0;font-weight:500;}
+  .rsum-bb .plan-price .strike{font-size:13px;text-decoration:line-through;opacity:.55;margin:0 0 2px;}
+  .rsum-bb .plan-price .mo{font-weight:800;font-size:18px;color:var(--ink);line-height:1.1;}
+  .rsum-bb .plan-price .total{font-size:12px;color:var(--ink-mute);margin-top:2px;}
+  .rsum-bb .plan-price .save{font-size:12px;color:var(--blue);font-weight:700;margin-top:4px;}
+  .rsum-bb .badge{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--rasp);color:#fff;padding:4px 9px;border-radius:6px;font-weight:800;box-shadow:0 2px 6px rgba(225,34,92,0.25);}
+  .rsum-bb .badge--pop{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(70,89,255,0.25);}
+  .rsum-bb .badge--best{background:#1d2230;color:#fff;box-shadow:0 2px 6px rgba(29,34,48,0.25);}
+  .rsum-bb .reassure{font-size:12px;color:var(--ink-soft);text-align:center;margin:14px 0 0;line-height:1.5;}
+  .rsum-bb .prod-features{margin:14px 0 0;font-size:13px;color:var(--ink-mute);padding-left:0;}
+  .rsum-bb .prod-features li{padding:4px 0 4px 22px;position:relative;list-style:none;}
+  .rsum-bb .prod-features li::before{content:"✓";position:absolute;left:0;color:var(--rasp);font-weight:800;}
+
+  /* === BRAND STORY === */
+  .rsum-story{display:grid;grid-template-columns:1fr;gap:24px;align-items:center;}
+  .rsum-story .img{aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:#eceff5;}
+  .rsum-story .img img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* === INGREDIENT CARDS === */
+  .rsum-ing{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 0;}
+  .rsum-ing .card{background:#fff;border-radius:18px;padding:24px;border:1px solid var(--line);}
+  .rsum-ing .card:nth-child(even){border-color:#cdd3ff;}
+  .rsum-ing .card .n{font-size:22px;font-weight:800;line-height:1;margin:0 0 10px;color:var(--rasp);}
+  .rsum-ing .card:nth-child(even) .n{color:var(--blue);}
+  .rsum-ing .card h3{font-size:17px;margin:0 0 6px;line-height:1.25;}
+  .rsum-ing p{margin:6px 0 0;font-size:14.5px;color:var(--ink-mute);line-height:1.55;}
+
+  /* === COMPARISON === */
+  .rsum-cmp{width:100%;border-collapse:collapse;font-size:13px;margin:22px 0 0;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(225,34,92,0.06);}
+  .rsum-cmp th,.rsum-cmp td{padding:12px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  .rsum-cmp thead th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);font-weight:700;background:var(--pink-wash);}
+  .rsum-cmp .col-us{background:var(--rasp-soft);font-weight:700;}
+  .rsum-cmp .col-us strong{color:var(--rasp);}
+
+  /* === MBG === */
+  .rsum-mbg{border-radius:24px;padding:40px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#FF3D7F 0%,#E1225C 100%);}
+  .rsum-mbg h2,.rsum-mbg p{color:#fff;}
+  .rsum-mbg .eb{color:rgba(255,255,255,0.85);}
+
+  /* === FAQ === */
+  .rsum-faq details{border-bottom:1px solid var(--line);padding:16px 0;}
+  .rsum-faq summary{cursor:pointer;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:12px;color:var(--ink);}
+  .rsum-faq summary::-webkit-details-marker{display:none;}
+  .rsum-faq summary::after{content:"+";font-weight:400;font-size:22px;line-height:1;color:var(--rasp);}
+  .rsum-faq details[open] summary::after{content:"−";}
+  .rsum-faq p{margin:10px 0 0;font-size:15px;color:var(--ink-mute);}
+
+  /* === FINAL CTA === */
+  .rsum-final{text-align:center;}
+
+  /* === KLAVIYO REVIEWS WIDGET WRAP === */
+  .rsum-kr{background:#fff;border-radius:20px;padding:24px;border:1px solid var(--line);}
+  .rsum-kr-head{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 0 18px;text-align:center;}
+  .rsum-kr-stars{font-size:22px;color:var(--rasp);letter-spacing:2px;}
+  .rsum-kr-rating{font-size:14px;color:var(--ink-mute);font-weight:600;}
+
+  /* === GALLERY === */
+  .rsum-gal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:22px 0 0;}
+  .rsum-gal .tile{aspect-ratio:1/1;border-radius:14px;background:var(--pink-wash);overflow:hidden;}
+  .rsum-gal .tile img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rsum-gal .tile.ph{display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px;}
+
+  /* === DESKTOP === */
+  @media (min-width:768px){
+    .rsum p{font-size:17px;}
+    .rsum h1{font-size:56px;}
+    .rsum h2{font-size:40px;}
+    .rsum .sec{padding:72px 0;}
+    .rsum-hero{padding:56px 0 72px;}
+    .rsum-hero .grid{grid-template-columns:1.05fr 1fr;gap:48px;}
+    .rsum-hero .hero-img{aspect-ratio:4/5;}
+    .rsum-stats{grid-template-columns:repeat(4,1fr);}
+    .rsum-stat{padding:36px 16px;}
+    .rsum-stat .n{font-size:42px;}
+    .rsum-pull{padding:48px 40px;}
+    .rsum-pull blockquote{font-size:26px;}
+    .rsum-tsupport{grid-template-columns:repeat(3,1fr);}
+    .rsum-bb{grid-template-columns:0.9fr 1.1fr;padding:36px;gap:36px;}
+    .rsum-story{grid-template-columns:1fr 1.1fr;gap:48px;}
+    .rsum-ing{grid-template-columns:repeat(3,1fr);}
+    .rsum-cmp{font-size:15px;}
+    .rsum-cmp th,.rsum-cmp td{padding:16px 14px;}
+    .rsum-mbg{padding:64px 32px;}
+    .rsum-gal{grid-template-columns:repeat(6,1fr);}
+    .rsum-kr{padding:36px;}
+  }
+</style>
+
+<div class="rsum">
+
+  {%- comment -%} === HERO === {%- endcomment -%}
+  <section class="rsum-hero">
+    <div class="inner">
+      <div class="grid">
+        <div>
+          <p class="eb">{{ section.settings.eyebrow }}</p>
+          <h1>The <span class="rasp">electrolyte multivitamin</span> drink that doesn't bloat.</h1>
+          <p style="font-size:18px;color:var(--ink-mute);">All-day hydration, a full multivitamin, and skin support. <strong class="blue">Zero sugar. Zero bloat.</strong> One delicious pink drink, made for the pool side.</p>
+          <ul>
+            <li><strong>900mg+ of balanced electrolytes</strong> for real hydration. No sodium overload.</li>
+            <li><strong>12+ vitamins and minerals built in.</strong> A full multivitamin in every sip.</li>
+            <li><strong>Skin support from the inside.</strong> Vitamin C, biotin, and glutathione for clarity and glow.</li>
+            <li><strong>0g sugar. 28 servings per bag.</strong> Summer pool party approved.</li>
+          </ul>
+          <p class="stars">★★★★★ <small>4.97 · 374 reviews on Restore</small></p>
+          <p style="margin-top:18px;"><a href="#buybox" class="btn">Try New Limited Restore Raspberry</a></p>
+          <p class="trust">30-day money-back guarantee · Ships in 2 days · Free shipping on $50+</p>
+        </div>
+        <div class="hero-img">
+          <img src="{{ 'restore-summer-hero-1.jpg' | asset_url }}" alt="Restore Raspberry poolside" loading="eager">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === WHAT RESTORE ACTUALLY DOES === {%- endcomment -%}
+  <section class="sec sec--pink">
+    <div class="inner">
+      <div class="center" style="max-width:720px;margin:0 auto;">
+        <p class="eb">What Restore actually does</p>
+        <h2>One drink. <span class="ital">Six daily wins</span>.</h2>
+        <p style="color:var(--ink-mute);">12+ vitamins, balanced electrolytes, and skin support in one delicious pink drink. Mix it once. Sip it cold. Add it to your routine.</p>
+      </div>
+      <div class="rsum-ing">
+        <div class="card">
+          <div class="n">Hydrates all day</div>
+          <p>900mg+ of balanced electrolytes for cellular hydration. No sodium overload, no afternoon crash.</p>
+        </div>
+        <div class="card">
+          <div class="n">Beats the bloat</div>
+          <p>A magnesium-forward ratio formulated to move water in, not hold it. Flat stomach by the pool.</p>
+        </div>
+        <div class="card">
+          <div class="n">12+ vitamins built in</div>
+          <p>A full multivitamin in every sip. Balanced vitamins and minerals, no chalky aftertaste, no missed doses.</p>
+        </div>
+        <div class="card">
+          <div class="n">Supports skin glow</div>
+          <p>Glutathione, vitamin C, and biotin support skin clarity, collagen, and a healthy summer glow.</p>
+        </div>
+        <div class="card">
+          <div class="n">Steady, clean energy</div>
+          <p>B-complex and methylfolate fuel all-day energy. No caffeine, no jitters, no 3pm crash.</p>
+        </div>
+        <div class="card">
+          <div class="n">Zero sugar, all flavor</div>
+          <p>Real raspberry taste, sweetened without sugar. 28 servings per bag. One bag, one month of mornings.</p>
+        </div>
+      </div>
+      <p class="center" style="margin-top:28px;"><a href="#buybox" class="btn">Get yours · Save 25%</a></p>
+    </div>
+  </section>
+
+  {%- comment -%} === TESTIMONIALS === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner">
+      <div class="center" style="max-width:720px;margin:0 auto 8px;">
+        <p class="eb eb--blue">Real reviews on Restore</p>
+        <h2>★★★★★ <span class="ital">4.97 from 374 customers</span>.</h2>
+      </div>
+      <div class="rsum-pull" style="margin-top:32px;">
+        <blockquote>Restore actually provides an immediate release of <span class="ital">hydration, clarity</span>, and tastes incredible. I tell everyone and anyone about Restore.</blockquote>
+        <p class="meta">Taylor W.<span>Verified Restore customer · ★★★★★</span></p>
+      </div>
+      <div class="rsum-tsupport">
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"I love that I get my hydration along with other supplements in one. The taste is superior to any other electrolyte I have ever tried."</blockquote>
+          <p class="who">Tracie C. · Verified buyer</p>
+        </div>
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"I drink it first thing in the morning. I don't need a second cup of coffee, nor do I want to go back to bed."</blockquote>
+          <p class="who">Dayna L. · Verified buyer</p>
+        </div>
+        <div class="card">
+          <p class="st">★★★★★</p>
+          <blockquote>"Definitely deserves all the hype. I feel great mentally and my body feels rejuvenated. The flavors don't have that awful synthetic taste."</blockquote>
+          <p class="who">Natalie D. · Verified buyer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === BUYBOX === {%- endcomment -%}
+  <section class="sec sec--pink" id="buybox">
+    <div class="inner">
+      <div class="rsum-bb">
+        <div class="prod-wrap">
+          <span class="prod-flag">New Limited Time Flavor</span>
+          <div class="prod-img">
+            <img src="{{ 'restore-studio-bag-glass.jpg' | asset_url }}" alt="Restore Raspberry bag and pink drink" loading="lazy">
+          </div>
+        </div>
+        <div>
+          <p class="eb eb--blue">Build your daily routine</p>
+          <h3 style="font-size:28px;line-height:1.15;margin:0 0 10px;letter-spacing:-0.01em;">Save up to <span class="rasp">35%</span> on Restore Raspberry.</h3>
+          <p style="font-size:15px;color:var(--ink-mute);margin:0 0 14px;line-height:1.5;">Free shipping. $70 in free gifts. Pause or cancel anytime.</p>
+          <p class="stars" style="margin:0 0 22px;">★★★★★ <small>4.97 · 374 verified Restore reviews</small></p>
+
+          <label class="plan sel" data-plan="1mo" data-mo="50.25" data-total="50.25">
+            <input type="radio" name="rsum-plan" value="1mo" checked>
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">1 Month <span class="badge">Save 25%</span></span>
+              <span class="plan-meta">1-month/28 serving supply. 1 bag delivered every 1 month.</span>
+              <span class="plan-meta small">Free shipping + free gifts ($70 value). Pause or cancel anytime.</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$67.00</span>
+              <span class="mo">$50.25/mo</span>
+              <span class="total">$50.25 total</span>
+              <span class="save">save $16.75</span>
+            </span>
+          </label>
+
+          <label class="plan" data-plan="2mo" data-mo="46.90" data-total="93.80">
+            <input type="radio" name="rsum-plan" value="2mo">
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">2 Months <span class="badge">Save 30%</span> <span class="badge badge--pop">Most Popular</span></span>
+              <span class="plan-meta">2-month/56 serving supply. 2 bags delivered every 2 months.</span>
+              <span class="plan-meta small">Free shipping + free gifts ($70 value). Pause or cancel anytime.</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$134.00</span>
+              <span class="mo">$46.90/mo</span>
+              <span class="total">$93.80 total</span>
+              <span class="save">save $40.20</span>
+            </span>
+          </label>
+
+          <label class="plan" data-plan="3mo" data-mo="43.55" data-total="130.65">
+            <input type="radio" name="rsum-plan" value="3mo">
+            <span class="radio"></span>
+            <span class="plan-body">
+              <span class="plan-title">3 Months <span class="badge">Save 35%</span> <span class="badge badge--best">Best Value</span></span>
+              <span class="plan-meta">3-month/84 serving supply. 3 bags delivered every 3 months.</span>
+              <span class="plan-meta small">Free shipping + free gifts ($70 value). Pause or cancel anytime.</span>
+            </span>
+            <span class="plan-price">
+              <span class="strike">$201.00</span>
+              <span class="mo">$43.55/mo</span>
+              <span class="total">$130.65 total</span>
+              <span class="save">save $70.35</span>
+            </span>
+          </label>
+
+          <button type="button" id="rsum-atc" class="btn full" style="margin-top:6px;">Add to Cart · $50.25</button>
+          <p class="reassure">Free shipping over $50 · 30-day money-back guarantee · Pause or cancel anytime.</p>
+
+          <ul class="prod-features">
+            <li>900mg+ balanced electrolytes per serving</li>
+            <li>Full multivitamin: Vit C, B-complex, methylfolate, magnesium</li>
+            <li>Glutathione for skin clarity and antioxidant defense</li>
+            <li>Zero sugar, zero bloat, zero crash</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === COMPARISON === {%- endcomment -%}
+  <section class="sec sec--cream">
+    <div class="inner">
+      <div class="center" style="max-width:680px;margin:0 auto;">
+        <p class="eb eb--blue">Side by side</p>
+        <h2>Restore vs <span class="ital">the rest</span>.</h2>
+      </div>
+      <table class="rsum-cmp">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-us">Restore Raspberry</th>
+            <th>Other electrolyte sticks</th>
+            <th>Sugar-loaded hydration drinks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Sugar</td><td class="col-us"><strong>0g</strong></td><td>0 to 2g</td><td>21 to 34g</td></tr>
+          <tr><td>Electrolytes</td><td class="col-us"><strong>900mg+ balanced</strong></td><td>1,000mg+ sodium-heavy</td><td>250 to 450mg</td></tr>
+          <tr><td>Full multivitamin</td><td class="col-us"><strong>Yes</strong></td><td>No</td><td>No</td></tr>
+          <tr><td>Skin support</td><td class="col-us"><strong>Yes</strong></td><td>No</td><td>No</td></tr>
+          <tr><td>Servings per bag</td><td class="col-us"><strong>28</strong></td><td>16 to 30</td><td>1 bottle</td></tr>
+          <tr><td>Built-in multivitamin</td><td class="col-us"><strong>Yes</strong></td><td>No</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {%- comment -%} === FAQ === {%- endcomment -%}
+  <section class="sec sec--pink">
+    <div class="inner" style="max-width:760px;">
+      <p class="eb">FAQ</p>
+      <h2>Before you start <span class="ital">Restore Raspberry</span>.</h2>
+      <div class="rsum-faq" style="margin-top:14px;">
+        <details><summary>Does it really not bloat?</summary><p>Restore is balanced for hydration, not flooded with sodium. Around 900mg+ total electrolytes per serving. Enough to actually hydrate, not enough to puff you up.</p></details>
+        <details><summary>How is this different from other hydration drinks?</summary><p>Most are sugar bombs or sodium bombs. Restore is a daily multivitamin drink that hydrates. Vitamin C, magnesium, glutathione, B vitamins, methylfolate. The things you'd otherwise take as pills.</p></details>
+        <details><summary>When should I drink it?</summary><p>Once a day. Morning is most common. Anytime works.</p></details>
+        <details><summary>Is it safe to drink every day?</summary><p>Yes. It's formulated as a daily replacement for the morning supplement stack.</p></details>
+        <details><summary>Does it really taste good?</summary><p>Raspberry. Bright, not syrupy. No fake sweetness aftertaste.</p></details>
+        <details><summary>Can I drink it while pregnant or nursing?</summary><p>Talk to your doctor before adding any supplement during pregnancy or nursing.</p></details>
+        <details><summary>What if it doesn't work for me?</summary><p>Send us the bag within 30 days for a full refund. Even if it is empty.</p></details>
+        <details><summary>Can I pause or cancel my subscription?</summary><p>Yes, anytime, in two clicks from your account page.</p></details>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} === FINAL CTA === {%- endcomment -%}
+  <section class="sec sec--rasp">
+    <div class="inner rsum-final" style="max-width:680px;">
+      <h2>Make it <span style="font-style:italic;">your summer</span>.</h2>
+      <p style="color:rgba(255,255,255,0.92);">28 days of pink drink. Zero sugar. Zero bloat. 12+ vitamins built in. Skin support every sip.</p>
+      <p style="margin-top:22px;"><a href="#buybox" class="btn btn--white">Try New Limited Restore Raspberry</a></p>
+      <p class="trust" style="color:rgba(255,255,255,0.75);">Subscription pricing shown. Free shipping on $50+ · 30-day money-back guarantee.</p>
+    </div>
+  </section>
+
+
+</div>
+
+<script>
+  /* Suppress Klaviyo signup popup on this lander */
+  (function(){
+    try {
+      window._klOnsite = window._klOnsite || [];
+      window._klOnsite.push(['openForm', '']);
+      var killPopups = function(){
+        document.querySelectorAll('.klaviyo-form, [data-testid="klaviyo-form"], div[class*="klaviyo-form-"]').forEach(function(el){
+          el.style.display = 'none';
+        });
+      };
+      killPopups();
+      var obs = new MutationObserver(killPopups);
+      obs.observe(document.body, {childList:true, subtree:true});
+      setTimeout(function(){ obs.disconnect(); }, 15000);
+    } catch(e) {}
+  })();
+  (function(){
+    var PLANS = {
+      '1mo': { variant: 52876415992097, selling_plan: 690941395233 },
+      '2mo': { variant: 52876416024865, selling_plan: 690941559073 },
+      '3mo': { variant: 52876416385313, selling_plan: 690975899937 }
+    };
+    var opts = document.querySelectorAll('.rsum-bb .plan');
+    var atc = document.getElementById('rsum-atc');
+    var selected = '1mo';
+    opts.forEach(function(o){
+      o.addEventListener('click', function(){
+        opts.forEach(function(x){ x.classList.remove('sel'); });
+        o.classList.add('sel');
+        selected = o.getAttribute('data-plan');
+        var total = o.getAttribute('data-total');
+        atc.textContent = 'Add to Cart · $' + total;
+      });
+    });
+    atc.addEventListener('click', function(e){
+      e.preventDefault();
+      var plan = PLANS[selected];
+      if (!plan) return;
+      atc.textContent = 'Adding...';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          items: [{ id: plan.variant, quantity: 1, selling_plan: plan.selling_plan }]
+        })
+      }).then(function(r){
+        if (!r.ok) throw new Error('add failed');
+        window.location.href = '/checkout';
+      }).catch(function(){
+        atc.textContent = 'Try again';
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Restore Summer Lander",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "NEW LIMITED TIME RASPBERRY FLAVOR" }
+  ],
+  "presets": [{ "name": "Restore Summer Lander" }]
+}
+{% endschema %}

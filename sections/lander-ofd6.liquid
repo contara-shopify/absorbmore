@@ -1,0 +1,860 @@
+{%- comment -%} OFD6 - Expensive Urine advertorial. Daily Basics Stack hero. Category-truth angle: most supplements don't absorb. No celebrity. Brand-thesis founder block. TAC Blue (#4659FF) primary + warm orange (#FF7815) accent. Hybrid format mirrors OFD3 Hollywood Secret. {%- endcomment -%}
+
+{%- liquid
+  assign hero_img    = section.settings.hero_img      | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/ofd6-hero-lineup.jpg?v=1781222471'
+  assign buy_img     = section.settings.buy_img       | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Daily-Basics-Bundle.png?v=1768595621'
+  assign mag_img     = section.settings.mag_img       | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/mag-pdp-launch.png?v=1762840748'
+  assign dk_img      = section.settings.dk_img        | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416'
+  assign coq_img     = section.settings.coq_img       | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_CoQ10.png?v=1768595395'
+  assign cart_ot     = section.settings.cart_ot       | default: '/cart/52218076234017:1'
+  assign cart_60d    = section.settings.cart_60d      | default: '/cart/52218076234017:1?selling_plan=691089047841'
+  assign cart_30d    = section.settings.cart_30d      | default: '/cart/52218076234017:1?selling_plan=691101335841'
+  assign price_ot_per     = section.settings.price_ot_per     | default: '$109'
+  assign price_ot_total   = section.settings.price_ot_total   | default: '$109.00'
+  assign price_60d_per    = section.settings.price_60d_per    | default: '$73.03'
+  assign price_60d_after  = section.settings.price_60d_after  | default: '$98.10'
+  assign price_60d_was    = section.settings.price_60d_was    | default: '$109.00'
+  assign price_60d_save   = section.settings.price_60d_save   | default: '$35.97'
+  assign price_30d_per    = section.settings.price_30d_per    | default: '$73.03'
+  assign price_30d_after  = section.settings.price_30d_after  | default: '$98.10'
+  assign price_30d_was    = section.settings.price_30d_was    | default: '$109.00'
+  assign price_30d_save   = section.settings.price_30d_save   | default: '$35.97'
+  assign rating      = section.settings.rating        | default: '4.7'
+  assign review_count = section.settings.review_count | default: '2,400+'
+-%}
+
+<style>
+  .ofd6 { --bg:#ffffff; --bg-soft:#f6f8ff; --bg-tint:#eef2ff; --paper:#fafbff; --ink:#0a1233; --ink-soft:#2a3260; --muted:#6b7390; --line:#dfe4f7; --line-soft:#ecf0fb; --brand:#4659FF; --brand-hover:#3a4ad9; --brand-deep:#2c39b3; --brand-tint:#e6e9ff; --accent:#FF7815; --accent-hover:#e76b0e; --accent-deep:#c25a0c; --accent-tint:#ffe9d6; --ink-deep:#080d24;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .ofd6 *{box-sizing:border-box}
+  .ofd6 img{max-width:100%;display:block}
+  .ofd6 a{color:inherit;text-decoration:none}
+  .ofd6 .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* ---------- STICKY TOP BAR ---------- */
+  .ofd6-bar{position:sticky;top:0;z-index:60;background:var(--ink-deep);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  .ofd6-bar__row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;font-size:13px;flex-wrap:wrap;text-align:center;line-height:1.3}
+  .ofd6-bar__lead{font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff}
+  .ofd6-bar__lead em{font-style:normal;color:var(--accent);font-weight:700}
+  @media(max-width:480px){.ofd6-bar__row{font-size:12px;gap:6px}}
+
+  /* ---------- HERO ---------- */
+  .ofd6-hero{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-soft) 100%);position:relative;overflow:hidden;padding:32px 0 44px;color:var(--ink);border-bottom:1px solid var(--line-soft)}
+  .ofd6-hero__grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center;position:relative}
+  @media(min-width:880px){.ofd6-hero__grid{grid-template-columns:1.05fr .95fr;gap:48px;padding:18px 0}}
+  @media(max-width:879px){
+    .ofd6-hero{padding:14px 0 24px}
+    .ofd6-hero__grid{gap:16px}
+    .ofd6-hero__eyebrow{margin-bottom:8px}
+    .ofd6-hero h1{margin-bottom:8px}
+  }
+
+  .ofd6-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:0;border-radius:0;margin-bottom:18px}
+  .ofd6-hero__eyebrow svg{width:13px;height:13px;color:var(--accent)}
+
+  .ofd6-hero h1{font-size:clamp(30px,5.6vw,50px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 14px;color:var(--ink-deep)}
+  .ofd6-hero h1 em{font-style:normal;color:var(--brand)}
+  .ofd6-hero h1 .gold{color:var(--accent);font-style:normal}
+  .ofd6-hero h1 .nowrap{white-space:nowrap}
+  .ofd6-hero__sub{font-size:clamp(15px,2vw,18px);max-width:540px;margin:0 0 18px;color:var(--ink-soft);line-height:1.5}
+  .ofd6-hero__sub b{color:var(--ink);font-weight:600}
+  .ofd6-hero__tag{font-size:clamp(17px,2.2vw,22px);font-weight:700;letter-spacing:-.015em;color:var(--brand);margin:0 0 14px;line-height:1.3}
+
+  .ofd6-hero__bullets{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:8px;max-width:540px}
+  .ofd6-hero__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:15px;font-weight:500;color:var(--ink);line-height:1.4}
+  .ofd6-hero__bullets li strong{font-weight:700;color:var(--ink-deep)}
+  .ofd6-hero__bullets li svg{width:20px;height:20px;flex:0 0 auto;color:var(--brand);margin-top:2px}
+
+  .ofd6-hero__pricing{display:flex;align-items:baseline;gap:14px;margin:14px 0 6px;flex-wrap:wrap}
+  .ofd6-hero__price-now{font-weight:800;font-size:clamp(20px,3vw,26px);color:var(--ink-deep);letter-spacing:-.02em;line-height:1}
+  .ofd6-hero__price-was{font-size:clamp(15px,2vw,18px);color:var(--muted);text-decoration:line-through;font-weight:500}
+  .ofd6-hero__price-tag{font-weight:700;color:#fff;background:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px;border-radius:4px}
+
+  .ofd6-hero__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:440px;padding:16px 30px;background:var(--brand);color:#fff !important;font-weight:600;font-size:15px;letter-spacing:.01em;border-radius:2px;border:none;cursor:pointer;transition:background .2s ease;text-decoration:none}
+  .ofd6-hero__cta *{color:#fff !important}
+  .ofd6-hero__cta:hover{background:var(--brand-hover)}
+  .ofd6-hero__cta:after{content:" →";margin-left:10px;color:#fff;transition:transform .2s}
+  .ofd6-hero__cta:hover:after{transform:translateX(3px)}
+
+  .ofd6-hero__guarantee{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink-soft)}
+  .ofd6-hero__guarantee svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+
+  .ofd6-hero__media{position:relative;text-align:center}
+  .ofd6-hero__card{background:#000;border-radius:8px;padding:0;position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:4/5;border:1px solid var(--line)}
+  .ofd6-hero__card > img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;border-radius:8px}
+  .ofd6-hero__inset{position:absolute;left:-22px;bottom:-22px;width:46%;aspect-ratio:1/1;border-radius:8px;overflow:hidden;border:4px solid var(--bg);box-shadow:0 12px 26px rgba(8,13,36,.22);background:#fff;z-index:3;transform:rotate(-3deg)}
+  .ofd6-hero__inset img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+  @media(max-width:760px){.ofd6-hero__inset{width:44%;left:-12px;bottom:-14px;border-width:3px}}
+  .ofd6-hero__badge{position:absolute;top:-40px;right:20px;background:var(--accent);color:#fff;border-radius:999px;width:124px;height:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;line-height:1;transform:rotate(-8deg);border:4px solid var(--bg);box-shadow:0 10px 22px rgba(8,13,36,.24);z-index:4}
+  .ofd6-hero__badge big{font-size:30px;color:#fff;letter-spacing:-.02em}
+  .ofd6-hero__badge span{font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-top:4px;color:#fff;font-weight:700}
+  @media(max-width:760px){.ofd6-hero__badge{top:-28px;right:14px;width:104px;height:104px}.ofd6-hero__badge big{font-size:25px}.ofd6-hero__badge span{font-size:10px}}
+  @media(max-width:879px){
+    .ofd6-hero__card{max-width:340px;aspect-ratio:1/1}
+  }
+
+  /* ---------- TRUST STRIP ---------- */
+  .ofd6-trust{background:var(--bg-soft);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:14px 0}
+  .ofd6-trust__row{display:grid;grid-template-columns:1fr;gap:10px 16px;text-align:left;font-size:13px;font-weight:500;color:var(--ink)}
+  @media(min-width:520px){.ofd6-trust__row{grid-template-columns:1fr 1fr;text-align:center}}
+  @media(min-width:720px){.ofd6-trust__row{grid-template-columns:repeat(5,1fr);font-size:13px}}
+  .ofd6-trust__cell{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  @media(min-width:520px){.ofd6-trust__cell{justify-content:center}}
+  .ofd6-trust__cell svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+  .ofd6-trust__stars{color:var(--accent);letter-spacing:1px;font-size:14px}
+
+  /* ---------- URGENCY BAND (Expensive Urine callout) ---------- */
+  .ofd6-urg{background:var(--ink-deep);color:#fff;padding:48px 0;position:relative;overflow:hidden}
+  .ofd6-urg__inner{text-align:center;position:relative;max-width:900px;margin:0 auto}
+  .ofd6-urg__chip{display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:0;border-radius:0;margin-bottom:18px}
+  .ofd6-urg__chip::before{content:"";display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%}
+  .ofd6-urg__head{font-size:clamp(26px,4.6vw,42px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 14px;color:#fff;max-width:920px;margin-left:auto;margin-right:auto}
+  .ofd6-urg__head em{font-style:normal;color:var(--accent)}
+  .ofd6-urg__body{text-align:left;max-width:680px;margin:0 auto 22px}
+  .ofd6-urg__body p{font-size:clamp(15px,1.8vw,17px);color:rgba(255,255,255,.85);margin:0 0 14px;line-height:1.6}
+  .ofd6-urg__body p b{color:#fff;font-weight:600}
+  .ofd6-urg__cta{display:inline-flex;align-items:center;justify-content:center;padding:16px 30px;background:var(--accent);color:#fff !important;font-weight:600;font-size:14.5px;letter-spacing:.01em;border-radius:2px;text-decoration:none;transition:background .2s}
+  .ofd6-urg__cta:hover{background:var(--accent-hover)}
+  .ofd6-urg__cta:after{content:" →";margin-left:10px;color:#fff}
+  .ofd6-urg__sub{max-width:720px;margin:0 auto 30px;text-align:center;font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(255,255,255,.78)}
+  .ofd6-urg__sub b{color:#fff;font-weight:600}
+  .ofd6-urg__cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 32px}
+  .ofd6-urg__card{padding:24px 20px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.03);text-align:left}
+  .ofd6-urg__icon{width:30px;height:30px;color:var(--accent);margin-bottom:14px;display:block}
+  .ofd6-urg__card-h{font-size:16px;font-weight:700;letter-spacing:-.01em;color:#fff;margin-bottom:8px;line-height:1.25}
+  .ofd6-urg__card-p{font-size:14px;line-height:1.55;color:rgba(255,255,255,.72)}
+  @media(max-width:760px){
+    .ofd6-urg__cards{grid-template-columns:1fr;gap:10px;margin-bottom:26px}
+    .ofd6-urg__card{padding:18px 16px}
+  }
+  .ofd6-urg__rotator{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:8px;margin:0 auto 24px;max-width:720px;font-size:clamp(18px,3vw,26px);font-weight:700;letter-spacing:-.02em;line-height:1.2;color:#fff}
+  .ofd6-urg__rotator .static{color:rgba(255,255,255,.85)}
+  .ofd6-urg__rotator .dynamic{color:var(--accent);font-weight:800;display:inline-block;min-width:160px;text-align:left;transition:opacity .35s ease, transform .35s ease}
+  .ofd6-urg__rotator .dynamic.is-out{opacity:0;transform:translateY(8px)}
+  @media(max-width:520px){
+    .ofd6-urg__rotator{gap:4px}
+    .ofd6-urg__rotator .dynamic{min-width:0}
+  }
+
+  /* ---------- SECTION BASE ---------- */
+  .ofd6-sec{padding:56px 0}
+  .ofd6-sec--blue{background:var(--bg-tint)}
+  .ofd6-sec--soft{background:var(--bg-soft)}
+  .ofd6-sec--ink{background:var(--ink-deep);color:#fff}
+  .ofd6-sec--ink h2,.ofd6-sec--ink h3{color:#fff}
+  .ofd6-sec__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.24em;font-weight:700;color:var(--ink);margin:0 0 12px;display:inline-flex;align-items:center;gap:10px}
+  .ofd6-sec__eyebrow::before{content:"";display:inline-block;width:6px;height:6px;background:var(--brand);border-radius:50%}
+  .ofd6-sec__title{font-size:clamp(26px,4.5vw,38px);font-weight:800;letter-spacing:-.035em;color:var(--ink-deep);margin:0 0 10px;line-height:1.05}
+  .ofd6-sec__title em{font-style:normal;color:var(--brand)}
+  .ofd6-sec__sub{font-size:16px;color:var(--ink-soft);max-width:680px;margin:0 0 28px;line-height:1.55}
+  .ofd6-sec--ink .ofd6-sec__title{color:#fff}
+  .ofd6-sec--ink .ofd6-sec__sub{color:rgba(255,255,255,.82)}
+  .ofd6-sec--ink .ofd6-sec__eyebrow{color:rgba(255,255,255,.85)}
+  .ofd6-sec--ink .ofd6-sec__eyebrow::before{background:var(--accent)}
+
+  /* ---------- STATS DASHBOARD ---------- */
+  .ofd6-benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:720px){.ofd6-benefits{grid-template-columns:repeat(4,1fr);gap:14px}}
+  .ofd6-benefit{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px 14px;text-align:center;position:relative;overflow:hidden}
+  .ofd6-benefit__num{font-size:clamp(28px,4.5vw,40px);font-weight:800;color:var(--ink-deep);letter-spacing:-.035em;line-height:1}
+  .ofd6-benefit__num em{font-style:normal;color:var(--brand)}
+  .ofd6-benefit__lbl{font-size:13px;font-weight:500;color:var(--ink-soft);margin-top:8px;line-height:1.3}
+  .ofd6-benefit__ref{display:block;font-size:10px;color:var(--muted);margin-top:6px}
+
+  .ofd6-benefit-list{display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-top:28px;max-width:720px;margin-left:auto;margin-right:auto}
+  @media(min-width:600px){.ofd6-benefit-list{grid-template-columns:repeat(2,1fr)}}
+  .ofd6-bl-item{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+  .ofd6-bl-item__ico{width:38px;height:38px;border-radius:8px;background:var(--brand-tint);color:var(--brand-deep);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .ofd6-bl-item__ico svg{width:22px;height:22px}
+  .ofd6-bl-item__txt{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+  .ofd6-bl-item__txt small{display:block;font-weight:400;color:var(--ink-soft);font-size:12px;margin-top:2px}
+
+  /* ---------- REVIEWS ---------- */
+  .ofd6-quotes{display:grid;grid-template-columns:1fr;gap:14px;margin-top:26px}
+  @media(min-width:720px){.ofd6-quotes{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1024px){.ofd6-quotes{grid-template-columns:repeat(4,1fr)}}
+  .ofd6-quote{background:#fff;border-radius:8px;padding:20px;border:1px solid var(--line);display:flex;flex-direction:column}
+  .ofd6-quote__stars{color:var(--accent);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+  .ofd6-quote__txt{font-size:14px;color:var(--ink);line-height:1.55;margin:0 0 12px}
+  .ofd6-quote__name{font-size:13px;font-weight:600;color:var(--ink-deep)}
+  .ofd6-quote__verif{font-size:11px;color:var(--brand-deep);display:flex;align-items:center;gap:4px;margin-top:2px;font-weight:600}
+  .ofd6-quote__verif svg{width:11px;height:11px}
+  .ofd6-quote__spacer{flex:1}
+  .ofd6-quote__product{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft);text-decoration:none;transition:opacity .15s}
+  .ofd6-quote__product:hover{opacity:.85}
+  .ofd6-quote__product:hover .ofd6-quote__shop{color:var(--brand-hover)}
+  .ofd6-quote__product:hover .ofd6-quote__shop:after{transform:translateX(3px)}
+  .ofd6-quote__product-img{width:48px;height:48px;border-radius:6px;background:var(--bg-soft);border:1px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
+  .ofd6-quote__product-img img{max-width:100%;max-height:100%;object-fit:contain}
+  .ofd6-quote__product-meta{font-size:12px;line-height:1.3;flex:1;min-width:0}
+  .ofd6-quote__product-meta small{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-weight:600;margin-bottom:2px}
+  .ofd6-quote__product-meta b{display:block;font-weight:700;color:var(--ink-deep);font-size:13px}
+  .ofd6-quote__shop{font-size:12px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;transition:color .15s}
+  .ofd6-quote__shop:after{content:" \2192";margin-left:4px;display:inline-block;transition:transform .15s}
+
+  /* ---------- BUY BOX ---------- */
+  .ofd6-buy{background:#fff;border:1px solid var(--line);border-radius:8px;padding:26px;max-width:600px;margin:0 auto;box-shadow:0 6px 30px rgba(70,89,255,.06)}
+  .ofd6-buy__flag{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:0;border-radius:0;margin-bottom:14px}
+  .ofd6-buy__flag::before{content:"";display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%}
+  .ofd6-buy__hero{background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:8px;padding:14px;margin:0 0 18px;display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;overflow:hidden}
+  .ofd6-buy__hero img{max-width:80%;max-height:100%;width:auto;height:auto;object-fit:contain}
+  .ofd6-buy h3{font-size:24px;font-weight:800;color:var(--ink-deep);margin:0 0 6px;letter-spacing:-.02em}
+  .ofd6-buy__stars{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);margin:0 0 18px}
+  .ofd6-buy__stars b{color:var(--accent);letter-spacing:1px}
+
+  .ofd6-buy__sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.24em;color:var(--ink);margin:0 0 14px}
+
+  .ofd6-opts{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 18px}
+  .ofd6-opt{display:flex;align-items:flex-start;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px;cursor:pointer;transition:border-color .15s, background .15s;position:relative}
+  .ofd6-opt input{position:absolute;opacity:0;pointer-events:none}
+  .ofd6-opt__bullet{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#fff;transition:border-color .15s;margin-top:2px}
+  .ofd6-opt__bullet::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform .15s}
+  .ofd6-opt__main{flex:1;min-width:0}
+  .ofd6-opt__title{font-size:15px;font-weight:700;color:var(--ink-deep);display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.25}
+  .ofd6-opt__chip{display:inline-block;background:var(--accent);color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:2px}
+  .ofd6-opt__chip--blue{background:var(--brand);color:#fff}
+  .ofd6-opt__meta{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.4}
+  .ofd6-opt__fine{font-size:11px;color:var(--muted);margin-top:6px}
+  .ofd6-opt__price{text-align:right;flex:0 0 auto;line-height:1.2;margin-left:8px}
+  .ofd6-opt__price b{display:block;font-size:18px;font-weight:800;color:var(--ink-deep);letter-spacing:-.02em}
+  .ofd6-opt__price-row{display:block;font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:3px}
+  .ofd6-opt__price-row s{color:var(--muted);font-weight:400;margin-right:3px}
+  .ofd6-opt__save{display:block;font-size:11px;color:var(--brand-deep);font-weight:600;margin-top:2px}
+  .ofd6-opt.is-on{border-color:var(--accent);background:var(--accent-tint)}
+  .ofd6-opt.is-on .ofd6-opt__bullet{border-color:var(--accent)}
+  .ofd6-opt.is-on .ofd6-opt__bullet::after{transform:scale(1)}
+
+  .ofd6-buy__list{list-style:none;padding:0;margin:0 0 20px}
+  .ofd6-buy__list li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:13px;color:var(--ink);border-top:1px solid var(--line-soft)}
+  .ofd6-buy__list li:first-child{border-top:none}
+  .ofd6-buy__list svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto;margin-top:2px}
+
+  .ofd6-buy__cta{display:flex;align-items:center;justify-content:center;width:100%;padding:16px 30px;background:var(--accent);color:#fff !important;font-weight:600;font-size:15px;letter-spacing:.01em;border-radius:2px;border:none;cursor:pointer;transition:background .2s;text-decoration:none}
+  .ofd6-buy__cta:hover{background:var(--accent-hover)}
+  .ofd6-buy__cta:after{content:" →";margin-left:10px;color:#fff !important}
+  .ofd6-buy__sub-info{font-size:12px;color:var(--muted);text-align:center;margin:14px 0 0;line-height:1.5}
+
+  /* ---------- PLP GRID ---------- */
+  .ofd6-plp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+  @media(min-width:720px){.ofd6-plp{grid-template-columns:repeat(3,1fr);gap:18px}}
+  .ofd6-plp__card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;text-align:left;position:relative;transition:border-color .15s, transform .15s}
+  @media(min-width:720px){.ofd6-plp__card{padding:18px}}
+  .ofd6-plp__card:hover{border-color:var(--brand)}
+  .ofd6-plp__img{background:var(--bg-soft);border-radius:6px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;margin:0 0 12px;overflow:hidden;position:relative}
+  .ofd6-plp__img img{max-width:82%;max-height:82%;object-fit:contain}
+  .ofd6-plp__mult{position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.04em;padding:4px 8px;border-radius:2px;text-transform:uppercase}
+  .ofd6-plp__name{font-size:14px;font-weight:700;color:var(--ink-deep);margin:0 0 4px;line-height:1.25}
+  @media(min-width:720px){.ofd6-plp__name{font-size:15px}}
+  .ofd6-plp__tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:8px;line-height:1.3}
+  .ofd6-plp__price{font-size:13px;color:var(--ink);font-weight:600;margin:6px 0 10px}
+  .ofd6-plp__price b{color:var(--ink-deep);font-weight:800}
+  .ofd6-plp__price small{display:block;color:var(--brand-deep);font-weight:600;font-size:11px;margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
+  .ofd6-plp__spacer{flex:1}
+  .ofd6-plp__cta{display:flex;align-items:center;justify-content:center;width:100%;padding:11px 14px;background:var(--brand);color:#fff !important;font-weight:600;font-size:13px;letter-spacing:.01em;border-radius:2px;text-decoration:none;transition:background .2s}
+  .ofd6-plp__cta:hover{background:var(--brand-hover)}
+  .ofd6-plp__cta:after{content:" \2192";margin-left:6px;color:#fff}
+
+  /* ---------- DAILY BASICS (single product) ---------- */
+  .ofd6-db{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:40px;margin-top:30px}
+  .ofd6-db__img{background:var(--bg-soft);border-radius:8px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .ofd6-db__img img{width:92%;height:92%;object-fit:contain}
+  .ofd6-db__chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+  .ofd6-db__chip{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--brand);background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:5px 11px;text-transform:uppercase}
+  .ofd6-db__name{font-size:clamp(24px,3vw,30px);font-weight:800;letter-spacing:-.02em;color:var(--ink-deep);margin:0 0 8px;line-height:1.1}
+  .ofd6-db__tag{font-size:15px;color:var(--ink-soft);margin:0 0 22px;line-height:1.5}
+  .ofd6-db__bullets{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-direction:column;gap:10px}
+  .ofd6-db__bullets li{position:relative;padding-left:28px;font-size:14.5px;line-height:1.5;color:var(--ink-soft)}
+  .ofd6-db__bullets li svg{position:absolute;left:0;top:2px;width:18px;height:18px;color:var(--brand);flex-shrink:0}
+  .ofd6-db__bullets li b{color:var(--ink-deep);font-weight:700}
+  .ofd6-db__buy{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
+  .ofd6-db__price{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;flex:1;min-width:180px}
+  .ofd6-db__price-num{font-size:30px;font-weight:800;color:var(--ink-deep);letter-spacing:-.02em;line-height:1}
+  .ofd6-db__price-cad{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .ofd6-db__price-save{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:800;background:rgba(212,75,33,.08);padding:5px 9px;border-radius:3px;align-self:center}
+  .ofd6-db__cta{display:inline-flex;align-items:center;justify-content:center;padding:16px 28px;background:var(--brand);color:#fff !important;font-weight:700;font-size:15px;letter-spacing:.01em;border-radius:2px;text-decoration:none;white-space:nowrap;transition:background .2s}
+  .ofd6-db__cta:hover{background:var(--brand-hover)}
+  .ofd6-db__cta:after{content:" \2192";margin-left:10px;color:#fff}
+  @media(max-width:760px){
+    .ofd6-db{grid-template-columns:1fr;gap:24px;padding:24px}
+    .ofd6-db__buy{flex-direction:column;align-items:stretch;gap:16px}
+    .ofd6-db__cta{width:100%}
+  }
+
+  /* ---------- COMPARISON ---------- */
+  .ofd6-comp{background:#fff;border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);font-size:13px;position:relative}
+  .ofd6-comp table{min-width:560px}
+  .ofd6-comp table{width:100%;border-collapse:collapse}
+  .ofd6-comp th,.ofd6-comp td{padding:14px 10px;text-align:center;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  .ofd6-comp thead th{background:var(--ink-deep);color:#fff;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.16em}
+  .ofd6-comp thead th:first-child{text-align:left;background:var(--ink-deep)}
+  .ofd6-comp thead th.db-col{background:var(--brand);color:#fff;font-size:16px;text-transform:none;letter-spacing:-.02em;font-weight:700;padding-top:30px;position:relative}
+  .ofd6-comp thead th.db-col::before{content:"\2605 THE ABSORPTION COMPANY";display:block;position:absolute;top:0;left:0;right:0;background:#fff;color:var(--brand);font-size:9px;letter-spacing:.16em;padding:5px 0;font-weight:700;border-bottom:1px solid var(--brand)}
+  .ofd6-comp tbody td:first-child{text-align:left;font-weight:600;color:var(--ink);background:var(--paper)}
+  .ofd6-comp .yes{color:var(--brand-deep);font-weight:700}
+  .ofd6-comp .no{color:var(--muted);font-weight:500}
+  .ofd6-comp tbody td.db-col{background:var(--brand-tint);font-weight:600;border-left:1px solid var(--brand);border-right:1px solid var(--brand)}
+  .ofd6-comp tbody tr:last-child td.db-col{border-bottom:1px solid var(--brand)}
+
+  /* ---------- FOUNDER STORY BAND (brand thesis, no celebrity) ---------- */
+  .ofd6-founder{max-width:780px;margin:0 auto;text-align:left}
+  .ofd6-founder h2{font-size:clamp(26px,4vw,38px);font-weight:800;color:var(--ink-deep);letter-spacing:-.03em;margin:0 0 16px;line-height:1.05}
+  .ofd6-founder h2 em{font-style:normal;color:var(--brand)}
+  .ofd6-founder p{font-size:16px;color:var(--ink-soft);line-height:1.65;margin:0 0 14px}
+  .ofd6-founder p b{color:var(--ink-deep)}
+  .ofd6-founder__sig{margin-top:14px;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .ofd6-founder__sig b{color:var(--ink-deep);font-weight:700}
+
+  /* ---------- GUARANTEE ---------- */
+  .ofd6-guar{background:var(--brand-tint);border-radius:8px;padding:32px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;border:1px solid var(--line)}
+  .ofd6-guar__seal{width:96px;height:96px;border-radius:50%;background:#fff;border:2px solid var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;text-align:center}
+  .ofd6-guar__seal big{font-size:28px;font-weight:800;color:var(--brand-deep);line-height:1}
+  .ofd6-guar__seal span{font-size:10px;font-weight:700;color:var(--brand-deep);text-transform:uppercase;letter-spacing:.16em;margin-top:2px}
+  .ofd6-guar__txt{flex:1;min-width:240px}
+  .ofd6-guar__txt h3{font-size:22px;font-weight:800;color:var(--ink-deep);margin:0 0 8px;letter-spacing:-.02em}
+  .ofd6-guar__txt p{font-size:14px;color:var(--ink-soft);margin:0;line-height:1.55}
+
+  /* ---------- FAQ ---------- */
+  .ofd6-faq{display:grid;gap:10px}
+  .ofd6-faq details{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+  .ofd6-faq summary{font-weight:700;color:var(--ink-deep);font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .ofd6-faq summary::-webkit-details-marker{display:none}
+  .ofd6-faq summary:after{content:"+";font-size:22px;font-weight:300;color:var(--brand);line-height:1}
+  .ofd6-faq details[open] summary:after{content:"−"}
+  .ofd6-faq__a{font-size:14px;color:var(--ink-soft);line-height:1.6;margin:12px 0 0}
+
+  /* ---------- FINAL CTA ---------- */
+  .ofd6-final{text-align:center}
+  .ofd6-final h2{font-size:clamp(28px,5vw,44px);margin:0 0 10px;letter-spacing:-.035em;line-height:1.05;color:#fff}
+  .ofd6-final h2 em{font-style:normal;color:var(--accent)}
+  .ofd6-final p{color:rgba(255,255,255,.82);margin:0 0 24px;font-size:16px;line-height:1.55}
+  .ofd6-final__cta{display:inline-flex;align-items:center;justify-content:center;padding:16px 30px;background:var(--accent);color:#fff !important;font-weight:600;font-size:14.5px;letter-spacing:.01em;border-radius:2px;text-decoration:none;transition:background .2s}
+  .ofd6-final__cta:hover{background:var(--accent-hover)}
+  .ofd6-final__cta:after{content:" →";margin-left:10px;color:#fff}
+  .ofd6-final__fine{margin-top:18px;font-size:12px;color:rgba(255,255,255,.6)}
+
+  /* ---------- STICKY MOBILE CTA ---------- */
+  .ofd6-stick{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid var(--line);padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 -4px 18px rgba(8,13,36,.10);transform:translateY(140%);transition:transform .25s ease}
+  .ofd6-stick.is-on{transform:translateY(0)}
+  .ofd6-stick__price{font-weight:800;color:var(--ink-deep);font-size:18px;line-height:1;white-space:nowrap;letter-spacing:-.02em}
+  .ofd6-stick__price small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+  .ofd6-stick__cta{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 14px;background:var(--accent);color:#fff !important;font-weight:600;font-size:14px;letter-spacing:.01em;border-radius:2px;text-decoration:none}
+  .ofd6-stick__cta:after{content:" →";margin-left:6px;color:#fff}
+  @media(min-width:880px){.ofd6-stick{display:none}}
+
+  .ofd6-stars5:before{content:"★★★★★"}
+  .ofd6 .center{text-align:center}
+  .ofd6-ast{color:var(--brand);font-weight:700;font-size:.7em;vertical-align:super;line-height:0;margin-left:1px}
+  .ofd6-urg .ofd6-ast{color:#fff}
+  .ofd6-disclaimer{background:var(--bg-soft);border-top:1px solid var(--line-soft);padding:22px 0;font-size:11px;line-height:1.55;color:var(--muted)}
+  .ofd6-disclaimer .wrap{max-width:780px}
+  .ofd6-disclaimer p{margin:0}
+</style>
+
+<div class="ofd6">
+
+  <!-- STICKY TOP BAR -->
+  <div class="ofd6-bar">
+    <div class="ofd6-bar__row">
+      <span class="ofd6-bar__lead">The Expensive Urine Problem · <em>Free shipping on every order</em></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="ofd6-hero">
+    <div class="wrap ofd6-hero__grid">
+      <div>
+        <span class="ofd6-hero__eyebrow">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 6.95H22l-6.18 4.49 2.39 7.06L12 16.97 5.79 20.5l2.39-7.06L2 8.95h7.61z"/></svg>
+          We named the company after the problem
+        </span>
+        <h1>Most of what you ingest <em>ends up in the toilet</em>.</h1>
+        <p class="ofd6-hero__tag">Ours are built to be absorbed.</p>
+        <p class="ofd6-hero__sub"><b>84% of supplements are wasted.</b> That includes the daily vitamins in your cabinet. You're paying for them and flushing them out as <b>expensive urine</b>, <b>and not feeling the real benefits</b>. That's where we're different. Every product we make is reformulated to absorb several times more because better absorption = better benefits.</p>
+
+        <ul class="ofd6-hero__bullets">
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Up to 149x more absorbable</strong> than standard supplements<span class="ofd6-ast">*</span></span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Five foundational supplements</strong>: Berberine, Magnesium, D3 + K2, CoQ10, Curcumin</span></li>
+          <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span><strong>Subscribe &amp; save</strong> on every product. Pause or cancel in 1 click anytime.</span></li>
+        </ul>
+
+        <a href="#buy" class="ofd6-hero__cta">Shop the Lineup</a>
+        <div class="ofd6-hero__guarantee">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4zm-1 14l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></svg>
+          30-day money-back guarantee · Cancel anytime · Ships free
+        </div>
+      </div>
+
+      <div class="ofd6-hero__media">
+        <div class="ofd6-hero__card">
+          <div class="ofd6-hero__badge"><big>149x<span class="ofd6-ast">*</span></big><span>Absorbable</span></div>
+          <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/t/233/assets/ofd6-toilet-money.png" alt="Money and capsules flushed down a toilet, illustrating wasted supplement spend" loading="eager">
+          <div class="ofd6-hero__inset">
+            <img src="{{ hero_img }}" alt="The Absorption Company lineup" loading="eager">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="ofd6-trust">
+    <div class="wrap ofd6-trust__row">
+      <div class="ofd6-trust__cell"><span class="ofd6-trust__stars ofd6-stars5"></span><span>{{ rating }} stars · Real reviews</span></div>
+      <div class="ofd6-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4z"/></svg>30-day guarantee</div>
+      <div class="ofd6-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>Third-party tested</div>
+      <div class="ofd6-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h13v2H3V4zm0 4h13v2H3V8zm0 4h9v2H3v-2zm14-2l4 4-4 4v-3h-4v-2h4v-3z"/></svg>Free shipping</div>
+      <div class="ofd6-trust__cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v6h6v2h-6v6h-2v-6H5V8h6V2z"/></svg>Made in the USA</div>
+    </div>
+  </div>
+
+  <!-- URGENCY BAND: The Expensive Urine Problem -->
+  <section class="ofd6-urg">
+    <div class="wrap ofd6-urg__inner">
+      <span class="ofd6-urg__chip">The Expensive Urine Problem</span>
+      <h2 class="ofd6-urg__head">Up to 149x<span class="ofd6-ast">*</span> more absorbable. <em>Felt, not flushed.</em></h2>
+      <p class="ofd6-urg__sub">Every product is engineered for <b>maximum absorption and bioavailability</b>. The actives reach your bloodstream instead of your toilet.</p>
+
+      <div class="ofd6-urg__rotator">
+        <span class="static">More absorption =</span>
+        <span class="dynamic" data-ofd6-rotator>more energy</span>
+      </div>
+
+      <a href="#buy" class="ofd6-urg__cta">Shop the Lineup</a>
+    </div>
+  </section>
+
+  <!-- STATS DASHBOARD -->
+  <section class="ofd6-sec ofd6-sec--blue">
+    <div class="wrap">
+      <p class="ofd6-sec__eyebrow center">Absorption, multiplied</p>
+      <h2 class="ofd6-sec__title center">Every product, engineered to absorb.</h2>
+      <div class="ofd6-benefits">
+        <div class="ofd6-benefit">
+          <div class="ofd6-benefit__num"><em>6.2x<span class="ofd6-ast">*</span></em></div>
+          <div class="ofd6-benefit__lbl">More absorbable berberine</div>
+          <span class="ofd6-benefit__ref">Glucose &amp; metabolic support</span>
+        </div>
+        <div class="ofd6-benefit">
+          <div class="ofd6-benefit__num"><em>149x<span class="ofd6-ast">*</span></em></div>
+          <div class="ofd6-benefit__lbl">More absorbable curcumin</div>
+          <span class="ofd6-benefit__ref">vs standard turmeric</span>
+        </div>
+        <div class="ofd6-benefit">
+          <div class="ofd6-benefit__num"><em>20x<span class="ofd6-ast">*</span></em></div>
+          <div class="ofd6-benefit__lbl">More absorbable WLP-1</div>
+          <span class="ofd6-benefit__ref">Our metabolic formula</span>
+        </div>
+        <div class="ofd6-benefit">
+          <div class="ofd6-benefit__num"><em>8x<span class="ofd6-ast">*</span></em></div>
+          <div class="ofd6-benefit__lbl">More absorbable magnesium</div>
+          <span class="ofd6-benefit__ref">Glycinate, not oxide</span>
+        </div>
+      </div>
+
+      <div class="ofd6-benefit-list">
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Deeper sleep<small>Magnesium glycinate calms the nervous system at night.</small></div>
+        </div>
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 016 6 6 6 0 11-6-6z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Bones + immunity<small>Vitamin D3 + K2 routes calcium to bone and keeps immunity on.</small></div>
+        </div>
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Steadier energy<small>CoQ10 Ubiquinol fuels cellular energy and heart support.</small></div>
+        </div>
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Joint comfort<small>Curcumin, up to 149x<span class="ofd6-ast">*</span> absorbable, calms everyday inflammation.</small></div>
+        </div>
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14v2H5V3zm0 4h14v14H5V7zm2 2v10h10V9H7z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Healthy blood sugar<small>Berberine supports glucose balance and metabolic health.</small></div>
+        </div>
+        <div class="ofd6-bl-item">
+          <div class="ofd6-bl-item__ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-4 9-9 12-5-3-9-7-9-12V5l9-4z"/></svg></div>
+          <div class="ofd6-bl-item__txt">Easier weight management<small>WLP-1 supports fat metabolism and appetite control.</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="ofd6-sec">
+    <div class="wrap">
+      <p class="ofd6-sec__eyebrow center">Real reviews</p>
+      <h2 class="ofd6-sec__title center">From people who stopped wasting money on supplements.</h2>
+
+      <div class="ofd6-quotes">
+        <div class="ofd6-quote">
+          <div class="ofd6-quote__stars ofd6-stars5"></div>
+          <p class="ofd6-quote__txt">"Switched from drugstore magnesium and I can actually feel a difference at night. First time in years I'm sleeping through."</p>
+          <div class="ofd6-quote__name">Lauren K.</div>
+          <div class="ofd6-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+          <div class="ofd6-quote__spacer"></div>
+          <a href="/products/magnesium-glycinate" class="ofd6-quote__product">
+            <div class="ofd6-quote__product-img"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Magnesium_fca66eba-7d7b-41d2-b6a1-9209fb90e380.png?v=1768241640" alt="Magnesium Glycinate" loading="lazy"></div>
+            <div class="ofd6-quote__product-meta"><small>Purchased</small><b>Magnesium Glycinate</b></div>
+            <span class="ofd6-quote__shop">Shop</span>
+          </a>
+        </div>
+        <div class="ofd6-quote">
+          <div class="ofd6-quote__stars ofd6-stars5"></div>
+          <p class="ofd6-quote__txt">"Morning blood sugar finally moved. Energy stays even through the afternoon and I'm not chasing snacks at night."</p>
+          <div class="ofd6-quote__name">James T.</div>
+          <div class="ofd6-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+          <div class="ofd6-quote__spacer"></div>
+          <a href="/products/berberine" class="ofd6-quote__product">
+            <div class="ofd6-quote__product-img"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png?v=1768595489" alt="Berberine" loading="lazy"></div>
+            <div class="ofd6-quote__product-meta"><small>Purchased</small><b>Berberine</b></div>
+            <span class="ofd6-quote__shop">Shop</span>
+          </a>
+        </div>
+        <div class="ofd6-quote">
+          <div class="ofd6-quote__stars ofd6-stars5"></div>
+          <p class="ofd6-quote__txt">"Cravings calmed down within the first couple weeks. Down ~9 lbs and the willpower part feels way easier."</p>
+          <div class="ofd6-quote__name">Sara M.</div>
+          <div class="ofd6-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+          <div class="ofd6-quote__spacer"></div>
+          <a href="/products/wlp-1" class="ofd6-quote__product">
+            <div class="ofd6-quote__product-img"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977" alt="WLP-1" loading="lazy"></div>
+            <div class="ofd6-quote__product-meta"><small>Purchased</small><b>WLP-1</b></div>
+            <span class="ofd6-quote__shop">Shop</span>
+          </a>
+        </div>
+        <div class="ofd6-quote">
+          <div class="ofd6-quote__stars ofd6-stars5"></div>
+          <p class="ofd6-quote__txt">"My bloodwork actually moved. D level is finally in range after years of taking the cheap stuff and going nowhere."</p>
+          <div class="ofd6-quote__name">Priya S.</div>
+          <div class="ofd6-quote__verif"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Verified buyer</div>
+          <div class="ofd6-quote__spacer"></div>
+          <a href="/products/vitamin-d-k" class="ofd6-quote__product">
+            <div class="ofd6-quote__product-img"><img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416" alt="Vitamin D3 + K2" loading="lazy"></div>
+            <div class="ofd6-quote__product-meta"><small>Purchased</small><b>Vitamin D3 + K2</b></div>
+            <span class="ofd6-quote__shop">Shop</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLP GRID -->
+  <section class="ofd6-sec ofd6-sec--blue" id="buy">
+    <div class="wrap">
+      <p class="ofd6-sec__eyebrow center">Shop the foundation</p>
+      <h2 class="ofd6-sec__title center">Six products. One absorption standard.</h2>
+      <p class="ofd6-sec__sub center" style="margin-left:auto;margin-right:auto">Each one reformulated to absorb several times more than the standard form. Build the routine you actually need.</p>
+
+      <div class="ofd6-plp">
+        <a href="/products/wlp-1" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 20x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_WLP1.png?v=1774483977" alt="WLP-1" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">WLP-1: Oral GLP-1 Support</div>
+          <div class="ofd6-plp__tag">Weight &middot; Appetite &middot; Cravings</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$64</b>/mo<small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop WLP-1</span>
+        </a>
+
+        <a href="/products/berberine" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 6.2x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Berberine.png?v=1768595489" alt="Berberine" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">Berberine</div>
+          <div class="ofd6-plp__tag">Metabolic &middot; Glucose &middot; Weight</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$39.20</b><small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop Berberine</span>
+        </a>
+
+        <a href="/products/magnesium-glycinate" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 8x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Magnesium_fca66eba-7d7b-41d2-b6a1-9209fb90e380.png?v=1768241640" alt="Magnesium Glycinate" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">Magnesium Glycinate</div>
+          <div class="ofd6-plp__tag">Sleep &middot; Stress &middot; Energy</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$22.40</b><small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop Magnesium</span>
+        </a>
+
+        <a href="/products/vitamin-d-k" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 1.9x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416" alt="Vitamin D3 + K2" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">Vitamin D3 + K2</div>
+          <div class="ofd6-plp__tag">Immunity &middot; Bones &middot; Heart</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$25.60</b><small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop D3 + K2</span>
+        </a>
+
+        <a href="/products/curcumin" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 149x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_Curcumin.png?v=1768595439" alt="Curcumin" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">Curcumin</div>
+          <div class="ofd6-plp__tag">Joints &middot; Recovery &middot; Inflammation</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$39.20</b><small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop Curcumin</span>
+        </a>
+
+        <a href="/products/coq10" class="ofd6-plp__card">
+          <div class="ofd6-plp__img">
+            <span class="ofd6-plp__mult">Up to 10x<span class="ofd6-ast">*</span></span>
+            <img src="https://cdn.shopify.com/s/files/1/0821/3997/1873/files/TAC_PDP-Image_CoQ10.png?v=1768595395" alt="CoQ10 Ubiquinol" loading="lazy">
+          </div>
+          <div class="ofd6-plp__name">CoQ10 Ubiquinol</div>
+          <div class="ofd6-plp__tag">Heart &middot; Energy &middot; Mitochondria</div>
+          <div class="ofd6-plp__spacer"></div>
+          <div class="ofd6-plp__price">From <b>$39.20</b><small>Subscribe &amp; save</small></div>
+          <span class="ofd6-plp__cta">Shop CoQ10</span>
+        </a>
+      </div>
+
+      <p class="ofd6-buy__sub-info" style="margin-top:24px">Each product ships free with a 30-day money-back guarantee. Pause or cancel any subscription in 1 click.</p>
+    </div>
+  </section>
+
+  <!-- BRAND THESIS BAND -->
+  <section class="ofd6-sec ofd6-sec--soft">
+    <div class="wrap">
+      <div class="ofd6-founder">
+        <p class="ofd6-sec__eyebrow">From the founders</p>
+        <h2>We named the company after the problem. Then we built the lineup that <em>fixes it</em>.</h2>
+        <p>The Absorption Company exists because the supplement industry kept selling forms it knew didn't work well. The dose on the label and the dose your body actually receives are two very different numbers, and most brands quietly hope you'll never check.</p>
+        <p><b>So we rebuilt the foundation.</b> Every product in our lineup is reformulated around one question: how much of this actually reaches the bloodstream? Magnesium glycinate instead of oxide. D3 paired with K2. CoQ10 in the Ubiquinol form. Curcumin engineered for up to 149x more absorption than standard turmeric.</p>
+        <p>The result is supplements that show up in how you feel: steadier energy, deeper sleep, stronger bones, and the confidence that what you're swallowing is what you're actually getting.</p>
+        <div class="ofd6-founder__sig">Ian Somerhalder &amp; Nikki Reed · Co-founders, The Absorption Company</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS (3 SKUs) -->
+  <section class="ofd6-sec">
+    <div class="wrap">
+      <p class="ofd6-sec__eyebrow center">Where to start</p>
+      <h2 class="ofd6-sec__title center">Start absorbing with the <em>Daily Basics</em>.</h2>
+      <p class="ofd6-sec__sub center" style="margin-left:auto;margin-right:auto">Made for foundational energy, sleep, immunity, and heart. Three reformulated actives, bundled together and built to be felt every day.</p>
+      <div class="ofd6-db">
+        <div class="ofd6-db__img">
+          <img src="https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Daily-Basics-Bundle.png?v=1768595621&width=960" alt="Daily Basics Stack" loading="lazy">
+        </div>
+        <div class="ofd6-db__body">
+          <div class="ofd6-db__chips">
+            <span class="ofd6-db__chip">Magnesium Glycinate</span>
+            <span class="ofd6-db__chip">Vitamin D3 + K2</span>
+            <span class="ofd6-db__chip">CoQ10 Ubiquinol</span>
+          </div>
+          <h3 class="ofd6-db__name">Daily Basics Stack</h3>
+          <p class="ofd6-db__tag">The foundational three. Built to be absorbed. Bundled to be felt.</p>
+          <ul class="ofd6-db__bullets">
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><b>Steady morning energy.</b> Wake up clearer, less groggy.</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><b>Deeper sleep, quieter stress.</b> Glycinate calms the nervous system.</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><b>Fewer sick days.</b> D3 + K2 keeps daily immunity steady.</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><b>Stronger bones &amp; heart.</b> K2 routes calcium where it belongs.</li>
+            <li><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><b>Cellular energy support.</b> Ubiquinol, the active form of CoQ10.</li>
+          </ul>
+          <div class="ofd6-db__buy">
+            <div class="ofd6-db__price">
+              <span class="ofd6-db__price-num">$109</span>
+              <span class="ofd6-db__price-cad">every 60 days</span>
+              <span class="ofd6-db__price-save">Save 33%</span>
+            </div>
+            <a href="/products/daily-basics" class="ofd6-db__cta">Shop the Daily Basics Stack</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="ofd6-sec ofd6-sec--blue">
+    <div class="wrap">
+      <p class="ofd6-sec__eyebrow center">What's in your cabinet vs The Absorption Company</p>
+      <h2 class="ofd6-sec__title center">Same nutrients. Very different math.</h2>
+      <div class="ofd6-comp">
+        <table>
+          <thead>
+            <tr><th></th><th class="db-col">Our lineup</th><th>What's in your cabinet</th><th>Generic multivitamin</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Magnesium form</td><td class="db-col yes">Glycinate, up to 8x absorbable</td><td class="no">Oxide (~4% absorbed)</td><td class="no">Oxide or blend</td></tr>
+            <tr><td>Vitamin D pairing</td><td class="db-col yes">D3 + K2, up to 1.9x absorbable</td><td class="no">D3 alone</td><td class="no">D2 or D3, no K2</td></tr>
+            <tr><td>CoQ10 form</td><td class="db-col yes">Ubiquinol, up to 10x absorbable</td><td class="no">Ubiquinone (must convert)</td><td class="no">Rarely included</td></tr>
+            <tr><td>Curcumin form</td><td class="db-col yes">Up to 149x absorbable</td><td class="no">Standard turmeric (&lt;1%)</td><td class="no">Rarely included</td></tr>
+            <tr><td>Third-party tested</td><td class="db-col yes">Every batch</td><td class="no">Rarely</td><td class="no">Rarely</td></tr>
+            <tr><td>Cost per absorbed dose</td><td class="db-col yes"><b>Low</b></td><td class="no">High</td><td class="no">High</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARANTEE -->
+  <section class="ofd6-sec">
+    <div class="wrap">
+      <div class="ofd6-guar">
+        <div class="ofd6-guar__seal"><big>30</big><span>Day MBG</span></div>
+        <div class="ofd6-guar__txt">
+          <h3>30 days. Full refund. No questions.</h3>
+          <p>If you don't feel a difference in 30 days, send back what's left, even empty bottles, and we'll refund every penny. No forms, no restocking, no hassle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="ofd6-sec ofd6-sec--soft">
+    <div class="wrap" style="max-width:780px">
+      <p class="ofd6-sec__eyebrow center">FAQ</p>
+      <h2 class="ofd6-sec__title center">Before you start</h2>
+      <div class="ofd6-faq" style="margin-top:18px">
+        <details>
+          <summary>How fast will I notice a difference?</summary>
+          <p class="ofd6-faq__a">Most users feel the magnesium first, often within the first week, in deeper sleep and less muscle tension. Energy and steadier mood typically show up in week two to three. Bone, heart, and immune benefits build over months as nutrient stores rebuild.</p>
+        </details>
+        <details>
+          <summary>I already take a multivitamin. Why switch?</summary>
+          <p class="ofd6-faq__a">The form is the entire story. Magnesium oxide absorbs at roughly 4%. D3 without K2 can shift calcium in the wrong direction. CoQ10 ubiquinone has to be converted before your cells can use it. Standard turmeric is famously poorly absorbed. Our lineup uses the forms your body can actually absorb and use, no conversion required.</p>
+        </details>
+        <details>
+          <summary>Which product should I start with?</summary>
+          <p class="ofd6-faq__a">It depends on what you feel first. Magnesium for sleep and stress. D3 + K2 for daily immunity and bones. CoQ10 for steadier energy and heart. Curcumin for joints and recovery. Berberine for metabolic and glucose. WLP-1 for weight and appetite. Most people start with one or two and build from there.</p>
+        </details>
+        <details>
+          <summary>Is this safe with medications?</summary>
+          <p class="ofd6-faq__a">These are supplements made from standard nutrients. If you take prescription medications, especially blood thinners or heart medications, talk with your doctor before starting any new supplement routine.</p>
+        </details>
+        <details>
+          <summary>Can I take more than one at once?</summary>
+          <p class="ofd6-faq__a">Yes. Most people take D3 + K2 and CoQ10 in the morning with food, magnesium glycinate at night, and others as needed. The timing is flexible. Consistency matters more than precision.</p>
+        </details>
+        <details>
+          <summary>How does the subscription work?</summary>
+          <p class="ofd6-faq__a">Each product has its own cadence so you can match how fast you use it. Subscribe and save on every delivery. Pause, skip, or cancel in 1 click anytime.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="ofd6-sec ofd6-sec--ink ofd6-final">
+    <div class="wrap">
+      <span class="ofd6-sec__eyebrow" style="color:rgba(255,255,255,.85)">The Expensive Urine Problem</span>
+      <h2>Stop paying for supplements your body <em>throws away</em>.</h2>
+      <p>You don't have to take more. You have to absorb more. Every product in our lineup is reformulated around the only number that matters: how much actually reaches the bloodstream.</p>
+      <a href="#buy" class="ofd6-final__cta">Shop the Lineup</a>
+      <div class="ofd6-final__fine">Free shipping &middot; 30-day money-back guarantee &middot; Cancel anytime.</div>
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <div class="ofd6-disclaimer">
+    <div class="wrap">
+      <p>*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Absorption claims based on comparison to standard supplement forms. Individual results may vary. Consult your healthcare provider before starting any new supplement routine.</p>
+    </div>
+  </div>
+
+  <!-- STICKY MOBILE CTA -->
+  <div class="ofd6-stick" data-stick>
+    <div class="ofd6-stick__price">Up to 149x<span class="ofd6-ast">*</span> <small>more absorbable</small></div>
+    <a href="#buy" class="ofd6-stick__cta">Shop the Lineup</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.ofd6');
+  if(!root) return;
+
+  var opts = root.querySelectorAll('[data-opt]');
+  var buyCta = root.querySelector('[data-buy-cta]');
+  var stickCta = root.querySelector('[data-stick-cta]');
+  var stickPrice = root.querySelector('[data-stick-price]');
+
+  opts.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      opts.forEach(function(o){ o.classList.remove('is-on'); });
+      opt.classList.add('is-on');
+      var radio = opt.querySelector('input');
+      if(radio) radio.checked = true;
+      var cart = opt.getAttribute('data-cart');
+      var price = opt.getAttribute('data-price');
+      var period = opt.getAttribute('data-period');
+      if(buyCta && cart) buyCta.setAttribute('href', cart);
+      if(stickCta && cart) stickCta.setAttribute('href', cart);
+      if(stickPrice && price){
+        stickPrice.innerHTML = price + ' <small>' + (period || '') + '</small>';
+      }
+    });
+  });
+
+  var stick = root.querySelector('[data-stick]');
+  var hero = root.querySelector('.ofd6-hero');
+  if(stick && hero){
+    var heroBottom = function(){ return hero.getBoundingClientRect().bottom; };
+    var onScroll = function(){
+      if(heroBottom() < 60){ stick.classList.add('is-on'); }
+      else { stick.classList.remove('is-on'); }
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  }
+
+  var rotator = root.querySelector('[data-ofd6-rotator]');
+  if(rotator){
+    var words = ['more energy','deeper sleep','steadier focus','stronger immunity','faster recovery','quieter stress','more benefits'];
+    var wi = 0;
+    setInterval(function(){
+      rotator.classList.add('is-out');
+      setTimeout(function(){
+        wi = (wi + 1) % words.length;
+        rotator.textContent = words[wi];
+        rotator.classList.remove('is-out');
+      }, 350);
+    }, 2200);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "OFD6 Expensive Urine",
+  "settings": [
+    { "type": "url",   "id": "hero_img",        "label": "Hero image URL (Daily Basics bundle)" },
+    { "type": "url",   "id": "buy_img",         "label": "Buybox product image URL" },
+    { "type": "url",   "id": "mag_img",         "label": "Magnesium card image URL" },
+    { "type": "url",   "id": "dk_img",          "label": "D3+K2 card image URL" },
+    { "type": "url",   "id": "coq_img",         "label": "CoQ10 card image URL" },
+    { "type": "text",  "id": "rating",          "label": "Star rating",        "default": "4.7" },
+    { "type": "text",  "id": "review_count",    "label": "Review count",       "default": "2,400+" },
+    { "type": "header","content": "Pricing — One-Time" },
+    { "type": "text",  "id": "price_ot_per",    "label": "One-Time price",     "default": "$109" },
+    { "type": "text",  "id": "price_ot_total",  "label": "One-Time total",     "default": "$109.00" },
+    { "type": "header","content": "Pricing — Every 60 Days" },
+    { "type": "text",  "id": "price_60d_per",   "label": "60d first price",    "default": "$73.03" },
+    { "type": "text",  "id": "price_60d_after", "label": "60d recurring",      "default": "$98.10" },
+    { "type": "text",  "id": "price_60d_was",   "label": "60d was",            "default": "$109.00" },
+    { "type": "text",  "id": "price_60d_save",  "label": "60d save $",         "default": "$35.97" },
+    { "type": "header","content": "Pricing — Every 30 Days" },
+    { "type": "text",  "id": "price_30d_per",   "label": "30d first price",    "default": "$73.03" },
+    { "type": "text",  "id": "price_30d_after", "label": "30d recurring",      "default": "$98.10" },
+    { "type": "text",  "id": "price_30d_was",   "label": "30d was",            "default": "$109.00" },
+    { "type": "text",  "id": "price_30d_save",  "label": "30d save $",         "default": "$35.97" },
+    { "type": "header","content": "Cart URLs (Skio)" },
+    { "type": "text",  "id": "cart_ot",         "label": "One-Time cart URL",  "default": "/cart/52218076234017:1" },
+    { "type": "text",  "id": "cart_60d",        "label": "60d cart URL",       "default": "/cart/52218076234017:1?selling_plan=691089047841" },
+    { "type": "text",  "id": "cart_30d",        "label": "30d cart URL",       "default": "/cart/52218076234017:1?selling_plan=691101335841" }
+  ],
+  "presets": [{ "name": "OFD6 Expensive Urine" }]
+}
+{% endschema %}

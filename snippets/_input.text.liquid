@@ -31,6 +31,8 @@
     [span.class||text]                  inline <span class="class">text</span>
     [icon.name.size.color]              theme icon (e.g. [icon.x-mark.16px])
     [gap.16] / [gap.fill]               horizontal spacer
+    [monthly]                           subscription monthly cost, e.g. $69/mo
+                                        (live on a PDP, static elsewhere)
     {s} / {y|ies} / {es} / {fe|ves}     pluralizers, based on a number earlier
                                         in the content
 {% endcomment %}
@@ -38,6 +40,18 @@
 {%- liquid
   if content == blank
     break
+  endif
+
+  if content contains '[monthly]'
+    assign monthly_static_only = false
+    if escape or escape_quotes
+      assign monthly_static_only = true
+    endif
+    capture monthly_replacement
+      render '_shortcode.monthly', static_only: monthly_static_only
+    endcapture
+    assign monthly_replacement = monthly_replacement | strip
+    assign content = content | replace: '[monthly]', monthly_replacement
   endif
 
   if content contains '[br]'

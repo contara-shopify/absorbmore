@@ -1,0 +1,350 @@
+{%- comment -%}
+  Absorb More Summer — contest signup landing page.
+  v2 — compressed into two visual components:
+    (1) The Pitch — hero + hashtag + prizes + how to enter (one cream slab)
+    (2) The Action — form + participation terms + content release (one white slab)
+  Form posts to a Google Apps Script web app that appends to a Google Sheet.
+{%- endcomment -%}
+
+{%- liquid
+  assign form_endpoint = section.settings.form_endpoint | default: 'PLACEHOLDER_GAS_URL'
+  assign campaign_dates = section.settings.travel_window | default: 'August 17'
+-%}
+
+<style>
+  .ams { font-family: inherit; color: #0F1B43; background: #F5F0E6;
+    --ams-blue: #1A2BB8; --ams-cream: #F5F0E6; --ams-cream-2: #EBE3D2; --ams-pink: #F26A88; --ams-ink: #0F1B43; --ams-line: rgba(15,27,67,0.18); }
+  .ams * { box-sizing: border-box; }
+  .ams img { max-width: 100%; height: auto; display: block; }
+
+  /* ============== COMPONENT 1 — THE PITCH ============== */
+  .ams__one { position: relative; padding: 36px 22px 40px; overflow: hidden; }
+  .ams__palm-tl { position: absolute; top: 12px; right: -50px; width: 200px; opacity: 0.16; pointer-events: none; transform: rotate(-12deg); }
+  .ams__palm-bl { position: absolute; bottom: 12px; left: -60px; width: 220px; opacity: 0.14; pointer-events: none; transform: rotate(22deg); }
+
+  /* Hero */
+  .ams__hero { text-align: center; }
+  .ams__eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ams-blue); margin: 0 0 12px; font-weight: 700; }
+  .ams__h1 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: var(--ams-blue); font-size: clamp(40px, 11vw, 64px); line-height: 0.96; letter-spacing: -0.01em; margin: 0; }
+  .ams__h1 span { display: block; }
+  .ams__hr { width: 32px; height: 2px; background: var(--ams-blue); margin: 16px auto 12px; border: 0; }
+  .ams__hero-sub { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--ams-blue); margin: 0 0 8px; }
+  .ams__hero-tag { font-family: 'Times New Roman', Times, serif; font-size: clamp(20px, 5vw, 28px); color: var(--ams-blue); margin: 8px 0 10px; font-weight: 700; }
+  .ams__hero-copy { font-size: 14px; line-height: 1.5; color: var(--ams-ink); max-width: 360px; margin: 0 auto 18px; }
+  .ams__hero-cta { display: inline-block; background: var(--ams-blue); color: #fff; text-decoration: none; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 14px 28px; border-radius: 999px; }
+
+  /* Section divider line */
+  .ams__divider { display: flex; align-items: center; gap: 12px; margin: 32px auto 18px; max-width: 540px; }
+  .ams__divider span { flex: 1; height: 1px; background: var(--ams-line); }
+  .ams__divider strong { font-family: 'Times New Roman', Times, serif; font-size: 18px; color: var(--ams-blue); font-weight: 700; letter-spacing: 0.02em; }
+
+  /* What You Win — 2 columns mobile */
+  .ams__prizes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 540px; margin: 0 auto; }
+  .ams__prize { background: rgba(26,43,184,0.05); border-radius: 12px; padding: 16px 14px; text-align: left; }
+  .ams__prize-icon { width: 32px; height: 32px; border: 1.5px solid var(--ams-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--ams-blue); margin-bottom: 10px; }
+  .ams__prize-icon svg { width: 16px; height: 16px; }
+  .ams__prize h4 { font-family: 'Times New Roman', Times, serif; font-size: 15px; font-weight: 700; color: var(--ams-blue); margin: 0 0 4px; line-height: 1.15; }
+  .ams__prize p { margin: 0; font-size: 12px; color: var(--ams-ink); opacity: 0.78; line-height: 1.35; }
+
+  /* How to Enter — tight numbered list */
+  .ams__steps { max-width: 540px; margin: 0 auto; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .ams__steps li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start; padding: 0; }
+  .ams__steps b { width: 26px; height: 26px; border-radius: 50%; background: var(--ams-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; font-family: 'Times New Roman', Times, serif; line-height: 1; flex-shrink: 0; }
+  .ams__steps span { font-size: 14px; line-height: 1.45; color: var(--ams-ink); padding-top: 4px; }
+  .ams__steps a { color: var(--ams-blue); text-decoration: underline; text-underline-offset: 2px; }
+
+  .ams__note { max-width: 540px; margin: 18px auto 0; padding: 12px 14px; background: rgba(26,43,184,0.06); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--ams-ink); }
+  .ams__note b { color: var(--ams-blue); display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 3px; }
+  .ams__note em { font-style: normal; opacity: 0.7; display: block; margin-top: 6px; font-size: 11px; }
+
+  /* ============== COMPONENT 2 — THE ACTION ============== */
+  .ams__two { background: #fff; padding: 40px 22px 48px; }
+  .ams__two-inner { max-width: 480px; margin: 0 auto; }
+  .ams__two-eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ams-blue); margin: 0 0 6px; font-weight: 700; text-align: center; }
+  .ams__two-h { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: var(--ams-blue); font-size: clamp(30px, 8vw, 42px); line-height: 1; margin: 0 0 6px; text-align: center; }
+  .ams__two-tag { font-family: 'Times New Roman', Times, serif; font-size: 16px; color: var(--ams-pink); margin: 0 0 22px; text-align: center; }
+
+  .ams__form { display: grid; gap: 12px; }
+  .ams__field { display: grid; gap: 5px; }
+  .ams__field label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--ams-blue); }
+  .ams__field input { font-family: inherit; font-size: 16px; padding: 13px 14px; border: 1.5px solid var(--ams-line); background: #fff; border-radius: 8px; color: var(--ams-ink); width: 100%; -webkit-appearance: none; appearance: none; }
+  .ams__field input:focus { outline: 0; border-color: var(--ams-blue); }
+
+  /* Terms — compact, in-form */
+  .ams__terms { margin-top: 10px; background: #FAF7EF; border: 1px solid var(--ams-line); border-radius: 10px; padding: 16px 16px; }
+  .ams__terms-h { font-family: 'Times New Roman', Times, serif; font-size: 16px; color: var(--ams-blue); margin: 0 0 10px; font-weight: 700; }
+  .ams__terms-block { padding: 10px 0; border-top: 1px solid var(--ams-line); }
+  .ams__terms-block:first-of-type { border-top: 0; padding-top: 0; }
+  .ams__terms-block-h { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ams-blue); font-weight: 800; margin: 0 0 8px; }
+  .ams__terms-list { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 5px; }
+  .ams__terms-list li { font-size: 12px; line-height: 1.45; color: var(--ams-ink); padding-left: 14px; position: relative; }
+  .ams__terms-list li::before { content: ''; position: absolute; left: 0; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--ams-blue); }
+  .ams__check { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; padding: 6px 0 0; }
+  .ams__check input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--ams-blue); flex-shrink: 0; margin-top: 1px; }
+  .ams__check label { font-size: 12px; line-height: 1.4; color: var(--ams-ink); cursor: pointer; font-weight: 600; letter-spacing: 0; text-transform: none; }
+
+  .ams__submit { background: var(--ams-blue); color: #fff; border: 0; padding: 16px 24px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; border-radius: 999px; cursor: pointer; margin-top: 6px; }
+  .ams__submit:disabled { opacity: 0.6; cursor: wait; }
+  .ams__error { font-size: 12px; color: #B81A2B; margin: 4px 0 0; min-height: 16px; text-align: center; }
+  .ams__success { display: none; padding: 24px 18px; background: rgba(26,43,184,0.08); border-radius: 12px; text-align: center; }
+  .ams__success h3 { font-family: 'Times New Roman', Times, serif; font-size: 24px; color: var(--ams-blue); margin: 0 0 6px; }
+  .ams__success p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ams-ink); }
+  .ams__success.is-visible { display: block; }
+  .ams__form.is-hidden { display: none; }
+
+  .ams__fine { margin: 18px auto 0; max-width: 480px; text-align: center; }
+  .ams__fine p { font-size: 10px; line-height: 1.6; color: var(--ams-ink); opacity: 0.6; margin: 0; }
+
+  /* ============== DESKTOP ============== */
+  @media (min-width: 768px) {
+    .ams__one { padding: 60px 32px 56px; }
+    .ams__palm-tl { width: 320px; right: 0; opacity: 0.18; }
+    .ams__palm-bl { width: 320px; left: 0; opacity: 0.18; }
+    .ams__hero-copy { font-size: 16px; max-width: 440px; }
+    .ams__prizes { grid-template-columns: repeat(3, 1fr); max-width: 760px; gap: 16px; }
+    .ams__prize { padding: 20px 18px; }
+    .ams__prize-icon { width: 36px; height: 36px; }
+    .ams__prize-icon svg { width: 18px; height: 18px; }
+    .ams__prize h4 { font-size: 17px; }
+    .ams__prize p { font-size: 13px; }
+    .ams__steps { max-width: 640px; }
+    .ams__steps span { font-size: 15px; }
+    .ams__two { padding: 56px 32px 64px; }
+    .ams__two-inner { max-width: 520px; }
+    .ams__field input { font-size: 15px; }
+    .ams__terms-list li { font-size: 13px; }
+  }
+</style>
+
+{%- comment -%} ===================== COMPONENT 1: THE PITCH ===================== {%- endcomment -%}
+<section class="ams ams__one" aria-labelledby="ams-h1">
+  <svg class="ams__palm-tl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="#0F1B43"><path d="M100 100 C 60 80, 30 60, 5 35 C 25 65, 50 80, 95 95 Z"/><path d="M100 100 C 130 70, 150 35, 160 5 C 145 35, 130 65, 102 96 Z"/><path d="M100 100 C 145 100, 180 95, 199 80 C 175 95, 145 100, 102 102 Z"/><path d="M100 100 C 130 130, 155 165, 165 195 C 150 165, 130 135, 102 104 Z"/><path d="M100 100 C 75 130, 55 165, 45 195 C 60 165, 80 135, 100 104 Z"/><path d="M100 100 C 60 110, 25 125, 5 145 C 30 130, 60 110, 100 102 Z"/></g>
+  </svg>
+  <svg class="ams__palm-bl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="#0F1B43"><path d="M100 100 C 60 80, 30 60, 5 35 C 25 65, 50 80, 95 95 Z"/><path d="M100 100 C 130 70, 150 35, 160 5 C 145 35, 130 65, 102 96 Z"/><path d="M100 100 C 145 100, 180 95, 199 80 C 175 95, 145 100, 102 102 Z"/><path d="M100 100 C 130 130, 155 165, 165 195 C 150 165, 130 135, 102 104 Z"/><path d="M100 100 C 75 130, 55 165, 45 195 C 60 165, 80 135, 100 104 Z"/><path d="M100 100 C 60 110, 25 125, 5 145 C 30 130, 60 110, 100 102 Z"/></g>
+  </svg>
+
+  <div class="ams__hero">
+    <p class="ams__eyebrow">The Absorption Company Presents</p>
+    <h1 class="ams__h1" id="ams-h1"><span>Absorb</span><span>More</span><span>Summer</span></h1>
+    <hr class="ams__hr">
+    <p class="ams__hero-sub">Win a Trip to Miami</p>
+    <p class="ams__hero-tag">#AbsorbMoreSummer</p>
+    <p class="ams__hero-copy">Show us how you absorb more summer. Create content featuring your favorite Absorb products for a chance to join us in Miami.</p>
+    <a href="#ams-form" class="ams__hero-cta">Enter the Contest</a>
+  </div>
+
+  <div class="ams__divider"><span></span><strong>What You Win</strong><span></span></div>
+  <div class="ams__prizes">
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+      <h4>Trip to Miami</h4>
+      <p>Round-trip airfare included.</p>
+    </div>
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg></div>
+      <h4>2 Hotel Nights</h4>
+      <p>Accommodations provided.</p>
+    </div>
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      <h4>Brand &amp; Paid Marketing</h4>
+      <p>Featured in official Absorb materials.</p>
+    </div>
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="2 7 7 3 12 7 17 3 22 7"/></svg></div>
+      <h4>Miami Photoshoot</h4>
+      <p>Create content with the brand.</p>
+    </div>
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+      <h4>$500 Product Package</h4>
+      <p>Your favorite Absorb products.</p>
+    </div>
+    <div class="ams__prize">
+      <div class="ams__prize-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a4 4 0 0 1-4 4z"/><path d="M3 11v2a4 4 0 0 0 4 4"/><path d="M21 11v2a4 4 0 0 1-4 4"/><line x1="8" y1="22" x2="16" y2="22"/><line x1="12" y1="17" x2="12" y2="22"/></svg></div>
+      <h4>Future Ambassador</h4>
+      <p>Potential ongoing partnerships.</p>
+    </div>
+  </div>
+
+  <div class="ams__divider"><span></span><strong>How To Enter</strong><span></span></div>
+  <ol class="ams__steps">
+    <li><b>1</b><span>Follow <a href="https://www.instagram.com/absorb.more" target="_blank" rel="noopener">@absorb.more</a> on Instagram and TikTok.</span></li>
+    <li><b>2</b><span>Like and share the official contest announcement post.</span></li>
+    <li><b>3</b><span>Register using the <a href="#ams-form">sign-up form below</a>.</span></li>
+    <li><b>4</b><span>Create original content featuring WLP-1, Berberine, Magnesium, or our mystery flavor (revealed June 19).</span></li>
+    <li><b>5</b><span>Post with #AbsorbMoreSummer and tag @absorb.more.</span></li>
+    <li><b>6</b><span>Be available to travel to Miami the week of {{ campaign_dates }} if selected.</span></li>
+  </ol>
+
+  <div class="ams__note">
+    <b>Content Requirements</b>
+    Summer-themed content featuring WLP-1, Berberine, Magnesium, or our mystery flavor (revealed June 19). By the pool, at the beach, while traveling, or however you're absorbing more summer.
+    <em>Miami trip dates are currently planned for the week of {{ campaign_dates }} and are subject to change.</em>
+  </div>
+</section>
+
+{%- comment -%} ===================== COMPONENT 2: THE ACTION ===================== {%- endcomment -%}
+<section class="ams ams__two" id="ams-form" aria-labelledby="ams-two-h">
+  <div class="ams__two-inner">
+    <p class="ams__two-eyebrow">Step 2 — Register</p>
+    <h2 class="ams__two-h" id="ams-two-h">Ready to Absorb More Summer?</h2>
+    <p class="ams__two-tag">#AbsorbMoreSummer</p>
+
+    <form class="ams__form" id="ams-signup" data-endpoint="{{ section.settings.form_endpoint }}" novalidate>
+      <div class="ams__field">
+        <label for="ams-name">Full Name</label>
+        <input id="ams-name" name="name" type="text" autocomplete="name" required maxlength="120">
+      </div>
+      <div class="ams__field">
+        <label for="ams-email">Email</label>
+        <input id="ams-email" name="email" type="email" autocomplete="email" required maxlength="160">
+      </div>
+      <div class="ams__field">
+        <label for="ams-handle">Social Handle (Instagram or TikTok)</label>
+        <input id="ams-handle" name="handle" type="text" placeholder="@yourhandle" required maxlength="80">
+      </div>
+
+      <div class="ams__terms" role="group" aria-labelledby="ams-terms-h">
+        <h3 class="ams__terms-h" id="ams-terms-h">Participation Terms &amp; Release</h3>
+
+        <div class="ams__terms-block">
+          <p class="ams__terms-block-h">Participation Terms</p>
+          <ul class="ams__terms-list">
+            <li>Follow @absorb.more on Instagram and TikTok.</li>
+            <li>Like and share the official contest announcement post.</li>
+            <li>Create original content featuring WLP-1, Berberine, Magnesium, or our mystery flavor (revealed June 19).</li>
+            <li>Use the hashtag #AbsorbMoreSummer.</li>
+            <li>Available to travel to Miami the week of {{ campaign_dates }} if selected (exact date may change).</li>
+          </ul>
+          <div class="ams__check">
+            <input id="ams-agree-terms" name="agreeTerms" type="checkbox" required>
+            <label for="ams-agree-terms">I confirm I meet and agree to the participation terms above.</label>
+          </div>
+        </div>
+
+        <div class="ams__terms-block">
+          <p class="ams__terms-block-h">Content Usage &amp; Legal Release</p>
+          <ul class="ams__terms-list">
+            <li>The Absorption Company has the right to repost, share, edit, and use submitted contest content across organic and paid marketing channels.</li>
+            <li>Any content captured during the Miami trip, photoshoot, or related activities may be used by The Absorption Company in future marketing, advertising, website, email, social media, and promotional materials.</li>
+          </ul>
+          <div class="ams__check">
+            <input id="ams-agree-release" name="agreeRelease" type="checkbox" required>
+            <label for="ams-agree-release">I agree to the content usage and legal release above.</label>
+          </div>
+        </div>
+      </div>
+
+      <button class="ams__submit" type="submit">Submit Entry</button>
+      <p class="ams__error" id="ams-error" role="alert" aria-live="polite"></p>
+    </form>
+
+    <div class="ams__success" id="ams-success" role="status" aria-live="polite">
+      <h3>You're in.</h3>
+      <p>Watch your email for next steps. Now go create something worth flying to Miami for.</p>
+    </div>
+
+    <div class="ams__fine">
+      <p>No purchase necessary. Must be 18 or older and a U.S. resident to enter. Travel dates are tentative and subject to change. The Absorption Company reserves the right to modify or end the contest at any time.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('ams-signup');
+  var err = document.getElementById('ams-error');
+  var success = document.getElementById('ams-success');
+  if (!form) return;
+
+  function setError(msg) { err.textContent = msg || ''; }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    setError('');
+
+    var endpoint = form.getAttribute('data-endpoint');
+    if (!endpoint || endpoint === 'PLACEHOLDER_GAS_URL') {
+      setError('Signups go live soon. Check back in a few minutes.');
+      return;
+    }
+
+    var agreeTerms = form.elements['agreeTerms'].checked;
+    var agreeRelease = form.elements['agreeRelease'].checked;
+
+    var data = {
+      name: form.elements['name'].value.trim(),
+      email: form.elements['email'].value.trim(),
+      handle: form.elements['handle'].value.trim(),
+      agreeTerms: agreeTerms,
+      agreeRelease: agreeRelease,
+      source: 'absorption-summer-lander',
+      timestamp: new Date().toISOString()
+    };
+
+    if (!data.name || !data.email || !data.handle) {
+      setError('Please fill in every field.');
+      return;
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
+      setError('Please enter a valid email.');
+      return;
+    }
+    if (!agreeTerms || !agreeRelease) {
+      setError('Please confirm both acknowledgments to submit your entry.');
+      return;
+    }
+
+    var btn = form.querySelector('.ams__submit');
+    btn.disabled = true;
+    var origText = btn.textContent;
+    btn.textContent = 'Submitting...';
+
+    fetch(endpoint, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    }).then(function () {
+      form.classList.add('is-hidden');
+      success.classList.add('is-visible');
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = origText;
+      setError('Something went wrong. Please try again in a moment.');
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Absorb More Summer",
+  "settings": [
+    {
+      "type": "url",
+      "id": "form_endpoint",
+      "label": "Form endpoint (Google Apps Script web app URL)",
+      "info": "Paste the deployed GAS web app URL here. Leave blank to keep the form in placeholder mode."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image (unused in v2; reserved)"
+    },
+    {
+      "type": "text",
+      "id": "travel_window",
+      "label": "Travel window label",
+      "default": "August 17"
+    }
+  ],
+  "presets": [
+    { "name": "Absorb More Summer" }
+  ]
+}
+{% endschema %}

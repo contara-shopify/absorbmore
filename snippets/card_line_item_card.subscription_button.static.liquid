@@ -42,12 +42,25 @@
 
 {% liquid
   assign selling_plan = line_item.variant.selling_plan_allocations[0].selling_plan
+  assign selling_plan_discount_wording = ''
+  assign discount_config = line_item.product.metafields.custom.ctr_discount_config.value
+  assign target_plan_id = selling_plan.id | append: ''
 
-  if selling_plan.price_adjustments[0].value_type == 'fixed_amount'
+  if discount_config != blank
+    for entry in discount_config
+      assign entry_plan_id = entry.selling_plan_id | default: entry.selling_planId | append: ''
+      if entry_plan_id == target_plan_id and entry.display_percent != blank
+        assign selling_plan_discount_wording = entry.display_percent | append: '%'
+        break
+      endif
+    endfor
+  endif
+
+  if selling_plan_discount_wording == blank and selling_plan.price_adjustments[0].value_type == 'fixed_amount'
     assign selling_plan_discount_wording = selling_plan.price_adjustments[0].value | times: line_item.quantity | money
   endif
 
-  if selling_plan.price_adjustments[0].value_type == 'percentage'
+  if selling_plan_discount_wording == blank and selling_plan.price_adjustments[0].value_type == 'percentage'
     assign selling_plan_discount_wording = selling_plan.price_adjustments[0].value | append: '%'
   endif
 

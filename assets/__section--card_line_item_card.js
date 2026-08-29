@@ -1,7 +1,125 @@
 const initLineItemCard = ($el, lineItemKey) => {
   const random_id = utils.shortUUID();
+  const isSameId = (a, b) => a != null && b != null && String(a) === String(b);
 
   const cart = Alpine.store("cart");
+
+  const parseJson = (value) => {
+    if (typeof value !== "string") return value;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  };
+
+  const normalizeSellingPlanId = (id) => {
+    if (id == null || id === "") return null;
+    const match = `${id}`.match(/(\d{10,})/);
+    return match ? match[1] : `${id}`;
+  };
+
+  const walkMetafieldDiscountEntries = (variant, product, visitor) => {
+    const queue = [variant?.metafields, product?.metafields];
+    const visited = new WeakSet();
+
+    while (queue.length) {
+      const current = parseJson(queue.shift());
+      if (!current || typeof current !== "object") continue;
+
+      if (Array.isArray(current)) {
+        for (const entryRaw of current) {
+          const entry = parseJson(entryRaw);
+          if (!entry || typeof entry !== "object") continue;
+
+          const planId = entry.selling_plan_id ?? entry.sellingPlanId ?? entry.plan_id ?? entry.id;
+          const displayPercent = Number(entry.display_percent ?? entry.displayPercent ?? entry.percent);
+          if (Number.isFinite(displayPercent) && displayPercent > 0) {
+            visitor({ planId, displayPercent });
+          }
+
+          if (entry.value !== undefined && entry.value !== null) {
+            queue.push(entry.value);
+          }
+        }
+        continue;
+      }
+
+      if (visited.has(current)) continue;
+      visited.add(current);
+      Object.values(current).forEach((value) => {
+        if (value !== undefined && value !== null) {
+          queue.push(value);
+        }
+      });
+    }
+  };
+
+  const resolvePlanDisplayPercent = (variant, product, sellingPlanId) => {
+    const targetPlanId = normalizeSellingPlanId(sellingPlanId);
+    if (!targetPlanId) return null;
+
+    let matched = null;
+    walkMetafieldDiscountEntries(variant, product, ({ planId, displayPercent }) => {
+      if (normalizeSellingPlanId(planId) === targetPlanId) {
+        matched = displayPercent;
+      }
+    });
+
+    return matched;
+  };
+
+  const resolveMaxDisplayPercent = (variant, product) => {
+    let maxPercent = null;
+    walkMetafieldDiscountEntries(variant, product, ({ displayPercent }) => {
+      if (maxPercent == null || displayPercent > maxPercent) {
+        maxPercent = displayPercent;
+      }
+    });
+    return maxPercent;
+  };
+
+  const getUpgradeSellingPlan = (variant, line_item) =>
+    line_item?.selling_plan_allocation?.selling_plan ?? variant?.selling_plan_allocations?.[0]?.selling_plan;
+
+  const getLineItemSellingPlanDiscountWording = (variant, product, selling_plan, quantity = 1) => {
+    if (!selling_plan?.id || !variant) return "";
+
+    const allocation =
+      variant?.selling_plan_allocations?.find((entry) => isSameId(entry?.selling_plan?.id, selling_plan?.id)) ??
+      variant?.selling_plan_allocations?.[0];
+
+    const config =
+      window.ctrDiscountDisplay?.parseConfig(product?.metafields?.custom?.ctr_discount_config) ?? null;
+    const configuredPercent = window.ctrDiscountDisplay?.getDisplayPercent?.(
+      selling_plan.id,
+      config,
+      allocation,
+      variant
+    );
+
+    if (configuredPercent > 0) {
+      return `${configuredPercent}%`;
+    }
+
+    const metafieldPercent =
+      resolvePlanDisplayPercent(variant, product, selling_plan.id) ?? resolveMaxDisplayPercent(variant, product);
+    if (metafieldPercent > 0) {
+      return `${metafieldPercent}%`;
+    }
+
+    const priceAdjustment = selling_plan?.price_adjustments?.[0];
+    if (priceAdjustment?.value && +priceAdjustment.value) {
+      if (priceAdjustment.value_type === "fixed_amount") {
+        return `${utils.formatMoney(+priceAdjustment.value * quantity)}`;
+      }
+      if (priceAdjustment.value_type === "percentage") {
+        return `${priceAdjustment.value}%`;
+      }
+    }
+
+    return "";
+  };
 
   const lineItem = Shopify.designMode
     ? cart.state.items.find((item) => item.key === lineItemKey) ??
@@ -43,7 +161,8 @@ const initLineItemCard = ($el, lineItemKey) => {
   let product = _products[lineItem?.handle];
 
   if (!product) {
-    _product.getProductData(lineItem?.handle, lineItem?.product_id).then((prod) => {
+    _product.getHydratedProductData(lineItem?.handle, lineItem?.product_id).then((prod) => {
+      if (!prod) return;
       state.product = prod;
       state.variant = prod?.variants?.find((variant) => variant.id === lineItem?.variant_id);
       state.hydrated = true;
@@ -53,15 +172,14 @@ const initLineItemCard = ($el, lineItemKey) => {
 
   const variant = product?.variants?.find((variant) => variant.id === lineItem?.variant_id);
 
-  const selling_plan = lineItem?.selling_plan_allocation?.selling_plan ?? variant?.selling_plan_allocations?.[0]?.selling_plan;
+  const selling_plan = getUpgradeSellingPlan(variant, lineItem);
 
-  const selling_plan_discount_wording = selling_plan?.price_adjustments?.[0]?.value
-    ? selling_plan?.price_adjustments?.[0]?.value_type === "fixed_amount"
-      ? `${utils.formatMoney(selling_plan?.price_adjustments?.[0]?.value * lineItem.quantity)}`
-      : selling_plan?.price_adjustments?.[0]?.value_type === "percentage"
-      ? `${selling_plan?.price_adjustments?.[0]?.value}%`
-      : ""
-    : "";
+  const selling_plan_discount_wording = getLineItemSellingPlanDiscountWording(
+    variant,
+    product,
+    selling_plan,
+    lineItem?.quantity ?? 1
+  );
 
   const state = window.Alpine.reactive({
     random_id,
@@ -228,16 +346,14 @@ const initLineItemCard = ($el, lineItemKey) => {
   });
 
   Alpine.effect(() => {
-    const selling_plan =
-      state?.line_item?.selling_plan_allocation?.selling_plan ?? state?.variant?.selling_plan_allocations?.[0]?.selling_plan;
+    const selling_plan = getUpgradeSellingPlan(state?.variant, state?.line_item);
 
-    state.selling_plan_discount_wording = selling_plan?.price_adjustments?.[0]?.value
-      ? selling_plan?.price_adjustments?.[0]?.value_type === "fixed_amount"
-        ? `${utils.formatMoney(selling_plan?.price_adjustments?.[0]?.value * state?.line_item?.quantity)}`
-        : selling_plan?.price_adjustments?.[0]?.value_type === "percentage"
-        ? `${selling_plan?.price_adjustments?.[0]?.value}%`
-        : ""
-      : "";
+    state.selling_plan_discount_wording = getLineItemSellingPlanDiscountWording(
+      state?.variant,
+      state?.product,
+      selling_plan,
+      state?.line_item?.quantity ?? 1
+    );
   });
 
   Alpine.effect(() => {

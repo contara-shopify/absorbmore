@@ -91,6 +91,8 @@
 {% endif %}
 
 {% capture section_content %}
+  {{ 'section-ctr-pbv2.css' | asset_url | stylesheet_tag }}
+
   <style>
     {{ css | append: custom_css | replace: '&', selector | strip_newlines }}
   </style>
@@ -112,6 +114,7 @@
       data-product-id="{{ product.id }}"
       data-variant-id="{{ variant.id }}"
       data-ctr-discount-config='{{ product.metafields.custom.ctr_discount_config.value | json | escape }}'
+      data-inventory-labels='{%- render 'ctr-inventory-labels' -%}'
       {% if default_select_selling_plan %}
         data-default-subscription="true"
       {% endif %}
@@ -138,7 +141,7 @@
     {{ cleaned_final_content }}
   </form>
 
-  {% if request.design_mode %}
+  {% if product != blank %}
     <script type="application/json"
             data-product-data="{{ product.handle }}"
             data-primary-product-data="{{ product.handle }}">{%- render '_json.product', product: product -%}</script>
@@ -157,7 +160,7 @@
 {
   "name": "Main Product",
   "settings": [
-    {
+    { 
       "type": "product",
       "id": "product",
       "label": "Product"
@@ -187,7 +190,7 @@
     },
     {
       "type": "paragraph",
-      "content": "t:all.empty_char"
+      "content": "Variant availability badges use metafields custom.low_stock and custom.sold_out on each variant. Copy is in theme locales (ctr.inventory.*)."
     },
     {
       "type": "paragraph",

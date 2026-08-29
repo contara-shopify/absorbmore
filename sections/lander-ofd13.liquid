@@ -1,0 +1,773 @@
+{%- comment -%}
+  OFD13 — GLP-1 Nutrient Support Stack advertorial-PDP hybrid.
+  Angle: rapid GLP-1 weight loss creates a nutrient deficit. Stack closes the gap.
+  Brand voice: declarative, no em dashes, no exclamations, no rhetorical questions.
+  Compliance: structure/function only, "GLP-1 injections" never brand names, ~ on weight numbers.
+{%- endcomment -%}
+
+{%- liquid
+  assign hero_img    = section.settings.hero_img    | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_GLP1-Nutrient-Stack.png?v=1775533230&width=1024'
+  assign stack_img   = section.settings.stack_img   | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_GLP1-Nutrient-Stack_PDP_1.png?v=1775533230&width=1024'
+  assign graph_img   = section.settings.graph_img   | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_GLP-1NutrientSupportStack_Graph.png?v=1775533230&width=1024'
+  assign restore_img = section.settings.restore_img | default: 'https://cdn.shopify.com/s/files/1/0821/3997/1873/files/restore-raspberry-bag-v2-ofd13.png?v=1781222183'
+  assign dk_img      = section.settings.dk_img      | default: 'https://www.absorbmore.com/cdn/shop/files/TAC_PDP-Image_Vitamin-D3-K2.png?v=1768595416&width=600'
+
+  comment
+    Single variant ($99). Skio sub = $69.30 every 60 days (30% off), plan 691124896033.
+    Use native form POST /cart/add (cart permalinks drop selling_plan on this theme).
+  endcomment
+  assign variant_id      = section.settings.variant_id      | default: '52542695112993'
+  assign sub_plan_id     = section.settings.sub_plan_id     | default: '691124863265'
+  assign price_sub       = section.settings.price_sub       | default: '$69.30'
+  assign price_sub_was   = section.settings.price_sub_was   | default: '$99.00'
+  assign price_sub_save  = section.settings.price_sub_save  | default: 'Save $29.70'
+  assign sub_cadence     = section.settings.sub_cadence     | default: 'every 30 days'
+  assign price_ot        = section.settings.price_ot        | default: '$99.00'
+  assign discount_pct    = section.settings.discount_pct    | default: '30'
+
+  assign rating          = section.settings.rating          | default: '4.7'
+  assign review_count    = section.settings.review_count    | default: '2,400+'
+  assign wlp1_link       = section.settings.wlp1_link       | default: 'https://www.absorbmore.com/products/wlp-1'
+
+  assign testimonial_quote  = section.settings.testimonial_quote  | default: 'I am on GLP-1 injections for 6 months now and did not realize how the reduced calorie intake was affecting me. My skin seemed pale and my muscles got sore so easily. These products have helped me feel better while continuing to lose weight. I look healthier and feel better too.'
+  assign testimonial_name   = section.settings.testimonial_name   | default: 'Christopher'
+  assign testimonial_title  = section.settings.testimonial_title  | default: 'Verified Customer · GLP-1 Nutrient Support Stack'
+  assign testimonial_pull   = section.settings.testimonial_pull   | default: 'I look healthier and feel better too.'
+-%}
+
+<style>
+  .ofd13 { --bg:#ffffff; --bg-soft:#fdf6f7; --bg-tint:#fbe9ec; --paper:#fdf8f9; --ink:#1a0d10; --ink-soft:#3d2429; --muted:#7a6a6d; --line:#f0d3d8; --line-soft:#f7e1e5; --brand:#C63947; --brand-hover:#A82D3A; --brand-deep:#8F1F2D; --brand-tint:#fae5e9; --accent:#FF7815; --accent-hover:#e76b0e; --green:#3EA193; --green-tint:#e1f2ee; --ink-deep:#1a0408; --red:#E1225C; --red-soft:#ff406f;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .ofd13 *{box-sizing:border-box}
+  .ofd13 img{max-width:100%;display:block;height:auto}
+  .ofd13 a{color:inherit;text-decoration:none}
+  .ofd13 .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+  .ofd13 .wrap-narrow{max-width:760px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .ofd13-hero{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-soft) 100%);padding:30px 0 40px;border-bottom:1px solid var(--line-soft);position:relative}
+  .ofd13-hero__grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center}
+  @media(min-width:880px){.ofd13-hero__grid{grid-template-columns:1.05fr .95fr;gap:48px;padding:14px 0}}
+  .ofd13-hero__eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:16px}
+  .ofd13-hero__eyebrow::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;display:inline-block}
+  .ofd13-hero h1{font-size:clamp(30px,5.6vw,50px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 14px;color:var(--ink-deep)}
+  .ofd13-hero h1 em{font-style:normal;color:var(--brand)}
+  .ofd13-hero__sub{font-size:clamp(15px,2vw,18px);max-width:540px;margin:0 0 18px;color:var(--ink-soft);line-height:1.5}
+  .ofd13-hero__sub b{color:var(--ink);font-weight:600}
+  .ofd13-hero__bullets{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:8px;max-width:540px}
+  .ofd13-hero__bullets li{display:flex;align-items:flex-start;gap:10px;font-size:15px;font-weight:500;color:var(--ink);line-height:1.4}
+  .ofd13-hero__bullets li svg{width:20px;height:20px;flex:0 0 auto;color:var(--brand);margin-top:2px}
+  .ofd13-hero__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:440px;padding:16px 30px;background:var(--brand);color:#fff !important;font-weight:600;font-size:15px;letter-spacing:.01em;border-radius:2px;border:none;cursor:pointer;text-decoration:none;transition:background .2s}
+  .ofd13-hero__cta:hover{background:var(--brand-hover)}
+  .ofd13-hero__cta:after{content:" →";margin-left:10px}
+  .ofd13-hero__rating{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:13px;color:var(--ink-soft);flex-wrap:wrap}
+  .ofd13-hero__stars{color:var(--accent);letter-spacing:2px;font-size:14px}
+  .ofd13-hero__rating b{color:var(--ink-deep);font-weight:700}
+  .ofd13-hero__media{position:relative;text-align:center}
+  .ofd13-hero__card{background:var(--bg-soft);border-radius:8px;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1/1;border:1px solid var(--line);overflow:hidden;padding:18px;display:flex;align-items:center;justify-content:center}
+  .ofd13-hero__card img{width:100%;height:100%;object-fit:contain}
+  .ofd13-hero__badge{position:absolute;top:-10px;right:14px;background:var(--accent);color:#fff;border-radius:999px;width:96px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;line-height:1;transform:rotate(-8deg);border:3px solid #fff;box-shadow:0 6px 14px rgba(8,13,36,.18)}
+  .ofd13-hero__badge big{font-size:22px;letter-spacing:-.01em}
+  .ofd13-hero__badge span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .ofd13-hero__chip{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#fff;color:var(--ink-deep);border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:12px;font-weight:700;letter-spacing:.04em;line-height:1;box-shadow:0 6px 16px rgba(8,13,36,.12);white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+  .ofd13-hero__chip::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;flex:0 0 auto}
+  @media(max-width:879px){.ofd13-hero__card{max-width:340px}.ofd13-hero__badge{top:-6px;right:6px;width:80px;height:80px}.ofd13-hero__badge big{font-size:18px}.ofd13-hero__chip{font-size:11px;padding:8px 14px;bottom:10px}}
+
+  /* TRUST STRIP */
+  .ofd13-trust{background:var(--bg-soft);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:14px 0}
+  .ofd13-trust__row{display:grid;grid-template-columns:1fr;gap:10px 16px;font-size:13px;font-weight:500;color:var(--ink)}
+  @media(min-width:520px){.ofd13-trust__row{grid-template-columns:1fr 1fr;text-align:center}}
+  @media(min-width:720px){.ofd13-trust__row{grid-template-columns:repeat(4,1fr)}}
+  .ofd13-trust__cell{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  @media(min-width:520px){.ofd13-trust__cell{justify-content:center}}
+  .ofd13-trust__cell svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+
+  /* SECTION BASE */
+  .ofd13-sec{padding:54px 0}
+  .ofd13-sec--soft{background:var(--bg-soft)}
+  .ofd13-sec--tint{background:var(--bg-tint)}
+  .ofd13-sec--ink{background:var(--ink-deep);color:#fff}
+  .ofd13-sec--ink h2,.ofd13-sec--ink h3{color:#fff}
+  .ofd13-sec__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.24em;font-weight:700;color:var(--ink);margin:0 0 12px;display:inline-flex;align-items:center;gap:10px}
+  .ofd13-sec__eyebrow::before{content:"";width:6px;height:6px;background:var(--brand);border-radius:50%;display:inline-block}
+  .ofd13-sec--ink .ofd13-sec__eyebrow{color:rgba(255,255,255,.85)}
+  .ofd13-sec--ink .ofd13-sec__eyebrow::before{background:var(--accent)}
+  .ofd13-sec__title{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.035em;color:var(--ink-deep);margin:0 0 12px;line-height:1.05}
+  .ofd13-sec--ink .ofd13-sec__title{color:#fff}
+  .ofd13-sec__title em{font-style:normal;color:var(--brand)}
+  .ofd13-sec--ink .ofd13-sec__title em{color:var(--accent)}
+  .ofd13-sec__sub{font-size:16px;color:var(--ink-soft);max-width:680px;margin:0 0 28px;line-height:1.6}
+  .ofd13-sec--ink .ofd13-sec__sub{color:rgba(255,255,255,.82)}
+
+  /* PROSE */
+  .ofd13-prose{max-width:680px;margin:0 auto}
+  .ofd13-prose p{font-size:17px;line-height:1.65;color:var(--ink);margin:0 0 18px}
+  .ofd13-prose p b{font-weight:700;color:var(--ink-deep)}
+  .ofd13-prose p .blue{color:var(--brand);font-weight:700}
+
+  /* MATH PULL */
+  .ofd13-math{background:#fff;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:0 8px 8px 0;padding:22px 22px;margin:0 auto;max-width:680px}
+  .ofd13-math__num{font-size:32px;font-weight:800;color:var(--brand);line-height:1;letter-spacing:-.02em;margin:0 0 6px}
+  .ofd13-math__t{font-size:15px;color:var(--ink);line-height:1.5;margin:0}
+  .ofd13-math__t b{color:var(--ink-deep);font-weight:700}
+
+  /* DARK 3-DEFICIT SECTION */
+  .ofd13-sec--ink .ofd13-prose p{color:rgba(255,255,255,.88)}
+  .ofd13-sec--ink .ofd13-prose p b{color:#fff}
+  .ofd13-sec--ink .ofd13-prose p .red{color:var(--red-soft);font-weight:700}
+
+  .ofd13-deflead{max-width:760px;margin:0 auto 36px;text-align:center}
+  .ofd13-deflead .ofd13-sec__eyebrow{justify-content:center}
+  .ofd13-deflead__sub{font-size:16px;color:rgba(255,255,255,.82);line-height:1.55;margin:0 auto;max-width:620px}
+  .ofd13-deflead__sub .red{color:var(--red-soft);font-weight:700}
+  .ofd13-deflead__sub b{color:#fff;font-weight:600}
+
+  .ofd13-defs{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:600px){.ofd13-defs{grid-template-columns:repeat(2,1fr);gap:12px}}
+  @media(min-width:880px){.ofd13-defs{grid-template-columns:repeat(3,1fr);gap:14px}}
+  .ofd13-def{background:#10173a;border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--red);padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+  .ofd13-def__num{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--red-soft);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:0}
+  .ofd13-def__h{font-size:16px;font-weight:800;color:#fff;line-height:1.2;margin:2px 0 0;letter-spacing:-.01em}
+  .ofd13-def__why{font-size:13.5px;color:rgba(255,255,255,.74);line-height:1.45;margin:4px 0 0}
+  .ofd13-defs__close{max-width:880px;margin:40px auto 0;padding:28px 24px;text-align:center;background:linear-gradient(180deg,rgba(198,57,71,.12),rgba(198,57,71,.04));border:1px solid rgba(198,57,71,.28);border-radius:14px;font-size:18px;color:rgba(255,255,255,.92);line-height:1.55}
+  @media(min-width:700px){.ofd13-defs__close{font-size:20px;padding:34px 32px;margin-top:48px}}
+  .ofd13-defs__close b{color:#fff;font-weight:800}
+  .ofd13-defs__close .red{color:var(--red-soft);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12.5px;display:block;margin-bottom:12px}
+  @media(min-width:700px){.ofd13-defs__close .red{font-size:13.5px;margin-bottom:14px}}
+
+  /* FOUNDER QUOTE */
+  .ofd13-founder{padding:54px 0;background:var(--paper);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .ofd13-founder--inline{padding:38px 22px 36px;background:#fff;border:1px solid var(--line);border-radius:14px;margin:0 auto 36px;max-width:960px;box-shadow:0 14px 40px rgba(198,57,71,.10);position:relative}
+  .ofd13-founder--inline:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--brand),var(--brand-hover));border-radius:14px 14px 0 0}
+  .ofd13-founder__inner{max-width:820px;margin:0 auto;padding:0;text-align:center}
+  .ofd13-founder__badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--brand);background:var(--brand-tint);padding:6px 12px;border-radius:999px;margin:0 0 14px}
+  .ofd13-founder__stars{font-size:24px;color:var(--accent);letter-spacing:3px;margin:0 0 14px;line-height:1}
+  .ofd13-founder__pull{font-size:clamp(28px,4.5vw,42px);line-height:1.1;color:var(--ink-deep);font-weight:800;letter-spacing:-.02em;margin:0 0 18px}
+  .ofd13-founder__pull em{font-style:normal;color:var(--brand)}
+  .ofd13-founder__q{font-size:clamp(16px,2vw,19px);line-height:1.55;color:var(--ink);font-weight:500;letter-spacing:-.005em;margin:0 0 22px;font-style:normal;max-width:680px;margin-left:auto;margin-right:auto}
+  .ofd13-founder__q b{color:var(--ink-deep);font-weight:800}
+  .ofd13-founder__q b{color:var(--brand);font-weight:700}
+  .ofd13-founder__attr{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding-top:14px;border-top:1px solid var(--line);min-width:220px}
+  .ofd13-founder__name{font-size:14px;color:var(--ink-deep);font-weight:700;line-height:1.2;text-align:left;display:flex;align-items:center;gap:8px;justify-content:center}
+  .ofd13-founder__verified{font-size:11px;color:var(--green);font-weight:700;background:var(--green-tint);padding:3px 8px;border-radius:999px;letter-spacing:.02em}
+  .ofd13-founder__title{font-size:12px;color:var(--ink-soft);font-weight:500;display:block;margin-top:4px;letter-spacing:.02em;text-align:center}
+
+  /* STACK COMPONENTS */
+  .ofd13-stack{display:grid;grid-template-columns:1fr;gap:18px;max-width:980px;margin:0 auto}
+  @media(min-width:760px){.ofd13-stack{grid-template-columns:1fr 1fr}}
+  .ofd13-comp{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+  .ofd13-comp__img{position:relative;background:var(--bg-soft);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:24px;border-bottom:1px solid var(--line-soft)}
+  .ofd13-comp__img img{max-width:100%;max-height:100%;object-fit:contain}
+  .ofd13-flavor-badge{position:absolute;top:14px;left:14px;background:var(--brand);color:#fff;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 12px 8px;border-radius:6px;line-height:1.25;text-align:left;box-shadow:0 6px 18px rgba(198,57,71,.28);display:inline-flex;flex-direction:column;gap:2px;z-index:2;max-width:140px}
+  .ofd13-flavor-badge b{font-size:11.5px;font-weight:800;letter-spacing:.14em;display:block}
+  .ofd13-flavor-badge i{font-style:normal;display:block;font-size:9.5px;font-weight:600;opacity:.95;letter-spacing:.14em}
+  @media(min-width:520px){.ofd13-flavor-badge{font-size:10.5px;padding:10px 14px 9px;max-width:160px}.ofd13-flavor-badge b{font-size:12.5px}.ofd13-flavor-badge i{font-size:10px}}
+  .ofd13-comp__body{padding:22px 22px 24px}
+  .ofd13-comp__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--brand);margin:0 0 8px}
+  .ofd13-comp__h{font-size:22px;font-weight:800;color:var(--ink-deep);letter-spacing:-.02em;margin:0 0 8px;line-height:1.1}
+  .ofd13-comp__role{font-size:13px;color:var(--ink-soft);font-weight:600;margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em}
+  .ofd13-comp__list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+  .ofd13-comp__list li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:var(--ink);line-height:1.4}
+  .ofd13-comp__list li svg{width:18px;height:18px;flex:0 0 auto;color:var(--brand);margin-top:2px}
+  .ofd13-comp__cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;padding:12px 20px;background:#fff;border:1.5px solid var(--brand);color:var(--brand);font-weight:700;font-size:13.5px;text-decoration:none;border-radius:6px;letter-spacing:.05em;text-transform:uppercase;transition:background .15s,color .15s;width:fit-content}
+  .ofd13-comp__cta:hover{background:var(--brand);color:#fff}
+  .ofd13-comp__cta:after{content:"→";font-weight:600}
+  .ofd13-comp__role-hint{font-size:12px;color:var(--muted);font-weight:500;margin:6px 0 0;font-style:italic}
+
+  /* BUYBOX */
+  .ofd13-buy{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 22px;max-width:580px;margin:0 auto;box-shadow:0 8px 36px rgba(198,57,71,.07)}
+  .ofd13-buy__flag{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px}
+  .ofd13-buy__flag::before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block}
+  .ofd13-buy__head{display:flex;gap:14px;align-items:center;margin:0 0 14px}
+  .ofd13-buy__thumb{width:78px;height:78px;flex:0 0 auto;border-radius:10px;background:var(--bg-soft);border:1px solid var(--line-soft);overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .ofd13-buy__thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .ofd13-buy__head-text{flex:1;min-width:0}
+  .ofd13-buy__h{font-size:22px;font-weight:800;color:var(--ink-deep);margin:0 0 4px;letter-spacing:-.02em;line-height:1.15}
+  .ofd13-buy__sub{font-size:14px;color:var(--ink-soft);margin:0;line-height:1.4}
+  .ofd13-buy__bens{list-style:none;padding:14px 0;margin:0 0 18px;display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .ofd13-buy__bens li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--ink);line-height:1.4}
+  .ofd13-buy__bens li b{color:var(--ink-deep);font-weight:700}
+  .ofd13-buy__bens svg{width:18px;height:18px;color:var(--green);flex:0 0 auto;margin-top:1px}
+  .ofd13-buy__bens .ofd13-buy__bens-gift{color:var(--accent)}
+  .ofd13-buy__bens .ofd13-buy__bens-gift b{color:var(--ink-deep)}
+  .ofd13-buy__gift-val{display:inline-block;background:#fff3e8;color:var(--accent);font-weight:800;font-size:11px;letter-spacing:.06em;padding:2px 7px;border-radius:6px;margin-left:6px;text-transform:uppercase;vertical-align:1px}
+  .ofd13-buy__list{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 18px;background:#fff}
+  .ofd13-buy__form{margin:0;padding:0}
+  .ofd13-flavor{margin:0 0 16px}
+  .ofd13-flavor__label{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-deep);margin:0 0 8px}
+  .ofd13-flavor__label-hint{font-size:11px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:.02em}
+  .ofd13-flavor__opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ofd13-flavor__opt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+  .ofd13-flavor__opt input{position:absolute;opacity:0;pointer-events:none}
+  .ofd13-flavor__opt-name{font-size:14px;font-weight:800;color:var(--ink-deep);display:flex;align-items:center;gap:6px;letter-spacing:-.01em}
+  .ofd13-flavor__opt-pill{display:inline-block;background:var(--brand);color:#fff;font-size:9px;font-weight:800;letter-spacing:.12em;padding:2px 6px;border-radius:4px;text-transform:uppercase;line-height:1.3}
+  .ofd13-flavor__opt-sub{font-size:11.5px;color:var(--muted);font-weight:500;letter-spacing:.01em}
+  .ofd13-flavor__opt:has(input:checked){border-color:var(--brand);background:var(--brand-tint);box-shadow:0 0 0 1px var(--brand) inset}
+  .ofd13-flavor__opt:has(input:checked) .ofd13-flavor__opt-name{color:var(--brand-deep)}
+  .ofd13-row{display:block;padding:16px 16px 14px;background:#fff;border-bottom:1px solid var(--line);position:relative;cursor:pointer;transition:background .15s}
+  .ofd13-row:last-child{border-bottom:0}
+  .ofd13-row__input{position:absolute;opacity:0;pointer-events:none}
+  .ofd13-row--best{background:var(--bg-soft)}
+  .ofd13-row__top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 6px}
+  .ofd13-row__left{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+  .ofd13-row__radio{width:18px;height:18px;border:2px solid #b7bbc4;border-radius:999px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:#fff;transition:border-color .15s}
+  .ofd13-row__input:checked ~ .ofd13-row__top .ofd13-row__radio{border-color:var(--ink-deep)}
+  .ofd13-row__input:checked ~ .ofd13-row__top .ofd13-row__radio:after{content:"";width:9px;height:9px;background:var(--ink-deep);border-radius:999px}
+  .ofd13-row__name{font-size:17px;font-weight:700;color:var(--ink-deep);line-height:1.15}
+  .ofd13-row__pill{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;padding:4px 8px;border-radius:4px;line-height:1;margin-left:8px;background:var(--accent);color:#fff}
+  .ofd13-row__right{text-align:right;flex-shrink:0}
+  .ofd13-row__price{display:block;font-size:18px;font-weight:800;color:var(--ink-deep);letter-spacing:-.01em;line-height:1;margin:0 0 4px}
+  .ofd13-row__was{display:block;font-size:13px;color:var(--muted);text-decoration:line-through;font-weight:500}
+  .ofd13-row__meta{display:block;font-size:12.5px;color:var(--ink-soft);line-height:1.35;padding-left:28px}
+  .ofd13-row__meta b{color:var(--brand-deep);font-weight:700}
+  .ofd13-row__perks{display:none;flex-direction:column;gap:8px;padding:14px 0 2px 28px;margin-top:10px;border-top:1px dashed var(--line)}
+  .ofd13-row__input:checked ~ .ofd13-row__perks{display:flex}
+  .ofd13-row__perk{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--ink);line-height:1.35}
+  .ofd13-row__perk b{color:var(--ink-deep);font-weight:700}
+  .ofd13-row__perk svg{width:15px;height:15px;color:var(--green);flex:0 0 auto;margin-top:2px}
+  .ofd13-row__perk--gift svg{color:var(--accent)}
+  .ofd13-buy__cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:18px 20px;font-family:inherit;font-size:17px;font-weight:800;letter-spacing:.01em;line-height:1;cursor:pointer;margin:18px 0 14px;transition:background .15s,transform .05s;box-shadow:0 6px 20px rgba(198,57,71,.25);-webkit-appearance:none;appearance:none}
+  .ofd13-buy__cta:hover{background:var(--brand-hover)}
+  .ofd13-buy__cta:active{transform:translateY(1px)}
+  .ofd13-buy__cta-sep{opacity:.5;font-weight:500}
+  .ofd13-buy__cta-price{font-weight:800;letter-spacing:-.01em}
+  .ofd13-buy__guarantee{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);margin:0;justify-content:center;text-align:center;line-height:1.4}
+  .ofd13-buy__guarantee svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+
+  /* REVIEWS */
+  .ofd13-quotes{display:grid;grid-template-columns:1fr;gap:14px;max-width:980px;margin:0 auto}
+  @media(min-width:760px){.ofd13-quotes{grid-template-columns:repeat(3,1fr)}}
+  .ofd13-quote{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px}
+  .ofd13-quote__stars{color:var(--accent);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+  .ofd13-quote__txt{font-size:14.5px;color:var(--ink);line-height:1.55;margin:0 0 12px}
+  .ofd13-quote__name{font-size:13px;font-weight:700;color:var(--ink-deep)}
+  .ofd13-quote__verif{font-size:11px;color:var(--brand-deep);display:flex;align-items:center;gap:4px;margin-top:2px;font-weight:600}
+  .ofd13-quote__verif svg{width:11px;height:11px}
+
+  /* FAQ */
+  .ofd13-faq{max-width:760px;margin:0 auto}
+  .ofd13-faq details{background:#fff;border:1px solid var(--line);border-radius:8px;padding:0;margin:0 0 10px}
+  .ofd13-faq summary{padding:18px 22px;font-weight:700;color:var(--ink-deep);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;list-style:none}
+  .ofd13-faq summary::-webkit-details-marker{display:none}
+  .ofd13-faq summary::after{content:"+";font-weight:700;font-size:22px;color:var(--brand);transition:transform .2s;line-height:1}
+  .ofd13-faq details[open] summary::after{content:"−"}
+  .ofd13-faq__body{padding:0 22px 20px;font-size:14.5px;color:var(--ink-soft);line-height:1.6}
+  .ofd13-faq__body p{margin:0 0 10px}
+  .ofd13-faq__body p:last-child{margin-bottom:0}
+
+  /* FINAL CTA STRIP */
+  .ofd13-final{padding:60px 0;background:var(--bg-soft);text-align:center}
+  .ofd13-final h2{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.035em;color:var(--ink-deep);margin:0 0 14px;line-height:1.05}
+  .ofd13-final h2 em{font-style:normal;color:var(--brand)}
+  .ofd13-final p{font-size:16px;color:var(--ink-soft);max-width:560px;margin:0 auto 26px;line-height:1.55}
+
+  /* STICKY BOTTOM BAR */
+  .ofd13-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(8,13,36,.08);padding:10px 14px;display:none;z-index:50}
+  .ofd13-sticky__inner{display:flex;align-items:center;gap:12px;max-width:680px;margin:0 auto}
+  .ofd13-sticky__price{flex:1;min-width:0;line-height:1.15}
+  .ofd13-sticky__now{font-size:16px;font-weight:800;color:var(--ink-deep)}
+  .ofd13-sticky__was{font-size:12px;color:var(--muted);text-decoration:line-through;margin-left:6px}
+  .ofd13-sticky__lbl{font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+  .ofd13-sticky__form{margin:0;flex-shrink:0}
+  .ofd13-sticky__btn{padding:14px 22px;background:var(--brand);color:#fff;font-weight:700;font-size:13.5px;border:0;border-radius:2px;cursor:pointer;font-family:inherit;-webkit-appearance:none;letter-spacing:.02em;text-transform:uppercase}
+  .ofd13-sticky__btn:hover{background:var(--brand-hover)}
+  .ofd13-sticky.is-visible{display:block}
+  @media(min-width:880px){.ofd13-sticky{display:none !important}}
+
+  /* DISCLAIMER */
+  .ofd13-disclaim{padding:28px 0 44px;background:var(--bg);font-size:11.5px;color:var(--muted);line-height:1.55;text-align:left;border-top:1px solid var(--line-soft)}
+  .ofd13-disclaim__inner{margin:0 auto;max-width:880px;padding:0 22px;display:flex;flex-direction:column;gap:10px}
+  .ofd13-disclaim p{margin:0}
+  .ofd13-disclaim sup{font-weight:700;color:var(--ink-soft)}
+  .ofd13-hero__disc-mark{font-size:.45em;font-weight:700;vertical-align:super;line-height:0;margin-left:1px}
+  .ofd13-hero__disc-mark a{color:inherit;text-decoration:none}
+  .ofd13-hero__disc-mark a:hover{text-decoration:underline}
+
+  @media(max-width:879px){
+    .ofd13-sec{padding:42px 0}
+  }
+</style>
+
+<section class="ofd13">
+
+  <!-- HERO -->
+  <div class="ofd13-hero">
+    <div class="wrap">
+      <div class="ofd13-hero__grid">
+        <div class="ofd13-hero__copy">
+          <div class="ofd13-hero__eyebrow">GLP-1 Companion Stack</div>
+          <h1>You lost the weight. Don't lose <em>~9 lbs of muscle<sup class="ofd13-hero__disc-mark"><a href="#disclaimer">*</a></sup></em> with it.</h1>
+          <p class="ofd13-hero__sub"><b>GLP-1 injections cut calories ~40%.</b> Your body keeps burning through electrolytes, bone density, and lean muscle the same way. Without active recovery, the weight loss starts costing you the parts you cannot afford to lose.</p>
+          <ul class="ofd13-hero__bullets">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Restore:</b> rebuilds the sodium, potassium, and magnesium appetite-suppressed days quietly drain. Fewer cramps, headaches, and crashes. Available in Mango or new Raspberry.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Vitamin D3 + K2:</b> protects bone density and lean muscle during rapid weight loss, with mood and immune support a reduced diet quietly misses.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Together:</b> steady energy, protected muscle, and recovery that holds while the weight comes off.</span></li>
+          </ul>
+          <a href="#buy" class="ofd13-hero__cta">Try GLP-1 Nutrient Support Stack</a>
+          <div class="ofd13-hero__rating">
+            <span class="ofd13-hero__stars">★★★★★</span>
+            <span><b>{{ rating }}</b> average across {{ review_count }} verified Absorption Company reviews</span>
+          </div>
+        </div>
+        <div class="ofd13-hero__media">
+          <div class="ofd13-hero__card">
+            <img src="{{ hero_img }}" alt="GLP-1 Nutrient Support Stack" loading="eager" width="800" height="800">
+          </div>
+          <div class="ofd13-hero__badge"><big>{{ discount_pct }}%</big><span>Off Today</span></div>
+          <div class="ofd13-hero__chip">GLP-1 Nutrient Support Stack</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="ofd13-trust">
+    <div class="wrap">
+      <div class="ofd13-trust__row">
+        <div class="ofd13-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Safe alongside GLP-1 injections</div>
+        <div class="ofd13-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Third-party tested</div>
+        <div class="ofd13-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Free shipping</div>
+        <div class="ofd13-trust__cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Cancel anytime</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE HIDDEN COST: tight lead + 3 deficits -->
+  <div class="ofd13-sec ofd13-sec--ink">
+    <div class="wrap">
+      <div class="ofd13-deflead">
+        <div class="ofd13-sec__eyebrow">The Hidden Cost of Rapid Weight Loss</div>
+        <h2 class="ofd13-sec__title">Your appetite shrunk. <em>Your nutrient needs didn't.</em></h2>
+        <p class="ofd13-deflead__sub"><b>GLP-1 injections</b> cut calories <span class="red">~40%</span>. Your bones, muscle, and electrolytes still need everything they did before. Here is where the gap shows up first.</p>
+      </div>
+
+      <div class="ofd13-defs">
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">01</p>
+          <h3 class="ofd13-def__h">Muscle loss</h3>
+          <p class="ofd13-def__why">Up to ~40% of weight lost can come from lean mass, not fat.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">02</p>
+          <h3 class="ofd13-def__h">Bone density drop</h3>
+          <p class="ofd13-def__why">Rapid weight loss thins bone fastest in months 2 through 6.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">03</p>
+          <h3 class="ofd13-def__h">Dehydration</h3>
+          <p class="ofd13-def__why">Less food means less water. Most of your daily intake comes from meals.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">04</p>
+          <h3 class="ofd13-def__h">Electrolyte crash</h3>
+          <p class="ofd13-def__why">Sodium, potassium, and magnesium dip fast on low-volume days.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">05</p>
+          <h3 class="ofd13-def__h">Cramps</h3>
+          <p class="ofd13-def__why">Calf cramps and charley horses are the first sign the tank is empty.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">06</p>
+          <h3 class="ofd13-def__h">Brain fog</h3>
+          <p class="ofd13-def__why">Undernourished mornings feel cloudy. Focus dips before lunch.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">07</p>
+          <h3 class="ofd13-def__h">Mood dips</h3>
+          <p class="ofd13-def__why">Magnesium and B-vit shortages quietly flatten your baseline.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">08</p>
+          <h3 class="ofd13-def__h">Afternoon crashes</h3>
+          <p class="ofd13-def__why">Low fuel plus low electrolytes equals a 2pm wall.</p>
+        </div>
+        <div class="ofd13-def">
+          <p class="ofd13-def__num">09</p>
+          <h3 class="ofd13-def__h">Slow recovery</h3>
+          <p class="ofd13-def__why">Workouts hit harder. Sleep and repair both take longer.</p>
+        </div>
+      </div>
+
+      <p class="ofd13-defs__close"><span class="red">How the stack closes the gap</span><b>Restore</b> replaces the electrolytes appetite-suppressed days quietly drain. <b>Vitamin D3 + K2</b> supports the bone density, mood, and immune function rapid weight loss can chip away at.</p>
+    </div>
+  </div>
+
+  <!-- MEET THE STACK -->
+  <div class="ofd13-sec ofd13-sec--tint">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 32px">
+        <div class="ofd13-sec__eyebrow" style="justify-content:center">The Companion Stack</div>
+        <h2 class="ofd13-sec__title">Two products. <em>The whole gap.</em></h2>
+        <p class="ofd13-sec__sub" style="margin-left:auto;margin-right:auto">Formulated for pharmaceutical-grade absorption so the small amount of food you eat is no longer the bottleneck.</p>
+      </div>
+      <div class="ofd13-stack">
+        <div class="ofd13-comp">
+          <div class="ofd13-comp__img"><span class="ofd13-flavor-badge"><b>New Flavor</b><i>Raspberry</i><i>Limited Edition</i></span><img src="{{ restore_img }}" alt="Restore Daily Electrolytes — Raspberry, Limited Edition" loading="lazy" width="400" height="400"></div>
+          <div class="ofd13-comp__body">
+            <div class="ofd13-comp__eyebrow">Component 1</div>
+            <h3 class="ofd13-comp__h">Restore</h3>
+            <p class="ofd13-comp__role">Hydration and Energy</p>
+            <ul class="ofd13-comp__list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Replaces sodium, potassium, magnesium lost to lower intake.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Supports steady energy as appetite fades.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Eases the dry mouth and low-volume days.</span></li>
+            </ul>
+            <a href="/products/restore" class="ofd13-comp__cta">Shop Restore</a>
+          </div>
+        </div>
+        <div class="ofd13-comp">
+          <div class="ofd13-comp__img"><img src="{{ dk_img }}" alt="Vitamin D3 + K2" loading="lazy" width="400" height="400"></div>
+          <div class="ofd13-comp__body">
+            <div class="ofd13-comp__eyebrow">Component 2</div>
+            <h3 class="ofd13-comp__h">Vitamin D3 + K2</h3>
+            <p class="ofd13-comp__role">Bone and Muscle</p>
+            <ul class="ofd13-comp__list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Supports bone density during rapid weight loss.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Helps protect lean muscle mass and strength.</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span>Liposomal delivery for higher absorption than standard pills.</span></li>
+            </ul>
+            <a href="/products/vitamin-d3-k2-1-9x-absorption" class="ofd13-comp__cta">Shop Vit D</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MID-PAGE BUYBOX -->
+  <div class="ofd13-sec" id="buy">
+    <div class="wrap">
+      <div style="text-align:center;max-width:640px;margin:0 auto 24px">
+        <div class="ofd13-sec__eyebrow" style="justify-content:center">Get The Stack</div>
+        <h2 class="ofd13-sec__title">Subscribe and <em>save {{ discount_pct }}%</em>.</h2>
+      </div>
+      <div class="ofd13-buy" data-buybox>
+        <div class="ofd13-buy__flag">Choose Your Plan</div>
+        <div class="ofd13-buy__head">
+          <div class="ofd13-buy__thumb"><img src="{{ hero_img }}" alt="GLP-1 Nutrient Support Stack" loading="lazy" width="160" height="160"></div>
+          <div class="ofd13-buy__head-text">
+            <h3 class="ofd13-buy__h">GLP-1 Nutrient Support Stack</h3>
+            <p class="ofd13-buy__sub">Restore (Raspberry) + Vitamin D3 + K2</p>
+          </div>
+        </div>
+
+        <ul class="ofd13-buy__bens">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Fast electrolyte rehydration</b> to reduce dizziness and cramps</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Supports lean muscle</b> during rapid weight loss</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>D3 + K2 for bone density</b>, mood, and immune support</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Steady energy</b> as appetite fades, with fewer afternoon crashes</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><b>Liposomal absorption</b> so the small amount you eat is not the bottleneck</span></li>
+        </ul>
+
+        <form action="/cart/add" method="post" class="ofd13-buy__form" data-buyform>
+          <input type="hidden" name="id" value="{{ variant_id }}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="selling_plan" value="{{ sub_plan_id }}" data-selling-plan>
+          <input type="hidden" name="return_to" value="/checkout">
+
+          <div class="ofd13-flavor">
+            <div class="ofd13-flavor__label">
+              <span>Choose Your Restore Flavor</span>
+              <span class="ofd13-flavor__label-hint">Same formula, different taste</span>
+            </div>
+            <div class="ofd13-flavor__opts">
+              <label class="ofd13-flavor__opt">
+                <input type="radio" name="properties[Restore Flavor]" value="Raspberry (Limited Edition)" checked>
+                <span class="ofd13-flavor__opt-name">Raspberry <span class="ofd13-flavor__opt-pill">New</span></span>
+                <span class="ofd13-flavor__opt-sub">Limited edition · while supplies last</span>
+              </label>
+              <label class="ofd13-flavor__opt">
+                <input type="radio" name="properties[Restore Flavor]" value="Mango">
+                <span class="ofd13-flavor__opt-name">Mango</span>
+                <span class="ofd13-flavor__opt-sub">Original fan favorite</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="ofd13-buy__list">
+            <label class="ofd13-row ofd13-row--best" data-plan-row="sub">
+              <input type="radio" name="plan" value="sub" class="ofd13-row__input" checked>
+              <span class="ofd13-row__top">
+                <span class="ofd13-row__left">
+                  <span class="ofd13-row__radio"></span>
+                  <span class="ofd13-row__name">Subscribe<span class="ofd13-row__pill">Save {{ discount_pct }}%</span></span>
+                </span>
+                <span class="ofd13-row__right">
+                  <span class="ofd13-row__price">{{ price_sub }}</span>
+                  <span class="ofd13-row__was">{{ price_sub_was }}</span>
+                </span>
+              </span>
+              <span class="ofd13-row__meta">Delivered <b>{{ sub_cadence }}</b>.</span>
+              <span class="ofd13-row__perks">
+                <span class="ofd13-row__perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><b>{{ discount_pct }}% off today</b> on every order</span>
+                <span class="ofd13-row__perk ofd13-row__perk--gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg><b>3 free gifts</b><span class="ofd13-buy__gift-val">$70 value</span></span>
+                <span class="ofd13-row__perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><b>Free shipping</b> on every order ($7 value)</span>
+                <span class="ofd13-row__perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><b>Pause or cancel anytime</b></span>
+              </span>
+            </label>
+            <label class="ofd13-row" data-plan-row="ot">
+              <input type="radio" name="plan" value="ot" class="ofd13-row__input">
+              <span class="ofd13-row__top">
+                <span class="ofd13-row__left">
+                  <span class="ofd13-row__radio"></span>
+                  <span class="ofd13-row__name">One-time</span>
+                </span>
+                <span class="ofd13-row__right">
+                  <span class="ofd13-row__price">{{ price_ot }}</span>
+                </span>
+              </span>
+              <span class="ofd13-row__meta">Single order. No commitment.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="ofd13-buy__cta" data-cta>
+            <span class="ofd13-buy__cta-label">Try GLP-1 Nutrient Support Stack</span>
+            <span class="ofd13-buy__cta-sep">·</span>
+            <span class="ofd13-buy__cta-price" data-cta-price>{{ price_sub }}</span>
+          </button>
+
+          <p class="ofd13-buy__guarantee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3 9-8 10-5-1-8-5-8-10V6l8-4z"/></svg>
+            30-day money-back guarantee. Free shipping on every order.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS — featured + supporting -->
+  <div class="ofd13-sec ofd13-sec--soft">
+    <div class="wrap">
+      <div style="text-align:center;max-width:720px;margin:0 auto 30px">
+        <div class="ofd13-sec__eyebrow" style="justify-content:center">Real Customers, Real Results</div>
+        <h2 class="ofd13-sec__title">From people on the <em>same journey</em>.</h2>
+      </div>
+
+      <div class="ofd13-founder ofd13-founder--inline">
+        <div class="ofd13-founder__inner">
+          <div class="ofd13-founder__badge">Featured Review · GLP-1 Stack</div>
+          <div class="ofd13-founder__stars" aria-label="5 out of 5 stars">★★★★★</div>
+          <h3 class="ofd13-founder__pull">&ldquo;<em>{{ testimonial_pull }}</em>&rdquo;</h3>
+          <p class="ofd13-founder__q">{{ testimonial_quote }}</p>
+          <div class="ofd13-founder__attr">
+            <div>
+              <div class="ofd13-founder__name">{{ testimonial_name }} <span class="ofd13-founder__verified">✓ Verified</span></div>
+              <span class="ofd13-founder__title">{{ testimonial_title }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ofd13-quotes">
+        <div class="ofd13-quote">
+          <div class="ofd13-quote__stars">★★★★★</div>
+          <p class="ofd13-quote__txt">I do not have the 2pm crash anymore and I am making it through my day without the intense sugar cravings I usually have. 10/10.</p>
+          <div class="ofd13-quote__name">Haley L.</div>
+          <div class="ofd13-quote__verif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Verified Buyer — Restore</div>
+        </div>
+        <div class="ofd13-quote">
+          <div class="ofd13-quote__stars">★★★★★</div>
+          <p class="ofd13-quote__txt">I have noticed a lot less muscle fatigue and pain after intense workouts. The flavor is delicious and it makes it so easy to rehydrate.</p>
+          <div class="ofd13-quote__name">Cathie Q.</div>
+          <div class="ofd13-quote__verif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Verified Buyer — Restore</div>
+        </div>
+        <div class="ofd13-quote">
+          <div class="ofd13-quote__stars">★★★★★</div>
+          <p class="ofd13-quote__txt">I know vitamin D3 is mainly for bone strength, but this has made me feel better overall. My mood and my energy have changed altogether.</p>
+          <div class="ofd13-quote__name">Michelle R.</div>
+          <div class="ofd13-quote__verif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Verified Buyer — Vitamin D3+K2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="ofd13-sec ofd13-sec--soft">
+    <div class="wrap">
+      <div style="text-align:center;max-width:640px;margin:0 auto 32px">
+        <div class="ofd13-sec__eyebrow" style="justify-content:center">Questions</div>
+        <h2 class="ofd13-sec__title">What to know <em>before you start</em>.</h2>
+      </div>
+      <div class="ofd13-faq">
+        <details>
+          <summary>Is this safe to take with my GLP-1 injection?</summary>
+          <div class="ofd13-faq__body">
+            <p>Yes. The stack is built specifically for people on GLP-1 injections. The ingredients are foundational vitamins, minerals, and electrolytes that support what your body still needs during rapid weight loss. As with any supplement, check with your doctor if you have specific concerns.</p>
+          </div>
+        </details>
+        <details>
+          <summary>This is a companion, not a replacement, right?</summary>
+          <div class="ofd13-faq__body">
+            <p>Correct. The stack is designed to fill the nutrient gap that rapid weight loss creates. It does not replace your GLP-1 injection, your diet, or your doctor's plan. It supports the body alongside them.</p>
+          </div>
+        </details>
+        <details>
+          <summary>When and how do I take it?</summary>
+          <div class="ofd13-faq__body">
+            <p>Restore is a daily electrolyte powder. Mix one stick or scoop with water and drink whenever you need it, typically with breakfast or mid-day.</p>
+            <p>Vitamin D3+K2 is a daily liposomal drop or capsule taken with food for best absorption.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What if it doesn't work for me?</summary>
+          <div class="ofd13-faq__body">
+            <p>We offer a 30-day money-back guarantee. If the stack is not the right fit, contact our team and we will refund your order. No friction.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Can I cancel my subscription?</summary>
+          <div class="ofd13-faq__body">
+            <p>Yes. Subscriptions are flexible. Pause, skip, or cancel any time from your account. There is no commitment beyond your next order.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="ofd13-final">
+    <div class="wrap-narrow">
+      <h2>Close the <em>nutrient gap</em>.</h2>
+      <p>Your weight loss is the win. Don't let it cost you the bone, muscle, hair, and energy you wanted to keep.</p>
+      <form action="/cart/add" method="post" style="margin:0;display:inline-block">
+        <input type="hidden" name="id" value="{{ variant_id }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="selling_plan" value="{{ sub_plan_id }}">
+        <input type="hidden" name="return_to" value="/checkout">
+        <button type="submit" class="ofd13-hero__cta" style="max-width:520px">Try GLP-1 Nutrient Support Stack · {{ price_sub }}</button>
+      </form>
+      <p style="font-size:13px;color:var(--ink-soft);margin:14px 0 0">Delivered {{ sub_cadence }}. Free shipping. Cancel anytime.</p>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="ofd13-disclaim" id="disclaimer">
+    <div class="ofd13-disclaim__inner">
+      <p><sup>*</sup>The ~9 lbs of muscle reference is based on published clinical findings that, on average, roughly 25–40% of total weight lost on GLP-1 medications can come from lean body mass when nutritional intake and resistance support are not actively maintained. Individual results vary based on diet, activity, dosage, and other factors.</p>
+      <p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Always consult your physician before starting any supplement, especially if you are taking prescription medication.</p>
+    </div>
+  </div>
+
+  <!-- STICKY BOTTOM ATC -->
+  <div class="ofd13-sticky" id="ofd13Sticky">
+    <div class="ofd13-sticky__inner">
+      <div class="ofd13-sticky__price">
+        <div class="ofd13-sticky__lbl">Subscribe &amp; Save {{ discount_pct }}%</div>
+        <div><span class="ofd13-sticky__now">{{ price_sub }}</span><span class="ofd13-sticky__was">{{ price_sub_was }}</span></div>
+      </div>
+      <form action="/cart/add" method="post" class="ofd13-sticky__form">
+        <input type="hidden" name="id" value="{{ variant_id }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="selling_plan" value="{{ sub_plan_id }}">
+        <input type="hidden" name="return_to" value="/checkout">
+        <button type="submit" class="ofd13-sticky__btn">Try the Stack</button>
+      </form>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  (function(){
+    var sticky = document.getElementById('ofd13Sticky');
+    var buy = document.querySelector('[data-buybox]');
+    if(!sticky || !buy) return;
+    var onScroll = function(){
+      if(window.innerWidth >= 880) return;
+      var y = window.scrollY || window.pageYOffset;
+      var buyTop = buy.getBoundingClientRect().top + window.scrollY;
+      if(y > 400 && y < buyTop - 100){
+        sticky.classList.add('is-visible');
+      } else {
+        sticky.classList.remove('is-visible');
+      }
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  })();
+
+  (function(){
+    var form = document.querySelector('[data-buyform]');
+    if(!form) return;
+    var sp = form.querySelector('[data-selling-plan]');
+    var ctaPrice = form.querySelector('[data-cta-price]');
+    var subPlanId = {{ sub_plan_id | json }};
+    var priceSub = {{ price_sub | json }};
+    var priceOt  = {{ price_ot  | json }};
+    form.addEventListener('change', function(e){
+      if(e.target.name !== 'plan') return;
+      if(e.target.value === 'sub'){
+        sp.value = subPlanId;
+        ctaPrice.textContent = priceSub;
+      } else {
+        sp.value = '';
+        ctaPrice.textContent = priceOt;
+      }
+    });
+  })();
+
+  // Direct-to-checkout: intercept any /cart/add form in this section,
+  // POST to /cart/add.js, then redirect to /checkout. Falls back to native submit on error.
+  (function(){
+    var root = document.querySelector('.ofd13');
+    if(!root) return;
+    root.addEventListener('submit', function(e){
+      var form = e.target;
+      if(!form || form.tagName !== 'FORM') return;
+      if((form.getAttribute('action') || '') !== '/cart/add') return;
+      e.preventDefault();
+      var btn = form.querySelector('button[type="submit"]');
+      var originalLabel = btn ? btn.innerHTML : null;
+      if(btn){ btn.disabled = true; btn.innerHTML = 'Working…'; }
+      var fd = new FormData(form);
+      // Strip empty selling_plan so one-time doesn't post selling_plan=""
+      if(fd.get('selling_plan') === '' || fd.get('selling_plan') == null){ fd.delete('selling_plan'); }
+      fd.delete('return_to');
+      fd.delete('plan');
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {'Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
+        body: fd,
+        credentials: 'same-origin'
+      }).then(function(res){
+        if(!res.ok) throw new Error('add failed');
+        window.location.href = '/checkout';
+      }).catch(function(){
+        if(btn){ btn.disabled = false; btn.innerHTML = originalLabel; }
+        form.removeEventListener('submit', arguments.callee);
+        form.submit();
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "OFD13 GLP-1 Companion",
+  "settings": [
+    { "type": "header", "content": "Imagery" },
+    { "type": "url", "id": "hero_img", "label": "Hero image" },
+    { "type": "url", "id": "stack_img", "label": "Secondary stack image" },
+    { "type": "url", "id": "restore_img", "label": "Restore product image" },
+    { "type": "url", "id": "dk_img", "label": "Vitamin D3+K2 product image" },
+    { "type": "header", "content": "Cart / Pricing" },
+    { "type": "text", "id": "variant_id", "label": "Variant ID" },
+    { "type": "text", "id": "sub_plan_id", "label": "Skio selling plan ID" },
+    { "type": "text", "id": "price_sub", "label": "Subscription price (display)" },
+    { "type": "text", "id": "price_sub_was", "label": "Subscription compare-at price" },
+    { "type": "text", "id": "price_sub_save", "label": "Save copy" },
+    { "type": "text", "id": "sub_cadence", "label": "Cadence (e.g. every 60 days)" },
+    { "type": "text", "id": "price_ot", "label": "One-time price" },
+    { "type": "text", "id": "discount_pct", "label": "Discount %" },
+    { "type": "header", "content": "Trust" },
+    { "type": "text", "id": "rating", "label": "Star rating" },
+    { "type": "text", "id": "review_count", "label": "Review count" },
+    { "type": "header", "content": "Testimonial" },
+    { "type": "text", "id": "testimonial_pull", "label": "Featured pull-quote (big headline)" },
+    { "type": "textarea", "id": "testimonial_quote", "label": "Testimonial quote" },
+    { "type": "text", "id": "testimonial_name", "label": "Reviewer name" },
+    { "type": "text", "id": "testimonial_title", "label": "Reviewer subtitle (e.g. Verified Customer — Restore)" }
+  ],
+  "presets": [{ "name": "OFD13 GLP-1 Companion" }]
+}
+{% endschema %}

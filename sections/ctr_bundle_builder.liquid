@@ -1275,10 +1275,10 @@
                           x-show="getDisplayComparePrice(item.handle) > getDisplayUnitPrice(item.handle)"
                           x-text="formatMoney(getDisplayComparePrice(item.handle))"></span>
                     <span class="ctr-bundle-card__price-divider"
-                          x-show="getPurchaseSavedPercent() > 0">•</span>
+                          x-show="getPurchaseSavedBadgePercent() > 0">•</span>
                     <span class="ctr-bundle-card__discount-badge"
-                          x-show="getPurchaseSavedPercent() > 0"
-                          x-text="`${getPurchaseSavedPercent()}% STACK DISCOUNT`"></span>
+                          x-show="getPurchaseSavedBadgePercent() > 0"
+                          x-text="`${getPurchaseSavedBadgePercent()}% STACK DISCOUNT`"></span>
                   </div>
                 </div>
 
@@ -1451,8 +1451,8 @@
               <span class="ctr-bundle-builder__purchase-price"
                     x-text="formatMoney(purchaseMode === 'subscription' ? getSubscriptionFinalTotal() : getOneTimeFinalTotal())"></span>
               <span class="ctr-bundle-builder__purchase-price-compare"
-                    x-show="purchaseMode === 'subscription' && getOneTimeFinalTotal() > getSubscriptionFinalTotal()"
-                    x-text="formatMoney(getOneTimeFinalTotal())"></span>
+                    x-show="purchaseMode === 'subscription' && getSubscriptionCompareSubtotal() > getSubscriptionFinalTotal()"
+                    x-text="formatMoney(getSubscriptionCompareSubtotal())"></span>
             </span>      
           </span>
         </span>
@@ -2610,7 +2610,8 @@
           },
 
           getPurchaseSavedBadgePercent() {
-            if (this.getTotalItemCount() > 0) return this.getPurchaseSavedPercent();
+            const activeTierDiscount = Number(this.getActiveTier().discount || 0);
+            if (activeTierDiscount > 0) return activeTierDiscount;
 
             const firstTierDiscount = Number(this.getSkioTiers()[0]?.discount || 0);
             return firstTierDiscount || this.getSubscriptionDiscountPercent();

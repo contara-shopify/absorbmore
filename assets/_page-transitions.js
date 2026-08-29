@@ -380,7 +380,6 @@ export const initPageTransitions = () => {
                 document.dispatchEvent(new CustomEvent("pageFullyLoaded", {}));
                 Shopify?.PaymentButton?.init();
                 window?.okeWidgetApi?.initAllWidgets();
-                window?.yotpoWidgetsContainer?.initWidgets();
                 window?.loyaltylion?.ui?.refresh();
 
                 setTimeout(() => {
@@ -396,6 +395,10 @@ export const initPageTransitions = () => {
           }
 
           firstRender = false;
+
+          if (window.theme_settings?.ctr_inventory_barba_fix === true) {
+            document.dispatchEvent(new CustomEvent("barba:afterEnter", { detail: data }));
+          }
         },
       },
     ],

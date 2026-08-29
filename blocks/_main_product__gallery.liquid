@@ -88,6 +88,18 @@
       x-init="$watch('pdp.selected_variant', () => scrollToMediaById(pdp.selected_variant?.featured_media?.id, $el.firstElementChild))"
     {% endif %}
     data-settings="{{ block.settings | json | escape }}">
+  <span
+    class="ctr-pbv2__gallery-low-stock ctr-pbv2__flavor-badge--sold-out"
+    x-show="pdp.isSelectedVariantSoldOut()"
+    x-text="pdp.inventoryLabels.soldOutGallery"
+    x-cloak
+  ></span>
+  <span
+    class="ctr-pbv2__gallery-low-stock"
+    x-show="!pdp.isSelectedVariantSoldOut() && pdp.isSelectedVariantLowStock()"
+    x-text="pdp.inventoryLabels.lowStockGallery"
+    x-cloak
+  ></span>
   <div class="grid-container relative flex snap-mandatory overflow-x-auto scrollbar-none max-lg:order-first {{ slider_scroll_snap }} {{ slider_overflow }}"
        data-main-product-images
        x-ignore

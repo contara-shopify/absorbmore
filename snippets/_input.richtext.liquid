@@ -20,6 +20,19 @@ Variables:
 {% endcomment %}
 {%- liquid
   assign input = content
+
+  if content contains '[monthly]'
+    assign monthly_static_only = false
+    if escape or escape_quotes
+      assign monthly_static_only = true
+    endif
+    capture monthly_replacement
+      render '_shortcode.monthly', static_only: monthly_static_only
+    endcapture
+    assign monthly_replacement = monthly_replacement | strip
+    assign content = content | replace: '[monthly]', monthly_replacement
+  endif
+
   if content contains '[br]'
     assign content = content | replace: '[br]', '<br>'
   endif

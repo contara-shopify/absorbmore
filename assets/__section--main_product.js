@@ -33,23 +33,25 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       _stores?.router?.pathname ?? ""
     );
 
-  let product = _products[productHandle] ?? _product.getHtmlProduct(productHandle);
+  const ctrInventoryBarbaFix = window.theme_settings?.ctr_inventory_barba_fix === true;
+
+  let product;
+  if (ctrInventoryBarbaFix) {
+    const htmlProduct = productHandle ? _product.getHtmlProduct(productHandle) : null;
+    product = htmlProduct ?? _products[productHandle];
+  } else {
+    product = _products[productHandle] ?? _product.getHtmlProduct(productHandle);
+  }
 
   if (!product && productHandle) {
     _product.getProductData(productHandle, productId, isPrimary ? "high" : "auto").then((res) => {
-      updateProductState(res, variantId);
+      if (res && (!ctrInventoryBarbaFix || document.contains($el))) {
+        updateProductState(res, variantId);
+      }
     });
   }
 
   product ??= _products[productHandle];
-
-  if (product && !product._full_data) {
-    _product.getHydratedProductData(productHandle, productId).then((res) => {
-      if (state.product?.handle === res.handle) {
-        state.product = res;
-      }
-    });
-  }
 
   if (isPrimary && product) {
     product.selected_variant_id = +(new URL(window.location.href).searchParams.get("variant") || variantId);
@@ -270,6 +272,69 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     (thumbnails ?? gallery)?.querySelector("[data-media-id]")?.getAttribute("data-media-id") ?? product?.media?.[0]?.id
   );
 
+  const inventoryLabels = utils.JSONParse($el.getAttribute("data-inventory-labels")) ?? {
+    lowStockPill: "Low Stock",
+    lowStockGallery: "Low Stock - Few Left",
+    soldOutPill: "Sold Out",
+    soldOutGallery: "Sold Out",
+    soldOutCta: "Sold Out",
+  };
+
+  const getVariantState = (variant) => {
+    if (!window.ctrFlavorInventory?.getVariantState) {
+      return { available: true, soldOut: false, lowStock: false };
+    }
+    return window.ctrFlavorInventory.getVariantState(variant);
+  };
+
+  const getOptionState = (optionIndex, value) => {
+    if (!window.ctrFlavorInventory?.getOptionState) {
+      return { available: true, soldOut: false, lowStock: false };
+    }
+    return window.ctrFlavorInventory.getOptionState({
+      variants: state.product?.variants,
+      optionIndex,
+      value,
+      selectedOptions: state.selected_options,
+    });
+  };
+
+  const getVariantStateById = (variantId) => {
+    const variant = state.product?.variants?.find((v) => v.id === +variantId);
+    return getVariantState(variant);
+  };
+
+  const isOptionValueSoldOut = (optionIndex, value) => getOptionState(optionIndex, value).soldOut;
+
+  const showOptionSoldOutBadge = (optionIndex, value) => isOptionValueSoldOut(optionIndex, value);
+
+  const isOptionValueLowStock = (optionIndex, value) => {
+    if (isOptionValueSoldOut(optionIndex, value)) return false;
+    return getOptionState(optionIndex, value).lowStock;
+  };
+
+  const isVariantSoldOut = (variantId) => getVariantStateById(variantId).soldOut;
+
+  const showVariantSoldOutBadge = (variantId) => isVariantSoldOut(variantId);
+
+  const isVariantLowStock = (variantId) => {
+    if (isVariantSoldOut(variantId)) return false;
+    return getVariantStateById(variantId).lowStock;
+  };
+
+  const isSelectedVariantSoldOut = () => {
+    if (!state.selected_variant) return false;
+    return getVariantState(state.selected_variant).soldOut;
+  };
+
+  const isSelectedVariantLowStock = () => {
+    if (!state.selected_variant) return false;
+    const inv = getVariantState(state.selected_variant);
+    return inv.lowStock && !inv.soldOut;
+  };
+
+  const metafieldSoldOut = getVariantState(selected_variant).soldOut;
+
   const state = Alpine.reactive({
     random_id,
     element: $el,
@@ -298,7 +363,7 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     sibling_handle: "",
     hasVariants: product?.variants?.length > 1 || product?.variants?.[0]?.title !== "Default Title",
     hasSubscription: !!selected_variant?.options?.length,
-    soldOut: available_quantity <= 0,
+    soldOut: metafieldSoldOut,
     available_quantity,
     preorder:
       selected_variant?.preorder &&
@@ -323,6 +388,18 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     upsell_items: new Map(),
     scrolling_to_image: false,
     addons: new Map(),
+    inventoryLabels,
+  });
+
+  Object.assign(state, {
+    isOptionValueSoldOut,
+    showOptionSoldOutBadge,
+    isOptionValueLowStock,
+    isVariantSoldOut,
+    showVariantSoldOutBadge,
+    isVariantLowStock,
+    isSelectedVariantSoldOut,
+    isSelectedVariantLowStock,
   });
 
   const handleImageSelection = (
@@ -551,7 +628,10 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   };
 
   const setSelectedVariant = (id, scroll_to_variant = true) => {
-    state.selected_variant = state.product.variants?.find((variant) => variant.id === id);
+    const variant = state.product.variants?.find((item) => item.id === id);
+    if (variant && getVariantState(variant).soldOut) return;
+
+    state.selected_variant = variant;
     state.selected_options = state.selected_variant?.options;
     state.variant_changed = true;
     state.selling_plan_allocations = getPdpSellingPlanAllocations(state.selected_variant);
@@ -615,6 +695,8 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   };
 
   const setProductOption = ({ index, value }) => {
+    if (getOptionState(index, value).soldOut) return;
+
     const options = [...state.selected_options];
     options[index] = value;
 
@@ -739,7 +821,12 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
   };
 
   const updateProductState = (product, selectedVariantId, selectedSellingPlanId) => {
-    const selected_variant = _product.getSelectedVariant(product, selectedVariantId);
+    let selected_variant = _product.getSelectedVariant(product, selectedVariantId);
+
+    const firstAvailableVariant = product?.variants?.find((v) => !getVariantState(v).soldOut);
+    if (firstAvailableVariant && getVariantState(selected_variant).soldOut) {
+      selected_variant = firstAvailableVariant;
+    }
 
     const selling_plan_allocations = getPdpSellingPlanAllocations(selected_variant);
 
@@ -797,6 +884,9 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     state.sibling_handle = "";
     state.gallery_media = product?.media;
     state.hydrated = true;
+    state.soldOut = getVariantState(selected_variant).soldOut;
+
+    document.dispatchEvent(new CustomEvent('ctr-inventory:refresh'));
 
     setTimeout(
       () => {
@@ -808,6 +898,19 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       initialized ? 2 : 50
     );
   };
+
+  if (product && !product._full_data) {
+    _product.getHydratedProductData(productHandle, productId).then((res) => {
+      if (!res) return;
+      if (ctrInventoryBarbaFix) {
+        if (document.contains($el)) {
+          updateProductState(res, variantId);
+        }
+      } else if (state.product?.handle === res.handle) {
+        state.product = res;
+      }
+    });
+  }
 
   const handleAddAddonsToCart = async () => {
     state.isAdding = true;
@@ -1091,6 +1194,15 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
       updateProductState,
       setDynamicPrice,
       handleImageSelection,
+      isOptionValueSoldOut,
+      showOptionSoldOutBadge,
+      isOptionValueLowStock,
+      isVariantSoldOut,
+      showVariantSoldOutBadge,
+      isVariantLowStock,
+      isSelectedVariantSoldOut,
+      isSelectedVariantLowStock,
+      inventoryLabels,
     });
 
     const main_product = Alpine.store("main_product");
@@ -1266,7 +1378,7 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
           )
         : 99999;
 
-    state.soldOut = state.available_quantity <= 0;
+    state.soldOut = getVariantState(selected_variant).soldOut;
 
     state.preorder =
       selected_variant?.preorder &&
@@ -1321,6 +1433,13 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
 
   initialized = true;
 
+  const firstAvailableVariant = state.product?.variants?.find((v) => !getVariantState(v).soldOut);
+  if (firstAvailableVariant && getVariantState(state.selected_variant).soldOut) {
+    setSelectedVariant(firstAvailableVariant.id, false);
+  }
+
+  document.dispatchEvent(new CustomEvent('ctr-inventory:refresh'));
+
   return {
     state,
     pdp: state,
@@ -1341,6 +1460,15 @@ const initMainProduct = ($el, $refs, productHandle, productId, variantId, defaul
     setDynamicPrice,
     handleImageSelection,
     handleAddAddonsToCart,
+    isOptionValueSoldOut,
+    showOptionSoldOutBadge,
+    isOptionValueLowStock,
+    isVariantSoldOut,
+    showVariantSoldOutBadge,
+    isVariantLowStock,
+    isSelectedVariantSoldOut,
+    isSelectedVariantLowStock,
+    inventoryLabels,
   };
 };
 

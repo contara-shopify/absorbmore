@@ -1,0 +1,175 @@
+{%- comment -%}
+  Restore Raspberry Teaser — clone of absorbmore.attn.tv/p/gH3/new-summer-restore
+  Email-only capture → Klaviyo list "Raspberry Restore Teaser" (id Vz36Lf)
+  Public Klaviyo company id: WL8khy
+{%- endcomment -%}
+
+<style>
+  html,body{margin:0;padding:0;background:#fff}
+  /* Standalone-render: full-bleed overlay covering theme chrome */
+  #shopify-section-{{ section.id }}{position:fixed;inset:0;z-index:2147483640;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .rrt-wrap{display:flex;flex-direction:column;background:#fff;color:#000}
+  .rrt-image{width:100%;aspect-ratio:5/4;background:url("{{ 'raspberry-teaser-hero-mobile.jpg' | asset_url }}") center bottom/cover no-repeat}
+  .rrt-content{padding:24px 20px 24px;display:flex;flex-direction:column}
+  .rrt-eyebrow{font-size:.9375rem;font-weight:600;letter-spacing:.02em;margin:0 0 10px;color:#000}
+  .rrt-h1{font-size:1.5rem;line-height:1.15;font-weight:800;color:#C63947;margin:0 0 12px}
+  .rrt-body{font-size:.8125rem;line-height:1.5;margin:0 0 14px;color:#000}
+  .rrt-pillars{font-size:.9375rem;font-weight:600;letter-spacing:.04em;margin:0 0 3px;color:#000}
+  .rrt-pillars + .rrt-pillars{margin-bottom:18px}
+  .rrt-cta-label{font-size:1.0625rem;font-weight:700;margin:0 0 10px;color:#000}
+  .rrt-legal{font-size:.6875rem;line-height:1.45;color:#000;background:#f4f4f4;border:1px solid #e6e6e6;padding:10px 12px;margin:0 0 12px}
+  .rrt-legal a{color:#000;text-decoration:underline}
+  .rrt-form{display:flex;flex-direction:column;gap:10px}
+  .rrt-input{height:46px;padding:0 14px;font-size:.9375rem;border:1px solid #c9c9c9;background:#fff;color:#000;width:100%;box-sizing:border-box;border-radius:0}
+  .rrt-input:focus{outline:2px solid #000;outline-offset:-2px}
+  .rrt-btn{height:50px;background:#000;color:#fff;font-size:.9375rem;font-weight:700;letter-spacing:.04em;border:0;cursor:pointer;text-transform:uppercase;border-radius:0}
+  .rrt-btn:disabled{opacity:.6;cursor:not-allowed}
+  .rrt-msg{font-size:.875rem;margin-top:12px;min-height:1.2em}
+  .rrt-msg.ok{color:#0a7a3b}
+  .rrt-msg.err{color:#b00020}
+  .rrt-success{display:none;text-align:left}
+  .rrt-success h2{font-size:1.5rem;color:#C63947;margin:0 0 10px}
+  .rrt-success p{font-size:.95rem;line-height:1.5;margin:0}
+  @media (min-width: 768px){
+    .rrt-wrap{flex-direction:row;min-height:100vh}
+    .rrt-image{width:58%;aspect-ratio:auto;min-height:100vh;background-image:url("{{ 'raspberry-teaser-hero-desktop.jpg' | asset_url }}")}
+    .rrt-content{width:42%;padding:48px 56px;min-height:100vh;justify-content:center}
+    .rrt-h1{font-size:2.25rem}
+    .rrt-body{font-size:.875rem}
+    .rrt-eyebrow,.rrt-pillars{font-size:1rem}
+    .rrt-cta-label{font-size:1.2rem}
+    .rrt-input{height:52px;font-size:1rem;padding:0 16px}
+    .rrt-btn{height:56px;font-size:1rem}
+  }
+  @media (min-width: 1100px){
+    .rrt-content{padding:64px 72px}
+    .rrt-h1{font-size:2.5rem}
+  }
+</style>
+
+<div class="rrt-wrap" id="rrtWrap">
+  <div class="rrt-image" role="img" aria-label="Restore mystery flavor reveal at a fruit stand"></div>
+  <div class="rrt-content">
+    <div class="rrt-form-state" id="rrtFormState">
+      <p class="rrt-eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1 class="rrt-h1">{{ section.settings.headline }}</h1>
+      <p class="rrt-body">{{ section.settings.body }}</p>
+      <p class="rrt-pillars">{{ section.settings.pillars_line_1 }}</p>
+      <p class="rrt-pillars">{{ section.settings.pillars_line_2 }}</p>
+      <p class="rrt-cta-label">{{ section.settings.form_heading }}</p>
+
+      <div class="rrt-legal">
+        By submitting your email address, you agree to receive marketing emails from The Absorption Company. We may share info with service providers per our Privacy Policy. You can unsubscribe at any time. By submitting your email address, you also agree to our <a href="/policies/terms-of-service" target="_blank" rel="noopener">Terms (incl. arbitration)</a> &amp; <a href="/policies/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>.
+      </div>
+
+      <form class="rrt-form" id="rrtForm" novalidate>
+        <input class="rrt-input" id="rrtEmail" type="email" required autocomplete="email" placeholder="Email Address" aria-label="Email Address">
+        <button class="rrt-btn" type="submit" id="rrtBtn">Sign Up For Early Access</button>
+        <div class="rrt-msg" id="rrtMsg" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <div class="rrt-success" id="rrtSuccess">
+      <p class="rrt-eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2>{{ section.settings.success_heading }}</h2>
+      <p>{{ section.settings.success_body }}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    // Hide popup overlays (Attentive SMS popup, Gorgias chat, etc) that float over the page
+    function hideFloaters(){
+      var sel = 'iframe[id*="attentive" i], iframe[title*="Sign Up" i], iframe[title*="chat" i], #gorgias-chat-container, .needsclick[id*="attentive"], [id^="attentive_"]';
+      document.querySelectorAll(sel).forEach(function(el){ el.style.display = 'none'; });
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+    hideFloaters();
+    setInterval(hideFloaters, 800);
+  })();
+  (function(){
+    var KLAVIYO_COMPANY_ID = {{ section.settings.klaviyo_company_id | json }};
+    var KLAVIYO_LIST_ID    = {{ section.settings.klaviyo_list_id | json }};
+    var form = document.getElementById('rrtForm');
+    var emailEl = document.getElementById('rrtEmail');
+    var btn = document.getElementById('rrtBtn');
+    var msg = document.getElementById('rrtMsg');
+    var formState = document.getElementById('rrtFormState');
+    var successState = document.getElementById('rrtSuccess');
+
+    function setMsg(text, type){
+      msg.textContent = text || '';
+      msg.className = 'rrt-msg' + (type ? ' ' + type : '');
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var email = (emailEl.value || '').trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+        setMsg('Please enter a valid email address.', 'err');
+        return;
+      }
+      btn.disabled = true;
+      setMsg('Submitting…');
+
+      var body = {
+        data: {
+          type: 'subscription',
+          attributes: {
+            profile: { data: { type: 'profile', attributes: { email: email } } },
+            custom_source: 'Raspberry Restore Teaser Lander'
+          },
+          relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST_ID } } }
+        }
+      };
+
+      fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(KLAVIYO_COMPANY_ID), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+        body: JSON.stringify(body)
+      }).then(function(r){
+        if (r.status === 202 || r.ok){
+          formState.style.display = 'none';
+          successState.style.display = 'block';
+          try { window.dataLayer = window.dataLayer || []; window.dataLayer.push({event:'raspberry_teaser_signup'}); } catch(_){}
+        } else {
+          return r.json().then(function(j){
+            var detail = (j && j.errors && j.errors[0] && j.errors[0].detail) || 'Something went wrong. Please try again.';
+            setMsg(detail, 'err');
+            btn.disabled = false;
+          }).catch(function(){
+            setMsg('Something went wrong. Please try again.', 'err');
+            btn.disabled = false;
+          });
+        }
+      }).catch(function(){
+        setMsg('Network error. Please try again.', 'err');
+        btn.disabled = false;
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Raspberry Teaser",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text",     "id": "eyebrow",       "label": "Eyebrow",     "default": "NEW LIMITED EDITION FLAVOR" },
+    { "type": "text",     "id": "headline",      "label": "Headline",    "default": "New Restore Flavor Perfect For the Summer" },
+    { "type": "textarea", "id": "body",          "label": "Body",        "default": "Our mystery new Restore flavor drops soon. Restore is a daily multivitamin drink with 900+ mg of electrolytes to keep you hydrated, energized, and feeling your best all year." },
+    { "type": "text",     "id": "pillars_line_1","label": "Pillars line 1","default": "HYDRATION • IMMUNITY • ENERGY" },
+    { "type": "text",     "id": "pillars_line_2","label": "Pillars line 2","default": "FOCUS • RECOVERY • DETOX" },
+    { "type": "text",     "id": "form_heading",  "label": "Form heading", "default": "Sign Up For Early Access" },
+    { "type": "header", "content": "Success state" },
+    { "type": "text",     "id": "success_heading","label": "Success heading","default": "You're on the list." },
+    { "type": "textarea", "id": "success_body",   "label": "Success body",   "default": "We'll email you the moment our new mystery Restore flavor drops. Early access goes to the list first." },
+    { "type": "header", "content": "Klaviyo" },
+    { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo Public Company ID", "default": "WL8khy" },
+    { "type": "text", "id": "klaviyo_list_id",    "label": "Klaviyo List ID",           "default": "Vz36Lf" }
+  ],
+  "presets": [{ "name": "Raspberry Teaser" }]
+}
+{% endschema %}

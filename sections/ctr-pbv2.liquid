@@ -1,0 +1,1255 @@
+{%- comment -%} retouch 2026-06-24e trim 2-Week tier perks to just 14 sticks {%- endcomment -%}
+{% liquid
+  assign product = section.settings.product | default: product
+  assign product_form_id = 'ctr-pbv2-' | append: section.id
+
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products[0]
+  endif
+
+  assign title = section.settings.product_title | default: product.title
+
+  assign gallery_images = product.media
+
+  assign reviews_rating_path = settings.data__product__reviews_rating | replace: ' ', '' | split: '.'
+  assign reviews_rating = product.metafields[reviews_rating_path.first][reviews_rating_path.last].value
+  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 4.97 | times: 1.0
+
+  assign reviews_count_path = settings.data__product__reviews_count | replace: ' ', '' | split: '.'
+  assign reviews_count = product.metafields[reviews_count_path.first][reviews_count_path.last].value | default: 368 | times: 1
+
+  comment
+    Detect option positions — Format, Servings, Flavor
+  endcomment
+  assign format_pos   = 0
+  assign servings_pos = 1
+  assign flavor_pos   = 2
+  for i in (0..2)
+    assign opt_name = product.options[i] | downcase
+    if opt_name == 'format'
+      assign format_pos = i
+    elsif opt_name contains 'serving'
+      assign servings_pos = i
+    elsif opt_name == 'flavor'
+      assign flavor_pos = i
+    endif
+  endfor
+
+  assign format_option  = product.options_with_values[format_pos]
+  assign flavor_option  = product.options_with_values[flavor_pos]
+  assign serving_size   = section.settings.serving_size | default: '28 Servings'
+
+  comment
+    Pre-compute initial tier display values so the section renders
+    correctly before Alpine.js hydrates (mirrors getTierPrice/Badge logic
+    in section-ctr-pbv2.js with default selectedFormat + bagFlavors[0]).
+  endcomment
+  assign default_format = format_option.values.first
+  assign default_flavor = flavor_option.values.first
+  assign default_variant = blank
+  for v in product.variants
+    if v.options[format_pos] == default_format and v.options[flavor_pos] == default_flavor and v.options[servings_pos] == serving_size
+      assign default_variant = v
+      break
+    endif
+  endfor
+  if default_variant == blank
+    for v in product.variants
+      if v.options[format_pos] == default_format and v.options[flavor_pos] == default_flavor
+        assign default_variant = v
+        break
+      endif
+    endfor
+  endif
+%}
+
+{{ 'section-ctr-pbv2.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .ctr-pbv2 {
+    --pbv2-bg:          {{ section.settings.section_background }};
+    --pbv2-text:        {{ section.settings.text_color }};
+    --pbv2-btn-bg:      {{ section.settings.button_background }};
+    --pbv2-btn-text:    {{ section.settings.button_text_color }};
+    --pbv2-badge-color: {{ section.settings.discount_badge_color }};
+    --pbv2-pt:          {{ section.settings.padding_top_desktop }}px;
+    --pbv2-pb:          {{ section.settings.padding_bottom_desktop }}px;
+  }
+  @media (max-width: 989px) {
+    #shopify-section-{{ section.id }} .ctr-pbv2 {
+      --pbv2-pt: {{ section.settings.padding_top_mobile }}px;
+      --pbv2-pb: {{ section.settings.padding_bottom_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{% if product != blank %}
+
+{%- comment -%} ===== Main product JSON data ===== {%- endcomment -%}
+<script type="application/json" id="ctr-pbv2-data-{{ section.id }}">
+{
+  "formatOptions": {{ format_option.values | json }},
+  "flavorOptions": {{ flavor_option.values | json }},
+  "variantMap": {
+    {%- assign variant_entries = '' -%}
+    {% for variant in product.variants %}
+      {%- if variant.options[servings_pos] == serving_size -%}
+        {%- assign f_val  = variant.options[format_pos] -%}
+        {%- assign fl_val = variant.options[flavor_pos] -%}
+        {%- assign vkey   = f_val | append: '|' | append: fl_val -%}
+        {%- unless variant_entries == '' -%},{%- endunless -%}
+        {{ vkey | json }}: {
+          "id":             {{ variant.id }},
+          "price":          {{ variant.price }},
+          "compareAtPrice": {{ variant.compare_at_price | default: variant.price }},
+          "available":      {{ variant.available }},
+          "sold_out":         {{ variant.metafields.custom.sold_out.value | default: false | json }},
+          "low_stock":        {{ variant.metafields.custom.low_stock.value | default: false | json }},
+          "sellingPlans": {
+            {% for alloc in variant.selling_plan_allocations %}
+              {{ alloc.selling_plan.id | append: '' | json }}: {
+                "price":     {{ alloc.price }},
+                "compareAt": {{ alloc.compare_at_price | default: variant.price }}
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          }
+        }
+        {%- assign variant_entries = 'yes' -%}
+      {%- endif -%}
+    {% endfor %}
+  },
+  "tiers": [
+    {% for ti in (1..3) %}
+      {%- assign label_key   = 'tier' | append: ti | append: '_label' -%}
+      {%- assign badge_key   = 'tier' | append: ti | append: '_badge' -%}
+      {%- assign price_key   = 'tier' | append: ti | append: '_price' -%}
+      {%- assign compare_key = 'tier' | append: ti | append: '_compare_price' -%}
+      {%- assign sp_key      = 'tier' | append: ti | append: '_selling_plan_id' -%}
+      {%- assign perk1_key   = 'tier' | append: ti | append: '_perk_1' -%}
+      {%- assign perk2_key   = 'tier' | append: ti | append: '_perk_2' -%}
+      {%- assign perk3_key   = 'tier' | append: ti | append: '_perk_3' -%}
+      {%- assign default_label = ti | append: ' Month Supply' -%}
+      {
+        "id": "tier{{ ti }}",
+        "bagCount": {{ ti }},
+        "label": {{ section.settings[label_key] | default: default_label | json }},
+        "badge": {{ section.settings[badge_key] | default: '' | json }},
+        {%- assign custom_price_key = 'tier' | append: ti | append: '_use_custom_price' -%}
+        {%- assign custom_badge_key = 'tier' | append: ti | append: '_use_custom_badge' -%}
+        "useCustomPrice": {{ section.settings[custom_price_key] | default: false }},
+        "price": {{ section.settings[price_key] | default: '' | json }},
+        "comparePrice": {{ section.settings[compare_key] | default: '' | json }},
+        "useCustomBadge": {{ section.settings[custom_badge_key] | default: false }},
+        "sellingPlanId": {{ section.settings[sp_key] | default: '0' | plus: 0 }},
+        "perks": [
+          {% assign perks = '' %}
+          {% if section.settings[perk1_key] != blank %}{{ section.settings[perk1_key] | json }}{% assign perks = 'yes' %}{% endif %}
+          {% if section.settings[perk2_key] != blank %}{% if perks != '' %},{% endif %}{{ section.settings[perk2_key] | json }}{% assign perks = 'yes' %}{% endif %}
+          {% if section.settings[perk3_key] != blank %}{% if section.settings[perk2_key] != blank or section.settings[perk1_key] != blank %},{% endif %}{{ section.settings[perk3_key] | json }}{% endif %}
+        ]
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ],
+  "swatchColors": {
+    "mango":     "{{ section.settings.swatch_mango | default: '#F5A623' }}",
+    "raspberry": "{{ section.settings.swatch_raspberry | default: '#C0392B' }}"
+  },
+  "inventoryLabels": {%- render 'ctr-inventory-labels' -%}
+}
+</script>
+
+{%- comment -%} ===== Per-block upsell JSON data ===== {%- endcomment -%}
+{% for block in section.blocks %}
+  {% if block.type == 'upsell' %}
+    {%- assign up = block.settings.upsell_product -%}
+    {%- assign up_flavor_pos = 0 -%}
+    {%- if up != blank -%}
+      {%- for i in (0..2) -%}
+        {%- assign uopt = up.options[i] | downcase -%}
+        {%- if uopt == 'flavor' -%}{%- assign up_flavor_pos = i -%}{%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    <script type="application/json" id="ctr-pbv2-upsell-{{ block.id }}">
+    {
+      "flavorOptions": {{ up.options_with_values[up_flavor_pos].values | default: '[]' | json }},
+      "variantMap": {
+        {% if up != blank %}
+          {% for variant in up.variants %}
+            {%- assign ufl = variant.options[up_flavor_pos] -%}
+            {{ ufl | json }}: { "id": {{ variant.id }}, "available": {{ variant.available }} }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        {% endif %}
+      }
+    }
+    </script>
+  {% endif %}
+{% endfor %}
+
+<script src="{{ 'ctr-flavor-inventory.js' | asset_url }}"></script>
+<script src="{{ 'section-ctr-pbv2.js' | asset_url }}"></script>
+<script src="{{ 'ctr-restore-retier.js' | asset_url }}"></script>
+
+<script>
+(function () {
+  /* Pre-Alpine click queue. Theme init can take 4-5s on first load; clicks
+     on purchase-box buttons during that window would otherwise be lost.
+     Queue clicks until Alpine hydrates, then replay. */
+  var queue = [];
+
+  function isHydrated(btn) {
+    var sec = btn.closest('[x-data*="ctrPbv2Factory"]');
+    if (!sec) return true;
+    var stack = sec._x_dataStack;
+    return !!(stack && stack[0] && typeof stack[0].selectFormat === 'function');
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest(
+      '.ctr-pbv2 .ctr-pbv2__pill, ' +
+      '.ctr-pbv2 .ctr-pbv2__format-btn, ' +
+      '.ctr-pbv2 .ctr-pbv2__tier-card, ' +
+      '.ctr-pbv2 .ctr-pbv2__cta'
+    );
+    if (!btn) return;
+    if (isHydrated(btn)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var i = queue.indexOf(btn);
+    if (i !== -1) queue.splice(i, 1);
+    queue.push(btn);
+  }, true);
+
+  function drain() {
+    if (queue.length === 0) return;
+    var btn = queue.shift();
+    try { btn.click(); } catch (e) {}
+    setTimeout(drain, 30);
+  }
+
+  document.addEventListener('ctr-pbv2:ready', function () {
+    setTimeout(drain, 50);
+  });
+})();
+</script>
+
+<section
+  class="ctr-pbv2 {{ section.settings.container_spacing }}"
+  id="{{ product_form_id }}"
+  data-section-id="{{ section.id }}"
+  x-data="ctrPbv2Factory('{{ section.id }}')"
+  x-init="document.dispatchEvent(new CustomEvent('ctr-pbv2:ready'))"
+>
+  <div class="ctr-pbv2__inner">
+
+    {%- comment -%} ==== MOBILE: title + rating ==== {%- endcomment -%}
+    <div class="ctr-pbv2__mobile-header">
+      <div class="ctr-pbv2__title-row">
+        <h2 class="ctr-pbv2__title">{{ title | escape }}</h2>
+        {%- if section.settings.clinicians_badge_image != blank -%}
+          <img src="{{ section.settings.clinicians_badge_image | image_url: width: 300 }}"
+            alt="{{ section.settings.clinicians_badge_image.alt | default: 'Clinicians Choice' }}"
+            width="150" height="30" loading="lazy" class="ctr-pbv2__clinicians-badge">
+        {%- endif -%}
+      </div>
+      <div class="ctr-pbv2__rating-row">
+        <span class="ctr-pbv2__stars" aria-hidden="true">
+          {% for _ in (1..5) %}<svg width="14" height="14" viewBox="0 0 20 20" focusable="false" aria-hidden="true" style="width:14px;height:14px;flex:0 0 14px"><path d="M10 1.2l2.57 5.2 5.74.84-4.16 4.06.98 5.72L10 14.3l-5.13 2.72.98-5.72L1.7 7.24l5.74-.84L10 1.2z"/></svg>{% endfor %}
+        </span>
+        <span><strong>{{ reviews_rating | round: 2 }}</strong>{% if section.settings.show_review_count %} ({{ reviews_count }}){% endif %}</span>
+      </div>
+    </div>
+
+    {%- comment -%} ==== LEFT: Desktop gallery ==== {%- endcomment -%}
+    <div class="ctr-pbv2__gallery-layout">
+      <div class="ctr-pbv2__thumbs-wrap">
+        {%- if gallery_images.size > 6 -%}
+          <button type="button" class="ctr-pbv2__thumbs-nav ctr-pbv2__thumbs-nav--up" @click="scrollThumbs(-1)" aria-label="Scroll up">
+            <svg viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 9L8 2L15 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        {%- endif -%}
+        <div class="ctr-pbv2__thumbs{% if gallery_images.size > 6 %} ctr-pbv2__thumbs--scrollable{% endif %}" x-ref="thumbsTrack" aria-label="Product images">
+          {%- for media in gallery_images -%}
+            <button type="button" class="ctr-pbv2__thumb{% if forloop.first %} is-active{% endif %}" :class="{ 'is-active': galleryIndex === {{ forloop.index0 }} }" @click="galleryIndex = {{ forloop.index0 }}" aria-label="View image {{ forloop.index }}">{{ media.preview_image | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}</button>
+          {%- endfor -%}
+        </div>
+        {%- if gallery_images.size > 6 -%}
+          <button type="button" class="ctr-pbv2__thumbs-nav ctr-pbv2__thumbs-nav--down" @click="scrollThumbs(1)" aria-label="Scroll down">
+            <svg viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L8 8L15 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        {%- endif -%}
+      </div>
+      <div class="ctr-pbv2__hero-image">
+        <span
+          class="ctr-pbv2__gallery-low-stock ctr-pbv2__flavor-badge--sold-out"
+          x-show="isSelectedFlavorSoldOut()"
+          x-text="inventoryLabels.soldOutGallery"
+          x-cloak
+        ></span>
+        <span
+          class="ctr-pbv2__gallery-low-stock"
+          x-show="!isSelectedFlavorSoldOut() && isSelectedFlavorLowStock()"
+          x-text="inventoryLabels.lowStockGallery"
+          x-cloak
+        ></span>
+        {%- for media in gallery_images -%}
+          {%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- else -%}{%- assign img_loading = 'lazy' -%}{%- endif -%}
+          <div{% unless forloop.first %} x-cloak{% endunless %} x-show="typeof galleryIndex !== 'number' ? {% if forloop.first %}true{% else %}false{% endif %} : galleryIndex === {{ forloop.index0 }}">{{ media.preview_image | image_url: width: 1200 | image_tag: loading: img_loading, widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}</div>
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.frontrow_product_id != blank -%}
+        {% render 'ctr-frontrow-widget', product_id: section.settings.frontrow_product_id, wrapper_class: 'ctr-pbv2__frontrow', iframe_id: 'iframe-frontrow-pbv2-' | append: section.id %}
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ==== LEFT column blocks: stats / benefits / reported ==== {%- endcomment -%}
+    {% for block in section.blocks %}
+      {% case block.type %}
+
+        {% when 'stats' %}
+          <div class="ctr-pbv2__stats" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <div class="ctr-pbv2__stats-heading">{{ block.settings.heading | escape }}</div>
+            {%- endif -%}
+            <div class="ctr-pbv2__stats-cols">
+              {% for i in (1..3) %}
+                {%- assign val_key   = 'stat' | append: i | append: '_value' -%}
+                {%- assign label_key = 'stat' | append: i | append: '_label' -%}
+                {% if block.settings[val_key] != blank %}
+                  <div class="ctr-pbv2__stat">
+                    <span class="ctr-pbv2__stat-value">{{ block.settings[val_key] | escape }}</span>
+                    <span class="ctr-pbv2__stat-label">{{ block.settings[label_key] | escape }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+        {% when 'benefits' %}
+          <div id="benefits-block" class="ctr-pbv2__benefits-block" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <div class="ctr-pbv2__benefits-block-heading">{{ block.settings.heading | escape }}</div>
+            {%- endif -%}
+            <div class="ctr-pbv2__benefits-list">
+              {% for i in (1..5) %}
+                {%- assign title_key = 'benefit_title_' | append: i -%}
+                {%- assign desc_key  = 'benefit_desc_'  | append: i -%}
+                {% if block.settings[title_key] != blank %}
+                  <div class="ctr-pbv2__benefit-item">
+                    <span class="ctr-pbv2__benefit-icon" aria-hidden="true">
+                      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="9" cy="9" r="8.5" stroke="#111" stroke-width="1"/>
+                        <path d="M5.5 9L7.8 11.5L12.5 6.5" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <div class="ctr-pbv2__benefit-content">
+                      <span class="ctr-pbv2__benefit-title">{{ block.settings[title_key] | escape }}</span>
+                      {%- if block.settings[desc_key] != blank -%}
+                        <span class="ctr-pbv2__benefit-desc">{{ block.settings[desc_key] | escape }}</span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+        {% when 'reported' %}
+          <div class="ctr-pbv2__reported" {{ block.shopify_attributes }}>
+            <div class="ctr-pbv2__reported-header">
+              <span class="ctr-pbv2__reported-label">{{ block.settings.heading | default: 'Users also reported' | escape }}</span>
+              <span class="ctr-pbv2__reported-divider" aria-hidden="true"></span>
+            </div>
+            <div class="ctr-pbv2__reported-grid">
+              {% for i in (1..6) %}
+                {%- assign rkey = 'item_' | append: i -%}
+                {% if block.settings[rkey] != blank %}
+                  <div class="ctr-pbv2__reported-item">
+                    <span class="ctr-pbv2__reported-icon" aria-hidden="true">
+                      <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 5L4 7.5L8 3" stroke="rgba(0,0,0,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <span class="ctr-pbv2__reported-text">{{ block.settings[rkey] | escape }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+      {% endcase %}
+    {% endfor %}
+
+    {%- comment -%} ==== Mobile gallery ==== {%- endcomment -%}
+    <div class="ctr-pbv2__gallery-mobile" @scroll.passive="onMobileGalleryScroll($event.target)" x-ref="mobileGallery">
+      <span
+        class="ctr-pbv2__gallery-low-stock ctr-pbv2__flavor-badge--sold-out ctr-pbv2__gallery-low-stock--mobile"
+        x-show="isSelectedFlavorSoldOut()"
+        x-text="inventoryLabels.soldOutGallery"
+        x-cloak
+      ></span>
+      <span
+        class="ctr-pbv2__gallery-low-stock ctr-pbv2__gallery-low-stock--mobile"
+        x-show="!isSelectedFlavorSoldOut() && isSelectedFlavorLowStock()"
+        x-text="inventoryLabels.lowStockGallery"
+        x-cloak
+      ></span>
+      {%- for media in gallery_images -%}
+        {%- assign mob_loading = forloop.first | iif: 'eager', 'lazy' -%}
+        <div class="ctr-pbv2__gallery-mobile-slide">{{ media.preview_image | image_url: width: 900 | image_tag: loading: mob_loading, widths: '480,720,900', sizes: '90vw', alt: title }}</div>
+      {%- endfor -%}
+    </div>
+    <div class="ctr-pbv2__gallery-dots">
+      {%- for media in gallery_images -%}
+        <button type="button" class="ctr-pbv2__gallery-dot" :class="{ 'is-active': galleryIndex === {{ forloop.index0 }} }" @click="scrollMobileGallery({{ forloop.index0 }})" aria-label="Slide {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} ==== MOBILE: links below gallery ==== {%- endcomment -%}
+    <div class="ctr-pbv2__mobile-links">
+      {% if section.settings.ingredients_link_text != blank %}<button type="button" @click="galleryIndex = {{ section.settings.ingredients_image_index | default: 0 }}; scrollMobileGallery({{ section.settings.ingredients_image_index | default: 0 }})">{{ section.settings.ingredients_link_text | escape }}</button>{% endif %}
+      {% if section.settings.ingredients_link_text != blank and section.settings.benefits_link_text != blank %}<span class="ctr-pbv2__links-sep" aria-hidden="true">&middot;</span>{% endif %}
+      {% if section.settings.benefits_link_text != blank %}<button type="button" @click="galleryIndex = {{ section.settings.benefits_image_index | default: 0 }}; scrollMobileGallery({{ section.settings.benefits_image_index | default: 0 }})">{{ section.settings.benefits_link_text | escape }}</button>{% endif %}
+    </div>
+
+    {%- comment -%} ==== RIGHT: Copy + Purchase UI ==== {%- endcomment -%}
+    <div class="ctr-pbv2__copy">
+
+      <div class="ctr-pbv2__title-row">
+        <h2 class="ctr-pbv2__title">{{ title | escape }}</h2>
+        {%- if section.settings.clinicians_badge_image != blank -%}
+          <img src="{{ section.settings.clinicians_badge_image | image_url: width: 300 }}" alt="{{ section.settings.clinicians_badge_image.alt | default: 'Clinicians Choice' }}" width="150" height="30" loading="lazy" class="ctr-pbv2__clinicians-badge">
+        {%- endif -%}
+      </div>
+
+      <div class="ctr-pbv2__rating-row">
+        <span class="ctr-pbv2__stars" aria-hidden="true">
+          {% for _ in (1..5) %}<svg width="14" height="14" viewBox="0 0 20 20" focusable="false" aria-hidden="true" style="width:14px;height:14px;flex:0 0 14px"><path d="M10 1.2l2.57 5.2 5.74.84-4.16 4.06.98 5.72L10 14.3l-5.13 2.72.98-5.72L1.7 7.24l5.74-.84L10 1.2z"/></svg>{% endfor %}
+        </span>
+        <span><strong>{{ reviews_rating | round: 2 }}</strong>{% if section.settings.show_review_count %}({{ reviews_count }}){% endif %}</span>
+        <div class="ctr-pbv2__rating-links">
+          {% if section.settings.ingredients_link_text != blank %}<button type="button" @click="galleryIndex = {{ section.settings.ingredients_image_index | default: 0 }}">{{ section.settings.ingredients_link_text | escape }}</button>{% endif %}
+          {% if section.settings.benefits_link_text != blank %}<button type="button" @click="galleryIndex = {{ section.settings.benefits_image_index | default: 0 }}">{{ section.settings.benefits_link_text | escape }}</button>{% endif %}
+        </div>
+      </div>
+
+      {%- if product.metafields.custom.product_sub_description != blank -%}
+        <div class="ctr-pbv2__description">{{ product.metafields.custom.product_sub_description | metafield_tag }}</div>
+      {%- elsif product.metafields.custom.tagline != blank -%}
+        <div class="ctr-pbv2__description"><p>{{ product.metafields.custom.tagline }}</p></div>
+      {%- endif -%}
+
+      {%- assign smart_bullets = product.metafields.custom.smart_bullet_points.value -%}
+      {%- if smart_bullets.size > 0 -%}
+        <ul class="ctr-pbv2__benefits">
+          {%- for bullet in smart_bullets -%}
+            <li>
+              {%- if section.settings.benefit_icon != blank -%}<img src="{{ section.settings.benefit_icon | image_url: width: 32 }}" alt="" aria-hidden="true" class="ctr-pbv2__benefit-dot" width="16" height="16" loading="lazy">{%- else -%}<span class="ctr-pbv2__benefit-dot" aria-hidden="true"></span>{%- endif -%}
+              <span>{{ bullet | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} Mini Stats Bar (after benefits, before format toggle) {%- endcomment -%}
+      {% for block in section.blocks %}
+        {% if block.type == 'mini_stats' %}
+          <div class="ctr-pbv2__mini-stats" {{ block.shopify_attributes }}>
+            {% for i in (1..4) %}
+              {%- assign val_key   = 'stat' | append: i | append: '_value' -%}
+              {%- assign label_key = 'stat' | append: i | append: '_label' -%}
+              {% if block.settings[val_key] != blank %}
+                <div class="ctr-pbv2__mini-stat">
+                  <span class="ctr-pbv2__mini-stat-value">{{ block.settings[val_key] | escape }}</span>
+                  <span class="ctr-pbv2__mini-stat-label">{{ block.settings[label_key] | escape }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {%- comment -%} Format Toggle {%- endcomment -%}
+      {%- if format_option.values.size > 1 -%}
+        <div class="ctr-pbv2__format-toggle" role="group" aria-label="{{ section.settings.format_label | default: 'Format' | escape }}">
+          {% for format_val in format_option.values %}
+            <button type="button" class="ctr-pbv2__format-btn{% if forloop.first %} is-active{% endif %}" :class="{ 'is-active': selectedFormat === '{{ format_val }}' }" @click="selectFormat('{{ format_val }}')">{{ format_val | escape }}</button>
+          {% endfor %}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Tier Cards (1/2/3 bags + Buy Once) {%- endcomment -%}
+      <div class="ctr-pbv2__tiers" role="radiogroup" aria-label="Purchase option">
+
+        {%- comment -%}
+          Sticks-only "2 Weeks" tier — hardcoded because it maps to a
+          different variant (Sticks / 14 Servings / Mango = 51513897812257)
+          than the rest of the tier system, which is locked to 28 Servings.
+          Subscribes to plan 690941395233 (25% off / every 30 days).
+        {%- endcomment -%}
+        <div
+          class="ctr-pbv2__tier-card"
+          x-show="selectedFormat === 'Sticks'"
+          x-cloak
+          :class="{ 'is-selected': selectedTier === 'tier0' }"
+          @click="selectTier('tier0')"
+          role="radio"
+          :aria-checked="selectedTier === 'tier0'"
+          tabindex="0"
+          @keydown.enter="selectTier('tier0')"
+          @keydown.space.prevent="selectTier('tier0')"
+        >
+          <div class="ctr-pbv2__tier-head">
+            <span class="ctr-pbv2__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv2__tier-label">2 Weeks</span>
+            <span class="ctr-pbv2__tier-badge">25% OFF</span>
+            <div class="ctr-pbv2__tier-pricing">
+              <span class="ctr-pbv2__tier-price-mo">$30/mo</span>
+              <div class="ctr-pbv2__tier-total-row">
+                <span class="ctr-pbv2__tier-compare">$40</span>
+                <span class="ctr-pbv2__tier-price">$30 total</span>
+              </div>
+            </div>
+          </div>
+          <ul class="ctr-pbv2__perks ctr-pbv2__perks--always">
+            <li>14 sticks</li>
+          </ul>
+        </div>
+
+        {% for ti in (1..3) %}
+          {%- assign tier_id     = 'tier' | append: ti -%}
+          {%- assign label_key   = 'tier' | append: ti | append: '_label' -%}
+          {%- assign badge_key   = 'tier' | append: ti | append: '_badge' -%}
+          {%- assign price_key   = 'tier' | append: ti | append: '_price' -%}
+          {%- assign compare_key = 'tier' | append: ti | append: '_compare_price' -%}
+          {%- assign perk1_key   = 'tier' | append: ti | append: '_perk_1' -%}
+          {%- assign perk2_key   = 'tier' | append: ti | append: '_perk_2' -%}
+          {%- assign perk3_key   = 'tier' | append: ti | append: '_perk_3' -%}
+          {%- assign sp_key             = 'tier' | append: ti | append: '_selling_plan_id' -%}
+          {%- assign custom_price_key   = 'tier' | append: ti | append: '_use_custom_price' -%}
+          {%- assign custom_badge_key   = 'tier' | append: ti | append: '_use_custom_badge' -%}
+          {%- assign default_label = ti | append: ' Month Supply' -%}
+
+          {%- comment -%} Pre-render initial tier values (matches getTierPrice/Badge in JS) {%- endcomment -%}
+          {%- assign initial_badge = '' -%}
+          {%- assign initial_price_mo = '' -%}
+          {%- assign initial_total = '' -%}
+          {%- assign initial_compare = '' -%}
+          {%- if section.settings[custom_badge_key] and section.settings[badge_key] != blank -%}
+            {%- assign initial_badge = section.settings[badge_key] -%}
+          {%- endif -%}
+          {%- if default_variant != blank -%}
+            {%- assign tier_sp_id = section.settings[sp_key] | plus: 0 -%}
+            {%- assign tier_alloc = blank -%}
+            {%- if tier_sp_id > 0 -%}
+              {%- for alloc in default_variant.selling_plan_allocations -%}
+                {%- if alloc.selling_plan.id == tier_sp_id -%}
+                  {%- assign tier_alloc = alloc -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if tier_alloc != blank -%}
+              {%- assign tier_price_cents = tier_alloc.price | times: ti -%}
+              {%- assign tier_compare_cents = tier_alloc.compare_at_price | default: default_variant.price | times: ti -%}
+              {%- assign per_month_cents = tier_alloc.price -%}
+              {%- if section.settings[custom_price_key] and section.settings[price_key] != blank -%}
+                {%- assign initial_total = section.settings[price_key] | append: ' total' -%}
+                {%- if section.settings[compare_key] != blank -%}{%- assign initial_compare = section.settings[compare_key] -%}{%- endif -%}
+              {%- else -%}
+                {%- assign initial_total = tier_price_cents | money | append: ' total' -%}
+                {%- if tier_compare_cents > tier_price_cents -%}
+                  {%- assign initial_compare = tier_compare_cents | money -%}
+                {%- endif -%}
+              {%- endif -%}
+              {%- assign initial_price_mo = per_month_cents | money | append: '/mo' -%}
+              {%- unless section.settings[custom_badge_key] -%}
+                {%- if tier_alloc.compare_at_price and tier_alloc.compare_at_price > 0 and tier_alloc.compare_at_price > tier_alloc.price -%}
+                  {%- assign discount_pct = tier_alloc.compare_at_price | minus: tier_alloc.price | times: 100.0 | divided_by: tier_alloc.compare_at_price | round -%}
+                  {%- if discount_pct > 0 -%}{%- assign initial_badge = discount_pct | append: '% OFF' -%}{%- endif -%}
+                {%- endif -%}
+              {%- endunless -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          <div
+            class="ctr-pbv2__tier-card{% if forloop.first %} is-selected{% endif %}"
+            :class="{ 'is-selected': selectedTier === '{{ tier_id }}' }"
+            @click="selectTier('{{ tier_id }}')"
+            role="radio"
+            :aria-checked="selectedTier === '{{ tier_id }}'"
+            tabindex="0"
+            @keydown.enter="selectTier('{{ tier_id }}')"
+            @keydown.space.prevent="selectTier('{{ tier_id }}')"
+          >
+            <div class="ctr-pbv2__tier-head">
+              <span class="ctr-pbv2__tier-radio" aria-hidden="true"></span>
+              <span class="ctr-pbv2__tier-label">{{ section.settings[label_key] | default: default_label | escape }}</span>
+              <span
+                class="ctr-pbv2__tier-badge"
+                {% if initial_badge == blank %}style="display:none"{% endif %}
+                x-effect="if (typeof getTierBadge === 'function') { var v = getTierBadge('{{ tier_id }}'); if (v) { $el.textContent = v; $el.style.display = ''; } else if ('{{ initial_badge | escape | replace: "'", "" }}' === '') { $el.style.display = 'none'; } }"
+              >{{ initial_badge | escape }}</span>
+              <div class="ctr-pbv2__tier-pricing">
+                <span
+                  class="ctr-pbv2__tier-price-mo"
+                  {% if initial_price_mo == blank %}style="display:none"{% endif %}
+                  x-effect="if (typeof getTierPricePerMonth === 'function') { var v = getTierPricePerMonth('{{ tier_id }}'); if (v) { $el.textContent = v + '/mo'; $el.style.display = ''; } }"
+                >{{ initial_price_mo }}</span>
+                <div class="ctr-pbv2__tier-total-row"
+                  {% if initial_total == blank %}style="display:none"{% endif %}
+                  x-effect="if (typeof getTierTotalLabel === 'function') { var v = getTierTotalLabel('{{ tier_id }}'); $el.style.display = v ? '' : 'none'; }">
+                  <span
+                    class="ctr-pbv2__tier-compare"
+                    {% if initial_compare == blank %}style="display:none"{% endif %}
+                    x-effect="if (typeof getTierCompareTotalLabel === 'function') { var v = getTierCompareTotalLabel('{{ tier_id }}'); if (v) { $el.textContent = v; $el.style.display = ''; } else { $el.style.display = 'none'; } }"
+                  >{{ initial_compare }}</span>
+                  <span
+                    class="ctr-pbv2__tier-price"
+                    x-effect="if (typeof getTierTotalLabel === 'function') { var v = getTierTotalLabel('{{ tier_id }}'); if (v) $el.textContent = v; }"
+                  >{{ initial_total }}</span>
+                </div>
+              </div>
+            </div>
+
+            {%- if section.settings[perk1_key] != blank or section.settings[perk2_key] != blank or section.settings[perk3_key] != blank -%}
+              <ul class="ctr-pbv2__perks ctr-pbv2__perks--always">
+                {%- if section.settings[perk1_key] != blank -%}
+                  {%- assign perk1_sticks = section.settings[perk1_key] | replace: 'servings', 'sticks' | replace: 'Servings', 'Sticks' -%}
+                  <li x-text="selectedFormat === 'Sticks' ? '{{ perk1_sticks | escape }}' : '{{ section.settings[perk1_key] | escape }}'">{{ section.settings[perk1_key] | escape }}</li>
+                {%- endif -%}
+                {% if section.settings[perk2_key] != blank %}<li>{{ section.settings[perk2_key] | escape }}</li>{% endif %}
+                {% if section.settings[perk3_key] != blank %}<li>{{ section.settings[perk3_key] | escape }}</li>{% endif %}
+              </ul>
+            {%- endif -%}
+
+            {%- comment -%} Expanded body: per-bag flavor selectors (ti bags for tier ti) {%- endcomment -%}
+            <div class="ctr-pbv2__tier-body" x-show="typeof selectedTier !== 'string' ? {% if forloop.first %}true{% else %}false{% endif %} : selectedTier === '{{ tier_id }}'"{% unless forloop.first %} x-cloak{% endunless %}>
+              {%- if flavor_option.values.size > 1 -%}
+                {% for bag_num in (1..ti) %}
+                  {%- assign bag_idx = bag_num | minus: 1 -%}
+                  {%- assign flavor_label_base = section.settings.flavor_select_label | default: 'Select Flavor' -%}
+                  {%- assign bag_label_text    = section.settings.bag_label | default: 'Bag' -%}
+                  {%- comment -%}
+                    Sticks ship in a single flavor (Mango), so collapse the per-bag
+                    flavor selector to one block when Sticks is selected. Bags
+                    still get one selector per bag.
+                  {%- endcomment -%}
+                  <div class="ctr-pbv2__option-block"{% unless forloop.first %} x-show="selectedFormat !== 'Sticks'" x-cloak{% endunless %}>
+                    <p class="ctr-pbv2__option-label" x-text="selectedFormat === 'Sticks' ? 'Flavor' : '{{ flavor_label_base | escape }} - {{ bag_label_text | escape }} {{ bag_num }}'">{{ flavor_label_base | escape }} - {{ bag_label_text | escape }} {{ bag_num }}</p>
+                    <div class="ctr-pbv2__flavor-row">
+                      <div class="ctr-pbv2__flavor-left">
+                        <div class="ctr-pbv2__pills">
+                          {% for flavor_val in flavor_option.values %}
+                            {%- assign swatch_lc = flavor_val | downcase -%}
+                            {%- assign initial_swatch = section.settings.swatch_colors | default: '' -%}
+                            <button type="button" class="ctr-pbv2__pill{% if flavor_val == default_flavor %} is-selected{% endif %}"
+                              :class="{
+                                'is-selected': bagFlavors[{{ bag_idx }}] === '{{ flavor_val }}',
+                                'is-unavailable': !isVariantAvailable(selectedFormat, '{{ flavor_val }}'),
+                                'is-low-stock': isFlavorLowStock('{{ flavor_val }}')
+                              }"
+                              :disabled="!isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
+                              @click.stop="setBagFlavor({{ bag_idx }}, '{{ flavor_val }}')"
+                            >
+                              <span
+                                class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+                                x-show="showSoldOutBadge('{{ flavor_val }}')"
+                                x-text="inventoryLabels.soldOutPill"
+                              ></span>
+                              <span
+                                class="ctr-pbv2__flavor-badge"
+                                x-show="isFlavorLowStock('{{ flavor_val }}')"
+                                x-text="inventoryLabels.lowStockPill"
+                              ></span>
+                              <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
+                                <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
+                              </template>
+                              {{ flavor_val | escape }}
+                            </button>
+                          {% endfor %}
+                        </div>
+                      </div>
+                      <div class="ctr-pbv2__flavor-thumb">
+                        {% for variant in product.variants %}
+                          {%- if variant.featured_image != blank -%}
+                            <div x-show="selectedFormat === '{{ variant.options[format_pos] }}' && bagFlavors[{{ bag_idx }}] === '{{ variant.options[flavor_pos] }}'" x-cloak>
+                              {{ variant.featured_image | image_url: width: 216 | image_tag: loading: 'lazy', widths: '108,162,216', sizes: '108px', alt: title }}
+                            </div>
+                          {%- endif -%}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              {%- endif -%}
+            </div>
+          </div>
+        {% endfor %}
+
+        {%- comment -%} Buy Once {%- endcomment -%}
+        <div
+          class="ctr-pbv2__tier-card ctr-pbv2__tier-card--buyonce"
+          :class="{ 'is-selected': selectedTier === 'buyone' }"
+          @click="selectTier('buyone')"
+          role="radio"
+          :aria-checked="selectedTier === 'buyone'"
+          tabindex="0"
+          @keydown.enter="selectTier('buyone')"
+          @keydown.space.prevent="selectTier('buyone')"
+        >
+          <div class="ctr-pbv2__tier-head">
+            <span class="ctr-pbv2__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv2__tier-label">{{ section.settings.buyonce_label | default: 'Buy Once' | escape }}</span>
+            <div class="ctr-pbv2__tier-pricing ctr-pbv2__tier-pricing--buyonce">
+              {%- assign initial_buyonce = default_variant.price | money -%}
+              <span
+                class="ctr-pbv2__tier-price--buyonce"
+                x-effect="if (typeof getBuyOncePrice === 'function') { var v = getBuyOncePrice(); if (v) $el.textContent = v; }"
+              >{{ initial_buyonce }}</span>
+            </div>
+          </div>
+          {%- if section.settings.buyonce_perk_1 != blank -%}
+            {%- assign buyonce_perk1_sticks = section.settings.buyonce_perk_1 | replace: 'servings', 'sticks' | replace: 'Servings', 'Sticks' -%}
+            <ul class="ctr-pbv2__perks ctr-pbv2__perks--always">
+              <li x-text="selectedFormat === 'Sticks' ? '{{ buyonce_perk1_sticks | escape }}' : '{{ section.settings.buyonce_perk_1 | escape }}'">{{ section.settings.buyonce_perk_1 | escape }}</li>
+              {%- if section.settings.buyonce_perk_2 != blank -%}<li>{{ section.settings.buyonce_perk_2 | escape }}</li>{%- endif -%}
+            </ul>
+          {%- endif -%}
+          <div class="ctr-pbv2__tier-body" x-show="selectedTier === 'buyone'" x-cloak>
+            {%- if flavor_option.values.size > 1 -%}
+              <div class="ctr-pbv2__option-block">
+                <p class="ctr-pbv2__option-label">{{ section.settings.flavor_select_label | default: 'Select Flavor' | escape }}</p>
+                <div class="ctr-pbv2__flavor-row">
+                  <div class="ctr-pbv2__flavor-left">
+                    <div class="ctr-pbv2__pills">
+                      {% for flavor_val in flavor_option.values %}
+                        <button type="button" class="ctr-pbv2__pill{% if flavor_val == default_flavor %} is-selected{% endif %}"
+                          :class="{
+                            'is-selected': bagFlavors[0] === '{{ flavor_val }}',
+                            'is-unavailable': !isVariantAvailable(selectedFormat, '{{ flavor_val }}'),
+                            'is-low-stock': isFlavorLowStock('{{ flavor_val }}')
+                          }"
+                          :disabled="!isVariantAvailable(selectedFormat, '{{ flavor_val }}')"
+                          @click.stop="setBagFlavor(0, '{{ flavor_val }}')"
+                        >
+                          <span
+                            class="ctr-pbv2__flavor-badge ctr-pbv2__flavor-badge--sold-out"
+                            x-show="showSoldOutBadge('{{ flavor_val }}')"
+                            x-text="inventoryLabels.soldOutPill"
+                          ></span>
+                          <span
+                            class="ctr-pbv2__flavor-badge"
+                            x-show="isFlavorLowStock('{{ flavor_val }}')"
+                            x-text="inventoryLabels.lowStockPill"
+                          ></span>
+                          <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
+                            <span class="ctr-pbv2__flavor-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
+                          </template>
+                          {{ flavor_val | escape }}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="ctr-pbv2__flavor-thumb">
+                    {% for variant in product.variants %}
+                      {%- if variant.featured_image != blank -%}
+                        <div x-show="selectedFormat === '{{ variant.options[format_pos] }}' && bagFlavors[0] === '{{ variant.options[flavor_pos] }}'" x-cloak>
+                          {{ variant.featured_image | image_url: width: 216 | image_tag: loading: 'lazy', widths: '108,162,216', sizes: '108px', alt: title }}
+                        </div>
+                      {%- endif -%}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} Quantity stepper {%- endcomment -%}
+            <div class="ctr-pbv2__option-block">
+              <p class="ctr-pbv2__option-label">{{ section.settings.qty_label | default: 'Add Quantity' | escape }}</p>
+              <div class="ctr-pbv2__qty-stepper">
+                <button type="button" class="ctr-pbv2__qty-btn" @click.stop="adjustQty(-1)" :disabled="buyOnceQty <= 1" aria-label="Decrease">−</button>
+                <span class="ctr-pbv2__qty-value" x-text="buyOnceQty">1</span>
+                <button type="button" class="ctr-pbv2__qty-btn ctr-pbv2__qty-btn--plus" @click.stop="adjustQty(1)" aria-label="Increase">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {%- comment -%} Gift promo banner {%- endcomment -%}
+      {%- if section.settings.gift_callout_heading != blank -%}
+        <div class="ctr-pbv2__gift-card">
+          <div>
+            <p class="ctr-pbv2__gift-heading">{{ section.settings.gift_callout_heading | escape }}</p>
+            <p class="ctr-pbv2__gift-copy">
+              {{ section.settings.gift_callout_text | escape }}
+              {% if section.settings.gift_callout_link_text != blank %}<a href="{{ section.settings.gift_callout_link_url | default: '#' }}" @click.prevent="giftModalOpen = true">{{ section.settings.gift_callout_link_text | escape }}</a>{% endif %}
+            </p>
+          </div>
+          {%- assign gift_image_count = 0 -%}
+          {%- for i in (1..3) -%}{%- assign gik = 'gift_image_' | append: i -%}{%- if section.settings[gik] != blank -%}{%- assign gift_image_count = gift_image_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+          <div class="ctr-pbv2__gift-images{% if gift_image_count == 1 %} ctr-pbv2__gift-images--single{% endif %}">
+            {% for i in (1..3) %}{%- assign gik = 'gift_image_' | append: i -%}{% if section.settings[gik] != blank %}<div class="ctr-pbv2__gift-image">{{ section.settings[gik] | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '48px', alt: section.settings.gift_callout_heading }}</div>{% endif %}{% endfor %}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} CTA button {%- endcomment -%}
+      {%- comment -%} Pre-render initial CTA price (tier1 default selection) {%- endcomment -%}
+      {%- assign cta_initial_price = '' -%}
+      {%- assign cta_initial_compare = '' -%}
+      {%- if default_variant != blank -%}
+        {%- assign tier1_sp_id = section.settings.tier1_selling_plan_id | plus: 0 -%}
+        {%- if tier1_sp_id > 0 -%}
+          {%- for alloc in default_variant.selling_plan_allocations -%}
+            {%- if alloc.selling_plan.id == tier1_sp_id -%}
+              {%- if section.settings.tier1_use_custom_price and section.settings.tier1_price != blank -%}
+                {%- assign cta_initial_price = section.settings.tier1_price -%}
+                {%- if section.settings.tier1_compare_price != blank -%}{%- assign cta_initial_compare = section.settings.tier1_compare_price -%}{%- endif -%}
+              {%- else -%}
+                {%- assign cta_initial_price = alloc.price | money -%}
+                {%- assign cta_compare_cents = alloc.compare_at_price | default: default_variant.price -%}
+                {%- if cta_compare_cents > alloc.price -%}{%- assign cta_initial_compare = cta_compare_cents | money -%}{%- endif -%}
+              {%- endif -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+      <button type="button" class="ctr-pbv2__cta" x-ref="primaryCta" :disabled="isAdding || !currentAvailable" @click="addToCart()">
+        {%- comment -%} Pre-Alpine fallback (templates below stay inert until Alpine hydrates) {%- endcomment -%}
+        <span class="ctr-pbv2__cta-prealpine" x-show="typeof ctaPrice === 'undefined' || ctaPrice === ''">
+          {{ section.settings.cta_text | default: 'Add To Cart' | escape }}{% if cta_initial_price != blank %} - {{ cta_initial_price }}{% endif %}{% if cta_initial_compare != blank %} <span class="ctr-pbv2__cta-compare">{{ cta_initial_compare }}</span>{% endif %}
+        </span>
+        <template x-if="isAdding"><span class="ctr-pbv2__cta-spinner" aria-hidden="true"></span></template>
+        <template x-if="!isAdding && !currentAvailable"><span x-text="inventoryLabels.soldOutCta"></span></template>
+        <template x-if="!isAdding && currentAvailable">
+          <span>
+            {{ section.settings.cta_text | default: 'Add To Cart' | escape }}
+            <span x-show="ctaPrice !== ''" x-text="' - ' + ctaPrice"></span>
+            <span x-show="ctaComparePrice !== ''" class="ctr-pbv2__cta-compare" x-text="ctaComparePrice"></span>
+          </span>
+        </template>
+      </button>
+
+      {%- comment -%} Trust row {%- endcomment -%}
+      <div class="ctr-pbv2__trust-row">
+        {%- if section.settings.trust_badge_1 != blank -%}
+          <div class="ctr-pbv2__trust-item">
+            <span class="ctr-pbv2__trust-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3.85019 8.6201C3.70423 7.96262 3.72665 7.27894 3.91535 6.63244C4.10405 5.98593 4.45294 5.39754 4.92966 4.92182C5.40638 4.4461 5.9955 4.09844 6.6424 3.91109C7.2893 3.72374 7.97303 3.70276 8.63019 3.8501C8.9919 3.2844 9.4902 2.81886 10.0791 2.49638C10.6681 2.17391 11.3287 2.00488 12.0002 2.00488C12.6716 2.00488 13.3323 2.17391 13.9212 2.49638C14.5102 2.81886 15.0085 3.2844 15.3702 3.8501C16.0284 3.70212 16.7133 3.72301 17.3612 3.91081C18.0091 4.09862 18.599 4.44724 19.076 4.92425C19.5531 5.40126 19.9017 5.99117 20.0895 6.6391C20.2773 7.28703 20.2982 7.97193 20.1502 8.6301C20.7159 8.99181 21.1814 9.4901 21.5039 10.079C21.8264 10.668 21.9954 11.3286 21.9954 12.0001C21.9954 12.6715 21.8264 13.3322 21.5039 13.9211C21.1814 14.5101 20.7159 15.0084 20.1502 15.3701C20.2975 16.0273 20.2765 16.711 20.0892 17.3579C19.9018 18.0048 19.5542 18.5939 19.0785 19.0706C18.6027 19.5473 18.0144 19.8962 17.3679 20.0849C16.7213 20.2736 16.0377 20.2961 15.3802 20.1501C15.019 20.718 14.5203 21.1855 13.9303 21.5094C13.3404 21.8333 12.6782 22.0032 12.0052 22.0032C11.3322 22.0032 10.67 21.8333 10.0801 21.5094C9.49011 21.1855 8.99143 20.718 8.63019 20.1501C7.97303 20.2974 7.2893 20.2765 6.6424 20.0891C5.9955 19.9018 5.40638 19.5541 4.92966 19.0784C4.45294 18.6027 4.10405 18.0143 3.91535 17.3678C3.72665 16.7213 3.70423 16.0376 3.85019 15.3801C3.28015 15.0193 2.81061 14.5203 2.48524 13.9293C2.15988 13.3384 1.98926 12.6747 1.98926 12.0001C1.98926 11.3255 2.15988 10.6618 2.48524 10.0709C2.81061 9.47992 3.28015 8.98085 3.85019 8.6201Z" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12L11 14L15 10" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="ctr-pbv2__trust-text">{{ section.settings.trust_badge_1 | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.trust_badge_1 != blank and section.settings.trust_badge_2 != blank -%}
+          <span class="ctr-pbv2__trust-divider" aria-hidden="true"></span>
+        {%- endif -%}
+        {%- if section.settings.trust_badge_2 != blank -%}
+          <div class="ctr-pbv2__trust-item">
+            <span class="ctr-pbv2__trust-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8H10C9.46957 8 8.96086 8.21071 8.58579 8.58579C8.21071 8.96086 8 9.46957 8 10C8 10.5304 8.21071 11.0391 8.58579 11.4142C8.96086 11.7893 9.46957 12 10 12H14C14.5304 12 15.0391 12.2107 15.4142 12.5858C15.7893 12.9609 16 13.4696 16 14C16 14.5304 15.7893 15.0391 15.4142 15.4142C15.0391 15.7893 14.5304 16 14 16H8" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18V6" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="ctr-pbv2__trust-text">{{ section.settings.trust_badge_2 | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.trust_badge_2 != blank and section.settings.trust_badge_3 != blank -%}
+          <span class="ctr-pbv2__trust-divider" aria-hidden="true"></span>
+        {%- endif -%}
+        {%- if section.settings.trust_badge_3 != blank -%}
+          <div class="ctr-pbv2__trust-item">
+            <span class="ctr-pbv2__trust-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 10H5C3.89543 10 3 10.8954 3 12V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V12C21 10.8954 20.1046 10 19 10Z" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V10" stroke="#6A6A6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="ctr-pbv2__trust-text">{{ section.settings.trust_badge_3 | escape }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ==== RIGHT column blocks: upsell ==== {%- endcomment -%}
+      {% for block in section.blocks %}
+        {% if block.type == 'upsell' %}
+          {%- assign up = block.settings.upsell_product -%}
+          {%- assign up_flavor_pos = 0 -%}
+          {%- if up != blank -%}
+            {%- for i in (0..2) -%}{%- assign uopt = up.options[i] | downcase -%}{%- if uopt == 'flavor' -%}{%- assign up_flavor_pos = i -%}{%- endif -%}{%- endfor -%}
+          {%- endif -%}
+          {%- assign up_flavor_option = up.options_with_values[up_flavor_pos] -%}
+          <div class="ctr-pbv2__upsell" data-block-id="{{ block.id }}" {{ block.shopify_attributes }}>
+            <div>
+              {%- if block.settings.intro_title != blank -%}<p class="ctr-pbv2__upsell-intro-title">{{ block.settings.intro_title | escape }}</p>{%- endif -%}
+              {%- if block.settings.intro_desc != blank -%}<p class="ctr-pbv2__upsell-intro-desc" style="margin-top:6px;">{{ block.settings.intro_desc | escape }}</p>{%- endif -%}
+            </div>
+            <div class="ctr-pbv2__upsell-body">
+              <div class="ctr-pbv2__upsell-left">
+                {%- assign upsell_img = block.settings.image | default: up.featured_image -%}
+                {%- if upsell_img != blank -%}
+                  <a class="ctr-pbv2__upsell-image" href="{{ up.url }}" tabindex="-1" aria-hidden="true">{{ upsell_img | image_url: width: 216 | image_tag: loading: 'lazy', widths: '108,162,216', sizes: '108px', alt: up.title }}</a>
+                {%- endif -%}
+                <div class="ctr-pbv2__upsell-details">
+                  <div>
+                    <a class="ctr-pbv2__upsell-product-title" href="{{ up.url }}">{{ block.settings.product_title | default: up.title | escape }}</a>
+                    <div class="ctr-pbv2__upsell-price-row" style="margin-top:6px;">
+                      {%- if block.settings.price != blank -%}<span class="ctr-pbv2__upsell-price">{{ block.settings.price | escape }}</span>{%- endif -%}
+                      {%- if block.settings.compare_price != blank -%}<span class="ctr-pbv2__upsell-compare">{{ block.settings.compare_price | escape }}</span>{%- endif -%}
+                      {%- if block.settings.badge != blank -%}<span class="ctr-pbv2__upsell-badge">{{ block.settings.badge | escape }}</span>{%- endif -%}
+                    </div>
+                  </div>
+                  <div class="ctr-pbv2__upsell-divider"></div>
+                  {%- if up_flavor_option.values.size > 0 -%}
+                    <div>
+                      <p class="ctr-pbv2__upsell-flavor-label">{{ block.settings.flavor_label | default: 'Select Flavor' | escape }}</p>
+                      <div class="ctr-pbv2__upsell-pills">
+                        {% for flavor_val in up_flavor_option.values %}
+                          <button type="button" class="ctr-pbv2__upsell-pill"
+                            :class="{ 'is-selected': (upsellFlavors['{{ block.id }}'] || '{{ up_flavor_option.values.first }}') === '{{ flavor_val }}' }"
+                            @click="upsellFlavors = Object.assign({}, upsellFlavors, { '{{ block.id }}': '{{ flavor_val }}' })"
+                          >
+                            <template x-if="swatchColor('{{ flavor_val }}') !== 'transparent'">
+                              <span class="ctr-pbv2__upsell-swatch" :style="'background:' + swatchColor('{{ flavor_val }}')" aria-hidden="true"></span>
+                            </template>
+                            {{ flavor_val | escape }}
+                          </button>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.disclaimer != blank -%}<p class="ctr-pbv2__upsell-disclaimer">{{ block.settings.disclaimer | escape }}</p>{%- endif -%}
+                </div>
+              </div>
+              <button type="button" class="ctr-pbv2__upsell-cta"
+                :disabled="isAddingUpsell"
+                @click="addUpsellToCart('{{ block.id }}', '{{ up_flavor_option.values.first }}')"
+              >
+                <span x-text="isAddingUpsell ? 'Adding...' : '{{ block.settings.cta | default: 'Add To Cart' | escape }}'">{{ block.settings.cta | default: 'Add To Cart' | escape }}</span>
+              </button>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {%- comment -%} MOBILE: FrontRow (after upsell) {%- endcomment -%}
+      {%- if section.settings.frontrow_product_id != blank -%}
+        <div class="ctr-pbv2__mobile-clinicians">
+          {% render 'ctr-frontrow-widget', product_id: section.settings.frontrow_product_id, wrapper_class: 'ctr-pbv2__frontrow-mobile', iframe_id: 'iframe-frontrow-pbv2-mob-' | append: section.id %}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ==== RIGHT column blocks: faq ==== {%- endcomment -%}
+      {% for block in section.blocks %}
+        {% if block.type == 'faq' %}
+          <div class="ctr-pbv2__faq" x-data="{ openFaq: 0 }" {{ block.shopify_attributes }}>
+            {% for i in (1..7) %}
+              {%- assign q_key = 'q_' | append: i -%}
+              {%- assign a_key = 'a_' | append: i -%}
+              {% if block.settings[q_key] != blank %}
+                <div class="ctr-pbv2__faq-item">
+                  <button
+                    type="button"
+                    class="ctr-pbv2__faq-btn"
+                    @click="openFaq = openFaq === {{ forloop.index0 }} ? -1 : {{ forloop.index0 }}"
+                    :aria-expanded="openFaq === {{ forloop.index0 }}"
+                  >
+                    <span>{{ block.settings[q_key] | escape }}</span>
+                    <span class="ctr-pbv2__faq-icon" aria-hidden="true">
+                      <span class="ctr-pbv2__faq-icon-h"></span>
+                      <span class="ctr-pbv2__faq-icon-v" :style="openFaq === {{ forloop.index0 }} ? 'opacity:0' : 'opacity:1'"></span>
+                    </span>
+                  </button>
+                  {% if block.settings[a_key] != blank %}
+                    <div class="ctr-pbv2__faq-answer" x-show="openFaq === {{ forloop.index0 }}" x-cloak>
+                      {{ block.settings[a_key] | escape }}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {%- comment -%} ==== Lightlabs Widget (under FAQ) ==== {%- endcomment -%}
+      {%- if section.settings.show_lightlabs_widget -%}
+        <div class="ctr-pbv2__lightlabs">
+          <lightlabs-widget company-id="{{ section.settings.lightlabs_company_id | default: '399' }}"></lightlabs-widget>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Gift Modal {%- endcomment -%}
+      <div class="ctr-pbv2__modal-overlay" x-cloak x-show="giftModalOpen"
+        x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+        @click.self="giftModalOpen = false" @keydown.escape.window="giftModalOpen = false" role="dialog" aria-modal="true">
+        <div class="ctr-pbv2__modal">
+          <button type="button" class="ctr-pbv2__modal-close" @click="giftModalOpen = false" aria-label="Close">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+          </button>
+          {% if section.settings.modal_heading != blank %}<p class="ctr-pbv2__modal-heading">{{ section.settings.modal_heading }}</p>{% endif %}
+          {% if section.settings.modal_description != blank %}<div class="ctr-pbv2__modal-desc">{{ section.settings.modal_description }}</div>{% endif %}
+          {%- assign has_modal_gifts = false -%}{%- for i in (1..4) -%}{%- assign mgk = 'modal_gift_image_' | append: i -%}{%- if section.settings[mgk] != blank -%}{%- assign has_modal_gifts = true -%}{%- endif -%}{%- endfor -%}
+          {%- if has_modal_gifts -%}
+            <div class="ctr-pbv2__modal-gifts">
+              {% for i in (1..4) %}{%- assign mgi = 'modal_gift_image_' | append: i -%}{%- assign mgl = 'modal_gift_label_' | append: i -%}{% if section.settings[mgi] != blank or section.settings[mgl] != blank %}<div class="ctr-pbv2__modal-gift">{% if section.settings[mgi] != blank %}{{ section.settings[mgi] | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '64px' }}{% endif %}{% if section.settings[mgl] != blank %}<div class="ctr-pbv2__modal-gift-label">{{ section.settings[mgl] }}</div>{% endif %}</div>{% endif %}{% endfor %}
+            </div>
+          {%- endif -%}
+          {% if section.settings.modal_footer != blank %}<div style="font-size:12px;color:rgba(17,17,17,0.55);margin-top:16px;line-height:1.45;">{{ section.settings.modal_footer }}</div>{% endif %}
+        </div>
+      </div>
+
+      {%- comment -%} Mobile sticky CTA {%- endcomment -%}
+      <div class="ctr-pbv2__sticky" x-cloak x-show="mobileStickyVisible">
+        <button type="button" class="ctr-pbv2__cta ctr-pbv2__sticky-btn" :disabled="isAdding || !currentAvailable" @click="addToCart()">
+          <span x-text="isAdding ? 'Adding...' : ('{{ section.settings.cta_text | default: 'Add To Cart' | escape }}' + (ctaPrice ? ' - ' + ctaPrice : ''))">{{ section.settings.cta_text | default: 'Add To Cart' | escape }}</span>
+        </button>
+      </div>
+
+    </div>
+    {%- comment -%} /copy {%- endcomment -%}
+
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "CTR Purchase Box V2",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    {
+      "type": "text",
+      "id": "serving_size",
+      "label": "Serving size filter",
+      "default": "28 Servings",
+      "info": "Only variants matching this Servings option value will be used (e.g. '28 Servings')"
+    },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select", "id": "container_spacing", "label": "Container spacing", "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Full Width" }
+      ]
+    },
+    { "type": "color", "id": "section_background", "label": "Section background", "default": "#f8f3ec" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#111111" },
+    { "type": "range", "id": "padding_top_desktop", "label": "Top padding (desktop)", "min": 0, "max": 160, "step": 4, "default": 40 },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Bottom padding (desktop)", "min": 0, "max": 160, "step": 4, "default": 48 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Top padding (mobile)", "min": 0, "max": 120, "step": 4, "default": 24 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding (mobile)", "min": 0, "max": 120, "step": 4, "default": 32 },
+    { "type": "header", "content": "Header" },
+    { "type": "text", "id": "product_title", "label": "Product title override" },
+    { "type": "checkbox", "id": "show_review_count", "label": "Show review count", "default": true },
+    { "type": "text", "id": "ingredients_link_text", "label": "Ingredients link text", "default": "Ingredients" },
+    { "type": "number", "id": "ingredients_image_index", "label": "Ingredients image index (0-based)", "default": 0 },
+    { "type": "text", "id": "benefits_link_text", "label": "Benefits link text", "default": "Benefits" },
+    { "type": "number", "id": "benefits_image_index", "label": "Benefits image index (0-based)", "default": 1 },
+    { "type": "image_picker", "id": "clinicians_badge_image", "label": "Clinicians badge image" },
+    { "type": "header", "content": "Description & Benefits" },
+    { "type": "image_picker", "id": "benefit_icon", "label": "Benefit icon" },
+    { "type": "paragraph", "content": "Bullet points from metafield custom.smart_bullet_points | Description from metafield custom.product_sub_description" },
+    { "type": "header", "content": "Option Labels" },
+    { "type": "text", "id": "format_label", "label": "Format selector label", "default": "Format" },
+    { "type": "text", "id": "flavor_label", "label": "Flavor selector label", "default": "Flavor" },
+    { "type": "text", "id": "swatch_mango", "label": "Mango swatch color", "default": "#F5A623" },
+    { "type": "text", "id": "swatch_raspberry", "label": "Raspberry swatch color", "default": "#C0392B" },
+    { "type": "paragraph", "content": "Variant availability badges use metafields custom.low_stock and custom.sold_out. Copy is in theme locales (ctr.inventory.*)." },
+    { "type": "header", "content": "Tier 1 — 1 Month Supply" },
+    { "type": "text", "id": "tier1_label", "label": "Label", "default": "1 Month Supply" },
+    { "type": "text", "id": "tier1_selling_plan_id", "label": "Selling Plan ID", "info": "Numeric ID from Shopify Admin" },
+    { "type": "color", "id": "discount_badge_color", "label": "Badge color", "default": "#4659ff" },
+    { "type": "checkbox", "id": "tier1_use_custom_badge", "label": "Use custom badge text", "default": false },
+    { "type": "text", "id": "tier1_badge", "label": "Custom badge text", "default": "25% OFF" },
+    { "type": "checkbox", "id": "tier1_use_custom_price", "label": "Use custom prices", "default": false },
+    { "type": "text", "id": "tier1_price", "label": "Custom price", "info": "e.g. $42.25" },
+    { "type": "text", "id": "tier1_compare_price", "label": "Custom compare price", "info": "e.g. $65.00" },
+    { "type": "text", "id": "tier1_perk_1", "label": "Perk 1", "default": "28 servings" },
+    { "type": "text", "id": "tier1_perk_2", "label": "Perk 2", "default": "3 FREE gifts valued at $70" },
+    { "type": "text", "id": "tier1_perk_3", "label": "Perk 3", "default": "Free shipping ($7 value)" },
+    { "type": "header", "content": "Tier 2 — 2 Months Supply" },
+    { "type": "text", "id": "tier2_label", "label": "Label", "default": "2 Months Supply" },
+    { "type": "text", "id": "tier2_selling_plan_id", "label": "Selling Plan ID", "info": "Numeric ID from Shopify Admin" },
+    { "type": "checkbox", "id": "tier2_use_custom_badge", "label": "Use custom badge text", "default": false },
+    { "type": "text", "id": "tier2_badge", "label": "Custom badge text", "default": "30% OFF" },
+    { "type": "checkbox", "id": "tier2_use_custom_price", "label": "Use custom prices", "default": false },
+    { "type": "text", "id": "tier2_price", "label": "Custom price" },
+    { "type": "text", "id": "tier2_compare_price", "label": "Custom compare price" },
+    { "type": "text", "id": "tier2_perk_1", "label": "Perk 1", "default": "56 servings" },
+    { "type": "text", "id": "tier2_perk_2", "label": "Perk 2", "default": "3 FREE gifts valued at $70" },
+    { "type": "text", "id": "tier2_perk_3", "label": "Perk 3", "default": "Free shipping ($7 value)" },
+    { "type": "header", "content": "Tier 3 — 3 Months Supply" },
+    { "type": "text", "id": "tier3_label", "label": "Label", "default": "3 Months Supply" },
+    { "type": "text", "id": "tier3_selling_plan_id", "label": "Selling Plan ID", "info": "Numeric ID from Shopify Admin" },
+    { "type": "checkbox", "id": "tier3_use_custom_badge", "label": "Use custom badge text", "default": false },
+    { "type": "text", "id": "tier3_badge", "label": "Custom badge text", "default": "35% OFF" },
+    { "type": "checkbox", "id": "tier3_use_custom_price", "label": "Use custom prices", "default": false },
+    { "type": "text", "id": "tier3_price", "label": "Custom price" },
+    { "type": "text", "id": "tier3_compare_price", "label": "Custom compare price" },
+    { "type": "text", "id": "tier3_perk_1", "label": "Perk 1", "default": "84 servings" },
+    { "type": "text", "id": "tier3_perk_2", "label": "Perk 2", "default": "3 FREE gifts valued at $70" },
+    { "type": "text", "id": "tier3_perk_3", "label": "Perk 3", "default": "Free shipping ($7 value)" },
+    { "type": "header", "content": "Buy Once" },
+    { "type": "text", "id": "buyonce_label", "label": "Label", "default": "Buy Once" },
+    { "type": "text", "id": "buyonce_price", "label": "Price (display)" },
+    { "type": "text", "id": "buyonce_perk_1", "label": "Perk 1", "default": "28 servings" },
+    { "type": "text", "id": "buyonce_perk_2", "label": "Perk 2" },
+    { "type": "header", "content": "Quantity Stepper" },
+    { "type": "checkbox", "id": "show_qty_stepper", "label": "Show quantity stepper", "default": false },
+    { "type": "text", "id": "qty_label", "label": "Quantity label", "default": "Quantity" },
+    { "type": "header", "content": "Gift Promo Banner" },
+    { "type": "text", "id": "gift_callout_heading", "label": "Heading" },
+    { "type": "textarea", "id": "gift_callout_text", "label": "Copy" },
+    { "type": "text", "id": "gift_callout_link_text", "label": "Link text" },
+    { "type": "url", "id": "gift_callout_link_url", "label": "Link URL" },
+    { "type": "image_picker", "id": "gift_image_1", "label": "Gift image 1" },
+    { "type": "image_picker", "id": "gift_image_2", "label": "Gift image 2" },
+    { "type": "image_picker", "id": "gift_image_3", "label": "Gift image 3" },
+    { "type": "header", "content": "Gift Modal" },
+    { "type": "richtext", "id": "modal_heading", "label": "Modal heading" },
+    { "type": "richtext", "id": "modal_description", "label": "Modal description" },
+    { "type": "image_picker", "id": "modal_gift_image_1", "label": "Gift 1 image" },
+    { "type": "richtext", "id": "modal_gift_label_1", "label": "Gift 1 label" },
+    { "type": "image_picker", "id": "modal_gift_image_2", "label": "Gift 2 image" },
+    { "type": "richtext", "id": "modal_gift_label_2", "label": "Gift 2 label" },
+    { "type": "image_picker", "id": "modal_gift_image_3", "label": "Gift 3 image" },
+    { "type": "richtext", "id": "modal_gift_label_3", "label": "Gift 3 label" },
+    { "type": "image_picker", "id": "modal_gift_image_4", "label": "Gift 4 image" },
+    { "type": "richtext", "id": "modal_gift_label_4", "label": "Gift 4 label" },
+    { "type": "richtext", "id": "modal_footer", "label": "Modal footer" },
+    { "type": "header", "content": "CTA & Buttons" },
+    { "type": "text", "id": "cta_text", "label": "CTA text", "default": "Add To Cart" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#1d1d1d" },
+    { "type": "color", "id": "button_text_color", "label": "Button text color", "default": "#ffffff" },
+    { "type": "header", "content": "Trust Badges" },
+    { "type": "text", "id": "trust_badge_1", "label": "Trust badge 1", "default": "Free shipping on orders $50+" },
+    { "type": "text", "id": "trust_badge_2", "label": "Trust badge 2", "default": "HSA/FSA Eligible" },
+    { "type": "text", "id": "trust_badge_3", "label": "Trust badge 3", "default": "30 day money-back guarantee" },
+    { "type": "header", "content": "Lightlabs Widget" },
+    {
+      "type": "checkbox",
+      "id": "show_lightlabs_widget",
+      "label": "Show Lightlabs widget",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "lightlabs_company_id",
+      "label": "Company ID",
+      "default": "399"
+    },
+    { "type": "header", "content": "FrontRow Widget" },
+    { "type": "text", "id": "frontrow_product_id", "label": "FrontRow product ID", "default": "2835" }
+  ],
+  "blocks": [
+    {
+      "type": "stats",
+      "name": "Stats Banner",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "CLINICAL-GRADE ABSORPTION IN EVERY SERVING" },
+        { "type": "text", "id": "stat1_value", "label": "Stat 1 value", "default": "5x" },
+        { "type": "text", "id": "stat1_label", "label": "Stat 1 label", "default": "better absorbed via Capsoil lipsomal delivery" },
+        { "type": "text", "id": "stat2_value", "label": "Stat 2 value", "default": "920mg" },
+        { "type": "text", "id": "stat2_label", "label": "Stat 2 label", "default": "electrolytes for rapid cellular hydration" },
+        { "type": "text", "id": "stat3_value", "label": "Stat 3 value", "default": "7-in-1" },
+        { "type": "text", "id": "stat3_label", "label": "Stat 3 label", "default": "essential daily jobs in one formula" }
+      ]
+    },
+    {
+      "type": "benefits",
+      "name": "Benefits",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "BENEFITS" },
+        { "type": "text", "id": "benefit_title_1", "label": "Benefit 1 title", "default": "Rapid cellular hydration" },
+        { "type": "textarea", "id": "benefit_desc_1", "label": "Benefit 1 description", "default": "Capsoil lipsomal delivery shuttles electrolytes and vitamins directly into cells for fast rehydration." },
+        { "type": "text", "id": "benefit_title_2", "label": "Benefit 2 title", "default": "Daily immune defense" },
+        { "type": "textarea", "id": "benefit_desc_2", "label": "Benefit 2 description", "default": "Lipsomal Vitamin C and Glutathione fortify your immune system at a cellular level" },
+        { "type": "text", "id": "benefit_title_3", "label": "Benefit 3 title", "default": "Natural overnight detox" },
+        { "type": "textarea", "id": "benefit_desc_3", "label": "Benefit 3 description", "default": "Methylated B-complex and Glutathione drive natural toxin clearance while you sleep" },
+        { "type": "text", "id": "benefit_title_4", "label": "Benefit 4 title", "default": "Sharper focus and steady energy" },
+        { "type": "textarea", "id": "benefit_desc_4", "label": "Benefit 4 description", "default": "Nanoemulsified CoQ10 and methylated B12 fuel mitochondrial energy without stimulants" },
+        { "type": "text", "id": "benefit_title_5", "label": "Benefit 5 title", "default": "Skin, hair and longevity support" },
+        { "type": "textarea", "id": "benefit_desc_5", "label": "Benefit 5 description", "default": "Vitamin C and Glutathione protect collagen and reduce oxidative stress for visible radiance" }
+      ]
+    },
+    {
+      "type": "reported",
+      "name": "Users Also Reported",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Users also reported" },
+        { "type": "text", "id": "item_1", "label": "Item 1", "default": "Sharper focus throughout the day" },
+        { "type": "text", "id": "item_2", "label": "Item 2", "default": "Better sleep quality" },
+        { "type": "text", "id": "item_3", "label": "Item 3", "default": "Faster post-workout recovery" },
+        { "type": "text", "id": "item_4", "label": "Item 4", "default": "Clearer, more hydrated skin" },
+        { "type": "text", "id": "item_5", "label": "Item 5", "default": "Less midday fog and fatigue" },
+        { "type": "text", "id": "item_6", "label": "Item 6", "default": "Reduced bloating after meals" }
+      ]
+    },
+    {
+      "type": "mini_stats",
+      "name": "Mini Stats Bar",
+      "settings": [
+        { "type": "text", "id": "stat1_value", "label": "Stat 1 value", "default": "920mg" },
+        { "type": "text", "id": "stat1_label", "label": "Stat 1 label", "default": "Electrolytes per serving" },
+        { "type": "text", "id": "stat2_value", "label": "Stat 2 value", "default": "5x" },
+        { "type": "text", "id": "stat2_label", "label": "Stat 2 label", "default": "Better absorbed" },
+        { "type": "text", "id": "stat3_value", "label": "Stat 3 value", "default": "11" },
+        { "type": "text", "id": "stat3_label", "label": "Stat 3 label", "default": "Vitamins, minerals & cofactors" },
+        { "type": "text", "id": "stat4_value", "label": "Stat 4 value", "default": "7-in-1" },
+        { "type": "text", "id": "stat4_label", "label": "Stat 4 label", "default": "Daily formula one scoop, no stack." }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        { "type": "text", "id": "q_1", "label": "Question 1", "default": "How do I use Restore" },
+        { "type": "textarea", "id": "a_1", "label": "Answer 1", "default": "Mix one stick (or one scoop from the bag) with 8-12 oz of cold water once daily. Best taken on an empty stomach in the morning, or 30 minutes before bed for overnight hydration and recovery." },
+        { "type": "text", "id": "q_2", "label": "Question 2", "default": "When will I see results?" },
+        { "type": "textarea", "id": "a_2", "label": "Answer 2" },
+        { "type": "text", "id": "q_3", "label": "Question 3", "default": "What's inside Restore?" },
+        { "type": "textarea", "id": "a_3", "label": "Answer 3" },
+        { "type": "text", "id": "q_4", "label": "Question 4", "default": "Bags vs. Sticks what's the difference?" },
+        { "type": "textarea", "id": "a_4", "label": "Answer 4" },
+        { "type": "text", "id": "q_5", "label": "Question 5", "default": "Can I take Restore before bed?" },
+        { "type": "textarea", "id": "a_5", "label": "Answer 5" },
+        { "type": "text", "id": "q_6", "label": "Question 6", "default": "How is Restore different from greens powders or sports drinks?" },
+        { "type": "textarea", "id": "a_6", "label": "Answer 6" },
+        { "type": "text", "id": "q_7", "label": "Question 7", "default": "Is Restore third-party tested?" },
+        { "type": "textarea", "id": "a_7", "label": "Answer 7" }
+      ]
+    },
+    {
+      "type": "upsell",
+      "name": "Upsell Block",
+      "settings": [
+        { "type": "product", "id": "upsell_product", "label": "Upsell product" },
+        { "type": "text", "id": "intro_title", "label": "Intro title", "default": "Part of the Detox & Destress Stack" },
+        { "type": "textarea", "id": "intro_desc", "label": "Intro description", "default": "For a limited time, get two of our best selling blends in one stack - Restore and Calm." },
+        { "type": "image_picker", "id": "image", "label": "Product image override" },
+        { "type": "text", "id": "product_title", "label": "Product title override" },
+        { "type": "text", "id": "price", "label": "Bundle price (display)", "default": "$93.80" },
+        { "type": "text", "id": "compare_price", "label": "Bundle compare-at price", "default": "$134.00" },
+        { "type": "text", "id": "badge", "label": "Discount badge", "default": "30% OFF" },
+        { "type": "text", "id": "flavor_label", "label": "Flavor selector label", "default": "Select Flavor for Restore" },
+        { "type": "text", "id": "cta", "label": "CTA text", "default": "Add To Cart" },
+        { "type": "text", "id": "disclaimer", "label": "Disclaimer", "default": "Strikethrough price refers to one time purchase" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "CTR Purchase Box V2",
+      "blocks": [
+        { "type": "stats" },
+        { "type": "benefits" },
+        { "type": "reported" }
+      ]
+    }
+  ]
+}
+{% endschema %}

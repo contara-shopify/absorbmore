@@ -497,15 +497,17 @@
         <div class="ctr-fyf__subheading">{{ subheading }}</div>
       {%- endif -%}
 
-      <div class="ctr-fyf__tabs" role="tablist" aria-label="Find your fit filters">
-        <button class="ctr-fyf__tab is-active" type="button" data-filter-tab="all">Shop All</button>
-        {%- for tab in filter_tabs -%}
-          {%- assign tab_label = tab.badges_filter_tab.value | default: tab.system.handle -%}
-          {%- if tab_label != blank -%}
-            <button class="ctr-fyf__tab" type="button" data-filter-tab="{{ tab_label | handleize }}">{{ tab_label }}</button>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
+      {%- if filter_tabs.size > 0 -%}
+        <div class="ctr-fyf__tabs" role="tablist" aria-label="Find your fit filters">
+          <button class="ctr-fyf__tab is-active" type="button" data-filter-tab="all">Shop All</button>
+          {%- for tab in filter_tabs -%}
+            {%- assign tab_label = tab.badges_filter_tab.value | default: tab.system.handle -%}
+            {%- if tab_label != blank -%}
+              <button class="ctr-fyf__tab" type="button" data-filter-tab="{{ tab_label | handleize }}">{{ tab_label }}</button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
 
       <div class="ctr-fyf__grid" data-fyf-grid>
         {%- for block in section.blocks -%}
@@ -591,6 +593,7 @@
 
                     {%- capture product_json -%}
                       {
+                        "handle": {{ product.handle | json }},
                         "title": {{ product.title | json }},
                         "available": {{ product.available | json }},
                         "variants": [
@@ -742,6 +745,16 @@
         return '$' + value.toFixed(2).replace(/\.00$/, '');
       }
 
+      // Subscription pricing per Skio plan defaults (mirrors PDP buybox).
+      // Cents. Update when Skio discounts change.
+      var SUBSCRIPTION_OVERRIDES = {
+        'wlp-1':                   { price: 7920,  compare: 9900,  save: 20, cadence: '/mo' },
+        'berberine':               { price: 4410,  compare: 4900,  save: 10, cadence: '/mo' },
+        'weight-management-stack': { price: 11100, compare: 14800, save: 25, cadence: '/mo' },
+        'hormone-metabolism':      { price: 13320, compare: 14800, save: 10, cadence: '' },
+        'metabolic-balance-stack': { price: 11340, compare: 12600, save: 10, cadence: '' }
+      };
+
       function discountPercent(price, compare) {
         price = Number(price || 0);
         compare = Number(compare || 0);
@@ -881,13 +894,18 @@
         function renderPrice() {
           if (!selectedVariant) return;
           var priceData = currentPriceData();
-          var pct = discountPercent(priceData.price, priceData.compare);
-          priceNode.textContent = formatMoney(priceData.price);
+          var override = SUBSCRIPTION_OVERRIDES[data.handle];
+          if (override) {
+            priceData = { price: override.price, compare: override.compare, plan: priceData.plan };
+          }
+          var pct = override ? override.save : discountPercent(priceData.price, priceData.compare);
+          var cadence = override ? override.cadence : '';
+          priceNode.textContent = formatMoney(priceData.price) + cadence;
           compareNode.textContent = pct ? formatMoney(priceData.compare) : '';
           discountNode.textContent = pct ? 'Save ' + pct + '%' : '';
           discountNode.classList.toggle('is-visible', !!pct);
           atc.disabled = !selectedVariant.available;
-          atc.textContent = selectedVariant.available ? '+ Add To Cart - ' + formatMoney(priceData.price) : 'Sold Out';
+          atc.textContent = selectedVariant.available ? '+ Add To Cart' : 'Sold Out';
         }
 
         atc.addEventListener('click', function() {

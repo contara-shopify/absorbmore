@@ -1,0 +1,2759 @@
+{% liquid
+  assign product = section.settings.product | default: product
+  assign product_form_id = 'ctr-pbv-' | append: section.id
+
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products[0]
+  endif
+
+  assign variant = product.selected_or_first_available_variant | default: product.variants.first
+
+  assign image_1 = section.settings.image_1
+  assign image_2 = section.settings.image_2
+  assign image_3 = section.settings.image_3 
+  assign image_4 = section.settings.image_4
+  assign image_5 = section.settings.image_5
+
+  if image_1 == blank and product.media.size > 0
+    assign image_1 = product.media[0].preview_image
+  endif
+  if image_2 == blank and product.media.size > 1
+    assign image_2 = product.media[1].preview_image
+  endif
+  if image_3 == blank and product.media.size > 2
+    assign image_3 = product.media[2].preview_image
+  endif
+
+  assign reviews_rating_path = settings.data__product__reviews_rating | replace: ' ', '' | split: '.'
+  assign reviews_rating = product.metafields[reviews_rating_path.first][reviews_rating_path.last].value
+  assign reviews_rating = reviews_rating.rating | default: reviews_rating | default: 4.97 | times: 1.0
+
+  assign reviews_count_path = settings.data__product__reviews_count | replace: ' ', '' | split: '.'
+  assign reviews_count = product.metafields[reviews_count_path.first][reviews_count_path.last].value | default: 368 | times: 1
+
+  assign title = section.settings.product_title | default: product.title
+
+  comment
+    Resolve the three key variant objects from admin-supplied IDs.
+    Falls back to first variant so Editor preview doesn't break.
+  endcomment
+  assign bag_mango_variant     = blank
+  assign bag_raspberry_variant = blank
+  assign sticks_mango_variant  = blank
+  for v in product.variants
+    if v.id == section.settings.bag_mango_variant_id
+      assign bag_mango_variant = v
+    endif
+    if v.id == section.settings.bag_raspberry_variant_id
+      assign bag_raspberry_variant = v
+    endif
+    if v.id == section.settings.sticks_mango_variant_id
+      assign sticks_mango_variant = v
+    endif
+  endfor
+  if bag_mango_variant == blank
+    assign bag_mango_variant = product.variants.first
+  endif
+  if sticks_mango_variant == blank
+    assign sticks_mango_variant = product.variants.first
+  endif
+
+  comment
+    Raspberry available check -- disable pill when sold out
+  endcomment
+  assign raspberry_available = false
+  assign raspberry_exists = false
+  if bag_raspberry_variant != blank
+    assign raspberry_exists = true
+    assign raspberry_available = bag_raspberry_variant.available
+  endif
+%}
+
+{%- comment -%}
+  Extract selling plan IDs + prices for each of the 3 target variants.
+  Reuse the same Liquid logic block 3 times (bag_mango, bag_raspberry, sticks_mango).
+{%- endcomment -%}
+
+{%- comment -%} --- bag_mango --- {%- endcomment -%}
+{%- assign _bm_sp30 = 0 -%}{%- assign _bm_sp60 = 0 -%}{%- assign _bm_sp90 = 0 -%}
+{%- assign _bm_p30 = bag_mango_variant.price -%}{%- assign _bm_ca30 = bag_mango_variant.compare_at_price | default: bag_mango_variant.price -%}
+{%- assign _bm_p60 = bag_mango_variant.price -%}{%- assign _bm_ca60 = bag_mango_variant.compare_at_price | default: bag_mango_variant.price -%}
+{%- assign _bm_p90 = bag_mango_variant.price -%}{%- assign _bm_ca90 = bag_mango_variant.compare_at_price | default: bag_mango_variant.price -%}
+{%- for alloc in bag_mango_variant.selling_plan_allocations -%}
+  {%- assign _pn = alloc.selling_plan.name | downcase -%}
+  {%- if _pn contains '30' or _pn contains '1 month' -%}{%- assign _bm_sp30 = alloc.selling_plan.id -%}{%- assign _bm_p30 = alloc.price -%}{%- assign _bm_ca30 = alloc.compare_at_price | default: bag_mango_variant.price -%}
+  {%- elsif _pn contains '60' or _pn contains '2 month' -%}{%- assign _bm_sp60 = alloc.selling_plan.id -%}{%- assign _bm_p60 = alloc.price -%}{%- assign _bm_ca60 = alloc.compare_at_price | default: bag_mango_variant.price -%}
+  {%- elsif _pn contains '90' or _pn contains '3 month' -%}{%- assign _bm_sp90 = alloc.selling_plan.id -%}{%- assign _bm_p90 = alloc.price -%}{%- assign _bm_ca90 = alloc.compare_at_price | default: bag_mango_variant.price -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} --- bag_raspberry --- {%- endcomment -%}
+{%- assign _br_sp30 = 0 -%}{%- assign _br_sp60 = 0 -%}{%- assign _br_sp90 = 0 -%}
+{%- assign _br_p30 = bag_raspberry_variant.price | default: 0 -%}{%- assign _br_ca30 = bag_raspberry_variant.compare_at_price | default: bag_raspberry_variant.price | default: 0 -%}
+{%- assign _br_p60 = bag_raspberry_variant.price | default: 0 -%}{%- assign _br_ca60 = bag_raspberry_variant.compare_at_price | default: bag_raspberry_variant.price | default: 0 -%}
+{%- assign _br_p90 = bag_raspberry_variant.price | default: 0 -%}{%- assign _br_ca90 = bag_raspberry_variant.compare_at_price | default: bag_raspberry_variant.price | default: 0 -%}
+{%- if bag_raspberry_variant != blank -%}
+  {%- for alloc in bag_raspberry_variant.selling_plan_allocations -%}
+    {%- assign _pn = alloc.selling_plan.name | downcase -%}
+    {%- if _pn contains '30' or _pn contains '1 month' -%}{%- assign _br_sp30 = alloc.selling_plan.id -%}{%- assign _br_p30 = alloc.price -%}{%- assign _br_ca30 = alloc.compare_at_price | default: bag_raspberry_variant.price -%}
+    {%- elsif _pn contains '60' or _pn contains '2 month' -%}{%- assign _br_sp60 = alloc.selling_plan.id -%}{%- assign _br_p60 = alloc.price -%}{%- assign _br_ca60 = alloc.compare_at_price | default: bag_raspberry_variant.price -%}
+    {%- elsif _pn contains '90' or _pn contains '3 month' -%}{%- assign _br_sp90 = alloc.selling_plan.id -%}{%- assign _br_p90 = alloc.price -%}{%- assign _br_ca90 = alloc.compare_at_price | default: bag_raspberry_variant.price -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} --- sticks_mango --- {%- endcomment -%}
+{%- assign _sm_sp30 = 0 -%}{%- assign _sm_sp60 = 0 -%}{%- assign _sm_sp90 = 0 -%}
+{%- assign _sm_p30 = sticks_mango_variant.price -%}{%- assign _sm_ca30 = sticks_mango_variant.compare_at_price | default: sticks_mango_variant.price -%}
+{%- assign _sm_p60 = sticks_mango_variant.price -%}{%- assign _sm_ca60 = sticks_mango_variant.compare_at_price | default: sticks_mango_variant.price -%}
+{%- assign _sm_p90 = sticks_mango_variant.price -%}{%- assign _sm_ca90 = sticks_mango_variant.compare_at_price | default: sticks_mango_variant.price -%}
+{%- for alloc in sticks_mango_variant.selling_plan_allocations -%}
+  {%- assign _pn = alloc.selling_plan.name | downcase -%}
+  {%- if _pn contains '30' or _pn contains '1 month' -%}{%- assign _sm_sp30 = alloc.selling_plan.id -%}{%- assign _sm_p30 = alloc.price -%}{%- assign _sm_ca30 = alloc.compare_at_price | default: sticks_mango_variant.price -%}
+  {%- elsif _pn contains '60' or _pn contains '2 month' -%}{%- assign _sm_sp60 = alloc.selling_plan.id -%}{%- assign _sm_p60 = alloc.price -%}{%- assign _sm_ca60 = alloc.compare_at_price | default: sticks_mango_variant.price -%}
+  {%- elsif _pn contains '90' or _pn contains '3 month' -%}{%- assign _sm_sp90 = alloc.selling_plan.id -%}{%- assign _sm_p90 = alloc.price -%}{%- assign _sm_ca90 = alloc.compare_at_price | default: sticks_mango_variant.price -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% style %}
+  /* ============================================
+     CTR Purchase Box -- Variants (ctr-pbv)
+  ============================================ */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.section_background }};
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv {
+    padding-top: {{ section.settings.padding_top_desktop }}px;
+    padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    color: {{ section.settings.text_color }};
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* -- Two-column layout -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__inner {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 1fr);
+    gap: 72px;
+    align-items: start;
+  }
+
+  /* -- Gallery -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__gallery-layout {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__thumb {
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    aspect-ratio: 1 / 1;
+    width: 70px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__thumb.is-active {
+    border-color: rgba(17, 17, 17, 0.8);
+    box-shadow: 0 0 0 1px rgba(17, 17, 17, 0.4);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__thumb img,
+  #shopify-section-{{ section.id }} .ctr-pbv__hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__hero-image {
+    position: relative;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 470px;
+    box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.04);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__hero-image > div {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* First slide visible before Alpine initialises (no x-cloak, but belt-and-braces) */
+  #shopify-section-{{ section.id }} .ctr-pbv__hero-image > div:first-child {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__hero-image img {
+    object-fit: contain;
+    padding: 24px;
+  }
+
+
+  /* -- FrontRow widget -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__frontrow {
+    grid-column: 2 / -1;
+    padding-top: 8px;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .ctr-pbv__frontrow iframe {
+    width: 100%;
+    display: block;
+    border: 0;
+  }
+
+  /* -- Copy column -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* -- Title row -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__title {
+    margin: 0;
+    font-size: 40px;
+    line-height: 0.98;
+    font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__clinicians-badge {
+    display: block;
+    width: 150px;
+    height: 30px;
+    object-fit: contain;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  /* -- Rating row -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.2;
+    color: rgba(17, 17, 17, 0.88);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__stars {
+    display: inline-flex;
+    gap: 3px;
+    color: #111;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__stars svg {
+    width: 13px;
+    height: 13px;
+    fill: currentColor;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-links {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-links a {
+    font-size: 14px;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: #000000;
+    position: relative;
+    padding-left: 10px;
+    margin-left: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-links a:first-child:before {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-links a:before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 3px;
+    background: #000000;
+    z-index: 1;
+    border-radius: 999px;
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__rating-links a:hover { opacity: 1; }
+
+  /* -- Description + benefits -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #707070;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__benefits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px; 
+    font-weight: 500;
+    line-height: 1.35;
+    color: #707070;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__benefit-dot {
+    width: 16px;
+    height: 16px;
+
+
+    flex-shrink: 0;
+    margin-top: 1px; 
+    object-fit: contain;
+    display: block;
+  }
+
+  /* -- Format Toggle (BAG / STICKS) -- segmented control -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__format-toggle {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+    background: #F0EDE7;
+    border-radius: 999px; 
+    padding: 1px;
+    border: 1px solid #ffffff;
+    gap: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__format-btn {
+    width: 105px;
+    min-height: 36px;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600; 
+    color: rgba(17, 17, 17, 0.45);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__format-btn.is-active {
+    background: #fff;
+    border-color: #111;
+    color: #111;
+  }
+
+  /* -- Tier cards (stacked radio-button style) -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-card {
+    border: 1.5px solid #fff;
+    border-radius: 12px;
+    background: #F0EDE7;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-card.ctr-pbv__tier-card--buyonce {
+    background-color: transparent;
+    border-color: #E1E3E7;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-card.is-selected {
+    background: #fff;
+    border-color: #111;
+    box-shadow: 0 0 0 1px #111;
+  }
+
+  /* Tier card header row */
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+
+    @media (max-width: 768px) {
+      gap: 4px;
+      align-items: flex-start;
+    }
+  }
+
+  /* Radio circle */
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(17, 17, 17, 0.25);
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.15s;
+
+    @media (max-width: 768px) {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-card.is-selected .ctr-pbv__tier-radio {
+    border-color: #111;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-radio::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: #111;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-card.is-selected .ctr-pbv__tier-radio::after {
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-label {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px 4px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    background: {{ section.settings.discount_badge_color }};
+    white-space: nowrap;
+
+    @media (max-width: 768px) {
+      font-size: 10px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-pricing {
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    text-align: right;
+
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+      gap: 0;
+      align-items: flex-end;
+      position: relative;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-compare {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(17, 17, 17, 0.38);
+    text-decoration: line-through;
+
+    @media (max-width: 768px) {
+      font-size: 12px;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+
+  /* Tier expanded body (perks + flavor selectors) */
+  #shopify-section-{{ section.id }} .ctr-pbv__tier-body {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    
+  }
+
+  /* Perk checklist */
+  #shopify-section-{{ section.id }} .ctr-pbv__perks {
+    list-style: none;
+    margin: 0;
+    padding: 12px 0 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  /* Always-visible perks -- sit between tier-head and the x-show body */
+  #shopify-section-{{ section.id }} .ctr-pbv__perks--always {
+    padding: 0 16px 10px 45px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__perks li {
+    display: flex;
+    gap: 7px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: rgba(17, 17, 17, 0.78);
+
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__perks li::before {
+    content: '\2713';
+    font-weight: 700;
+    color: #111;
+    flex-shrink: 0;
+  }
+
+  /* -- Flavor selector block -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px solid #E1E3E7;
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid rgba(17, 17, 17, 0.18);
+    border-radius: 999px;
+    padding: 5px 14px 6px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(17, 17, 17, 0.5);
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-pill.is-selected {
+    border-color: #111;
+    color: #111;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-pill.is-sold-out {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    overflow: hidden;
+    /* background: #f5f3f0; */
+    flex-shrink: 0;
+    /* border: 1px solid rgba(17, 17, 17, 0.08); */
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__flavor-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+
+  /* -- Buy Once body -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__buyonce-body {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__buyonce-section {
+    padding: 12px 0 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__buyonce-section--sep {
+    border-top: 1px solid rgba(17, 17, 17, 0.08) !important;
+    margin-top: 4px;
+    padding-top: 14px;
+  }
+
+  /* Flavor row inside Buy Once */
+  #shopify-section-{{ section.id }} .ctr-pbv__buyonce-flavor-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__buyonce-flavor-row .ctr-pbv__flavor-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  /* -- Buy Once: quantity stepper -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid rgba(17, 17, 17, 0.2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    color: #111 !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    padding: 0 !important;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-btn:hover {
+    background: rgba(17, 17, 17, 0.06) !important;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-btn[disabled] {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__qty-value {
+    min-width: 32px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* -- Gift promo banner -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-card {
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    background: #f7f7f1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-heading {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-copy {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #707070;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-copy a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-images {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-image {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0eeea;
+    aspect-ratio: 1 / 1;
+    width: 48px;
+    min-width: 48px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__gift-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* -- CTA -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__cta {
+    min-height: 52px;
+    border: 0;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    color: {{ section.settings.button_text_color }};
+    background: {{ section.settings.button_background }};
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.2s; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__cta[disabled] {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__cta-compare {
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: line-through;
+    opacity: 0.55;
+  }
+
+  /* Loading spinner inside CTA */
+  #shopify-section-{{ section.id }} .ctr-pbv__cta-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ctr-pbv-spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes ctr-pbv-spin { to { transform: rotate(360deg); } }
+
+  /* -- Trust row -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__trust-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    color: rgba(17, 17, 17, 0.78);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__trust-item::before {
+    content: '\2713';
+    font-weight: 700;
+  }
+
+  /* -- Gift Modal -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal {
+    position: relative;
+    background: #f7f5f1;
+    border-radius: 16px;
+    max-width: min(720px, 100vw - 40px);
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(17, 17, 17, 0.5);
+    transition: color 0.2s;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-close:hover { color: #111; }
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-close svg { width: 14px; height: 14px; }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-heading {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    padding-right: 24px;
+    line-height: 1.3;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0 0 20px;
+    color: rgba(17, 17, 17, 0.72);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-gifts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-gift {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f3f1ed;
+    border-radius: 8px;
+    border: 1px solid #fff;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-gift img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px 0 0 8px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-gift-label {
+    font-size: 13px;
+    line-height: 1.35;
+    padding-right: 8px;
+  }
+  #shopify-section-{{ section.id }} .ctr-pbv__modal-gift-label p { margin: 0; }
+
+  /* -- Mobile gallery (scroll-snap) -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile {
+    display: none;
+  }
+  #shopify-section-{{ section.id }} .ctr-pbv__gallery-dots {
+    display: none;
+  }
+
+  /* -- Mobile sticky CTA -- */
+  #shopify-section-{{ section.id }} .ctr-pbv__sticky {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 40;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(250, 247, 242, 0.94);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 40px rgba(17, 17, 17, 0.16);
+    border: 1px solid rgba(17, 17, 17, 0.08);
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__sticky-btn {
+    min-height: 50px;
+    font-size: 17px;
+  }
+
+  /* ==========================================
+     Tablet (<=989px)
+  ========================================== */
+  @media (max-width: 989px) {
+    #shopify-section-{{ section.id }} .ctr-pbv {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__thumbs {
+      order: 2;
+      flex-direction: row;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__thumbs::-webkit-scrollbar { display: none; }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__thumb {
+      width: 64px;
+      min-width: 64px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__hero-image {
+      min-height: auto;
+      aspect-ratio: 311 / 335;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile-slide {
+      aspect-ratio: 311 / 335;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__trust-row { justify-content: flex-start; }
+
+  }
+
+  /* -- Mobile-only / Desktop-only helpers -- */
+  /* Mobile elements hidden on desktop */
+  #shopify-section-{{ section.id }} .ctr-pbv__mobile-header,
+  #shopify-section-{{ section.id }} .ctr-pbv__mobile-links,
+  #shopify-section-{{ section.id }} .ctr-pbv__mobile-clinicians {
+    display: none;
+  }
+
+  /* Mobile links style */
+  #shopify-section-{{ section.id }} .ctr-pbv__mobile-links {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+  }
+  #shopify-section-{{ section.id }} .ctr-pbv__mobile-links a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.7;
+  }
+  #shopify-section-{{ section.id }} .ctr-pbv__links-sep {
+    opacity: 0.4;
+  }
+
+  #shopify-section-{{ section.id }} .ctr-pbv__frontrow-mobile iframe {
+    width: 100%;
+    display: block;
+    border: 0;
+  }
+
+  /* ==========================================
+     Mobile (<=767px)
+  ========================================== */
+  @media (max-width: 767px) {
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-layout {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 12px;
+      margin: 0 -20px;
+      padding: 0 20px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile::-webkit-scrollbar { display: none; }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile-slide {
+      flex: 0 0 calc(100% - 40px);
+      scroll-snap-align: start;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #F0EDE7;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-mobile-slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(17, 17, 17, 0.2);
+      transition: background 0.25s, width 0.25s;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__gallery-dot.is-active {
+      background: #111;
+      width: 18px;
+      border-radius: 3px;
+    }
+
+    /* Mobile layout: show mobile-only blocks */
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-header {
+      display: block;
+    }
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-links {
+      display: flex;
+    }
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-clinicians {
+      display: block;
+      margin-top: 8px;
+    }
+
+    /* Hide desktop-only elements in copy on mobile */
+    #shopify-section-{{ section.id }} .ctr-pbv__copy .ctr-pbv__title-row,
+    #shopify-section-{{ section.id }} .ctr-pbv__copy .ctr-pbv__rating-row {
+      display: none;
+    }
+
+    /* Mobile header spacing */
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-header .ctr-pbv__title-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-header .ctr-pbv__rating-row {
+      display: flex;
+    }
+    #shopify-section-{{ section.id }} .ctr-pbv__mobile-header {
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__title { font-size: 28px; }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__modal-overlay {
+      align-items: flex-end;
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__modal {
+      border-radius: 16px 16px 0 0;
+      max-height: 85vh;
+      padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__modal-gifts {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__modal-gift img { width: 56px; height: 56px; }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__cta {
+      min-height: 54px;
+      font-size: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .ctr-pbv__trust-row { gap: 8px 10px; }
+  }
+{% endstyle %}
+
+{% if product != blank %}
+{%- comment -%} JSON data block - all Liquid output here, zero Liquid in executable script {%- endcomment -%}
+<script type="application/json" id="ctr-pbv-data-{{ section.id }}">
+{
+  "variantIds": {
+    "bag":    { "mango": {{ bag_mango_variant.id }}, "raspberry": {{ bag_raspberry_variant.id | default: 0 }} },
+    "sticks": { "mango": {{ sticks_mango_variant.id }} }
+  },
+  "variantData": {
+    "{{ bag_mango_variant.id }}": {
+      "sellingPlans": { "30day": {{ _bm_sp30 }}, "60day": {{ _bm_sp60 }}, "90day": {{ _bm_sp90 }} },
+      "prices": {
+        "regular": {{ bag_mango_variant.price }},
+        "sub-1m": { "price": {{ _bm_p30 }}, "compareAt": {{ _bm_ca30 | at_least: _bm_p30 }} },
+        "sub-2m": { "price": {{ _bm_p60 }}, "compareAt": {{ _bm_ca60 | at_least: _bm_p60 }} },
+        "sub-3m": { "price": {{ _bm_p90 }}, "compareAt": {{ _bm_ca90 | at_least: _bm_p90 }} }
+      }
+    }
+    {%- if bag_raspberry_variant != blank -%},
+    "{{ bag_raspberry_variant.id }}": {
+      "sellingPlans": { "30day": {{ _br_sp30 }}, "60day": {{ _br_sp60 }}, "90day": {{ _br_sp90 }} },
+      "prices": {
+        "regular": {{ bag_raspberry_variant.price }},
+        "sub-1m": { "price": {{ _br_p30 }}, "compareAt": {{ _br_ca30 | at_least: _br_p30 }} },
+        "sub-2m": { "price": {{ _br_p60 }}, "compareAt": {{ _br_ca60 | at_least: _br_p60 }} },
+        "sub-3m": { "price": {{ _br_p90 }}, "compareAt": {{ _br_ca90 | at_least: _br_p90 }} }
+      }
+    }
+    {%- endif -%},
+    "{{ sticks_mango_variant.id }}": {
+      "sellingPlans": { "30day": {{ _sm_sp30 }}, "60day": {{ _sm_sp60 }}, "90day": {{ _sm_sp90 }} },
+      "prices": {
+        "regular": {{ sticks_mango_variant.price }},
+        "sub-1m": { "price": {{ _sm_p30 }}, "compareAt": {{ _sm_ca30 | at_least: _sm_p30 }} },
+        "sub-2m": { "price": {{ _sm_p60 }}, "compareAt": {{ _sm_ca60 | at_least: _sm_p60 }} },
+        "sub-3m": { "price": {{ _sm_p90 }}, "compareAt": {{ _sm_ca90 | at_least: _sm_p90 }} }
+      }
+    }
+  },
+  "raspberryExists":    {{ raspberry_exists }},
+  "raspberryAvailable": {{ raspberry_available }},
+  "tiers": {
+    "sub-1m":   { "bagCount": 1, "planKey": "30day", "label": {{ section.settings.tier1_label | default: '1 Month Supply'  | json }}, "badge": {{ section.settings.tier1_badge | default: '25% OFF' | json }} },
+    "sub-2m":   { "bagCount": 2, "planKey": "60day", "label": {{ section.settings.tier2_label | default: '2 Months Supply' | json }}, "badge": {{ section.settings.tier2_badge | default: '30% OFF' | json }} },
+    "sub-3m":   { "bagCount": 3, "planKey": "90day", "label": {{ section.settings.tier3_label | default: '3 Months Supply' | json }}, "badge": {{ section.settings.tier3_badge | default: '35% OFF' | json }} },
+    "one-time": { "bagCount": 1, "planKey": null,    "label": {{ section.settings.tier4_label | default: 'Buy Once'        | json }}, "badge": "" }
+  }
+}
+</script>
+
+<script>
+  (function() {
+    function ctrPbvFactory(el) {
+      var dataTag = document.getElementById('ctr-pbv-data-' + el.getAttribute('data-section-id'));
+      if (!dataTag) return {};
+      var DATA = JSON.parse(dataTag.textContent);
+      var VARIANT_IDS = DATA.variantIds;
+      var VARIANT_DATA = DATA.variantData;
+      var RASPBERRY_EXISTS = DATA.raspberryExists;
+      var RASPBERRY_AVAILABLE = DATA.raspberryAvailable;
+      var TIERS = DATA.tiers;
+
+    return {
+      /* state */
+      format: 'bag',
+      selectedTier: 'sub-1m',
+      bagFlavors: ['mango', 'mango', 'mango'],
+      buyOnceQty: 1,
+      isAdding: false,
+      galleryIndex: 0,
+      mobileStickyVisible: false,
+      giftModalOpen: false,
+
+      /* consts */
+      VARIANT_IDS,
+      VARIANT_DATA,
+      RASPBERRY_EXISTS,
+      RASPBERRY_AVAILABLE,
+      TIERS,
+
+      /* -- computed -- */
+      get currentBagCount() {
+        return this.selectedTier === 'one-time' ? 1 : TIERS[this.selectedTier].bagCount;
+      },
+
+      get isSubscription() {
+        return this.selectedTier !== 'one-time';
+      },
+
+      /* -- helpers -- */
+      getVariantId(format, flavor) {
+        return VARIANT_IDS[format]?.[flavor] || VARIANT_IDS[format]?.mango;
+      },
+
+      getSellingPlanId(tier, format, flavor) {
+        const variantId = this.getVariantId(format, flavor);
+        const planKey = TIERS[tier]?.planKey;
+        if (!planKey || !variantId) return undefined;
+        return VARIANT_DATA[variantId]?.sellingPlans?.[planKey] || undefined;
+      },
+
+      getTierPrice(tier) {
+        const variantId = this.getVariantId(this.format, 'mango');
+        if (!variantId || !VARIANT_DATA[variantId]) return 0;
+        if (tier === 'one-time') return VARIANT_DATA[variantId].prices.regular;
+        return VARIANT_DATA[variantId].prices[tier]?.price || 0;
+      },
+
+      getTierCompareAt(tier) {
+        if (tier === 'one-time') return 0;
+        const variantId = this.getVariantId(this.format, 'mango');
+        if (!variantId || !VARIANT_DATA[variantId]) return 0;
+        return VARIANT_DATA[variantId].prices[tier]?.compareAt || 0;
+      },
+
+      formatMoney(cents) {
+        if (typeof window.utils?.formatMoney === 'function') return window.utils.formatMoney(cents);
+        return '$' + (cents / 100).toFixed(2).replace(/\.00$/, '');
+      },
+
+      /* -- actions -- */
+      setFormat(fmt) {
+        this.format = fmt;
+        if (fmt === 'sticks') {
+          this.bagFlavors = ['mango', 'mango', 'mango'];
+        }
+      },
+
+      setFlavor(bagIndex, flavor) {
+        const next = [...this.bagFlavors];
+        next[bagIndex] = flavor;
+        this.bagFlavors = next;
+      },
+
+      adjustQty(delta) {
+        this.buyOnceQty = Math.max(1, this.buyOnceQty + delta);
+      },
+
+      /* -- Gallery -- */
+      onMobileGalleryScroll(el) {
+        const slides = el.querySelectorAll('.ctr-pbv__gallery-mobile-slide');
+        if (!slides.length) return;
+        const slideWidth = slides[0].offsetWidth + 12;
+        const index = Math.min(Math.round(el.scrollLeft / slideWidth), slides.length - 1);
+        if (index !== this.galleryIndex) this.galleryIndex = index;
+      },
+
+      scrollMobileGallery(index) {
+        const el = this.$refs.mobileGallery;
+        if (!el) return;
+        const slides = el.querySelectorAll('.ctr-pbv__gallery-mobile-slide');
+        if (!slides[index]) return;
+        el.scrollTo({ left: slides[index].offsetLeft - 20, behavior: 'smooth' });
+        this.galleryIndex = index;
+      },
+
+      /* -- Add to Cart -- */
+      async addToCart() {
+        if (this.isAdding) return;
+        this.isAdding = true;
+
+        try {
+          const items = [];
+
+          if (this.selectedTier === 'one-time') {
+            const variantId = this.getVariantId(this.format, this.bagFlavors[0] || 'mango');
+            items.push({ id: variantId, quantity: this.buyOnceQty });
+          } else {
+            const tier = TIERS[this.selectedTier];
+            for (let i = 0; i < tier.bagCount; i++) {
+              const flavor = this.bagFlavors[i] || 'mango';
+              const variantId = this.getVariantId(this.format, flavor);
+              const sellingPlanId = this.getSellingPlanId(this.selectedTier, this.format, flavor);
+              const item = { id: variantId, quantity: 1 };
+              if (sellingPlanId) item.selling_plan = sellingPlanId;
+              items.push(item);
+            }
+          }
+
+          if (typeof window._cart?.add === 'function') {
+            const data = await window._cart.add({ items });
+            if (!data?.cart_error && typeof window._stores?.modal?.setId === 'function') {
+              window._stores.modal.setId('modal--cart-drawer');
+            }
+          } else {
+            const response = await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify({ items })
+            });
+            if (!response.ok) throw new Error('Cart error');
+            document.dispatchEvent(new CustomEvent('cart:refresh'));
+            const drawer = document.querySelector('[data-cart-drawer], cart-drawer, #CartDrawer');
+            if (drawer?.open) {
+              drawer.open();
+            } else if (typeof window.theme?.openCartDrawer === 'function') {
+              window.theme.openCartDrawer();
+            } else {
+              window.location.href = '/cart';
+            }
+          }
+        } catch (err) {
+          console.error('[ctr-pbv] Cart add failed:', err);
+        } finally {
+          this.isAdding = false;
+        }
+      },
+
+      /* -- Mobile sticky observer -- */
+      init() {
+        if (!window.matchMedia('(max-width: 767px)').matches || !('IntersectionObserver' in window) || !this.$refs.primaryCta) return;
+        const observer = new IntersectionObserver(
+          ([entry]) => { this.mobileStickyVisible = !entry.isIntersecting; },
+          { threshold: 0.2 }
+        );
+        observer.observe(this.$refs.primaryCta);
+      }
+    };
+  }
+  window.ctrPbvFactory = ctrPbvFactory;
+  })();
+</script>
+
+<section
+  class="ctr-pbv {{ section.settings.container_spacing }}"
+  id="{{ product_form_id }}"
+  data-section-id="{{ section.id }}"
+  x-data="ctrPbvFactory($el)"
+>
+  <div class="ctr-pbv__inner">
+
+    {%- comment -%} ==== MOBILE: title + rating (above gallery, hidden on desktop) ==== {%- endcomment -%}
+    <div class="ctr-pbv__mobile-header">
+      <div class="ctr-pbv__title-row">
+        <h2 class="ctr-pbv__title">{{ title | escape }}</h2>
+        {%- if section.settings.clinicians_badge_image != blank -%}
+          <img
+            src="{{ section.settings.clinicians_badge_image | image_url: width: 300 }}"
+            alt="{{ section.settings.clinicians_badge_image.alt | default: 'Clinicians Choice' }}"
+            width="150" height="30" loading="lazy"
+            class="ctr-pbv__clinicians-badge"
+          >
+        {%- endif -%}
+      </div>
+      <div class="ctr-pbv__rating-row">
+        <span class="ctr-pbv__stars" aria-hidden="true">
+          {% for _ in (1..5) %}
+            <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true"><path d="M10 1.2l2.57 5.2 5.74.84-4.16 4.06.98 5.72L10 14.3l-5.13 2.72.98-5.72L1.7 7.24l5.74-.84L10 1.2z"/></svg>
+          {% endfor %}
+        </span>
+        <span><strong>{{ reviews_rating | round: 2 }}</strong>{% if section.settings.show_review_count %} ({{ reviews_count }}){% endif %}</span>
+      </div>
+    </div>
+
+    {%- comment -%} ==== LEFT: Gallery (desktop) ==== {%- endcomment -%}
+    <div class="ctr-pbv__gallery-layout">
+      <div class="ctr-pbv__thumbs" aria-label="Product images">
+        {% if image_1 != blank %}
+          <button type="button" class="ctr-pbv__thumb is-active" :class="{ 'is-active': galleryIndex === 0 }" @click="galleryIndex = 0" aria-label="View image 1">
+            {{ image_1 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}
+          </button>
+        {% endif %}
+        {% if image_2 != blank %}
+          <button type="button" class="ctr-pbv__thumb" :class="{ 'is-active': galleryIndex === 1 }" @click="galleryIndex = 1" aria-label="View image 2">
+            {{ image_2 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}
+          </button>
+        {% endif %}
+        {% if image_3 != blank %}
+          <button type="button" class="ctr-pbv__thumb" :class="{ 'is-active': galleryIndex === 2 }" @click="galleryIndex = 2" aria-label="View image 3">
+            {{ image_3 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}
+          </button>
+        {% endif %}
+        {% if image_4 != blank %}
+          <button type="button" class="ctr-pbv__thumb" :class="{ 'is-active': galleryIndex === 3 }" @click="galleryIndex = 3" aria-label="View image 4">
+            {{ image_4 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}
+          </button>
+        {% endif %}
+        {% if image_5 != blank %}
+          <button type="button" class="ctr-pbv__thumb" :class="{ 'is-active': galleryIndex === 4 }" @click="galleryIndex = 4" aria-label="View image 5">
+            {{ image_5 | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '70px', alt: title }}
+          </button>
+        {% endif %}
+      </div>
+
+      <div class="ctr-pbv__hero-image">
+        {% if image_1 != blank %}
+          <div x-show="galleryIndex === 0">
+            {{ image_1 | image_url: width: 1200 | image_tag: loading: 'eager', widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}
+          </div>
+        {% endif %}
+        {% if image_2 != blank %}
+          <div x-cloak x-show="galleryIndex === 1">
+            {{ image_2 | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}
+          </div>
+        {% endif %}
+        {% if image_3 != blank %}
+          <div x-cloak x-show="galleryIndex === 2">
+            {{ image_3 | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}
+          </div>
+        {% endif %}
+        {% if image_4 != blank %}
+          <div x-cloak x-show="galleryIndex === 3">
+            {{ image_4 | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}
+          </div>
+        {% endif %}
+        {% if image_5 != blank %}
+          <div x-cloak x-show="galleryIndex === 4">
+            {{ image_5 | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '480,720,960,1200', sizes: '(max-width: 989px) 100vw, 50vw', alt: title }}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- if section.settings.frontrow_product_id != blank -%}
+        {%- assign _fr_iframe_id = 'iframe-frontrow-quant-' | append: section.id -%}
+        {% render 'ctr-frontrow-widget',
+          product_id: section.settings.frontrow_product_id,
+          wrapper_class: 'ctr-pbv__frontrow',
+          iframe_id: _fr_iframe_id
+        %}
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ==== Mobile gallery ==== {%- endcomment -%}
+    <div class="ctr-pbv__gallery-mobile" @scroll.passive="onMobileGalleryScroll($event.target)" x-ref="mobileGallery">
+      {% if image_1 != blank %}
+        <div class="ctr-pbv__gallery-mobile-slide">
+          {{ image_1 | image_url: width: 900 | image_tag: loading: 'eager', widths: '480,720,900', sizes: '90vw', alt: title }}
+        </div>
+      {% endif %}
+      {% if image_2 != blank %}
+        <div class="ctr-pbv__gallery-mobile-slide">
+          {{ image_2 | image_url: width: 900 | image_tag: loading: 'lazy', widths: '480,720,900', sizes: '90vw', alt: title }}
+        </div>
+      {% endif %}
+      {% if image_3 != blank %}
+        <div class="ctr-pbv__gallery-mobile-slide">
+          {{ image_3 | image_url: width: 900 | image_tag: loading: 'lazy', widths: '480,720,900', sizes: '90vw', alt: title }}
+        </div>
+      {% endif %}
+      {% if image_4 != blank %}
+        <div class="ctr-pbv__gallery-mobile-slide">
+          {{ image_4 | image_url: width: 900 | image_tag: loading: 'lazy', widths: '480,720,900', sizes: '90vw', alt: title }}
+        </div>
+      {% endif %}
+      {% if image_5 != blank %}
+        <div class="ctr-pbv__gallery-mobile-slide">
+          {{ image_5 | image_url: width: 900 | image_tag: loading: 'lazy', widths: '480,720,900', sizes: '90vw', alt: title }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ctr-pbv__gallery-dots">
+      {% if image_1 != blank %}<button type="button" class="ctr-pbv__gallery-dot" :class="{ 'is-active': galleryIndex === 0 }" @click="scrollMobileGallery(0)" aria-label="Slide 1"></button>{% endif %}
+      {% if image_2 != blank %}<button type="button" class="ctr-pbv__gallery-dot" :class="{ 'is-active': galleryIndex === 1 }" @click="scrollMobileGallery(1)" aria-label="Slide 2"></button>{% endif %}
+      {% if image_3 != blank %}<button type="button" class="ctr-pbv__gallery-dot" :class="{ 'is-active': galleryIndex === 2 }" @click="scrollMobileGallery(2)" aria-label="Slide 3"></button>{% endif %}
+      {% if image_4 != blank %}<button type="button" class="ctr-pbv__gallery-dot" :class="{ 'is-active': galleryIndex === 3 }" @click="scrollMobileGallery(3)" aria-label="Slide 4"></button>{% endif %}
+      {% if image_5 != blank %}<button type="button" class="ctr-pbv__gallery-dot" :class="{ 'is-active': galleryIndex === 4 }" @click="scrollMobileGallery(4)" aria-label="Slide 5"></button>{% endif %}
+    </div>
+
+    {%- comment -%} ==== MOBILE: Ingredients/Benefits below gallery (hidden on desktop) ==== {%- endcomment -%}
+    <div class="ctr-pbv__mobile-links">
+      {% if section.settings.ingredients_link_text != blank %}
+        <a href="{{ section.settings.ingredients_link_url | default: '#ingredients' }}">{{ section.settings.ingredients_link_text | escape }}</a>
+      {% endif %}
+      {% if section.settings.ingredients_link_text != blank and section.settings.benefits_link_text != blank %}
+        <span class="ctr-pbv__links-sep" aria-hidden="true">&middot;</span>
+      {% endif %}
+      {% if section.settings.benefits_link_text != blank %}
+        <a href="{{ section.settings.benefits_link_url | default: '#benefits' }}">{{ section.settings.benefits_link_text | escape }}</a>
+      {% endif %}
+    </div>
+
+    {%- comment -%} ==== RIGHT: Copy + Purchase UI ==== {%- endcomment -%}
+    <div class="ctr-pbv__copy">
+
+      {%- comment -%} == DEBUG -- remove before launch == {%- endcomment -%}
+      {% comment %} <div style="background:#ffeb3b;color:#000;padding:10px 14px;font:11px/1.7 monospace;border:2px solid red;border-radius:8px;">
+        <strong>DEBUG</strong><br>
+        raspberry_variant_id setting: <b>{{ section.settings.bag_raspberry_variant_id }}</b><br>
+        bag_raspberry_variant found: <b>{{ raspberry_exists }}</b><br>
+        bag_raspberry_variant.id: <b>{{ bag_raspberry_variant.id }}</b><br>
+        bag_raspberry_variant.available: <b>{{ bag_raspberry_variant.available }}</b><br>
+        bag_raspberry_variant.inventory_quantity: <b>{{ bag_raspberry_variant.inventory_quantity }}</b><br>
+        raspberry_available: <b>{{ raspberry_available }}</b><br>
+        all variants:
+        {% for v in product.variants %}id={{ v.id }} | {{ v.title }} | available={{ v.available }}<br>{% endfor %}
+      </div> {% endcomment %}
+
+      {%- comment -%} Title row - title + Clinicians' Choice badge {%- endcomment -%}
+      <div class="ctr-pbv__title-row">
+        <h2 class="ctr-pbv__title">{{ title | escape }}</h2>
+        {%- if section.settings.clinicians_badge_image != blank -%}
+          <img
+            src="{{ section.settings.clinicians_badge_image | image_url: width: 300 }}"
+            alt="{{ section.settings.clinicians_badge_image.alt | default: 'Clinicians Choice' }}"
+            width="150"
+            height="30"
+            loading="lazy"
+            class="ctr-pbv__clinicians-badge"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Star rating row - rating + count + links {%- endcomment -%}
+      <div class="ctr-pbv__rating-row">
+        <span class="ctr-pbv__stars" aria-hidden="true">
+          {% for _ in (1..5) %}
+            <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+              <path d="M10 1.2l2.57 5.2 5.74.84-4.16 4.06.98 5.72L10 14.3l-5.13 2.72.98-5.72L1.7 7.24l5.74-.84L10 1.2z"/>
+            </svg>
+          {% endfor %}
+        </span>
+        <span>
+          <strong>{{ reviews_rating | round: 2 }}</strong>
+          {% if section.settings.show_review_count %}({{ reviews_count }}){% endif %}
+        </span>
+        <div class="ctr-pbv__rating-links">
+          {% if section.settings.ingredients_link_text != blank %}
+            <a href="{{ section.settings.ingredients_link_url | default: '#ingredients' }}">{{ section.settings.ingredients_link_text | escape }}</a>
+          {% endif %}
+          {% if section.settings.benefits_link_text != blank %}
+            <a href="{{ section.settings.benefits_link_url | default: '#benefits' }}">{{ section.settings.benefits_link_text | escape }}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {%- comment -%} Description - shown when set {%- endcomment -%}
+      {%- if section.settings.description != blank -%}
+        <p class="ctr-pbv__description">{{ section.settings.description }}</p>
+      {%- endif -%}
+
+      {%- comment -%} Benefits bullet list (gold dots) {%- endcomment -%}
+      {%- assign has_benefits = false -%}
+      {%- for i in (1..6) -%}
+        {%- assign _bkey = 'benefit_' | append: i -%}
+        {%- if section.settings[_bkey] != blank -%}{%- assign has_benefits = true -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if has_benefits -%}
+        <ul class="ctr-pbv__benefits">
+          {% for i in (1..6) %}
+            {%- assign bkey = 'benefit_' | append: i -%}
+            {% if section.settings[bkey] != blank %}
+              <li>
+                {%- if section.settings.benefit_icon != blank -%}
+                  <img
+                    src="{{ section.settings.benefit_icon | image_url: width: 32 }}"
+                    alt=""
+                    aria-hidden="true"
+                    class="ctr-pbv__benefit-dot"
+                    width="16"
+                    height="16"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <span class="ctr-pbv__benefit-dot" aria-hidden="true"></span>
+                {%- endif -%}
+                <span>{{ section.settings[bkey] | escape }}</span>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} -- BAG / STICKS format toggle -- {%- endcomment -%}
+      {%- if section.settings.show_format_toggle -%}
+        <div class="ctr-pbv__format-toggle" role="group" aria-label="Product format">
+          <button
+            type="button"
+            class="ctr-pbv__format-btn"
+            :class="{ 'is-active': format === 'bag' }"
+            @click="setFormat('bag')"
+          >{{ section.settings.format_bag_label | default: 'BAG' | escape }}</button>
+          <button
+            type="button"
+            class="ctr-pbv__format-btn"
+            :class="{ 'is-active': format === 'sticks' }"
+            @click="setFormat('sticks')"
+          >{{ section.settings.format_sticks_label | default: 'STICKS' | escape }}</button>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ==== Tier cards ==== {%- endcomment -%}
+      <div class="ctr-pbv__tiers" role="radiogroup" aria-label="Purchase option">
+
+        {%- comment -%} - 1 Month Supply (sub-1m) - {%- endcomment -%}
+        <div
+          class="ctr-pbv__tier-card"
+          :class="{ 'is-selected': selectedTier === 'sub-1m' }"
+          @click="selectedTier = 'sub-1m'"
+          role="radio"
+          :aria-checked="selectedTier === 'sub-1m'"
+          tabindex="0"
+          @keydown.enter="selectedTier = 'sub-1m'"
+          @keydown.space.prevent="selectedTier = 'sub-1m'"
+        >
+          <div class="ctr-pbv__tier-head">
+            <span class="ctr-pbv__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv__tier-label">{{ section.settings.tier1_label | default: '1 Month Supply' | escape }}</span>
+            {%- if section.settings.tier1_badge != blank -%}
+              <span class="ctr-pbv__tier-badge">{{ section.settings.tier1_badge | default: '25% OFF' | escape }}</span>
+            {%- else -%}
+              <span class="ctr-pbv__tier-badge">25% OFF</span>
+            {%- endif -%}
+            <div class="ctr-pbv__tier-pricing">
+              <span
+                class="ctr-pbv__tier-compare"
+                x-show="getTierCompareAt('sub-1m') > getTierPrice('sub-1m')"
+                x-text="formatMoney(getTierCompareAt('sub-1m'))"
+              ></span>
+              <span class="ctr-pbv__tier-price" x-text="formatMoney(getTierPrice('sub-1m'))">{{ bag_mango_variant.selling_plan_allocations.first.price | default: bag_mango_variant.price | money }}</span>
+            </div>
+          </div>
+          <ul class="ctr-pbv__perks ctr-pbv__perks--always">
+            {% if section.settings.tier1_perk_1 != blank %}<li>{{ section.settings.tier1_perk_1 | escape }}</li>{% endif %}
+            {% if section.settings.tier1_perk_2 != blank %}<li>{{ section.settings.tier1_perk_2 | escape }}</li>{% endif %}
+            {% if section.settings.tier1_perk_3 != blank %}<li>{{ section.settings.tier1_perk_3 | escape }}</li>{% endif %}
+          </ul>
+          <div class="ctr-pbv__tier-body" x-show="selectedTier === 'sub-1m'" x-cloak>
+            {%- comment -%} Flavor selector - Bag 1 only {%- endcomment -%}
+            <div class="ctr-pbv__flavor-blocks">
+              <div class="ctr-pbv__flavor-row">
+                <div class="ctr-pbv__flavor-left">
+                  <p class="ctr-pbv__flavor-label">{{ section.settings.flavor_select_label | default: 'Select Flavor' | escape }} - {{ section.settings.bag_label | default: 'Bag' | escape }} 1</p>
+                  <div class="ctr-pbv__flavor-pills">
+                    <button
+                      type="button"
+                      class="ctr-pbv__flavor-pill"
+                      :class="{ 'is-selected': bagFlavors[0] === 'mango' }"
+                      @click.stop="setFlavor(0, 'mango')"
+                    >
+                      <span class="ctr-pbv__flavor-swatch" style="background: #F5A623;" aria-hidden="true"></span>
+                      {{ section.settings.flavor_mango_label | default: 'Mango' | escape }}
+                    </button>
+                    <button
+                      type="button"
+                      class="ctr-pbv__flavor-pill"
+                      :class="{ 'is-selected': bagFlavors[0] === 'raspberry', 'is-sold-out': RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE }"
+                      x-show="format === 'bag' && RASPBERRY_EXISTS"
+                      @click.stop="RASPBERRY_AVAILABLE && setFlavor(0, 'raspberry')"
+                    >
+                      <span class="ctr-pbv__flavor-swatch" style="background: #C0392B;" aria-hidden="true"></span>
+                      {{ section.settings.flavor_raspberry_label | default: 'Raspberry' | escape }}
+                      <template x-if="RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE"><span> - Sold Out</span></template>
+                    </button>
+                  </div>
+                </div>
+                <div class="ctr-pbv__flavor-thumb">
+                  <div x-show="bagFlavors[0] !== 'raspberry'">
+                    {% if bag_mango_variant.featured_image != blank %}
+                      {{ bag_mango_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    {% elsif image_1 != blank %}
+                      {{ image_1 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    {% endif %}
+                  </div>
+                  {% if bag_raspberry_variant.featured_image != blank %}
+                    <div x-show="bagFlavors[0] === 'raspberry'" x-cloak>
+                      {{ bag_raspberry_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} - 2 Months Supply (sub-2m) - {%- endcomment -%}
+        <div
+          class="ctr-pbv__tier-card"
+          :class="{ 'is-selected': selectedTier === 'sub-2m' }"
+          @click="selectedTier = 'sub-2m'"
+          role="radio"
+          :aria-checked="selectedTier === 'sub-2m'"
+          tabindex="0"
+          @keydown.enter="selectedTier = 'sub-2m'"
+          @keydown.space.prevent="selectedTier = 'sub-2m'"
+        >
+          <div class="ctr-pbv__tier-head">
+            <span class="ctr-pbv__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv__tier-label">{{ section.settings.tier2_label | default: '2 Months Supply' | escape }}</span>
+            {%- if section.settings.tier2_badge != blank -%}
+              <span class="ctr-pbv__tier-badge">{{ section.settings.tier2_badge | escape }}</span>
+            {%- else -%}
+              <span class="ctr-pbv__tier-badge">30% OFF</span>
+            {%- endif -%}
+            <div class="ctr-pbv__tier-pricing">
+              <span
+                class="ctr-pbv__tier-compare"
+                x-show="getTierCompareAt('sub-2m') > getTierPrice('sub-2m')"
+                x-text="formatMoney(getTierCompareAt('sub-2m'))"
+              ></span>
+              <span class="ctr-pbv__tier-price" x-text="formatMoney(getTierPrice('sub-2m'))">{{ bag_mango_variant.price | money }}</span>
+            </div>
+          </div>
+          <ul class="ctr-pbv__perks ctr-pbv__perks--always">
+            {% if section.settings.tier2_perk_1 != blank %}<li>{{ section.settings.tier2_perk_1 | escape }}</li>{% endif %}
+            {% if section.settings.tier2_perk_2 != blank %}<li>{{ section.settings.tier2_perk_2 | escape }}</li>{% endif %}
+            {% if section.settings.tier2_perk_3 != blank %}<li>{{ section.settings.tier2_perk_3 | escape }}</li>{% endif %}
+          </ul>
+          <div class="ctr-pbv__tier-body" x-show="selectedTier === 'sub-2m'" x-cloak>
+            {%- comment -%} Bag 1 & Bag 2 flavor selectors {%- endcomment -%}
+            <div class="ctr-pbv__flavor-blocks">
+              {% for bag_num in (1..2) %}
+                {%- assign bag_idx = bag_num | minus: 1 -%}
+                <div class="ctr-pbv__flavor-row">
+                  <div class="ctr-pbv__flavor-left">
+                    <p class="ctr-pbv__flavor-label">{{ section.settings.flavor_select_label | default: 'Select Flavor' | escape }} - {{ section.settings.bag_label | default: 'Bag' | escape }} {{ bag_num }}</p>
+                    <div class="ctr-pbv__flavor-pills">
+                      <button
+                        type="button"
+                        class="ctr-pbv__flavor-pill"
+                        :class="{ 'is-selected': bagFlavors[{{ bag_idx }}] === 'mango' }"
+                        @click.stop="setFlavor({{ bag_idx }}, 'mango')"
+                      >
+                        <span class="ctr-pbv__flavor-swatch" style="background: #F5A623;" aria-hidden="true"></span>
+                        {{ section.settings.flavor_mango_label | default: 'Mango' | escape }}
+                      </button>
+                      <button
+                        type="button"
+                        class="ctr-pbv__flavor-pill"
+                        :class="{ 'is-selected': bagFlavors[{{ bag_idx }}] === 'raspberry', 'is-sold-out': RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE }"
+                        x-show="format === 'bag' && RASPBERRY_EXISTS"
+                        @click.stop="RASPBERRY_AVAILABLE && setFlavor({{ bag_idx }}, 'raspberry')"
+                      >
+                        <span class="ctr-pbv__flavor-swatch" style="background: #C0392B;" aria-hidden="true"></span>
+                        {{ section.settings.flavor_raspberry_label | default: 'Raspberry' | escape }}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="ctr-pbv__flavor-thumb">
+                    <div x-show="bagFlavors[{{ bag_idx }}] !== 'raspberry'">
+                      {% if bag_mango_variant.featured_image != blank %}
+                        {{ bag_mango_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      {% elsif image_1 != blank %}
+                        {{ image_1 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      {% endif %}
+                    </div>
+                    {% if bag_raspberry_variant.featured_image != blank %}
+                      <div x-show="bagFlavors[{{ bag_idx }}] === 'raspberry'" x-cloak>
+                        {{ bag_raspberry_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} - 3 Months Supply (sub-3m) - {%- endcomment -%}
+        <div
+          class="ctr-pbv__tier-card"
+          :class="{ 'is-selected': selectedTier === 'sub-3m' }"
+          @click="selectedTier = 'sub-3m'"
+          role="radio"
+          :aria-checked="selectedTier === 'sub-3m'"
+          tabindex="0"
+          @keydown.enter="selectedTier = 'sub-3m'"
+          @keydown.space.prevent="selectedTier = 'sub-3m'"
+        >
+          <div class="ctr-pbv__tier-head">
+            <span class="ctr-pbv__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv__tier-label">{{ section.settings.tier3_label | default: '3 Months Supply' | escape }}</span>
+            {%- if section.settings.tier3_badge != blank -%}
+              <span class="ctr-pbv__tier-badge">{{ section.settings.tier3_badge | escape }}</span>
+            {%- else -%}
+              <span class="ctr-pbv__tier-badge">35% OFF</span>
+            {%- endif -%}
+            <div class="ctr-pbv__tier-pricing">
+              <span
+                class="ctr-pbv__tier-compare"
+                x-show="getTierCompareAt('sub-3m') > getTierPrice('sub-3m')"
+                x-text="formatMoney(getTierCompareAt('sub-3m'))"
+              ></span>
+              <span class="ctr-pbv__tier-price" x-text="formatMoney(getTierPrice('sub-3m'))">{{ bag_mango_variant.price | money }}</span>
+            </div>
+          </div>
+          <ul class="ctr-pbv__perks ctr-pbv__perks--always">
+            {% if section.settings.tier3_perk_1 != blank %}<li>{{ section.settings.tier3_perk_1 | escape }}</li>{% endif %}
+            {% if section.settings.tier3_perk_2 != blank %}<li>{{ section.settings.tier3_perk_2 | escape }}</li>{% endif %}
+            {% if section.settings.tier3_perk_3 != blank %}<li>{{ section.settings.tier3_perk_3 | escape }}</li>{% endif %}
+          </ul>
+          <div class="ctr-pbv__tier-body" x-show="selectedTier === 'sub-3m'" x-cloak>
+            {%- comment -%} Bag 1, 2 & 3 flavor selectors {%- endcomment -%}
+            <div class="ctr-pbv__flavor-blocks">
+              {% for bag_num in (1..3) %}
+                {%- assign bag_idx = bag_num | minus: 1 -%}
+                <div class="ctr-pbv__flavor-row">
+                  <div class="ctr-pbv__flavor-left">
+                    <p class="ctr-pbv__flavor-label">{{ section.settings.flavor_select_label | default: 'Select Flavor' | escape }} - {{ section.settings.bag_label | default: 'Bag' | escape }} {{ bag_num }}</p>
+                    <div class="ctr-pbv__flavor-pills">
+                      <button
+                        type="button"
+                        class="ctr-pbv__flavor-pill"
+                        :class="{ 'is-selected': bagFlavors[{{ bag_idx }}] === 'mango' }"
+                        @click.stop="setFlavor({{ bag_idx }}, 'mango')"
+                      >
+                        <span class="ctr-pbv__flavor-swatch" style="background: #F5A623;" aria-hidden="true"></span>
+                        {{ section.settings.flavor_mango_label | default: 'Mango' | escape }}
+                      </button>
+                      <button
+                        type="button"
+                        class="ctr-pbv__flavor-pill"
+                        :class="{ 'is-selected': bagFlavors[{{ bag_idx }}] === 'raspberry', 'is-sold-out': RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE }"
+                        x-show="format === 'bag' && RASPBERRY_EXISTS"
+                        @click.stop="RASPBERRY_AVAILABLE && setFlavor({{ bag_idx }}, 'raspberry')"
+                      >
+                        <span class="ctr-pbv__flavor-swatch" style="background: #C0392B;" aria-hidden="true"></span>
+                        {{ section.settings.flavor_raspberry_label | default: 'Raspberry' | escape }}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="ctr-pbv__flavor-thumb">
+                    <div x-show="bagFlavors[{{ bag_idx }}] !== 'raspberry'">
+                      {% if bag_mango_variant.featured_image != blank %}
+                        {{ bag_mango_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      {% elsif image_1 != blank %}
+                        {{ image_1 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      {% endif %}
+                    </div>
+                    {% if bag_raspberry_variant.featured_image != blank %}
+                      <div x-show="bagFlavors[{{ bag_idx }}] === 'raspberry'" x-cloak>
+                        {{ bag_raspberry_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} - Buy Once - {%- endcomment -%}
+        <div
+          class="ctr-pbv__tier-card ctr-pbv__tier-card--buyonce"
+          :class="{ 'is-selected': selectedTier === 'one-time' }"
+          @click="selectedTier = 'one-time'"
+          role="radio"
+          :aria-checked="selectedTier === 'one-time'"
+          tabindex="0"
+          @keydown.enter="selectedTier = 'one-time'"
+          @keydown.space.prevent="selectedTier = 'one-time'"
+        >
+          <div class="ctr-pbv__tier-head">
+            <span class="ctr-pbv__tier-radio" aria-hidden="true"></span>
+            <span class="ctr-pbv__tier-label">{{ section.settings.tier4_label | default: 'Buy Once' | escape }}</span>
+            <div class="ctr-pbv__tier-pricing">
+              <span class="ctr-pbv__tier-price" x-text="formatMoney(getTierPrice('one-time'))">{{ bag_mango_variant.price | money }}</span>
+            </div>
+          </div>
+          {%- if section.settings.tier4_perk_1 != blank -%}
+            <ul class="ctr-pbv__perks ctr-pbv__perks--always">
+              <li>{{ section.settings.tier4_perk_1 | escape }}</li>
+            </ul>
+          {%- endif -%}
+          <div class="ctr-pbv__buyonce-body" x-show="selectedTier === 'one-time'" x-cloak>
+
+            {%- comment -%} - Section 2: Flavor selector - {%- endcomment -%}
+            <div class="ctr-pbv__buyonce-section ctr-pbv__buyonce-section--sep">
+              <p class="ctr-pbv__flavor-label">{{ section.settings.buyonce_flavor_label | default: 'Select Flavor' | escape }}</p>
+              <div class="ctr-pbv__buyonce-flavor-row">
+                <div class="ctr-pbv__flavor-pills">
+                  <button
+                    type="button"
+                    class="ctr-pbv__flavor-pill"
+                    :class="{ 'is-selected': bagFlavors[0] === 'mango' }"
+                    @click="setFlavor(0, 'mango')"
+                  >
+                    <span class="ctr-pbv__flavor-swatch" style="background:#F5A623;" aria-hidden="true"></span>
+                    {{ section.settings.flavor_mango_label | default: 'Mango' | escape }}
+                  </button>
+                  <button
+                    type="button"
+                    class="ctr-pbv__flavor-pill"
+                    :class="{ 'is-selected': bagFlavors[0] === 'raspberry', 'is-sold-out': RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE }"
+                    x-show="format === 'bag' && RASPBERRY_EXISTS"
+                    @click="RASPBERRY_AVAILABLE && setFlavor(0, 'raspberry')"
+                  >
+                    <span class="ctr-pbv__flavor-swatch" style="background:#C0392B;" aria-hidden="true"></span>
+                    {{ section.settings.flavor_raspberry_label | default: 'Raspberry' | escape }}
+                    <template x-if="RASPBERRY_EXISTS && !RASPBERRY_AVAILABLE"><span> - Sold Out</span></template>
+                  </button>
+                </div>
+                <div class="ctr-pbv__flavor-thumb">
+                  <div x-show="bagFlavors[0] !== 'raspberry'">
+                    {% if bag_mango_variant.featured_image != blank %}
+                      {{ bag_mango_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    {% elsif image_1 != blank %}
+                      {{ image_1 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    {% endif %}
+                  </div>
+                  {% if bag_raspberry_variant.featured_image != blank %}
+                    <div x-show="bagFlavors[0] === 'raspberry'" x-cloak>
+                      {{ bag_raspberry_variant.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '64px', alt: title }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {%- comment -%} - Section 3: Quantity stepper - {%- endcomment -%}
+            <div class="ctr-pbv__buyonce-section ctr-pbv__buyonce-section--sep">
+              <p class="ctr-pbv__flavor-label">{{ section.settings.qty_label | default: 'Add Quantity' | escape }}</p>
+              <div class="ctr-pbv__qty-stepper">
+                <button
+                  type="button"
+                  class="ctr-pbv__qty-btn"
+                  @click="adjustQty(-1)"
+                  :disabled="buyOnceQty <= 1"
+                  aria-label="Decrease quantity"
+                >-</button>
+                <span class="ctr-pbv__qty-value" x-text="buyOnceQty">1</span>
+                <button
+                  type="button"
+                  class="ctr-pbv__qty-btn"
+                  @click="adjustQty(1)"
+                  aria-label="Increase quantity"
+                >+</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      {%- comment -%} /tiers {%- endcomment -%}
+
+      {%- comment -%} - Gift promo banner - {%- endcomment -%}
+      {%- if section.settings.gift_callout_heading != blank -%}
+        <div class="ctr-pbv__gift-card">
+          <div>
+            <p class="ctr-pbv__gift-heading">{{ section.settings.gift_callout_heading | escape }}</p>
+            <p class="ctr-pbv__gift-copy">
+              {{ section.settings.gift_callout_text | escape }}
+              {% if section.settings.gift_callout_link_text != blank %}
+                <a
+                  href="{{ section.settings.gift_callout_link_url | default: '#' }}"
+                  @click.prevent="giftModalOpen = true"
+                >{{ section.settings.gift_callout_link_text | escape }}</a>
+              {% endif %}
+            </p>
+          </div>
+          <div class="ctr-pbv__gift-images">
+            {% if section.settings.gift_image_1 != blank %}
+              <div class="ctr-pbv__gift-image">
+                {{ section.settings.gift_image_1 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '48px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+            {% if section.settings.gift_image_2 != blank %}
+              <div class="ctr-pbv__gift-image">
+                {{ section.settings.gift_image_2 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '48px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+            {% if section.settings.gift_image_3 != blank %}
+              <div class="ctr-pbv__gift-image">
+                {{ section.settings.gift_image_3 | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100,150,200', sizes: '48px', alt: section.settings.gift_callout_heading }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} - Add to Cart CTA - {%- endcomment -%}
+      <button
+        type="button"
+        class="ctr-pbv__cta"
+        x-ref="primaryCta"
+        :disabled="isAdding"
+        @click="addToCart()"
+        :aria-label="isAdding ? 'Adding to cart...' : '{{ section.settings.cta_text | default: 'Add To Cart' | escape }}'"
+      >
+        <template x-if="isAdding">
+          <span class="ctr-pbv__cta-spinner" aria-hidden="true"></span>
+        </template>
+        <template x-if="!isAdding">
+          <span>
+            {{ section.settings.cta_text | default: 'Add To Cart' | escape }}
+            <span x-show="selectedTier !== 'one-time'"> - </span>
+            <span
+              x-show="selectedTier !== 'one-time'"
+              x-text="formatMoney(getTierPrice(selectedTier))"
+            ></span>
+            <span
+              x-show="getTierCompareAt(selectedTier) > getTierPrice(selectedTier) && selectedTier !== 'one-time'"
+              class="ctr-pbv__cta-compare"
+              x-text="formatMoney(getTierCompareAt(selectedTier))"
+            ></span>
+          </span>
+        </template>
+      </button>
+
+      {%- comment -%} - Trust row - {%- endcomment -%}
+      <div class="ctr-pbv__trust-row">
+        {% if section.settings.trust_badge_1 != blank %}
+          <span class="ctr-pbv__trust-item">{{ section.settings.trust_badge_1 | escape }}</span>
+        {% endif %}
+        {% if section.settings.trust_badge_2 != blank %}
+          <span class="ctr-pbv__trust-item">{{ section.settings.trust_badge_2 | escape }}</span>
+        {% endif %}
+        {% if section.settings.trust_badge_3 != blank %}
+          <span class="ctr-pbv__trust-item">{{ section.settings.trust_badge_3 | escape }}</span>
+        {% endif %}
+      </div>
+
+      {%- comment -%} MOBILE: FrontRow widget + clinicians (after trust row, hidden on desktop) {%- endcomment -%}
+      {%- if section.settings.frontrow_product_id != blank -%}
+        {%- assign _fr_mobile_id = 'iframe-frontrow-mobile-' | append: section.id -%}
+        <div class="ctr-pbv__mobile-clinicians">
+          {% render 'ctr-frontrow-widget',
+            product_id: section.settings.frontrow_product_id,
+            wrapper_class: 'ctr-pbv__frontrow-mobile',
+            iframe_id: _fr_mobile_id
+          %}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} - Gift Modal - {%- endcomment -%}
+      <div
+        class="ctr-pbv__modal-overlay"
+        x-cloak
+        x-show="giftModalOpen"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @click.self="giftModalOpen = false"
+        @keydown.escape.window="giftModalOpen = false"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="'{{ section.settings.modal_heading | default: 'Free gifts' | escape }}'"
+      >
+        <div class="ctr-pbv__modal">
+          <button type="button" class="ctr-pbv__modal-close" @click="giftModalOpen = false" aria-label="Close">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/>
+            </svg>
+          </button>
+
+          {% if section.settings.modal_heading != blank %}
+            <p class="ctr-pbv__modal-heading">{{ section.settings.modal_heading }}</p>
+          {% endif %}
+
+          {% if section.settings.modal_description != blank %}
+            <div class="ctr-pbv__modal-desc">{{ section.settings.modal_description }}</div>
+          {% endif %}
+
+          {%- assign has_modal_gifts = false -%}
+          {%- for i in (1..4) -%}
+            {%- assign mgk = 'modal_gift_image_' | append: i -%}
+            {%- if section.settings[mgk] != blank -%}{%- assign has_modal_gifts = true -%}{%- endif -%}
+          {%- endfor -%}
+
+          {%- if has_modal_gifts -%}
+            <div class="ctr-pbv__modal-gifts">
+              {% for i in (1..4) %}
+                {%- assign mgi = 'modal_gift_image_' | append: i -%}
+                {%- assign mgl = 'modal_gift_label_' | append: i -%}
+                {% if section.settings[mgi] != blank or section.settings[mgl] != blank %}
+                  <div class="ctr-pbv__modal-gift">
+                    {% if section.settings[mgi] != blank %}
+                      {{ section.settings[mgi] | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: '64px' }}
+                    {% endif %}
+                    {% if section.settings[mgl] != blank %}
+                      <div class="ctr-pbv__modal-gift-label">{{ section.settings[mgl] }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {%- endif -%}
+
+          {% if section.settings.modal_footer != blank %}
+            <div style="font-size:12px;color:rgba(17,17,17,0.55);margin-top:16px;line-height:1.45;">{{ section.settings.modal_footer }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {%- comment -%} - Mobile sticky CTA - {%- endcomment -%}
+      <div class="ctr-pbv__sticky" x-cloak x-show="mobileStickyVisible">
+        <button
+          type="button"
+          class="ctr-pbv__cta ctr-pbv__sticky-btn"
+          :disabled="isAdding"
+          @click="addToCart()"
+        >
+          <span x-text="isAdding ? 'Adding...' : '{{ section.settings.cta_text | default: 'Add To Cart' | escape }} - ' + formatMoney(getTierPrice(selectedTier))">
+            {{ section.settings.cta_text | default: 'Add To Cart' | escape }}
+          </span>
+        </button>
+      </div>
+
+    </div>
+    {%- comment -%} /copy {%- endcomment -%}
+
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "CTR Purchase Box Variants",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "Variant IDs"
+    },
+    {
+      "type": "number",
+      "id": "bag_mango_variant_id",
+      "label": "BAG - Mango variant ID",
+      "info": "Copy from Shopify Admin -> Products -> Restore -> Variants"
+    },
+    {
+      "type": "number",
+      "id": "bag_raspberry_variant_id",
+      "label": "BAG - Raspberry variant ID"
+    },
+    {
+      "type": "number",
+      "id": "sticks_mango_variant_id",
+      "label": "STICKS - Mango variant ID"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_spacing",
+      "label": "Container spacing",
+      "default": "px-container-md",
+      "options": [
+        { "value": "px-container-xs", "label": "Extra Small" },
+        { "value": "px-container-sm", "label": "Small" },
+        { "value": "px-container-md", "label": "Medium" },
+        { "value": "px-container-lg", "label": "Large" },
+        { "value": "px-container-gutter", "label": "Gutter Only" },
+        { "value": "px-container-fullwidth", "label": "Full Width" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#f8f3ec"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding (desktop)",
+      "min": 0, "max": 160, "step": 4, "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding (desktop)",
+      "min": 0, "max": 160, "step": 4, "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0, "max": 120, "step": 4, "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0, "max": 120, "step": 4, "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Gallery Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Image 5"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "product_title",
+      "label": "Product title override",
+      "info": "Leave blank to use the product's title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review_count",
+      "label": "Show review count",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ingredients_link_text",
+      "label": "Ingredients link text",
+      "default": "Ingredients"
+    },
+    {
+      "type": "url",
+      "id": "ingredients_link_url",
+      "label": "Ingredients link URL"
+    },
+    {
+      "type": "text",
+      "id": "benefits_link_text",
+      "label": "Benefits link text",
+      "default": "Benefits"
+    },
+    {
+      "type": "url",
+      "id": "benefits_link_url",
+      "label": "Benefits link URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "clinicians_badge_image",
+      "label": "Clinicians badge image",
+      "info": "Displayed at 150x30px next to the product title"
+    },
+    {
+      "type": "header",
+      "content": "Description & Benefits"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_icon",
+      "label": "Benefit icon (replaces dot)",
+      "info": "Recommended: 32x32px SVG or PNG with transparent background"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Rapidly hydrates, supports immunity, and promotes detoxification. Powered by nutrients with up to 5x more absorption."
+    },
+    {
+      "type": "text",
+      "id": "benefit_1",
+      "label": "Benefit 1",
+      "default": "Rapid cellular hydration & mineral balance"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2",
+      "label": "Benefit 2",
+      "default": "Sharper mood, clearer focus, sustained energy"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3",
+      "label": "Benefit 3",
+      "default": "Fast post-workout electrolyte & mineral refill"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4",
+      "label": "Benefit 4",
+      "default": "Wake up clearer less midday fog & brain fuzz"
+    },
+    {
+      "type": "text",
+      "id": "benefit_5",
+      "label": "Benefit 5"
+    },
+    {
+      "type": "text",
+      "id": "benefit_6",
+      "label": "Benefit 6"
+    },
+    {
+      "type": "header",
+      "content": "Format Toggle (BAG / STICKS)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_format_toggle",
+      "label": "Show format toggle",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "format_bag_label",
+      "label": "BAG button label",
+      "default": "BAG"
+    },
+    {
+      "type": "text",
+      "id": "format_sticks_label",
+      "label": "STICKS button label",
+      "default": "STICKS"
+    },
+    {
+      "type": "header",
+      "content": "Flavor Labels"
+    },
+    {
+      "type": "text",
+      "id": "flavor_select_label",
+      "label": "Flavor selector label",
+      "default": "Select Flavor"
+    },
+    {
+      "type": "text",
+      "id": "bag_label",
+      "label": "Bag label (singular)",
+      "default": "Bag"
+    },
+    {
+      "type": "text",
+      "id": "flavor_mango_label",
+      "label": "Mango flavor label",
+      "default": "Mango"
+    },
+    {
+      "type": "text",
+      "id": "flavor_raspberry_label",
+      "label": "Raspberry flavor label",
+      "default": "Raspberry"
+    },
+    {
+      "type": "header",
+      "content": "Tier 1 -- 1 Month Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier1_label",
+      "label": "Label",
+      "default": "1 Month Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier1_badge",
+      "label": "Discount badge",
+      "default": "25% OFF"
+    },
+    {
+      "type": "color",
+      "id": "discount_badge_color",
+      "label": "Discount badge color",
+      "default": "#536dff"
+    },
+    {
+      "type": "text",
+      "id": "tier1_perk_1",
+      "label": "Perk 1",
+      "default": "28 servings"
+    },
+    {
+      "type": "text",
+      "id": "tier1_perk_2",
+      "label": "Perk 2",
+      "default": "Get 3 FREE gifts valued at $70"
+    },
+    {
+      "type": "text",
+      "id": "tier1_perk_3",
+      "label": "Perk 3",
+      "default": "Free shipping ($7 value)"
+    },
+    {
+      "type": "header",
+      "content": "Tier 2 -- 2 Months Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier2_label",
+      "label": "Label",
+      "default": "2 Months Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier2_badge",
+      "label": "Discount badge",
+      "default": "30% OFF"
+    },
+    {
+      "type": "text",
+      "id": "tier2_perk_1",
+      "label": "Perk 1",
+      "default": "56 servings"
+    },
+    {
+      "type": "text",
+      "id": "tier2_perk_2",
+      "label": "Perk 2",
+      "default": "Get 3 FREE gifts valued at $70"
+    },
+    {
+      "type": "text",
+      "id": "tier2_perk_3",
+      "label": "Perk 3",
+      "default": "Free shipping ($7 value)"
+    },
+    {
+      "type": "header",
+      "content": "Tier 3 -- 3 Months Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier3_label",
+      "label": "Label",
+      "default": "3 Months Supply"
+    },
+    {
+      "type": "text",
+      "id": "tier3_badge",
+      "label": "Discount badge",
+      "default": "35% OFF"
+    },
+    {
+      "type": "text",
+      "id": "tier3_perk_1",
+      "label": "Perk 1",
+      "default": "84 servings"
+    },
+    {
+      "type": "text",
+      "id": "tier3_perk_2",
+      "label": "Perk 2",
+      "default": "Get 3 FREE gifts valued at $70"
+    },
+    {
+      "type": "text",
+      "id": "tier3_perk_3",
+      "label": "Perk 3",
+      "default": "Free shipping ($7 value)"
+    },
+    {
+      "type": "header",
+      "content": "Tier 4 -- Buy Once"
+    },
+    {
+      "type": "text",
+      "id": "tier4_label",
+      "label": "Label",
+      "default": "Buy Once"
+    },
+    {
+      "type": "text",
+      "id": "tier4_perk_1",
+      "label": "Perk 1",
+      "default": "28 servings"
+    },
+    {
+      "type": "text",
+      "id": "buyonce_flavor_label",
+      "label": "Buy Once -- flavor label",
+      "default": "Select Flavor"
+    },
+    {
+      "type": "text",
+      "id": "qty_label",
+      "label": "Quantity label",
+      "default": "Add Quantity"
+    },
+    {
+      "type": "header",
+      "content": "Gift Promo Banner"
+    },
+    {
+      "type": "text",
+      "id": "gift_callout_heading",
+      "label": "Heading",
+      "default": "Spring Special: FREE Gifts with Subscription"
+    },
+    {
+      "type": "textarea",
+      "id": "gift_callout_text",
+      "label": "Copy",
+      "default": "Gifts to elevate and complete your daily ritual."
+    },
+    {
+      "type": "text",
+      "id": "gift_callout_link_text",
+      "label": "Link text",
+      "default": "See gifts"
+    },
+    {
+      "type": "url",
+      "id": "gift_callout_link_url",
+      "label": "Link URL (leave blank for modal)"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_image_1",
+      "label": "Gift image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_image_2",
+      "label": "Gift image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_image_3",
+      "label": "Gift image 3"
+    },
+    {
+      "type": "header",
+      "content": "Gift Modal"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_heading",
+      "label": "Modal heading",
+      "default": "<p><strong>Free Gifts ($70 value) with Subscription</strong></p>"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_description",
+      "label": "Modal description",
+      "default": "<p>Subscribers unlock exclusive gifts to help you stay consistent and maximize your benefits.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_1",
+      "label": "Gift 1 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_1",
+      "label": "Gift 1 label"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_2",
+      "label": "Gift 2 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_2",
+      "label": "Gift 2 label"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_3",
+      "label": "Gift 3 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_3",
+      "label": "Gift 3 label"
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_gift_image_4",
+      "label": "Gift 4 image"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_gift_label_4",
+      "label": "Gift 4 label"
+    },
+    {
+      "type": "richtext",
+      "id": "modal_footer",
+      "label": "Modal footer",
+      "default": "<p>*Offer available on subscriptions of $50+ or 28+ servings.</p>"
+    },
+    {
+      "type": "header",
+      "content": "CTA & Buttons"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "color", 
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#1d1d1d"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Trust Badges"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_1",
+      "label": "Trust badge 1",
+      "default": "Free shipping on orders $50+"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_2",
+      "label": "Trust badge 2",
+      "default": "HSA/FSA Eligible"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_3",
+      "label": "Trust badge 3",
+      "default": "30 day money-back guarantee"
+    },
+    {
+      "type": "header",
+      "content": "FrontRow Widget"
+    },
+    {
+      "type": "text",
+      "id": "frontrow_product_id",
+      "label": "FrontRow product ID",
+      "info": "Shown below the gallery image on desktop. E.g. 2819 for Restore."
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTR Purchase Box Variants"
+    }
+  ]
+}
+{% endschema %}
