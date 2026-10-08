@@ -15,7 +15,7 @@
     {% if _block.disabled %}{% continue %}{% endif %}
     {% assign style_id = block_id %}
     {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
-    {% render 'card_article_card._styles', block: _block, block_id: block_id, section: section, style_id, selector: selector %}
+    {% render 'card_article_card._styles', block: _block, block_id: block_id, section: section, selector: selector %}
   {% endfor %}
   {% break %}
 {% endif %}
@@ -39,7 +39,7 @@
       {% if block.disabled %}{% continue %}{% endif %}
       {% assign style_id = block_id %}
       {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
-      {% render 'card_article_card._styles', block: block, block_id: block_id, section: section, style_id, selector: selector %}
+      {% render 'card_article_card._styles', block: block, block_id: block_id, section: section, selector: selector %}
     {% endfor %}
   {% endcapture %}
 
@@ -69,7 +69,7 @@
       {% if block.disabled %}{% continue %}{% endif %}
       {% assign style_id = block_id %}
       {% capture selector %}[data-style-id="{{ style_id }}"]{% endcapture %}
-      {% render 'card_article_card._styles', block: block, block_id: block_id, section: section, style_id, selector: selector %}
+      {% render 'card_article_card._styles', block: block, block_id: block_id, section: section, selector: selector %}
     {% endfor %}
   {% endfor %}
 {% endcapture %}
@@ -77,3 +77,25 @@
 <style>
   {{ styles | strip | strip_newlines }}
 </style>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'card_article_card._styles', block: _block, block_id: block_id,
+    section: section, style_id, selector: selector %}"
+  to: "{% render 'card_article_card._styles', block: _block, block_id: block_id, section:
+    section, selector: selector %}"
+  position: 761..874
+- from: "{% render 'card_article_card._styles', block: block, block_id: block_id,
+    section: section, style_id, selector: selector %}"
+  to: "{% render 'card_article_card._styles', block: block, block_id: block_id, section:
+    section, selector: selector %}"
+  position: 1901..2013
+- from: "{% render 'card_article_card._styles', block: block, block_id: block_id,
+    section: section, style_id, selector: selector %}"
+  to: "{% render 'card_article_card._styles', block: block, block_id: block_id, section:
+    section, selector: selector %}"
+  position: 3195..3307
+{% endcomment %}

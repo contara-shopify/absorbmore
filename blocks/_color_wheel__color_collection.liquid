@@ -51,7 +51,7 @@
                x-init="$nextTick(() => _sections.hydrateProductCard($el))"></section>
     {% if preload %}
       <script type="application/json"
-              data-product-data="{{ product.handle }}">{%- render '_json.product', product: product, product, card: true, meta_product: true -%}</script>
+              data-product-data="{{ product.handle }}">{%- render '_json.product', product: product, card: true, meta_product: true -%}</script>
     {% endif %}
     {% endif %}
   </div>
@@ -144,3 +144,15 @@
   "class": "shopify_block___color_wheel__color_collection"
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render '_json.product', product: product, product, card: true, meta_product:
+    true -%}"
+  to: "{%- render '_json.product', product: product, card: true, meta_product: true
+    -%}"
+  position: 2373..2453
+{% endcomment %}

@@ -924,10 +924,7 @@
         {% endif %}
 
         {% if section.settings.frontrow_product_id != blank %}
-          {% render 'ctr-frontrow-widget',
-            product_id: section.settings.frontrow_product_id,
-            iframe_id: 'iframe-frontrow-quant-' | append: section.id
-          %}
+          {% render 'ctr-frontrow-widget', product_id: section.settings.frontrow_product_id, iframe_id: 'iframe-frontrow-quant-', append: section.id %}
         {% endif %}
 
         {% if section.settings.show_urgency_badge and section.settings.urgency_badge_text != blank %}
@@ -1678,3 +1675,18 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'ctr-frontrow-widget',
+                product_id: section.settings.frontrow_product_id,
+                iframe_id: 'iframe-frontrow-quant-' | append: section.id
+              %}
+  to: "{% render 'ctr-frontrow-widget', product_id: section.settings.frontrow_product_id,
+    iframe_id: 'iframe-frontrow-quant-', append: section.id %}"
+  position: 27386..27527
+{% endcomment %}
