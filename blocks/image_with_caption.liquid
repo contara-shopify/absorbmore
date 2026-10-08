@@ -34,7 +34,7 @@
     if object_namespace_key[0] == 'metaobjects'
       assign metafield = metaobjects[object_namespace_key[1]].values
     else
-      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
+      assign metafield = self[object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value
     endif
 
     if metafield == blank or metafield.count == 0 or metafield.size == 0
@@ -420,3 +420,13 @@
   "class": "shopify_block__image_with_caption"
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "      assign metafield = [object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value"
+  to: "      assign metafield = self[object_namespace_key[0]].metafields[object_namespace_key[1]][object_namespace_key[2]].value"
+  position: 1713..1834
+{% endcomment %}

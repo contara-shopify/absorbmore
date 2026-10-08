@@ -16,7 +16,7 @@
         assign before_content = split[0]
         assign after_content = split_2[1]
         assign properties = split_2[0] | strip | split: '.'
-        assign object = [key]
+        assign object = self[key]
         assign is_array = false
 
         for property in properties
@@ -146,7 +146,7 @@
     endfor
 
     if content contains full_matcher
-      assign object = [key]
+      assign object = self[key]
 
       if key == 'compare_at_price'
         if compare_at_price > price
@@ -177,3 +177,16 @@
 
 -%}
 {{- content -}}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "        assign object = [key]"
+  to: "        assign object = self[key]"
+  position: 678..711
+- from: "      assign object = [key]"
+  to: "      assign object = self[key]"
+  position: 6188..6219
+{% endcomment %}
